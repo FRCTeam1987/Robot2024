@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
 
   public Shooter(int shooterBottomId, int shootereHigherId) {
 
-    //jank af code to differentate between having a can bus and having a canivore
+    // jank af code to differentate between having a can bus and having a canivore
     if (CANBus.getStatus("canfd").Status == StatusCode.InvalidNetwork) {
       SHOOTER_BIG = new TalonFX(shooterBottomId);
       SHOOTER_SMALL = new TalonFX(shootereHigherId);
@@ -50,17 +50,16 @@ public class Shooter extends SubsystemBase {
     SHOOTER_SMALL.setInverted(true);
   }
 
-
-    public void setRPMSmall(double RPM) {
+  public void setRPMSmall(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
-    //2048 encoder ticks, 600 div/s talon cares about rps for some reason??
-    SHOOTER_BIG.setControl(ctrl.withVelocity(((RPM / 100)  *  2048) / 600));
+    // 2048 encoder ticks, 600 div/s talon cares about rps for some reason??
+    SHOOTER_BIG.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
-      public void setRPMBig(double RPM) {
+  public void setRPMBig(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
-    //2048 encoder ticks, 600 div/s talon cares about rps for some reason??
-    SHOOTER_SMALL.setControl(ctrl.withVelocity(((RPM / 100)  *  2048) / 600));
+    // 2048 encoder ticks, 600 div/s talon cares about rps for some reason??
+    SHOOTER_SMALL.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
   public void stop() {
@@ -83,21 +82,21 @@ public class Shooter extends SubsystemBase {
 
     GenericEntry smallRPM = SHOOTER_TAB.add("RPM Small", 900).getEntry();
     GenericEntry bigRPM = SHOOTER_TAB.add("RPM Big", 900).getEntry();
-  
+
     SHOOTER_TAB.add("Run Small RPM", new InstantCommand(() -> setRPMSmall(smallRPM.getDouble(0))));
     SHOOTER_TAB.add("Run Big RPM", new InstantCommand(() -> setRPMBig(bigRPM.getDouble(0))));
     SHOOTER_TAB.add("Stop", new InstantCommand(() -> stop()));
-    // SHOOTER_TAB.add("Run Shoot", new InstantCommand(()  -> setSpeed(customSmallSpeedEntry.getDouble(0.1), 0.0))
+    // SHOOTER_TAB.add("Run Shoot", new InstantCommand(()  ->
+    // setSpeed(customSmallSpeedEntry.getDouble(0.1), 0.0))
     //   .andThen(new WaitCommand(2)
-    //   .andThen(new InstantCommand(()  -> setSpeed(customSmallSpeedEntry.getDouble(0.1), customBigSpeedEntry.getDouble(0.1)))
+    //   .andThen(new InstantCommand(()  -> setSpeed(customSmallSpeedEntry.getDouble(0.1),
+    // customBigSpeedEntry.getDouble(0.1)))
     //   .andThen(new  WaitCommand(1)
     //   .andThen(new InstantCommand(() -> stop()))))));
 
-    //SHOOTER_TAB.add("Should Log RPM", new InstantCommand(() -> setLogRPM()));
+    // SHOOTER_TAB.add("Should Log RPM", new InstantCommand(() -> setLogRPM()));
   }
 
   @Override
-  public void periodic() {
-
-  }
+  public void periodic() {}
 }

@@ -1,12 +1,10 @@
 package frc.robot.subsystems;
 
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -43,14 +41,14 @@ public class Intake extends SubsystemBase {
     setupShuffleboard();
   }
 
-    public void setRPMIn(double RPM) {
+  public void setRPMIn(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
-    INTAKE_IN.setControl(ctrl.withVelocity(((RPM / 100)  *  2048) / 600));
+    INTAKE_IN.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
-      public void setRPMOut(double RPM) {
+  public void setRPMOut(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
-    INTAKE_OUT.setControl(ctrl.withVelocity(((RPM / 100)  *  2048) / 600));
+    INTAKE_OUT.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
   public void stopCollecting() {
@@ -79,5 +77,4 @@ public class Intake extends SubsystemBase {
     INTAKE_TAB.add("Stop", new InstantCommand(() -> stopCollecting()));
     // INTAKE_TAB.addInteger("Number of Notes", () -> numberOfNotesCollected());
   }
-
 }

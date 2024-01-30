@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -48,7 +47,9 @@ public class SquareUpToAprilTag extends Command {
     System.out.println("Squaring up to AprilTag...");
     xOffset = LimelightHelpers.getTX(limeLightName);
     skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
-    distanceToTarget = LimelightHelpers.calculateDistanceToTarget(LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
+    distanceToTarget =
+        LimelightHelpers.calculateDistanceToTarget(
+            LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
   }
 
   @Override
@@ -62,13 +63,15 @@ public class SquareUpToAprilTag extends Command {
       noVisibleTargetLoops = 0;
       xOffset = LimelightHelpers.getTX(limeLightName);
       skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
-      distanceToTarget = LimelightHelpers.calculateDistanceToTarget(LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
+      distanceToTarget =
+          LimelightHelpers.calculateDistanceToTarget(
+              LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
     }
 
-    //correct skew
+    // correct skew
     if (skew > 45) {
-      skew = skew -90;
-    } 
+      skew = skew - 90;
+    }
 
     skew = SKEW_FILTER.calculate(skew);
 
@@ -79,15 +82,15 @@ public class SquareUpToAprilTag extends Command {
     double lateralSpeed = 0;
     if (skew > ACCEPTABLE_SKEW_ERROR) {
       System.out.println(LOG_PREFIX + "Unnaceptable skew. Returning to skew correction.");
-       skewCheck = false;
+      skewCheck = false;
     }
-    if (skew < ACCEPTABLE_SKEW_ERROR || skewCheck) { 
+    if (skew < ACCEPTABLE_SKEW_ERROR || skewCheck) {
       System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
-      skewCheck = true;  
+      skewCheck = true;
       distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
       forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
     } else {
-      System.out.println(LOG_PREFIX + "Correcting skew & lateral position"); 
+      System.out.println(LOG_PREFIX + "Correcting skew & lateral position");
       rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
       lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
       // if ((distanceToTarget  < ACCEPTABLE_DISTANCE_ERROR + 1.0) && (skew > 1.5)) {
@@ -95,26 +98,29 @@ public class SquareUpToAprilTag extends Command {
       // }
     }
 
-    swerveRequest = swerveRequest.withSpeeds(new ChassisSpeeds(
-      -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
-      LATERAL_FILTER.calculate(lateralSpeed),
-      -rotationRate
-    ));
+    swerveRequest =
+        swerveRequest.withSpeeds(
+            new ChassisSpeeds(
+                -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
+                LATERAL_FILTER.calculate(lateralSpeed),
+                -rotationRate));
 
     // Apply the request to the drivetrain
     drivetrain.setControl(swerveRequest);
   }
+
   // Code Suggestion: Make the robot return to last position it saw the tag if it gets lost
 
   @Override
   public boolean isFinished() {
-    if (((distanceToTarget < ACCEPTABLE_DISTANCE_ERROR) && skew <= ACCEPTABLE_SKEW_ERROR) || (noVisibleTargetLoops == 10)) {
+    if (((distanceToTarget < ACCEPTABLE_DISTANCE_ERROR) && skew <= ACCEPTABLE_SKEW_ERROR)
+        || (noVisibleTargetLoops == 10)) {
       return true;
     } else {
       return false;
     }
   }
- 
+
   @Override
   public void end(boolean interrupted) {
     System.out.println(LOG_PREFIX + "Reached end()");

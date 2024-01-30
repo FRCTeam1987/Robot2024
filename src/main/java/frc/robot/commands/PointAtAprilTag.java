@@ -4,13 +4,12 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
   private LimelightHelpers limelight;
@@ -23,11 +22,17 @@ public class PointAtAprilTag extends Command {
   private CommandSwerveDrivetrain drivetrain;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-  public PointAtAprilTag(CommandSwerveDrivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
+  public PointAtAprilTag(
+      CommandSwerveDrivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
     this(drivetrain, limelight, limeLightName, () -> 0.0, () -> 0.0);
   }
 
-  public PointAtAprilTag(CommandSwerveDrivetrain drivetrain, LimelightHelpers limelight, String limeLightName, DoubleSupplier velocityXSupplier, DoubleSupplier velocityYSupplier) {
+  public PointAtAprilTag(
+      CommandSwerveDrivetrain drivetrain,
+      LimelightHelpers limelight,
+      String limeLightName,
+      DoubleSupplier velocityXSupplier,
+      DoubleSupplier velocityYSupplier) {
     this.drivetrain = drivetrain;
     this.limelight = limelight;
     this.limeLightName = limeLightName;
@@ -38,7 +43,6 @@ public class PointAtAprilTag extends Command {
   @Override
   public void initialize() {
     System.out.println("Starting rotation to april tag");
-
   }
 
   @Override
@@ -59,11 +63,10 @@ public class PointAtAprilTag extends Command {
       rotationRate = 0;
     }
 
-    swerveRequest = swerveRequest.withSpeeds(new ChassisSpeeds(
-      velocityXSupplier.getAsDouble(),
-      velocityYSupplier.getAsDouble(),
-      rotationRate
-    ));
+    swerveRequest =
+        swerveRequest.withSpeeds(
+            new ChassisSpeeds(
+                velocityXSupplier.getAsDouble(), velocityYSupplier.getAsDouble(), rotationRate));
 
     // Apply the request to the drivetrain
     drivetrain.setControl(swerveRequest);
@@ -75,7 +78,7 @@ public class PointAtAprilTag extends Command {
     // return Math.abs(xOffset) < acceptableError;
     return false;
   }
- 
+
   @Override
   public void end(boolean interrupted) {
     System.out.println("Command Finished!");
