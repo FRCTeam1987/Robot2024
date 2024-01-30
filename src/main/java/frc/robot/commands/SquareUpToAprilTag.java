@@ -102,49 +102,51 @@ public class SquareUpToAprilTag extends Command {
   // }
 
   @Override
-  public void execute() { //Run both directions at once, needs tested but should be faster
-      System.out.println(LOG_PREFIX + "In execute()");
-      if (!LimelightHelpers.getTV(limeLightName)) {
-          System.out.println(LOG_PREFIX + "No visible target.");
-          noVisibleTargetLoops++;
-      } else {
-          noVisibleTargetLoops = 0;
-          xOffset = LimelightHelpers.getTX(limeLightName);
-          skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
-          distanceToTarget = LimelightHelpers.calculateDistanceToTarget(
-                  LimelightHelpers.getTY(limeLightName), cameraHeight, targetHeight, cameraAngle);
-  
-          if (skew > 70) {
-              skew = skew - 90;
-          }
-  
-          skew = SKEW_FILTER.calculate(skew);
-  
-          System.out.println(LOG_PREFIX + "Skew: " + skew);
-  
-          double forwardBackwardSpeed = 0;
-          double rotationRate = 0;
-          double lateralSpeed = 0;
-  
-          if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) {
-              System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
-              distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
-              forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
-          }
-  
-          // Always correct lateral position
-          rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
-          lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
-  
-          swerveRequest = swerveRequest.withSpeeds(
-                  new ChassisSpeeds(
-                          -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
-                          LATERAL_FILTER.calculate(lateralSpeed),
-                          -rotationRate));
-  
-          // Apply the request to the drivetrain
-          drivetrain.setControl(swerveRequest);
+  public void execute() { // Run both directions at once, needs tested but should be faster
+    System.out.println(LOG_PREFIX + "In execute()");
+    if (!LimelightHelpers.getTV(limeLightName)) {
+      System.out.println(LOG_PREFIX + "No visible target.");
+      noVisibleTargetLoops++;
+    } else {
+      noVisibleTargetLoops = 0;
+      xOffset = LimelightHelpers.getTX(limeLightName);
+      skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
+      distanceToTarget =
+          LimelightHelpers.calculateDistanceToTarget(
+              LimelightHelpers.getTY(limeLightName), cameraHeight, targetHeight, cameraAngle);
+
+      if (skew > 70) {
+        skew = skew - 90;
       }
+
+      skew = SKEW_FILTER.calculate(skew);
+
+      System.out.println(LOG_PREFIX + "Skew: " + skew);
+
+      double forwardBackwardSpeed = 0;
+      double rotationRate = 0;
+      double lateralSpeed = 0;
+
+      if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) {
+        System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
+        distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
+        forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
+      }
+
+      // Always correct lateral position
+      rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
+      lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
+
+      swerveRequest =
+          swerveRequest.withSpeeds(
+              new ChassisSpeeds(
+                  -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
+                  LATERAL_FILTER.calculate(lateralSpeed),
+                  -rotationRate));
+
+      // Apply the request to the drivetrain
+      drivetrain.setControl(swerveRequest);
+    }
   }
 
   // Code Suggestion: Make the robot return to last position it saw the tag if it gets lost
