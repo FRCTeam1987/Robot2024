@@ -15,7 +15,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class SquareUpToAprilTag extends Command {
   private String LOG_PREFIX = "[EXECUTE] ";
 
-  private final PIDController LATERAL_CONTROLLER = new PIDController(0.26, 0.001, 0.01);
+  private final PIDController LATERAL_CONTROLLER = new PIDController(0.3, 0.001, 0.01);
   private final PIDController ROTATIONAL_CONTROLLER = new PIDController(0.22, 0, 0.01);
   private final PIDController DISTANCE_CONTROLLER = new PIDController(1, 1, 0.1);
 
@@ -25,7 +25,7 @@ public class SquareUpToAprilTag extends Command {
 
   private final double ACCEPTABLE_LATERAL_ERROR = 2.5; // Degrees within acceptance
   private final double ACCEPTABLE_SKEW_ERROR = 0.3; // Degrees within acceptance
-  private final double ACCEPTABLE_DISTANCE_ERROR = 2.25; // metersP within acceptance
+  private final double ACCEPTABLE_DISTANCE_ERROR = 2.5; // metersP within acceptance
 
   private String limeLightName;
   private double distanceError;
@@ -66,10 +66,10 @@ public class SquareUpToAprilTag extends Command {
       distanceToTarget =
           LimelightHelpers.calculateDistanceToTarget(
               LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
-    }
 
-    // correct skew
-    if (skew > 45) {
+
+      // correct skew
+    if (skew > 70) {
       skew = skew - 90;
     }
 
@@ -80,11 +80,11 @@ public class SquareUpToAprilTag extends Command {
     double forwardBackwardSpeed = 0;
     double rotationRate = 0;
     double lateralSpeed = 0;
-    if (skew > ACCEPTABLE_SKEW_ERROR) {
-      System.out.println(LOG_PREFIX + "Unnaceptable skew. Returning to skew correction.");
-      skewCheck = false;
-    }
-    if (skew < ACCEPTABLE_SKEW_ERROR || skewCheck) {
+    // if (skew > ACCEPTABLE_SKEW_ERROR) {
+    //   System.out.println(LOG_PREFIX + "Unnaceptable skew. Returning to skew correction.");
+    //   skewCheck = false;
+    // }
+    if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) {  //|| skewCheck
       System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
       skewCheck = true;
       distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
@@ -107,13 +107,16 @@ public class SquareUpToAprilTag extends Command {
 
     // Apply the request to the drivetrain
     drivetrain.setControl(swerveRequest);
+    }
+
+    
   }
 
   // Code Suggestion: Make the robot return to last position it saw the tag if it gets lost
 
   @Override
   public boolean isFinished() {
-    if (((distanceToTarget < ACCEPTABLE_DISTANCE_ERROR) && skew <= ACCEPTABLE_SKEW_ERROR)
+    if (((distanceToTarget < ACCEPTABLE_DISTANCE_ERROR) && Math.abs(skew) <= ACCEPTABLE_SKEW_ERROR)
         || (noVisibleTargetLoops == 10)) {
       return true;
     } else {
