@@ -90,7 +90,15 @@ public class RobotContainer {
             () -> (-joystick.getLeftX() * MaxSpeed),
             () -> (-joystick.getLeftY() * MaxSpeed)));
     LIMELIGHT_TAB.add("Square Up AprilTag", new SquareUpToAprilTag(drivetrain, limelight_scoring));
+    LIMELIGHT_TAB.add(
+        "Drive 2 meters",
+        drivetrain
+            .applyRequest(() -> drive.withVelocityX(0.0).withVelocityY(3.0).withRotationalRate(0))
+            .withTimeout(1.0));
     LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring, "ts"));
+    // LIMELIGHT_TAB.addNumber("Distance", () ->
+    // LimelightHelpers.calculateDistanceToTarget(LimelightHelpers.getTY(limelight_scoring), 0.13,
+    // 1.23, 35));
   }
 
   public RobotContainer() {
