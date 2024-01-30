@@ -67,49 +67,46 @@ public class SquareUpToAprilTag extends Command {
           LimelightHelpers.calculateDistanceToTarget(
               LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
 
-
       // correct skew
-    if (skew > 70) {
-      skew = skew - 90;
-    }
+      if (skew > 70) {
+        skew = skew - 90;
+      }
 
-    skew = SKEW_FILTER.calculate(skew);
+      skew = SKEW_FILTER.calculate(skew);
 
-    System.out.println(LOG_PREFIX + "Skew: " + skew);
+      System.out.println(LOG_PREFIX + "Skew: " + skew);
 
-    double forwardBackwardSpeed = 0;
-    double rotationRate = 0;
-    double lateralSpeed = 0;
-    // if (skew > ACCEPTABLE_SKEW_ERROR) {
-    //   System.out.println(LOG_PREFIX + "Unnaceptable skew. Returning to skew correction.");
-    //   skewCheck = false;
-    // }
-    if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) {  //|| skewCheck
-      System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
-      skewCheck = true;
-      distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
-      forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
-    } else {
-      System.out.println(LOG_PREFIX + "Correcting skew & lateral position");
-      rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
-      lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
-      // if ((distanceToTarget  < ACCEPTABLE_DISTANCE_ERROR + 1.0) && (skew > 1.5)) {
-      //   forwardBackwardSpeed = 1.3;
+      double forwardBackwardSpeed = 0;
+      double rotationRate = 0;
+      double lateralSpeed = 0;
+      // if (skew > ACCEPTABLE_SKEW_ERROR) {
+      //   System.out.println(LOG_PREFIX + "Unnaceptable skew. Returning to skew correction.");
+      //   skewCheck = false;
       // }
+      if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) { // || skewCheck
+        System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
+        skewCheck = true;
+        distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
+        forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
+      } else {
+        System.out.println(LOG_PREFIX + "Correcting skew & lateral position");
+        rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
+        lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
+        // if ((distanceToTarget  < ACCEPTABLE_DISTANCE_ERROR + 1.0) && (skew > 1.5)) {
+        //   forwardBackwardSpeed = 1.3;
+        // }
+      }
+
+      swerveRequest =
+          swerveRequest.withSpeeds(
+              new ChassisSpeeds(
+                  -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
+                  LATERAL_FILTER.calculate(lateralSpeed),
+                  -rotationRate));
+
+      // Apply the request to the drivetrain
+      drivetrain.setControl(swerveRequest);
     }
-
-    swerveRequest =
-        swerveRequest.withSpeeds(
-            new ChassisSpeeds(
-                -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
-                LATERAL_FILTER.calculate(lateralSpeed),
-                -rotationRate));
-
-    // Apply the request to the drivetrain
-    drivetrain.setControl(swerveRequest);
-    }
-
-    
   }
 
   // Code Suggestion: Make the robot return to last position it saw the tag if it gets lost
