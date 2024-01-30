@@ -23,7 +23,6 @@ public class SquareUpToAprilTag extends Command {
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private final LinearFilter SKEW_FILTER = LinearFilter.movingAverage(8);
 
-  private final double ACCEPTABLE_LATERAL_ERROR = 2.5; // Degrees within acceptance
   private final double ACCEPTABLE_SKEW_ERROR = 0.3; // Degrees within acceptance
   private final double ACCEPTABLE_DISTANCE_ERROR = 2.5; // metersP within acceptance
 
@@ -35,7 +34,9 @@ public class SquareUpToAprilTag extends Command {
   private double distanceToTarget;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
   private int noVisibleTargetLoops = 0;
-  private boolean skewCheck = false;
+  private double cameraHeight = 0.13;
+  private double targetHeight = 1.23;
+  private double cameraAngle = 35;
 
   public SquareUpToAprilTag(CommandSwerveDrivetrain drivetrain, String limeLightName) {
     this.drivetrain = drivetrain;
@@ -49,64 +50,101 @@ public class SquareUpToAprilTag extends Command {
     skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
+            LimelightHelpers.getTY(limeLightName), cameraHeight, targetHeight, cameraAngle);
   }
 
+  // @Override
+  // public void execute() { //One direction at a time, slower but works and is consistent
+  //   System.out.println(LOG_PREFIX + "In execute()");
+  //   if (!LimelightHelpers.getTV(limeLightName)) {
+  //     System.out.println(LOG_PREFIX + "No visible target.");
+  //     noVisibleTargetLoops++;
+  //   } else {
+  //     noVisibleTargetLoops = 0;
+  //     xOffset = LimelightHelpers.getTX(limeLightName);
+  //     skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
+  //     distanceToTarget =
+  //         LimelightHelpers.calculateDistanceToTarget(
+  //             LimelightHelpers.getTY(limeLightName), cameraHeight, targetHeight, cameraAngle);
+
+  //     if (skew > 70) {
+  //       skew = skew - 90;
+  //     }
+
+  //     skew = SKEW_FILTER.calculate(skew);
+
+  //     System.out.println(LOG_PREFIX + "Skew: " + skew);
+
+  //     double forwardBackwardSpeed = 0;
+  //     double rotationRate = 0;
+  //     double lateralSpeed = 0;
+
+  //     if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) {
+  //       System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
+  //       distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
+  //       forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
+  //     } else {
+  //       System.out.println(LOG_PREFIX + "Correcting skew & lateral position");
+  //       rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
+  //       lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
+  //     }
+
+  //     swerveRequest =
+  //         swerveRequest.withSpeeds(
+  //             new ChassisSpeeds(
+  //                 -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
+  //                 LATERAL_FILTER.calculate(lateralSpeed),
+  //                 -rotationRate));
+
+  //     // Apply the request to the drivetrain
+  //     drivetrain.setControl(swerveRequest);
+  //   }
+  // }
+
   @Override
-  public void execute() {
-
-    System.out.println(LOG_PREFIX + "In execute()");
-    if (!LimelightHelpers.getTV(limeLightName)) {
-      System.out.println(LOG_PREFIX + "No visible target.");
-      noVisibleTargetLoops++;
-    } else {
-      noVisibleTargetLoops = 0;
-      xOffset = LimelightHelpers.getTX(limeLightName);
-      skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
-      distanceToTarget =
-          LimelightHelpers.calculateDistanceToTarget(
-              LimelightHelpers.getTY(limeLightName), 0.13, 1.23, 35);
-
-      // correct skew
-      if (skew > 70) {
-        skew = skew - 90;
-      }
-
-      skew = SKEW_FILTER.calculate(skew);
-
-      System.out.println(LOG_PREFIX + "Skew: " + skew);
-
-      double forwardBackwardSpeed = 0;
-      double rotationRate = 0;
-      double lateralSpeed = 0;
-      // if (skew > ACCEPTABLE_SKEW_ERROR) {
-      //   System.out.println(LOG_PREFIX + "Unnaceptable skew. Returning to skew correction.");
-      //   skewCheck = false;
-      // }
-      if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) { // || skewCheck
-        System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
-        skewCheck = true;
-        distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
-        forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
+  public void execute() { //Run both directions at once, needs tested but should be faster
+      System.out.println(LOG_PREFIX + "In execute()");
+      if (!LimelightHelpers.getTV(limeLightName)) {
+          System.out.println(LOG_PREFIX + "No visible target.");
+          noVisibleTargetLoops++;
       } else {
-        System.out.println(LOG_PREFIX + "Correcting skew & lateral position");
-        rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
-        lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
-        // if ((distanceToTarget  < ACCEPTABLE_DISTANCE_ERROR + 1.0) && (skew > 1.5)) {
-        //   forwardBackwardSpeed = 1.3;
-        // }
+          noVisibleTargetLoops = 0;
+          xOffset = LimelightHelpers.getTX(limeLightName);
+          skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
+          distanceToTarget = LimelightHelpers.calculateDistanceToTarget(
+                  LimelightHelpers.getTY(limeLightName), cameraHeight, targetHeight, cameraAngle);
+  
+          if (skew > 70) {
+              skew = skew - 90;
+          }
+  
+          skew = SKEW_FILTER.calculate(skew);
+  
+          System.out.println(LOG_PREFIX + "Skew: " + skew);
+  
+          double forwardBackwardSpeed = 0;
+          double rotationRate = 0;
+          double lateralSpeed = 0;
+  
+          if (Math.abs(skew) < ACCEPTABLE_SKEW_ERROR) {
+              System.out.println(LOG_PREFIX + "Acceptable skew. Driving forward..");
+              distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
+              forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
+          }
+  
+          // Always correct lateral position
+          rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
+          lateralSpeed = LATERAL_CONTROLLER.calculate(skew);
+  
+          swerveRequest = swerveRequest.withSpeeds(
+                  new ChassisSpeeds(
+                          -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
+                          LATERAL_FILTER.calculate(lateralSpeed),
+                          -rotationRate));
+  
+          // Apply the request to the drivetrain
+          drivetrain.setControl(swerveRequest);
       }
-
-      swerveRequest =
-          swerveRequest.withSpeeds(
-              new ChassisSpeeds(
-                  -DISTANCE_FILTER.calculate(forwardBackwardSpeed),
-                  LATERAL_FILTER.calculate(lateralSpeed),
-                  -rotationRate));
-
-      // Apply the request to the drivetrain
-      drivetrain.setControl(swerveRequest);
-    }
   }
 
   // Code Suggestion: Make the robot return to last position it saw the tag if it gets lost
