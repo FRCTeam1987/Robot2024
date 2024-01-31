@@ -10,7 +10,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 
 public class SquareUpToAprilTag extends Command {
   private String LOG_PREFIX = "[EXECUTE] ";
@@ -28,7 +28,7 @@ public class SquareUpToAprilTag extends Command {
 
   private String limeLightName;
   private double distanceError;
-  private CommandSwerveDrivetrain drivetrain;
+  private Drivetrain drivetrain;
   private double xOffset;
   private double skew;
   private double distanceToTarget;
@@ -38,7 +38,7 @@ public class SquareUpToAprilTag extends Command {
   private double targetHeight = 1.23;
   private double cameraAngle = 35;
 
-  public SquareUpToAprilTag(CommandSwerveDrivetrain drivetrain, String limeLightName) {
+  public SquareUpToAprilTag(Drivetrain drivetrain, String limeLightName) {
     this.drivetrain = drivetrain;
     this.limeLightName = limeLightName;
   }
