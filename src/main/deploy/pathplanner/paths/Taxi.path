@@ -11,21 +11,19 @@
         "x": 3.0,
         "y": 7.0
       },
-      "isLocked": false,
-      "linkedName": null
+      "isLocked": false
     },
     {
       "anchor": {
-        "x": 3.0,
+        "x": 5.4,
         "y": 7.0
       },
       "prevControl": {
-        "x": 2.0,
+        "x": 4.4,
         "y": 7.0
       },
       "nextControl": null,
-      "isLocked": false,
-      "linkedName": null
+      "isLocked": false
     }
   ],
   "rotationTargets": [],
@@ -39,11 +37,9 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": 0
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "previewStartingState": null
 }

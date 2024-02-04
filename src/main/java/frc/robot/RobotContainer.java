@@ -79,6 +79,8 @@ public class RobotContainer {
 
     driverController.rightTrigger().onTrue(new SquareUpToAprilTag(drivetrain, limelight_scoring));
 
+    driverController.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
@@ -98,6 +100,13 @@ public class RobotContainer {
             () -> (-driverController.getLeftY() * MaxSpeed)));
     LIMELIGHT_TAB.add("Square Up AprilTag", new SquareUpToAprilTag(drivetrain, limelight_scoring));
     LIMELIGHT_TAB.add(
+        "Climb Test",
+        new SquareUpToAprilTag(drivetrain, limelight_scoring)
+            .andThen(
+                new InstantCommand(() -> drivetrain.resetPose(new Pose2d(2, 7, new Rotation2d(0))))
+                    .andThen(drivetrain.followPathCommand("Taxi"))));
+                    
+    LIMELIGHT_TAB.add(
         "Drive 2 meters",
         drivetrain
             .applyRequest(() -> drive.withVelocityX(0.0).withVelocityY(3.0).withRotationalRate(0))
@@ -105,6 +114,9 @@ public class RobotContainer {
     LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring, "ts"));
 
     LIMELIGHT_TAB.add("Follow Taxi Path", drivetrain.followPathCommand("Taxi"));
+    LIMELIGHT_TAB.add(
+        "reset odo",
+        new InstantCommand(() -> drivetrain.resetPose(new Pose2d(2, 7, new Rotation2d(0)))));
 
     // LIMELIGHT_TAB.addNumber("Distance", () ->
     // LimelightHelpers.calculateDistanceToTarget(LimelightHelpers.getTY(limelight_scoring), 0.13,
