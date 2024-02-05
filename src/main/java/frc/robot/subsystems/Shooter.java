@@ -20,7 +20,6 @@ public class Shooter extends SubsystemBase {
   private final TalonFX SHOOTER_BIG;
   private final TalonFX SHOOTER_SMALL;
   private final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
-  private boolean shouldLogRPM = false;
 
   public Shooter(int shooterBottomId, int shootereHigherId) {
 

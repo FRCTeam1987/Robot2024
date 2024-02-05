@@ -103,21 +103,13 @@ public class RobotContainer {
         "Climb Test",
         new SquareUpToAprilTag(drivetrain, limelight_scoring)
             .andThen(
-                new InstantCommand(() -> drivetrain.resetPose(new Pose2d(2, 7, new Rotation2d(0))))
+                new InstantCommand(
+                        () ->
+                            drivetrain.resetPose(
+                                new Pose2d(2, 7, new Rotation2d(0)))) // Starting position of path
                     .andThen(drivetrain.followPathCommand("Taxi"))));
-                    
-    LIMELIGHT_TAB.add(
-        "Drive 2 meters",
-        drivetrain
-            .applyRequest(() -> drive.withVelocityX(0.0).withVelocityY(3.0).withRotationalRate(0))
-            .withTimeout(0.5));
-    LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring, "ts"));
 
-    LIMELIGHT_TAB.add("Follow Taxi Path", drivetrain.followPathCommand("Taxi"));
-    LIMELIGHT_TAB.add(
-        "reset odo",
-        new InstantCommand(() -> drivetrain.resetPose(new Pose2d(2, 7, new Rotation2d(0)))));
-
+    // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring, "ts"));
     // LIMELIGHT_TAB.addNumber("Distance", () ->
     // LimelightHelpers.calculateDistanceToTarget(LimelightHelpers.getTY(limelight_scoring), 0.13,
     // 1.23, 35));
