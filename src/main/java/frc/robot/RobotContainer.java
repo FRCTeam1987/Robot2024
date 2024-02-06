@@ -79,7 +79,7 @@ public class RobotContainer {
 
     driverController.rightTrigger().onTrue(new SquareUpToAprilTag(drivetrain, limelight_scoring));
 
-    driverController.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -108,8 +108,16 @@ public class RobotContainer {
                             drivetrain.resetPose(
                                 new Pose2d(2, 7, new Rotation2d(0)))) // Starting position of path
                     .andThen(drivetrain.followPathCommand("Taxi"))));
+    LIMELIGHT_TAB.add(
+        "Taxi path",
+        new InstantCommand(
+                () ->
+                    drivetrain.resetPose(
+                        new Pose2d(2, 7, new Rotation2d(0)))) // Starting position of path
+            .andThen(drivetrain.followPathCommand("Taxi")));
 
-    // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring, "ts"));
+    // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring,
+    // "ts"));
     // LIMELIGHT_TAB.addNumber("Distance", () ->
     // LimelightHelpers.calculateDistanceToTarget(LimelightHelpers.getTY(limelight_scoring), 0.13,
     // 1.23, 35));

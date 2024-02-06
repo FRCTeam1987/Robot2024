@@ -10,21 +10,23 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
+import frc.robot.Util;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class SquareUpToAprilTag extends Command {
   private String LOG_PREFIX = "[EXECUTE] ";
 
-  private final PIDController LATERAL_CONTROLLER = new PIDController(0.26, 0.001, 0.01);
-  private final PIDController ROTATIONAL_CONTROLLER = new PIDController(0.22, 0, 0.01);
-  private final PIDController DISTANCE_CONTROLLER = new PIDController(1.0, 1, 0.1);
+  private final PIDController LATERAL_CONTROLLER = new PIDController(0.1, 0.001, 0.01);
+  private final PIDController ROTATIONAL_CONTROLLER = new PIDController(0.15, 0, 0.01);
+  private final PIDController DISTANCE_CONTROLLER = new PIDController(0.40, 1, 0.1);
 
   private final LinearFilter LATERAL_FILTER = LinearFilter.movingAverage(15);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private final LinearFilter SKEW_FILTER = LinearFilter.movingAverage(8);
 
   private final double ACCEPTABLE_SKEW_ERROR = 0.0; // Degrees within acceptance
-  private final double ACCEPTABLE_DISTANCE_ERROR = 2.25; // metersP within acceptance
+  private final double ACCEPTABLE_DISTANCE = 1.7;
+  private final double ACCEPTABLE_DISTANCE_ERROR = 0.4; // metersP within acceptance
 
   private String limeLightName;
   private double distanceError;
@@ -81,7 +83,7 @@ public class SquareUpToAprilTag extends Command {
       double rotationRate = 0;
       double lateralSpeed = 0;
 
-      distanceError = distanceToTarget - ACCEPTABLE_DISTANCE_ERROR;
+      distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
       forwardBackwardSpeed = DISTANCE_CONTROLLER.calculate(distanceError);
 
       rotationRate = ROTATIONAL_CONTROLLER.calculate(-xOffset);
@@ -101,7 +103,8 @@ public class SquareUpToAprilTag extends Command {
 
   @Override
   public boolean isFinished() {
-    if (((distanceToTarget < ACCEPTABLE_DISTANCE_ERROR) && Math.abs(skew) <= ACCEPTABLE_SKEW_ERROR)
+    if ((Util.isWithinTolerance(distanceToTarget, ACCEPTABLE_DISTANCE, ACCEPTABLE_DISTANCE_ERROR)
+            && Math.abs(skew) <= ACCEPTABLE_SKEW_ERROR)
         || (noVisibleTargetLoops == 10)) {
       return true;
     } else {
