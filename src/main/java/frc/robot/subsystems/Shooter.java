@@ -17,19 +17,29 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-  private final TalonFX SHOOTER_BIG;
-  private final TalonFX SHOOTER_SMALL;
+  private final TalonFX SHOOTER_BIG_MASTER;
+  private final TalonFX SHOOTER_BIG_FOLLOWER;
+  private final TalonFX SHOOTER_SMALL_MASTER;
+  private final TalonFX SHOOTER_SMALL_FOLLOWER;
   private final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
-  public Shooter(int shooterBottomId, int shootereHigherId) {
+  public Shooter(
+      int shooterBigMasterId,
+      int shooterBigFollowerId,
+      int shootereSmallMasterId,
+      int shooterSmallFollowerId) {
 
     // jank af code to differentate between having a can bus and having a canivore
     if (CANBus.getStatus("canfd").Status == StatusCode.InvalidNetwork) {
-      SHOOTER_BIG = new TalonFX(shooterBottomId);
-      SHOOTER_SMALL = new TalonFX(shootereHigherId);
+      SHOOTER_BIG_MASTER = new TalonFX(shooterBigMasterId);
+      SHOOTER_BIG_FOLLOWER = new TalonFX(shooterBigFollowerId);
+      SHOOTER_SMALL_MASTER = new TalonFX(shootereSmallMasterId);
+      SHOOTER_SMALL_FOLLOWER = new TalonFX(shootereSmallMasterId);
     } else {
-      SHOOTER_BIG = new TalonFX(shooterBottomId, "canfd");
-      SHOOTER_SMALL = new TalonFX(shootereHigherId, "canfd");
+      SHOOTER_BIG_MASTER = new TalonFX(shooterBigMasterId, "canfd");
+      SHOOTER_BIG_FOLLOWER = new TalonFX(shooterBigFollowerId, "canfd");
+      SHOOTER_SMALL_MASTER = new TalonFX(shootereSmallMasterId, "canfd");
+      SHOOTER_SMALL_FOLLOWER = new TalonFX(shooterSmallFollowerId, "canfd");
     }
 
     Slot0Configs smallCfg = new Slot0Configs();
@@ -43,35 +53,37 @@ public class Shooter extends SubsystemBase {
     bigCfg.kI = 0;
     bigCfg.kD = 0;
     bigCfg.kV = 0.01;
-    SHOOTER_BIG.getConfigurator().apply(bigCfg);
-    SHOOTER_SMALL.getConfigurator().apply(smallCfg);
+    SHOOTER_BIG_MASTER.getConfigurator().apply(bigCfg);
+    SHOOTER_SMALL_MASTER.getConfigurator().apply(smallCfg);
     setupShuffleboard();
-    SHOOTER_SMALL.setInverted(true);
+    SHOOTER_SMALL_MASTER.setInverted(true);
+    SHOOTER_BIG_FOLLOWER.set(SHOOTER_BIG_MASTER.get());
+    SHOOTER_SMALL_FOLLOWER.set(SHOOTER_SMALL_MASTER.get());
   }
 
   public void setRPMSmall(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
     // 2048 encoder ticks, 600 div/s talon cares about rps for some reason??
-    SHOOTER_BIG.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
+    SHOOTER_BIG_MASTER.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
   public void setRPMBig(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
     // 2048 encoder ticks, 600 div/s talon cares about rps for some reason??
-    SHOOTER_SMALL.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
+    SHOOTER_SMALL_MASTER.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
   public void stop() {
-    SHOOTER_BIG.set(0.0);
-    SHOOTER_SMALL.set(0.0);
+    SHOOTER_BIG_MASTER.set(0.0);
+    SHOOTER_SMALL_MASTER.set(0.0);
   }
 
   public double getRPMBig() {
-    return SHOOTER_BIG.getVelocity().getValueAsDouble() * 60;
+    return SHOOTER_BIG_MASTER.getVelocity().getValueAsDouble() * 60;
   }
 
   public double getRPMSmall() {
-    return SHOOTER_SMALL.getVelocity().getValueAsDouble() * 60;
+    return SHOOTER_SMALL_MASTER.getVelocity().getValueAsDouble() * 60;
   }
 
   public void setupShuffleboard() {

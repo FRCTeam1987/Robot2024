@@ -15,6 +15,7 @@ public class Intake extends SubsystemBase {
   private final TalonFX INTAKE_OUT;
   private final TalonFX INTAKE_IN;
   private final ShuffleboardTab INTAKE_TAB = Shuffleboard.getTab("INTAKE");
+  private boolean hasNote = true; // initialize with Note
 
   public Intake(int INTAKE_OUT_ID, int INTAKE_IN_ID) {
     if (CANBus.getStatus("canfd").Status == StatusCode.InvalidNetwork) {
@@ -64,6 +65,24 @@ public class Intake extends SubsystemBase {
     return INTAKE_OUT.getVelocity().getValueAsDouble() * 60;
   }
 
+  public boolean getHasNote() {
+    return hasNote;
+  }
+
+  public void setHasNote(boolean doesHaveNote) {
+    hasNote = doesHaveNote;
+  }
+
+  public void
+      setHasNote() { // If nothing is entered then making the oposite of the  current note state
+    // true
+    if (hasNote == true) {
+      hasNote = false;
+    } else {
+      hasNote = true;
+    }
+  }
+
   @Override
   public void periodic() {}
 
@@ -75,6 +94,7 @@ public class Intake extends SubsystemBase {
     INTAKE_TAB.add("Start IN", new InstantCommand(() -> setRPMIn(customRPMIn.getDouble(900))));
     INTAKE_TAB.add("Start OUT", new InstantCommand(() -> setRPMOut(customRPMOut.getDouble(900))));
     INTAKE_TAB.add("Stop", new InstantCommand(() -> stopCollecting()));
+    INTAKE_TAB.addBoolean("Has Note", () -> this.getHasNote());
     // INTAKE_TAB.addInteger("Number of Notes", () -> numberOfNotesCollected());
   }
 }

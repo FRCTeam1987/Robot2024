@@ -18,15 +18,15 @@ public class SquareUpToAprilTag extends Command {
 
   private final PIDController LATERAL_CONTROLLER = new PIDController(0.1, 0.001, 0.01);
   private final PIDController ROTATIONAL_CONTROLLER = new PIDController(0.15, 0, 0.01);
-  private final PIDController DISTANCE_CONTROLLER = new PIDController(0.40, 1, 0.1);
+  private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
 
   private final LinearFilter LATERAL_FILTER = LinearFilter.movingAverage(15);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private final LinearFilter SKEW_FILTER = LinearFilter.movingAverage(8);
 
   private final double ACCEPTABLE_SKEW_ERROR = 0.0; // Degrees within acceptance
-  private final double ACCEPTABLE_DISTANCE = 1.7;
-  private final double ACCEPTABLE_DISTANCE_ERROR = 0.4; // metersP within acceptance
+  private final double ACCEPTABLE_DISTANCE = 3; // 1.3
+  private final double ACCEPTABLE_DISTANCE_ERROR = 0.05; // metersP within acceptance
 
   private String limeLightName;
   private double distanceError;
@@ -37,7 +37,7 @@ public class SquareUpToAprilTag extends Command {
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
   private int noVisibleTargetLoops = 0;
   private double cameraHeight = 0.13;
-  private double targetHeight = 1.23;
+  private double targetHeight = 1.45; // 1.23
   private double cameraAngle = 35;
 
   public SquareUpToAprilTag(CommandSwerveDrivetrain drivetrain, String limeLightName) {
@@ -105,7 +105,7 @@ public class SquareUpToAprilTag extends Command {
   public boolean isFinished() {
     if ((Util.isWithinTolerance(distanceToTarget, ACCEPTABLE_DISTANCE, ACCEPTABLE_DISTANCE_ERROR)
             && Math.abs(skew) <= ACCEPTABLE_SKEW_ERROR)
-        || (noVisibleTargetLoops == 10)) {
+        || (noVisibleTargetLoops >= 10)) {
       return true;
     } else {
       return false;
