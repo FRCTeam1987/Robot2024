@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
@@ -39,6 +39,7 @@ public class Intake extends SubsystemBase {
     intakeOutCfg.kV = 0.01;
     INTAKE_OUT.getConfigurator().apply(intakeOutCfg);
     INTAKE_IN.getConfigurator().apply(intakeInCfg);
+    INTAKE_OUT.setInverted(true);
     setupShuffleboard();
   }
 

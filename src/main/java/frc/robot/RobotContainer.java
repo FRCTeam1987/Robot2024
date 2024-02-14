@@ -18,12 +18,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DriveToNote;
 import frc.robot.commands.PointAtAprilTag;
 import frc.robot.commands.SquareUpToAprilTag;
 import frc.robot.generated.Constants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.intake.Intake;
 
 public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
@@ -33,13 +34,13 @@ public class RobotContainer {
   public String limelight_scoring = "limelight-scoring";
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("LIMELIGHT");
-  // private final ShuffleboardTab INTAKE_TAB = Shuffleboard.getTab("INTAKE");
+  private final ShuffleboardTab INTAKE_TAB = Shuffleboard.getTab("INTAKE");
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController driverController =
       new CommandXboxController(0); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
-  private final Intake intake = new Intake(Constants.INTAKE_OUT_ID, Constants.INTAKE_IN_ID);
+  private final Intake INTAKE = new Intake(Constants.INTAKE_OUT_ID, Constants.INTAKE_IN_ID);
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -118,6 +119,8 @@ public class RobotContainer {
                     drivetrain.resetPose(
                         new Pose2d(2, 7, new Rotation2d(0)))) // Starting position of path
             .andThen(drivetrain.followPathCommand("Taxi")));
+    
+    LIMELIGHT_TAB.add("Drive To Note", new DriveToNote(drivetrain));
 
     // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring,
     // "ts"));
