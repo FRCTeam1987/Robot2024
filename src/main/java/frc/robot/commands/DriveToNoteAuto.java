@@ -38,6 +38,8 @@ public class DriveToNoteAuto extends Command {
   private double cameraHeight = 0.42;
   private double targetHeight = 0.03; // 1.23
   private double cameraAngle = -13;
+  private double CenterlineDistance = 1; // 8.3
+  private int direction = -1; // 1 and -1 for side of field
 
   private final PIDController rotationController;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
@@ -77,6 +79,14 @@ public class DriveToNoteAuto extends Command {
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
             LimelightHelpers.getTY(limelight), cameraHeight, targetHeight, cameraAngle);
+
+    // if (drivetrain.getPose().getRotation().getDegrees() > 0.0) {
+    //   direction = 1;
+    // }
+
+    // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //   CenterlineDistance = 8.30; // posex
+    // }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -88,6 +98,11 @@ public class DriveToNoteAuto extends Command {
       drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
       return;
     }
+
+    // if (drivetrain.getPose().getX() + (distanceToTarget * direction) > CenterlineDistance) {
+    //   System.out.println("DriveToNote Exceeds allowed barrier");
+    //   return;
+    // }
 
     double rotationalVelocity =
         rotationController.calculate(LimelightHelpers.getTX(limelight), 0.0);
@@ -113,6 +128,7 @@ public class DriveToNoteAuto extends Command {
             new ChassisSpeeds(
                 speed, 0, rotationalVelocity))); // y position should not be edited  as it is driver
     // controlled.
+
   }
 
   // Called once the command ends or is interrupted.

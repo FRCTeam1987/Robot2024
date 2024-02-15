@@ -95,6 +95,9 @@ public class RobotContainer {
   public void setupShuffleboard() {
     LIMELIGHT_TAB.add(
         "Rotate to AprilTag", new PointAtAprilTag(drivetrain, limelight, limelight_scoring));
+    LIMELIGHT_TAB.addDouble(
+        "Current Heading", () -> drivetrain.getPose().getRotation().getDegrees());
+    LIMELIGHT_TAB.addDouble("Current poseX", () -> drivetrain.getPose().getX());
     LIMELIGHT_TAB.add(
         "Driving Rotate to AprilTag",
         new PointAtAprilTag(
