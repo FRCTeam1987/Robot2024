@@ -23,24 +23,24 @@ public class Shooter extends SubsystemBase {
 
   public Shooter(int shooterBigLEADERId, int shooterBigFollowerId, int shootereSmallLEADERId) {
 
-    SHOOTER_BIG_LEADER = new TalonFX(shooterBigLEADERId, "canfd");
-    SHOOTER_BIG_FOLLOWER = new TalonFX(shooterBigFollowerId, "canfd");
-    SHOOTER_FEEDER = new TalonFX(shootereSmallLEADERId, "canfd");
+    SHOOTER_BIG_LEADER = new TalonFX(shooterBigLEADERId, "rio");
+    SHOOTER_BIG_FOLLOWER = new TalonFX(shooterBigFollowerId, "rio");
+    SHOOTER_FEEDER = new TalonFX(shootereSmallLEADERId, "rio");
 
     Slot0Configs bigCfg = new Slot0Configs();
-    bigCfg.kP = 0.12;
-    bigCfg.kI = 0;
+    bigCfg.kP = 0.3;
+    bigCfg.kI = 0.6;
     bigCfg.kD = 0;
-    bigCfg.kV = 0.01;
+    bigCfg.kV = 0.1;
 
     Slot0Configs feederCfg = new Slot0Configs();
-    feederCfg.kP = 0.12;
-    feederCfg.kI = 0;
+    feederCfg.kP = 4.0;
+    feederCfg.kI = 1;
     feederCfg.kD = 0;
-    feederCfg.kV = 0.01;
+    feederCfg.kV = 0;
     SHOOTER_BIG_LEADER.getConfigurator().apply(bigCfg);
     SHOOTER_BIG_FOLLOWER.getConfigurator().apply(bigCfg);
-    SHOOTER_BIG_FOLLOWER.setControl(new Follower(SHOOTER_BIG_LEADER.getDeviceID(), false));
+    SHOOTER_BIG_FOLLOWER.setControl(new Follower(SHOOTER_BIG_LEADER.getDeviceID(), true));
 
     SHOOTER_FEEDER.getConfigurator().apply(feederCfg);
     SHOOTER_FEEDER.setInverted(true);
@@ -53,7 +53,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_BIG_LEADER.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
-  public boolean getHasFiredNote() {
+  public boolean isLineBreakBroken() {
     return SHOOTER_BIG_LEADER.getForwardLimit().asSupplier().get().value == 0;
   }
 
@@ -61,6 +61,15 @@ public class Shooter extends SubsystemBase {
     VelocityVoltage ctrl = new VelocityVoltage(0);
     // 2048 encoder ticks, 600 div/s talon cares about rps for some reason??
     SHOOTER_FEEDER.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
+  }
+  public void setRPMFeederInverted(double RPM) {
+    VelocityVoltage ctrl = new VelocityVoltage(0);
+    // 2048 encoder ticks, 600 div/s talon cares about rps for some reason??
+    SHOOTER_FEEDER.setControl(ctrl.withVelocity(-(((RPM / 100) * 2048) / 600)));
+  }
+
+  public void setFeederVoltage(double voltage) {
+    SHOOTER_FEEDER.setVoltage(voltage);
   }
 
   public void stopShooter() {
@@ -82,7 +91,10 @@ public class Shooter extends SubsystemBase {
   public void setupShuffleboard() {
 
     SHOOTER_TAB.addDouble("RL-RPM Big", () -> getRPMBig());
+    SHOOTER_TAB.addDouble("RL-VLTG", () -> SHOOTER_FEEDER.getMotorVoltage().getValueAsDouble());
     SHOOTER_TAB.addDouble("RL-RPM Feed", () -> getRPMSmall());
+
+    SHOOTER_TAB.addBoolean("LineBreak", () -> isLineBreakBroken());
 
     GenericEntry feedRPM = SHOOTER_TAB.add("RPM Feed", 900).getEntry();
     GenericEntry bigRPM = SHOOTER_TAB.add("RPM Big", 900).getEntry();
@@ -90,7 +102,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_TAB.add("Run Feed", new InstantCommand(() -> setRPMFeeder(feedRPM.getDouble(0))));
     SHOOTER_TAB.add("Run Shoot", new InstantCommand(() -> setRPMShoot(bigRPM.getDouble(0))));
     SHOOTER_TAB.add("ShootStop", new InstantCommand(() -> stopShooter()));
-    SHOOTER_TAB.add("ShotNote", new InstantCommand(() -> getHasFiredNote()));
+    SHOOTER_TAB.add("ShotNote", new InstantCommand(() -> isLineBreakBroken()));
     SHOOTER_TAB.add("FeedStop", new InstantCommand(() -> stopFeeder()));
     // SHOOTER_TAB.add("Run Shoot", new InstantCommand(()  ->
     // setSpeed(customSmallSpeedEntry.getDouble(0.1), 0.0))

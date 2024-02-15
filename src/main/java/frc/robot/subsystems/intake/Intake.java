@@ -43,14 +43,11 @@ public class Intake extends SubsystemBase {
     setupShuffleboard();
   }
 
-  public void setRPMIn(double RPM) {
+  public void setRPM(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
     INTAKE_IN.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
-  }
-
-  public void setRPMOut(double RPM) {
-    VelocityVoltage ctrl = new VelocityVoltage(0);
-    INTAKE_OUT.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
+    VelocityVoltage ctrl2 = new VelocityVoltage(0);
+    INTAKE_OUT.setControl(ctrl2.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
   public void stopCollecting() {
@@ -90,10 +87,8 @@ public class Intake extends SubsystemBase {
   public void setupShuffleboard() {
     INTAKE_TAB.addDouble("RL-RPM In", () -> getRPMIn());
     INTAKE_TAB.addDouble("RL-RPM Out", () -> getRPMOut());
-    GenericEntry customRPMIn = INTAKE_TAB.add("OUT RPM", 900).getEntry();
-    GenericEntry customRPMOut = INTAKE_TAB.add("IN RPM", 900).getEntry();
-    INTAKE_TAB.add("Start IN", new InstantCommand(() -> setRPMIn(customRPMIn.getDouble(900))));
-    INTAKE_TAB.add("Start OUT", new InstantCommand(() -> setRPMOut(customRPMOut.getDouble(900))));
+    GenericEntry customRPMIn = INTAKE_TAB.add("RPM", 900).getEntry();
+    INTAKE_TAB.add("Start IN", new InstantCommand(() -> setRPM(customRPMIn.getDouble(900))));
     INTAKE_TAB.add("Stop", new InstantCommand(() -> stopCollecting()));
     INTAKE_TAB.addBoolean("Has Note", () -> this.getHasNote());
     // INTAKE_TAB.addInteger("Number of Notes", () -> numberOfNotesCollected());

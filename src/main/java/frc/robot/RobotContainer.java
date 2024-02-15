@@ -20,12 +20,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveToNote;
 import frc.robot.commands.DriveToNoteAuto;
+import frc.robot.commands.IntakeNote;
+import frc.robot.commands.IntakeNoteSequence;
 import frc.robot.commands.PointAtAprilTag;
 import frc.robot.commands.SquareUpToAprilTag;
 import frc.robot.generated.Constants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
@@ -42,7 +46,8 @@ public class RobotContainer {
       new CommandXboxController(0); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
   private final Intake INTAKE = new Intake(Constants.INTAKE_OUT_ID, Constants.INTAKE_IN_ID);
-
+  private final Shooter SHOOTER = new Shooter(Constants.SHOOTER_BIG_LEADER, Constants.SHOOTER_BIG_FOLLOWER, Constants.SHOOTER_FEEDER);
+  private final Wrist WRIST = new Wrist(Constants.WRIST_ID);
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1)
@@ -93,6 +98,8 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    INTAKE_TAB.add(new IntakeNote(SHOOTER, WRIST, INTAKE));
+    INTAKE_TAB.add(new IntakeNoteSequence(SHOOTER, INTAKE));
     LIMELIGHT_TAB.add(
         "Rotate to AprilTag", new PointAtAprilTag(drivetrain, limelight, limelight_scoring));
     LIMELIGHT_TAB.add(
