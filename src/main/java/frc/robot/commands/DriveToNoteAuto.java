@@ -43,9 +43,18 @@ public class DriveToNoteAuto extends Command {
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
 
   private Debouncer canSeePieceDebouncer;
-  private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
+  private static final double DEBOUNCE_TIME =
+      0.06; // TODO find correct value and change name  public DriveToNoteAuto(final
+
+  // CommandSwerveDrivetrain drivetrain) {
 
   public DriveToNoteAuto(final CommandSwerveDrivetrain drivetrain) {
+    this(drivetrain, true);
+  }
+
+  public DriveToNoteAuto(final CommandSwerveDrivetrain drivetrain, boolean canCrossCenterLine) {
+    canCrossCenterLine = true; // TODO add logic
+
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
 
