@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.Util;
+import frc.robot.generated.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class SquareUpToAprilTag extends Command {
@@ -36,9 +37,7 @@ public class SquareUpToAprilTag extends Command {
   private double distanceToTarget;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
   private int noVisibleTargetLoops = 0;
-  private double cameraHeight = 0.13;
   private double targetHeight = 1.45; // 1.23
-  private double cameraAngle = 35;
 
   public SquareUpToAprilTag(CommandSwerveDrivetrain drivetrain, String limeLightName) {
     this.drivetrain = drivetrain;
@@ -52,7 +51,10 @@ public class SquareUpToAprilTag extends Command {
     skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limeLightName), cameraHeight, targetHeight, cameraAngle);
+            LimelightHelpers.getTY(limeLightName),
+            Constants.SHOOTER_LIMELIGHT_HEIGHT,
+            targetHeight,
+            Constants.SHOOTER_LIMELIGHT_ANGLE);
   }
 
   @Override
@@ -69,7 +71,10 @@ public class SquareUpToAprilTag extends Command {
       skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
       distanceToTarget =
           LimelightHelpers.calculateDistanceToTarget(
-              LimelightHelpers.getTY(limeLightName), cameraHeight, targetHeight, cameraAngle);
+              LimelightHelpers.getTY(limeLightName),
+              Constants.SHOOTER_LIMELIGHT_HEIGHT,
+              targetHeight,
+              Constants.SHOOTER_LIMELIGHT_ANGLE);
 
       if (skew > 70) {
         skew = skew - 90;

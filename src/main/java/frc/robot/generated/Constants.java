@@ -13,4 +13,9 @@ public class Constants {
 
   public static final double KRAKEN_TICK_RESOLUTION = 2048;
   public static final double MAXIMUM_SPEED = 6; // Meters per second
+
+  public static final double INTAKE_LIMELIGHT_HEIGHT = 0.42; // In meters
+  public static final double INTAKE_LIMELIGHT_ANGLE = -13; // In degrees
+  public static final double SHOOTER_LIMELIGHT_HEIGHT = 0.13; // In meters
+  public static final double SHOOTER_LIMELIGHT_ANGLE = 35; // In degrees
 }

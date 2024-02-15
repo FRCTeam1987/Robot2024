@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
+import frc.robot.generated.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class DriveToNoteAuto extends Command {
@@ -35,9 +36,7 @@ public class DriveToNoteAuto extends Command {
   private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private double distanceToTarget;
-  private double cameraHeight = 0.42;
   private double targetHeight = 0.03; // 1.23
-  private double cameraAngle = -13;
   private double CenterlineDistance = 1; // 8.3
   private int direction = -1; // 1 and -1 for side of field
 
@@ -78,7 +77,10 @@ public class DriveToNoteAuto extends Command {
     canSeePieceDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight), cameraHeight, targetHeight, cameraAngle);
+            LimelightHelpers.getTY(limelight),
+            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            targetHeight,
+            Constants.INTAKE_LIMELIGHT_ANGLE);
 
     // if (drivetrain.getPose().getRotation().getDegrees() > 0.0) {
     //   direction = 1;
@@ -109,7 +111,10 @@ public class DriveToNoteAuto extends Command {
 
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight), cameraHeight, targetHeight, cameraAngle);
+            LimelightHelpers.getTY(limelight),
+            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            targetHeight,
+            Constants.INTAKE_LIMELIGHT_ANGLE);
 
     distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 
