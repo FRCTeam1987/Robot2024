@@ -8,18 +8,16 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import java.util.function.DoubleSupplier;
 
-public class DriveToNote extends Command {
+public class DriveToNoteAuto extends Command {
   /** Creates a new DriveToPiece. */
-  private DoubleSupplier velocitySupplier;
-
   private final CommandSwerveDrivetrain drivetrain;
 
   private static final String limelight = "limelight-intake";
@@ -32,16 +30,23 @@ public class DriveToNote extends Command {
   private static final double maximumAllowableDistance = 3.0; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
+  private final double ACCEPTABLE_DISTANCE = -0.2;
+  private double distanceError;
+  private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
+  private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
+  private double distanceToTarget;
+  private double cameraHeight = 0.42;
+  private double targetHeight = 0.03; // 1.23
+  private double cameraAngle = -13;
+
   private final PIDController rotationController;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
 
   private Debouncer canSeePieceDebouncer;
   private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
 
-  public DriveToNote(
-      final CommandSwerveDrivetrain drivetrain, final DoubleSupplier velocitySupplier) {
+  public DriveToNoteAuto(final CommandSwerveDrivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.velocitySupplier = velocitySupplier;
     this.drivetrain = drivetrain;
 
     // Create the PID controller
@@ -60,6 +65,9 @@ public class DriveToNote extends Command {
     rotationController.reset();
 
     canSeePieceDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
+    distanceToTarget =
+        LimelightHelpers.calculateDistanceToTarget(
+            LimelightHelpers.getTY(limelight), cameraHeight, targetHeight, cameraAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -74,11 +82,20 @@ public class DriveToNote extends Command {
 
     double rotationalVelocity =
         rotationController.calculate(LimelightHelpers.getTX(limelight), 0.0);
+
+    distanceToTarget =
+        LimelightHelpers.calculateDistanceToTarget(
+            LimelightHelpers.getTY(limelight), cameraHeight, targetHeight, cameraAngle);
+
+    distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
+
+    double forwardBackwardSpeed =
+        -DISTANCE_FILTER.calculate(DISTANCE_CONTROLLER.calculate(distanceError));
+
     double speed =
         distanceTraveled() > slowDownDistance
-            ? velocitySupplier.getAsDouble() / 2.0
-            : velocitySupplier
-                .getAsDouble(); // TODO edited speeds so that robot goes a resonable speed when
+            ? forwardBackwardSpeed / 1.5
+            : forwardBackwardSpeed; // TODO edited speeds so that robot goes a resonable speed when
     // closer
     // System.out.println("========================= DriveToPiece Speed: " + speed);
 

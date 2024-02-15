@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveToNote;
+import frc.robot.commands.DriveToNoteAuto;
 import frc.robot.commands.PointAtAprilTag;
 import frc.robot.commands.SquareUpToAprilTag;
 import frc.robot.generated.Constants;
@@ -119,8 +120,10 @@ public class RobotContainer {
                     drivetrain.resetPose(
                         new Pose2d(2, 7, new Rotation2d(0)))) // Starting position of path
             .andThen(drivetrain.followPathCommand("Taxi")));
-    
-    LIMELIGHT_TAB.add("Drive To Note", new DriveToNote(drivetrain));
+
+    LIMELIGHT_TAB.add(
+        "Drive To Note", new DriveToNote(drivetrain, () -> -driverController.getLeftY()));
+    LIMELIGHT_TAB.add("Drive To Note Auto", new DriveToNoteAuto(drivetrain));
 
     // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring,
     // "ts"));
