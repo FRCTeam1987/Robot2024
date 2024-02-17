@@ -20,13 +20,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveToNote;
 import frc.robot.commands.DriveToNoteAuto;
-import frc.robot.commands.IntakeNote;
 import frc.robot.commands.IntakeNoteSequence;
 import frc.robot.commands.PointAtAprilTag;
+import frc.robot.commands.ShootNoteSequence;
 import frc.robot.commands.SquareUpToAprilTag;
-import frc.robot.generated.Constants;
-import frc.robot.generated.TunerConstants;
+import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -37,17 +38,22 @@ public class RobotContainer {
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
   private LimelightHelpers limelight = new LimelightHelpers();
   public String limelight_scoring = "limelight-scoring";
-  public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
+  public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("LIMELIGHT");
-  private final ShuffleboardTab INTAKE_TAB = Shuffleboard.getTab("INTAKE");
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController driverController =
       new CommandXboxController(0); // My joystick
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
-  private final Intake INTAKE = new Intake(Constants.INTAKE_OUT_ID, Constants.INTAKE_IN_ID);
-  private final Shooter SHOOTER = new Shooter(Constants.SHOOTER_BIG_LEADER, Constants.SHOOTER_BIG_FOLLOWER, Constants.SHOOTER_FEEDER);
+  private final CommandSwerveDrivetrain drivetrain = DriveConstants.DriveTrain; // My drivetrain
+
+  private final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
+  private final Shooter SHOOTER =
+      new Shooter(
+          Constants.SHOOTER_LEADER_ID, Constants.SHOOTER_FOLLOWER_ID, Constants.SHOOTER_FEEDER_ID);
   private final Wrist WRIST = new Wrist(Constants.WRIST_ID);
+  private final Elevator ELEVATOR =
+      new Elevator(Constants.ELEVATOR_LEADER_ID, Constants.ELEVATOR_FOLLOWER_ID);
+
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1)
@@ -98,8 +104,8 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
-    INTAKE_TAB.add(new IntakeNote(SHOOTER, WRIST, INTAKE));
-    INTAKE_TAB.add(new IntakeNoteSequence(SHOOTER, INTAKE));
+    COMMANDS_TAB.add("IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE));
+    COMMANDS_TAB.add("ShootNote", new ShootNoteSequence(SHOOTER, WRIST));
     LIMELIGHT_TAB.add(
         "Rotate to AprilTag", new PointAtAprilTag(drivetrain, limelight, limelight_scoring));
     LIMELIGHT_TAB.add(

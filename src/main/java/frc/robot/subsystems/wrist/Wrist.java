@@ -1,7 +1,7 @@
 package frc.robot.subsystems.wrist;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
@@ -9,37 +9,66 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.generated.Constants;
 
 public class Wrist extends SubsystemBase {
   private final TalonFX WRIST_MOTOR;
-  private final int allowableError = 100;
   private final ShuffleboardTab WRIST_TAB = Shuffleboard.getTab("WRIST");
 
   // Constructor
-  public Wrist(int wristMotorID) {
-
-
-    TalonFXConfiguration cfg = new TalonFXConfiguration();
-
-    Slot0Configs wristConfig = new Slot0Configs();
-    wristConfig.kP = 1.3;
-    wristConfig.kI = 0;
-    wristConfig.kD = 0;
-    wristConfig.kV = 0.01;
-
-    cfg.Slot0 = wristConfig;
-    cfg.CurrentLimits.StatorCurrentLimit = 15;
-    cfg.CurrentLimits.StatorCurrentLimitEnable = true;
-    cfg.Feedback.FeedbackRotorOffset = Constants.WRIST_OFFSET;
-
+  public Wrist(final int wristMotorID) {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
-    WRIST_MOTOR.getConfigurator().apply(cfg);
+    final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
+
+    WRIST_CONFIG.Slot0.kP = WristConstants.WRIST_KP;
+    WRIST_CONFIG.Slot0.kI = WristConstants.WRIST_KI;
+    WRIST_CONFIG.Slot0.kD = WristConstants.WRIST_KD;
+    WRIST_CONFIG.Slot0.kV = WristConstants.WRIST_KV;
+
+    WRIST_CONFIG.CurrentLimits.StatorCurrentLimit = WristConstants.WRIST_CURRENT_LIMIT;
+    WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    WRIST_CONFIG.MotionMagic.MotionMagicAcceleration = WristConstants.WRIST_MOTION_ACCELERATION;
+    WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity =
+        WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
+    WRIST_CONFIG.MotionMagic.MotionMagicJerk = WristConstants.WRIST_MOTION_JERK;
+
+    WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
+    WRIST_MOTOR.setPosition(0);
+
     setupShuffleboard();
   }
 
   public void moveToPositionRotations(double rots) {
     WRIST_MOTOR.setControl(new PositionVoltage(rots));
+  }
+
+  public boolean isAtSetpoint() {
+    return WRIST_MOTOR.getClosedLoopError().getValueAsDouble()
+        < WristConstants.WRIST_ALLOWABLE_ERROR;
+  }
+
+  public double getPositionDegrees() {
+    return WRIST_MOTOR.getPosition().getValueAsDouble()
+        * WristConstants.CONVERSION_FACTOR_ROTS_TO_DEGREES;
+  }
+
+  public void moveToPositionDegrees(double degrees) {
+    if (degrees > WristConstants.WRIST_MAX_DEG || degrees < WristConstants.WRIST_MIN_DEG) {
+      System.out.println("Out of Wrist Range!");
+      return;
+    } else {
+      double arbFF =
+          WristConstants.WRIST_KV * Math.sin(Math.toRadians(90.0 - getPositionDegrees()));
+      WRIST_MOTOR.setControl(
+          new MotionMagicVoltage(
+              (WristConstants.CONVERSION_FACTOR_DEGREES_TO_ROTS * degrees) - 1,
+              true,
+              arbFF,
+              0,
+              false,
+              false,
+              false));
+    }
   }
 
   @Override
@@ -50,9 +79,11 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setupShuffleboard() {
-    GenericEntry entry = WRIST_TAB.add("PositionRots", 400).getEntry();
+    GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 30).getEntry();
     WRIST_TAB.add(
-        "SetWrist", new InstantCommand(() -> moveToPositionRotations(entry.get().getDouble())));
-    WRIST_TAB.addDouble("Ticks", () -> WRIST_MOTOR.getRotorPosition().getValueAsDouble());
+        "GoTo Desired DEG",
+        new InstantCommand(() -> moveToPositionDegrees(entry2.get().getDouble())));
+    WRIST_TAB.addDouble("Degrees", () -> getPositionDegrees());
+    WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
   }
 }

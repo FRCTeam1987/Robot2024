@@ -7,34 +7,38 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristConstants;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeNoteSequence extends SequentialCommandGroup {
+public class ShootNoteSequence extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
-  public IntakeNoteSequence(Shooter shooter, Intake intake) {
+  public ShootNoteSequence(Shooter shooter, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(12);
-              intake.setRPM(1200);
+              wrist.moveToPositionDegrees(35);
+              shooter.setRPMShoot(1500);
             },
             shooter,
-            intake),
+            wrist),
+        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
+        new InstantCommand(() -> shooter.setFeederVoltage(5), shooter),
         new WaitUntilCommand(() -> shooter.isLineBreakBroken()), // probably debounce this
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(-2);
-              intake.setRPM(0);
+              shooter.stopFeeder();
             },
-            shooter,
-            intake),
+            shooter),
         new WaitUntilCommand(() -> !shooter.isLineBreakBroken()),
-        new InstantCommand(() -> shooter.setFeederVoltage(0), shooter));
+        new InstantCommand(
+            () -> {
+              shooter.stopShooter();
+            },
+            shooter),
+        new WaitUntilCommand(0.1),
+        new InstantCommand(() -> wrist.moveToPositionDegrees(WristConstants.WRIST_MIN_DEG), wrist));
   }
 }
