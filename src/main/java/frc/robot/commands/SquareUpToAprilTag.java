@@ -11,7 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.Util;
-import frc.robot.generated.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class SquareUpToAprilTag extends Command {
