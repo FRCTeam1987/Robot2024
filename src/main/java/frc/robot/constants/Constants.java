@@ -19,4 +19,8 @@ public class Constants {
   public static final double INTAKE_LIMELIGHT_ANGLE = -13; // In degrees
   public static final double SHOOTER_LIMELIGHT_HEIGHT = 0.13; // In meters
   public static final double SHOOTER_LIMELIGHT_ANGLE = 35; // In degrees
+
+  public static final double INTAKE_COLLECT_RPM = 1200; // In degrees
+  public static final double FEEDER_FEEDFWD_VOLTS = 12; // In degrees
+  public static final double FEEDER_RETRACT_VOLTS = -2; // In degrees
 }

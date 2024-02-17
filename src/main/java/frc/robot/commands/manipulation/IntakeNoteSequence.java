@@ -2,11 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.manipulation;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 
@@ -21,20 +22,20 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(12);
-              intake.setRPM(1200);
+              shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
+              intake.setRPM(Constants.INTAKE_COLLECT_RPM);
             },
             shooter,
             intake),
         new WaitUntilCommand(() -> shooter.isLineBreakBroken()), // probably debounce this
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(-2);
-              intake.setRPM(0);
+              shooter.setFeederVoltage(Constants.FEEDER_RETRACT_VOLTS);
+              intake.stopCollecting();
             },
             shooter,
             intake),
         new WaitUntilCommand(() -> !shooter.isLineBreakBroken()),
-        new InstantCommand(() -> shooter.setFeederVoltage(0), shooter));
+        new InstantCommand(() -> shooter.stopFeeder(), shooter));
   }
 }

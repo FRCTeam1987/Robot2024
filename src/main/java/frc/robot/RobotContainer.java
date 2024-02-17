@@ -18,12 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DriveToNote;
-import frc.robot.commands.DriveToNoteAuto;
-import frc.robot.commands.IntakeNoteSequence;
-import frc.robot.commands.PointAtAprilTag;
-import frc.robot.commands.ShootNoteSequence;
-import frc.robot.commands.SquareUpToAprilTag;
+import frc.robot.commands.manipulation.IntakeNoteSequence;
+import frc.robot.commands.manipulation.ShootNoteSequence;
+import frc.robot.commands.movement.DriveToNote;
+import frc.robot.commands.movement.DriveToNoteAuto;
+import frc.robot.commands.movement.PointAtAprilTag;
+import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -105,7 +105,7 @@ public class RobotContainer {
 
   public void setupShuffleboard() {
     COMMANDS_TAB.add("IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE));
-    COMMANDS_TAB.add("ShootNote", new ShootNoteSequence(SHOOTER, WRIST));
+    COMMANDS_TAB.add("ShootNote", new ShootNoteSequence(SHOOTER, WRIST, 1800, 35));
     LIMELIGHT_TAB.add(
         "Rotate to AprilTag", new PointAtAprilTag(drivetrain, limelight, limelight_scoring));
     LIMELIGHT_TAB.addDouble(
