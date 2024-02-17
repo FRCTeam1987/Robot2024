@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
+import frc.robot.generated.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class DriveToNoteAuto extends Command {
@@ -35,9 +36,9 @@ public class DriveToNoteAuto extends Command {
   private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private double distanceToTarget;
-  private double cameraHeight = 0.42;
   private double targetHeight = 0.03; // 1.23
-  private double cameraAngle = -13;
+  private double CenterlineDistance = 1; // 8.3
+  private int direction = -1; // 1 and -1 for side of field
 
   private final PIDController rotationController;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
@@ -76,7 +77,18 @@ public class DriveToNoteAuto extends Command {
     canSeePieceDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight), cameraHeight, targetHeight, cameraAngle);
+            LimelightHelpers.getTY(limelight),
+            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            targetHeight,
+            Constants.INTAKE_LIMELIGHT_ANGLE);
+
+    // if (drivetrain.getPose().getRotation().getDegrees() > 0.0) {
+    //   direction = 1;
+    // }
+
+    // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //   CenterlineDistance = 8.30; // posex
+    // }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -89,12 +101,20 @@ public class DriveToNoteAuto extends Command {
       return;
     }
 
+    // if (drivetrain.getPose().getX() + (distanceToTarget * direction) > CenterlineDistance) {
+    //   System.out.println("DriveToNote Exceeds allowed barrier");
+    //   return;
+    // }
+
     double rotationalVelocity =
         rotationController.calculate(LimelightHelpers.getTX(limelight), 0.0);
 
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight), cameraHeight, targetHeight, cameraAngle);
+            LimelightHelpers.getTY(limelight),
+            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            targetHeight,
+            Constants.INTAKE_LIMELIGHT_ANGLE);
 
     distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 
@@ -113,6 +133,7 @@ public class DriveToNoteAuto extends Command {
             new ChassisSpeeds(
                 speed, 0, rotationalVelocity))); // y position should not be edited  as it is driver
     // controlled.
+
   }
 
   // Called once the command ends or is interrupted.
