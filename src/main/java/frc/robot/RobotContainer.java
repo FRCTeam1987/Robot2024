@@ -91,7 +91,7 @@ public class RobotContainer {
                             -driverController.getLeftY(), -driverController.getLeftX()))));
 
     // reset the field-centric heading on left bumper press
-    driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     driverController.rightTrigger().onTrue(new SquareUpToAprilTag(drivetrain, limelight_scoring));
 
