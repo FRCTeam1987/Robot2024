@@ -45,6 +45,12 @@ public class Intake extends SubsystemBase {
     INTAKE_TOP.setControl(topCtl.withVelocity(((RPM / 100) * 2048) / 600));
   }
 
+  public void setVolts(double VOLTS) {
+    // CANNOT FOLLOW. DIFFERENT PID CTRL FOR EACH ROLLER.
+    INTAKE_TOP.setVoltage(VOLTS);
+    INTAKE_BOTTOM.setVoltage(VOLTS);
+  }
+
   public void stopCollecting() {
     INTAKE_TOP.set(0.0);
     INTAKE_BOTTOM.set(0.0);

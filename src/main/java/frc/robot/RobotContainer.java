@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -39,6 +40,7 @@ public class RobotContainer {
   private LimelightHelpers limelight = new LimelightHelpers();
   public String limelight_scoring = "limelight-scoring";
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
+  public static GenericEntry SHOOT_ANGLE;
   public final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("LIMELIGHT");
 
   /* Setting up bindings for necessary control of the swerve drive platform */
@@ -93,7 +95,19 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    driverController.rightTrigger().onTrue(new SquareUpToAprilTag(drivetrain, limelight_scoring));
+    driverController
+        .rightTrigger()
+        .onTrue(
+            new PointAtAprilTag(
+                drivetrain,
+                limelight,
+                limelight_scoring,
+                () -> (-driverController.getLeftX() * MaxSpeed),
+                () -> (-driverController.getLeftY() * MaxSpeed)));
+
+    driverController.x().onTrue(new ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
+    driverController.leftTrigger().onTrue(new IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
+driverController.leftBumper().onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
 
     driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
@@ -104,14 +118,18 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
-    COMMANDS_TAB.add("IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE));
-    COMMANDS_TAB.add("ShootNote", new ShootNoteSequence(SHOOTER, WRIST, 1800, 35));
+    COMMANDS_TAB.add("IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
+    COMMANDS_TAB.add("Set Wrist as at Home", new InstantCommand(() -> WRIST.setWristAsHome()));
+    SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
+    COMMANDS_TAB.add("ShootNote", new ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
+    COMMANDS_TAB.add("SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
+    COMMANDS_TAB.add("StopShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(0)));
     LIMELIGHT_TAB.add(
         "Rotate to AprilTag", new PointAtAprilTag(drivetrain, limelight, limelight_scoring));
     LIMELIGHT_TAB.addDouble(
         "Current Heading", () -> drivetrain.getPose().getRotation().getDegrees());
     LIMELIGHT_TAB.addDouble("Current poseX", () -> drivetrain.getPose().getX());
-    LIMELIGHT_TAB.add(
+    COMMANDS_TAB.add(
         "Driving Rotate to AprilTag",
         new PointAtAprilTag(
             drivetrain,

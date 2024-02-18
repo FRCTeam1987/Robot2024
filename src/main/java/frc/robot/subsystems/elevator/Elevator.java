@@ -43,7 +43,7 @@ public class Elevator extends SubsystemBase {
         ElevatorConstants.EXTENSION_MOTION_ACCELERATION;
     extensionConfig.MotionMagic.MotionMagicCruiseVelocity =
         ElevatorConstants.EXTENSION_CRUISE_VELOCITY;
-    extensionConfig.MotionMagic.MotionMagicJerk = ElevatorConstants.EXTENSION_JERK;
+    // extensionConfig.MotionMagic.MotionMagicJerk = ElevatorConstants.EXTENSION_JERK;
 
     ELEVATOR_LEADER.getConfigurator().apply(extensionConfig);
     ELEVATOR_FOLLOWER.getConfigurator().apply(extensionConfig);
@@ -72,6 +72,16 @@ public class Elevator extends SubsystemBase {
         * ElevatorConstants.CONVERSION_FACTOR_TICKS_TO_INCHES;
   }
 
+  public void coastElevator() {
+    ELEVATOR_LEADER.setNeutralMode(NeutralModeValue.Coast);
+    ELEVATOR_FOLLOWER.setNeutralMode(NeutralModeValue.Coast);
+  }
+
+  public void brakeElevator() {
+    ELEVATOR_LEADER.setNeutralMode(NeutralModeValue.Brake);
+    ELEVATOR_FOLLOWER.setNeutralMode(NeutralModeValue.Brake);
+  }
+
   public boolean isAtSetpoint() {
     return ELEVATOR_LEADER.getClosedLoopError().getValueAsDouble()
         < ElevatorConstants.EXTENSION_ALLOWABLE_ERROR;
@@ -85,5 +95,7 @@ public class Elevator extends SubsystemBase {
     ELEVATOR_TAB.add(
         "GoTo DesiredLen", new InstantCommand(() -> setLengthInches(length.getDouble(0))));
     ELEVATOR_TAB.addDouble("ActualLen In.", () -> getLengthInches());
+    ELEVATOR_TAB.add("Coast", new InstantCommand(() -> coastElevator()).ignoringDisable(true));
+    ELEVATOR_TAB.add("Brake", new InstantCommand(() -> brakeElevator()).ignoringDisable(true));
   }
 }

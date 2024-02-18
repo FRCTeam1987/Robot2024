@@ -11,10 +11,10 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.DoubleSupplier;
 
-public class PointAtAprilTag extends Command {
+public class ShootingRotate extends Command {
   private LimelightHelpers limelight;
 
-  private double kP = 0.15; // TODO: changeme please :)
+  private double kP = 0.2; // TODO: changeme please :)
   private double acceptableError = 1.0; // Degrees within acceptance
   private String limeLightName;
   private DoubleSupplier velocityXSupplier = () -> 0.0;
@@ -22,12 +22,7 @@ public class PointAtAprilTag extends Command {
   private CommandSwerveDrivetrain drivetrain;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-  public PointAtAprilTag(
-      CommandSwerveDrivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
-    this(drivetrain, limelight, limeLightName, () -> 0.0, () -> 0.0);
-  }
-
-  public PointAtAprilTag(
+  public ShootingRotate(
       CommandSwerveDrivetrain drivetrain,
       LimelightHelpers limelight,
       String limeLightName,
@@ -70,6 +65,9 @@ public class PointAtAprilTag extends Command {
 
     // Apply the request to the drivetrain
     drivetrain.setControl(swerveRequest);
+
+    
+
   }
 
   @Override

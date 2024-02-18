@@ -10,23 +10,26 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.wrist.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeNoteSequence extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
-  public IntakeNoteSequence(Shooter shooter, Intake intake) {
+  public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
-              intake.setRPM(Constants.INTAKE_COLLECT_RPM);
+              intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
+              // wrist.moveToPositionDegrees(40);
             },
             shooter,
-            intake),
+            intake,
+            wrist),
         new WaitUntilCommand(() -> shooter.isLineBreakBroken()), // probably debounce this
         new InstantCommand(
             () -> {
@@ -36,6 +39,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             shooter,
             intake),
         new WaitUntilCommand(() -> !shooter.isLineBreakBroken()),
-        new InstantCommand(() -> shooter.stopFeeder(), shooter));
+        new InstantCommand(() -> shooter.stopFeeder(), shooter),
+        new InstantCommand(() -> wrist.moveToPositionRotations(0), wrist));
   }
 }

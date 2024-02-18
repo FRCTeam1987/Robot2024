@@ -34,13 +34,13 @@ public class Shooter extends SubsystemBase {
     SHOOTER_CONFIG.Slot0.kS = 0.22;
     SHOOTER_CONFIG.Slot0.kV = 0.12;
 
-    SHOOTER_CONFIG.Slot0.kP = 0.3;
+    SHOOTER_CONFIG.Slot0.kP = 0.6;
     SHOOTER_CONFIG.Slot0.kI = 0.1;
     SHOOTER_CONFIG.Slot0.kD = 0;
     SHOOTER_CONFIG.Slot0.kV = 0.0;
 
     final Slot0Configs FEEDER_CFG = new Slot0Configs();
-    FEEDER_CFG.kP = 4.0;
+    FEEDER_CFG.kP = 6.0;
     FEEDER_CFG.kI = 1;
     FEEDER_CFG.kD = 0;
     FEEDER_CFG.kV = 0;
@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 5;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 8;
   }
 
   public void setupShuffleboard() {
