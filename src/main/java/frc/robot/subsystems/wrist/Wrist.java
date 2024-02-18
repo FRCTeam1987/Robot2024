@@ -5,7 +5,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -32,7 +31,7 @@ public class Wrist extends SubsystemBase {
     WRIST_CONFIG.MotionMagic.MotionMagicAcceleration = WristConstants.WRIST_MOTION_ACCELERATION;
     WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity =
         WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
-    //WRIST_CONFIG.MotionMagic.MotionMagicJerk = WristConstants.WRIST_MOTION_JERK;
+    // WRIST_CONFIG.MotionMagic.MotionMagicJerk = WristConstants.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
     WRIST_MOTOR.setPosition(0);

@@ -25,15 +25,16 @@ public class Constants {
   public static final double INTAKE_COLLECT_VOLTS = 6;
   public static final double FEEDER_FEEDFWD_VOLTS = 12;
   public static final double FEEDER_RETRACT_VOLTS = -2;
+  public static final double SHOOTER_RPM = 1800;
 
   public static final InterpolatingTreeMap<Double, Double> distanceWristAngleMap =
       new InterpolatingTreeMap<Double, Double>(null, null);
 
   static {
-    distanceWristAngleMap.put(-3.75, 35.3);
-    distanceWristAngleMap.put(-0.79, 37.2);
-    distanceWristAngleMap.put(2.07, 38.9);
-    distanceWristAngleMap.put(6.7,42.0);
-    distanceWristAngleMap.put(11.07, 44.0);
+    distanceWristAngleMap.put(-3.75, 35.3); // old
+    distanceWristAngleMap.put(8.20, 40.8);
+    distanceWristAngleMap.put(10.37, 40.8);
+    distanceWristAngleMap.put(11.07, 44.0); // old
+    distanceWristAngleMap.put(12.89, 40.5);
   }
 }

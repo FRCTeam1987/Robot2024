@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.manipulation.IntakeNoteSequence;
-import frc.robot.commands.manipulation.ShootNoteSequence;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
@@ -105,9 +103,13 @@ public class RobotContainer {
                 () -> (-driverController.getLeftX() * MaxSpeed),
                 () -> (-driverController.getLeftY() * MaxSpeed)));
 
-    driverController.x().onTrue(new ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
-    driverController.leftTrigger().onTrue(new IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
-driverController.leftBumper().onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
+    driverController
+        .x()
+        .onTrue(new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
+    driverController
+        .leftTrigger()
+        .onTrue(new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
+    driverController.leftBumper().onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
 
     driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
@@ -118,10 +120,12 @@ driverController.leftBumper().onTrue(new InstantCommand(() -> SHOOTER.setRPMShoo
   }
 
   public void setupShuffleboard() {
-    COMMANDS_TAB.add("IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
+    COMMANDS_TAB.add(
+        "IntakeNote", new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
     COMMANDS_TAB.add("Set Wrist as at Home", new InstantCommand(() -> WRIST.setWristAsHome()));
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
-    COMMANDS_TAB.add("ShootNote", new ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
+    COMMANDS_TAB.add(
+        "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
     COMMANDS_TAB.add("SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
     COMMANDS_TAB.add("StopShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(0)));
     LIMELIGHT_TAB.add(
