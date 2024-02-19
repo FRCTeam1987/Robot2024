@@ -38,7 +38,8 @@ public class ShootNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new WaitCommand(0.5), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS), shooter), // Constants.FEEDER_FEEDFWD_VOLTS
+            () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
+            shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(

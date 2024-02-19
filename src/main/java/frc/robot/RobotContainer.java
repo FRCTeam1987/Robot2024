@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
+import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.LockWristAndPoint;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.movement.DriveToNote;
@@ -36,7 +37,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotContainer {
-private static RobotContainer instance;
+  private static RobotContainer instance;
   private double MaxSpeed = 6; // 6 meters per second desired top speed
   private double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
@@ -193,6 +194,7 @@ private static RobotContainer instance;
   public void registerNamedCommands() {
     NamedCommands.registerCommand(
         "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.SHOOTER_RPM, 40));
+    NamedCommands.registerCommand("IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
   }
 
   public Command getAutonomousCommand() {

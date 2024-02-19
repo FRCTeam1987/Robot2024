@@ -6,7 +6,6 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
@@ -49,7 +48,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_LEADER.getConfigurator().apply(SHOOTER_CONFIG);
     SHOOTER_FOLLOWER.getConfigurator().apply(SHOOTER_CONFIG);
 
-    //SHOOTER_FOLLOWER.setControl(new Follower(SHOOTER_LEADER.getDeviceID(), true));
+    // SHOOTER_FOLLOWER.setControl(new Follower(SHOOTER_LEADER.getDeviceID(), true));
     SHOOTER_FOLLOWER.setInverted(true);
     FEEDER.getConfigurator().apply(FEEDER_CFG);
     FEEDER.setInverted(true);
@@ -74,7 +73,7 @@ public class Shooter extends SubsystemBase {
   public void stopShooter() {
     SHOOTER_LEADER.set(0.0);
     SHOOTER_FOLLOWER.set(0.0);
-    }
+  }
 
   public void stopFeeder() {
     FEEDER.set(0.0);

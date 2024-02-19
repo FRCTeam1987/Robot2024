@@ -3,50 +3,113 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4312979597287774,
-        "y": 5.124666615976377
+        "x": 1.403106449731418,
+        "y": 5.501250011759283
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.531297959728777,
-        "y": 5.124666615976377
+        "x": 1.5031064497314177,
+        "y": 5.501250011759283
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6622360609384623,
-        "y": 5.124666615976377
+        "x": 2.8859343690909602,
+        "y": 5.089656887647108
       },
       "prevControl": {
-        "x": 2.5915253828198077,
-        "y": 5.053955937857722
+        "x": 2.8152236909723056,
+        "y": 5.018946209528454
       },
       "nextControl": {
-        "x": 2.732946739057117,
-        "y": 5.195377294095032
+        "x": 2.956645047209615,
+        "y": 5.160367565765763
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6622360609384623,
-        "y": 6.493534732273934
+        "x": 2.8859343690909602,
+        "y": 6.582461382515358
       },
       "prevControl": {
-        "x": 2.666057299952035,
-        "y": 6.486916152154562
+        "x": 2.889755608104533,
+        "y": 6.575842802395986
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.7,
+      "rotationDegrees": -90.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeNote1",
+      "waypointRelativePos": 0.4,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNote1",
+      "waypointRelativePos": 1.15,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote2",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -55,7 +118,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": -89.66191738676608,
     "rotateFast": false
   },
   "reversed": false,

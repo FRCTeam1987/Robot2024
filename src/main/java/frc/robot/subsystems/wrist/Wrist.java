@@ -67,8 +67,7 @@ public class Wrist extends SubsystemBase {
       System.out.println("Out of Wrist Range!");
       return;
     } else {
-      double arbFF =
-          WristConstants.WRIST_KV * Math.sin(Math.toRadians(90.0 - getDegrees()));
+      double arbFF = WristConstants.WRIST_KV * Math.sin(Math.toRadians(90.0 - getDegrees()));
       WRIST_MOTOR.setControl(
           new MotionMagicVoltage(
               (WristConstants.CONVERSION_FACTOR_DEGREES_TO_ROTS * degrees) - 1,
@@ -91,8 +90,7 @@ public class Wrist extends SubsystemBase {
   public void setupShuffleboard() {
     GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 30).getEntry();
     WRIST_TAB.add(
-        "GoTo Desired DEG",
-        new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
+        "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
     WRIST_TAB.addDouble("Degrees", () -> getDegrees());
     WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
   }
