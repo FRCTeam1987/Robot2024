@@ -7,7 +7,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 
 public class DriveConstants {
   // Both sets of gains need to be tuned to your individual robot.
@@ -145,6 +145,6 @@ public class DriveConstants {
           Units.inchesToMeters(kBackRightYPosInches),
           kInvertRightSide);
 
-  public static final CommandSwerveDrivetrain DriveTrain =
-      new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
+  public static final Drivetrain DriveTrain =
+      new Drivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
 }

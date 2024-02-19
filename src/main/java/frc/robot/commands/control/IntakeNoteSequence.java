@@ -33,13 +33,11 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(() -> shooter.isLineBreakBroken()), // probably debounce this
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(Constants.FEEDER_RETRACT_VOLTS);
+              shooter.stopFeeder();
               intake.stopCollecting();
             },
             shooter,
             intake),
-        new WaitUntilCommand(() -> !shooter.isLineBreakBroken()),
-        new InstantCommand(() -> shooter.stopFeeder(), shooter),
-        new InstantCommand(() -> wrist.moveToPositionRotations(0), wrist));
+        new InstantCommand(() -> wrist.setRotationsDEPRECATED(0), wrist));
   }
 }

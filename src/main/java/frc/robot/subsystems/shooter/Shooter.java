@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class Shooter extends SubsystemBase {
 
@@ -34,7 +35,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_CONFIG.Slot0.kS = 0.22;
     SHOOTER_CONFIG.Slot0.kV = 0.12;
 
-    SHOOTER_CONFIG.Slot0.kP = 0.6;
+    SHOOTER_CONFIG.Slot0.kP = 0.3;
     SHOOTER_CONFIG.Slot0.kI = 0.1;
     SHOOTER_CONFIG.Slot0.kD = 0;
     SHOOTER_CONFIG.Slot0.kV = 0.0;
@@ -48,8 +49,8 @@ public class Shooter extends SubsystemBase {
     SHOOTER_LEADER.getConfigurator().apply(SHOOTER_CONFIG);
     SHOOTER_FOLLOWER.getConfigurator().apply(SHOOTER_CONFIG);
 
-    SHOOTER_FOLLOWER.setControl(new Follower(SHOOTER_LEADER.getDeviceID(), true));
-
+    //SHOOTER_FOLLOWER.setControl(new Follower(SHOOTER_LEADER.getDeviceID(), true));
+    SHOOTER_FOLLOWER.setInverted(true);
     FEEDER.getConfigurator().apply(FEEDER_CFG);
     FEEDER.setInverted(true);
 
@@ -58,7 +59,8 @@ public class Shooter extends SubsystemBase {
 
   public void setRPMShoot(double RPM) {
     VelocityVoltage ctrl = new VelocityVoltage(0);
-    SHOOTER_LEADER.setControl(ctrl.withVelocity(((RPM / 100) * 2048) / 600));
+    SHOOTER_LEADER.setControl(ctrl.withVelocity(RPM / 60.0));
+    SHOOTER_FOLLOWER.setControl(ctrl.withVelocity((RPM * Constants.SPIN_RATIO) / 60.0));
   }
 
   public boolean isLineBreakBroken() {
@@ -71,13 +73,18 @@ public class Shooter extends SubsystemBase {
 
   public void stopShooter() {
     SHOOTER_LEADER.set(0.0);
-  }
+    SHOOTER_FOLLOWER.set(0.0);
+    }
 
   public void stopFeeder() {
     FEEDER.set(0.0);
   }
 
-  public double getRPMShooter() {
+  public double getRPMLeader() {
+    return SHOOTER_LEADER.getVelocity().getValueAsDouble() * 60;
+  }
+
+  public double getRPMFollower() {
     return SHOOTER_LEADER.getVelocity().getValueAsDouble() * 60;
   }
 
@@ -91,12 +98,13 @@ public class Shooter extends SubsystemBase {
 
   public void setupShuffleboard() {
 
-    SHOOTER_TAB.addDouble("SHT RPM", () -> getRPMShooter());
+    SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
+    SHOOTER_TAB.addDouble("Lead RPM", () -> getRPMLeader());
     SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
     SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER.getMotorVoltage().getValueAsDouble());
     SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
 
-    SHOOTER_TAB.addBoolean("LineBreak", () -> isLineBreakBroken());
+    SHOOTER_TAB.addBoolean("HasNote", () -> isLineBreakBroken());
 
     GenericEntry feedRPM = SHOOTER_TAB.add("Desired FD Vlts", 900).getEntry();
     GenericEntry shootRPM = SHOOTER_TAB.add("Desired SHT RPM", 900).getEntry();

@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 
 public class DriveToNoteAuto extends Command {
   /** Creates a new DriveToPiece. */
-  private final CommandSwerveDrivetrain drivetrain;
+  private final Drivetrain drivetrain;
 
   private static final String limelight = "limelight-intake";
 
@@ -49,11 +49,11 @@ public class DriveToNoteAuto extends Command {
 
   // CommandSwerveDrivetrain drivetrain) {
 
-  public DriveToNoteAuto(final CommandSwerveDrivetrain drivetrain) {
+  public DriveToNoteAuto(final Drivetrain drivetrain) {
     this(drivetrain, true);
   }
 
-  public DriveToNoteAuto(final CommandSwerveDrivetrain drivetrain, boolean canCrossCenterLine) {
+  public DriveToNoteAuto(final Drivetrain drivetrain, boolean canCrossCenterLine) {
     canCrossCenterLine = true; // TODO add logic
 
     // Use addRequirements() here to declare subsystem dependencies.

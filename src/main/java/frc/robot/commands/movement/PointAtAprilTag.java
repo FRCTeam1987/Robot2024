@@ -8,7 +8,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
@@ -19,16 +19,15 @@ public class PointAtAprilTag extends Command {
   private String limeLightName;
   private DoubleSupplier velocityXSupplier = () -> 0.0;
   private DoubleSupplier velocityYSupplier = () -> 0.0;
-  private CommandSwerveDrivetrain drivetrain;
+  private Drivetrain drivetrain;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-  public PointAtAprilTag(
-      CommandSwerveDrivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
+  public PointAtAprilTag(Drivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
     this(drivetrain, limelight, limeLightName, () -> 0.0, () -> 0.0);
   }
 
   public PointAtAprilTag(
-      CommandSwerveDrivetrain drivetrain,
+      Drivetrain drivetrain,
       LimelightHelpers limelight,
       String limeLightName,
       DoubleSupplier velocityXSupplier,

@@ -10,32 +10,27 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.wrist.Wrist;
 
-public class ShootingRotate extends SequentialCommandGroup {
+public class ShootNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   private Debouncer lineBreakDebouncer;
 
   private static final double DEBOUNCE_TIME = 0.06;
 
-  public ShootingRotate(Shooter shooter, Wrist wrist, double shootRPM, double wristDegrees) {
+  public ShootNote(Shooter shooter, double shootRPM) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
 
     addCommands(
-        // new PointAtAprilTag(drivetrain, null, getName())
         new InstantCommand(
             () -> {
-              wrist.moveToPositionDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
               shooter.setRPMShoot(shootRPM);
             },
-            shooter,
-            wrist),
+            shooter),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
-        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
+        new WaitUntilCommand(() -> shooter.isShooterAtSetpoint()),
         new WaitCommand(0.5), // Time for writst to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(14), shooter), // Constants.FEEDER_FEEDFWD_VOLTS
@@ -53,8 +48,6 @@ public class ShootingRotate extends SequentialCommandGroup {
             () -> {
               shooter.stopShooter();
             },
-            shooter),
-        new WaitCommand(0.1),
-        new InstantCommand(() -> wrist.moveToPositionRotations(0), wrist));
+            shooter));
   }
 }

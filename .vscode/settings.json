@@ -60,6 +60,7 @@
       "tunables",
       "Vandermonde",
       "Xstance"
-    ]  
+    ],
+    "wpilib.autoStartRioLog": false
   }
   

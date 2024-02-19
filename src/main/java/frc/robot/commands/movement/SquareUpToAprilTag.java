@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.Util;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 
 public class SquareUpToAprilTag extends Command {
   private String LOG_PREFIX = "[EXECUTE] ";
@@ -31,7 +31,7 @@ public class SquareUpToAprilTag extends Command {
 
   private String limeLightName;
   private double distanceError;
-  private CommandSwerveDrivetrain drivetrain;
+  private Drivetrain drivetrain;
   private double xOffset;
   private double skew;
   private double distanceToTarget;
@@ -39,7 +39,7 @@ public class SquareUpToAprilTag extends Command {
   private int noVisibleTargetLoops = 0;
   private double targetHeight = 1.45; // 1.23
 
-  public SquareUpToAprilTag(CommandSwerveDrivetrain drivetrain, String limeLightName) {
+  public SquareUpToAprilTag(Drivetrain drivetrain, String limeLightName) {
     this.drivetrain = drivetrain;
     this.limeLightName = limeLightName;
   }

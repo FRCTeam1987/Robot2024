@@ -13,14 +13,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 import java.util.function.DoubleSupplier;
 
 public class DriveToNote extends Command {
   /** Creates a new DriveToPiece. */
   private DoubleSupplier velocitySupplier;
 
-  private final CommandSwerveDrivetrain drivetrain;
+  private final Drivetrain drivetrain;
 
   private static final String limelight = "limelight-intake";
 
@@ -38,8 +38,7 @@ public class DriveToNote extends Command {
   private Debouncer canSeePieceDebouncer;
   private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
 
-  public DriveToNote(
-      final CommandSwerveDrivetrain drivetrain, final DoubleSupplier velocitySupplier) {
+  public DriveToNote(final Drivetrain drivetrain, final DoubleSupplier velocitySupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.velocitySupplier = velocitySupplier;
     this.drivetrain = drivetrain;

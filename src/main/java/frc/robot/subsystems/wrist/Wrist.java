@@ -40,11 +40,15 @@ public class Wrist extends SubsystemBase {
     setupShuffleboard();
   }
 
-  public void moveToPositionRotations(double rots) {
+  public void setRotationsDEPRECATED(double rots) {
     WRIST_MOTOR.setControl(new PositionVoltage(rots));
   }
 
-  public void setWristAsHome() {
+  public void goHome() {
+    WRIST_MOTOR.setControl(new PositionVoltage(0));
+  }
+
+  public void zeroSensor() {
     WRIST_MOTOR.setPosition(0);
   }
 
@@ -53,18 +57,18 @@ public class Wrist extends SubsystemBase {
         < WristConstants.WRIST_ALLOWABLE_ERROR;
   }
 
-  public double getPositionDegrees() {
+  public double getDegrees() {
     return WRIST_MOTOR.getPosition().getValueAsDouble()
         * WristConstants.CONVERSION_FACTOR_ROTS_TO_DEGREES;
   }
 
-  public void moveToPositionDegrees(double degrees) {
+  public void setDegrees(double degrees) {
     if (degrees > WristConstants.WRIST_MAX_DEG || degrees < WristConstants.WRIST_MIN_DEG) {
       System.out.println("Out of Wrist Range!");
       return;
     } else {
       double arbFF =
-          WristConstants.WRIST_KV * Math.sin(Math.toRadians(90.0 - getPositionDegrees()));
+          WristConstants.WRIST_KV * Math.sin(Math.toRadians(90.0 - getDegrees()));
       WRIST_MOTOR.setControl(
           new MotionMagicVoltage(
               (WristConstants.CONVERSION_FACTOR_DEGREES_TO_ROTS * degrees) - 1,
@@ -88,8 +92,8 @@ public class Wrist extends SubsystemBase {
     GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 30).getEntry();
     WRIST_TAB.add(
         "GoTo Desired DEG",
-        new InstantCommand(() -> moveToPositionDegrees(entry2.get().getDouble())));
-    WRIST_TAB.addDouble("Degrees", () -> getPositionDegrees());
+        new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
+    WRIST_TAB.addDouble("Degrees", () -> getDegrees());
     WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
   }
 }
