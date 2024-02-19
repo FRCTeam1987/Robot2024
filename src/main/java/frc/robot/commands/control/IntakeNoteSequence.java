@@ -25,7 +25,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             () -> {
               shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
-              // wrist.moveToPositionDegrees(40);
+              wrist.setDegrees(40);
             },
             shooter,
             intake,

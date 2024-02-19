@@ -14,7 +14,7 @@ import java.util.function.DoubleSupplier;
 public class PointAtAprilTag extends Command {
   private LimelightHelpers limelight;
 
-  private double kP = 0.15; // TODO: changeme please :)
+  private double kP = 0.10; // TODO: changeme please :)
   private double acceptableError = 1.0; // Degrees within acceptance
   private String limeLightName;
   private DoubleSupplier velocityXSupplier = () -> 0.0;

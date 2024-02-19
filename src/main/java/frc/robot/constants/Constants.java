@@ -15,6 +15,7 @@ public class Constants {
   public static final int SHOOTER_LEADER_ID = 56;
   public static final int SHOOTER_FOLLOWER_ID = 53;
   public static final int SHOOTER_FEEDER_ID = 55;
+  public static final int SHOOTER_FEEDER_ID_TEMP = 57;
 
   public static final int ELEVATOR_LEADER_ID = 60;
   public static final int ELEVATOR_FOLLOWER_ID = 61;
@@ -29,7 +30,7 @@ public class Constants {
   public static final double FEEDER_FEEDFWD_VOLTS = 4;
   public static final double FEEDER_RETRACT_VOLTS = -2;
 
-  public static final double SHOOTER_RPM = 1800;
+  public static final double SHOOTER_RPM = 3600;
   public static final double SPIN_RATIO = 0.8;
 
   public static final InterpolatingTreeMap<Double, Double> DISTANCE_WRIST_ANGLE_MAP =

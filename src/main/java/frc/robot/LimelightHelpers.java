@@ -487,7 +487,7 @@ public class LimelightHelpers {
 
     // Calculate the distance using trigonometry
     double distance = heightDifference / Math.tan(angleToTargetRadians);
-    System.out.println("Distance to target: " + distance);
+    // System.out.println("Distance to target: " + distance);
     return distance;
   }
 
