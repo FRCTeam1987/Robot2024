@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Util;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class ShootNote extends SequentialCommandGroup {
@@ -33,17 +35,18 @@ public class ShootNote extends SequentialCommandGroup {
         new WaitUntilCommand(() -> shooter.isShooterAtSetpoint()),
         new WaitCommand(0.5), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(14), shooter), // Constants.FEEDER_FEEDFWD_VOLTS
+            () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
+            shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(
-                    shooter.isLineBreakBroken())), // probably debounce this
+                    !shooter.isLineBreakBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
             },
             shooter),
-        new WaitUntilCommand(() -> !lineBreakDebouncer.calculate(shooter.isLineBreakBroken())),
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isLineBreakBroken())),
         new InstantCommand(
             () -> {
               shooter.stopShooter();

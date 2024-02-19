@@ -4,6 +4,8 @@
 
 package frc.robot.commands.control;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -16,6 +18,9 @@ import frc.robot.subsystems.wrist.Wrist;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeNoteSequence extends SequentialCommandGroup {
+
+  private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
+
   /** Creates a new IntakeNoteSequence. */
   public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
@@ -25,12 +30,11 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             () -> {
               shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
-              // wrist.moveToPositionDegrees(40);
+              //wrist.setDegrees(40);
             },
             shooter,
-            intake,
-            wrist),
-        new WaitUntilCommand(() -> shooter.isLineBreakBroken()), // probably debounce this
+            intake),
+        new WaitUntilCommand(() -> hasNote.calculate(shooter.isLineBreakBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();

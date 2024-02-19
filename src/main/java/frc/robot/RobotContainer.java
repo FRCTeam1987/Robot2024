@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.LockWristAndPoint;
+import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
@@ -109,13 +110,28 @@ public class RobotContainer {
 
     driverController
         .x()
-        .onTrue(new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
+        .onTrue(
+            new frc.robot.commands.control.ShootNoteSequence(
+                SHOOTER, WRIST, Constants.SHOOTER_RPM, 0));
     driverController
         .leftTrigger()
         .onTrue(new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
-    driverController.leftBumper().onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
+    driverController
+        .leftBumper()
+        .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
 
-    driverController.y().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
+    driverController.y().onTrue(new ShootNote(SHOOTER, Constants.SHOOTER_RPM));
+    // .andThen(
+    //     new InstantCommand(
+    //         () ->
+    //             COMMANDS_TAB.addDouble(
+    //                 "Distance of Last Shot",
+    //                 () ->
+    //                     LimelightHelpers.calculateDistanceToTarget(
+    //                         LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
+    //                         Constants.SHOOTER_LIMELIGHT_HEIGHT,
+    //                         1.45,
+    //                         Constants.SHOOTER_LIMELIGHT_ANGLE)))));
 
     if (Utils.isSimulation()) {
       DRIVETRAIN.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -125,12 +141,20 @@ public class RobotContainer {
 
   public void setupShuffleboard() {
     COMMANDS_TAB.add("LockWrist&Point", new LockWristAndPoint(SHOOTER, WRIST, DRIVETRAIN));
+    COMMANDS_TAB.addDouble(
+        "Distance of Last Shot",
+        () ->
+            LimelightHelpers.calculateDistanceToTarget(
+                LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
+                Constants.SHOOTER_LIMELIGHT_HEIGHT,
+                1.45,
+                Constants.SHOOTER_LIMELIGHT_ANGLE));
     COMMANDS_TAB.add(
         "IntakeNote", new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
     COMMANDS_TAB.add("Set Wrist as at Home", new InstantCommand(() -> WRIST.zeroSensor()));
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
     COMMANDS_TAB.add(
-        "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
+        "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 6000, 0));
     COMMANDS_TAB.add("SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
     COMMANDS_TAB.add("StopShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(0)));
     LIMELIGHT_TAB.add(
@@ -184,7 +208,7 @@ public class RobotContainer {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     setupShuffleboard();
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, Constants.LIMELIGHT_SCORING));
+    // WRIST.setDefaultCommand(new AimLockWrist(WRIST, Constants.LIMELIGHT_SCORING));
   }
 
   public static RobotContainer get() {

@@ -68,8 +68,8 @@ public class Intake extends SubsystemBase {
   public void periodic() {}
 
   public void setupShuffleboard() {
-    INTAKE_TAB.addDouble("RL-RPM Top", () -> getRPMTop());
-    INTAKE_TAB.addDouble("RL-RPM Bot", () -> getRPMBottom());
+    // INTAKE_TAB.addDouble("RL-RPM Top", () -> getRPMTop());
+    // INTAKE_TAB.addDouble("RL-RPM Bot", () -> getRPMBottom());
     GenericEntry customRPMIn = INTAKE_TAB.add("Desired RPM", 900).getEntry();
     INTAKE_TAB.add("Start", new InstantCommand(() -> setRPM(customRPMIn.getDouble(900))));
     INTAKE_TAB.add("Stop", new InstantCommand(() -> stopCollecting()));
