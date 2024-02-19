@@ -153,7 +153,7 @@ public class RobotContainer {
     COMMANDS_TAB.add("Set Wrist as at Home", new InstantCommand(() -> WRIST.zeroSensor()));
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
     COMMANDS_TAB.add(
-        "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 1800, 0));
+        "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 6000, 0));
     COMMANDS_TAB.add("SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
     COMMANDS_TAB.add("StopShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(0)));
     LIMELIGHT_TAB.add(
@@ -207,7 +207,7 @@ public class RobotContainer {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     setupShuffleboard();
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, Constants.LIMELIGHT_SCORING));
+    // WRIST.setDefaultCommand(new AimLockWrist(WRIST, Constants.LIMELIGHT_SCORING));
   }
 
   public static RobotContainer get() {

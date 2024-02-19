@@ -10,11 +10,15 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.Constants;
 
 public class Shooter extends SubsystemBase {
@@ -56,14 +60,16 @@ public class Shooter extends SubsystemBase {
     // FEEDER.getConfigurator().apply(FEEDER_CFG);
     // FEEDER.setInverted(true);
     FEEDER_TEMP.setInverted(true);
+    FEEDER_TEMP.setIdleMode(IdleMode.kBrake);
 
     setupShuffleboard();
   }
 
   public void setRPMShoot(double RPM) {
-    VelocityVoltage ctrl = new VelocityVoltage(0);
-    SHOOTER_LEADER.setControl(ctrl.withVelocity(RPM / 60.0));
-    SHOOTER_FOLLOWER.setControl(ctrl.withVelocity((RPM * Constants.SPIN_RATIO) / 60.0));
+    VelocityVoltage ctrlLeader = new VelocityVoltage(0);
+    VelocityVoltage ctrlFollower = new VelocityVoltage(0);
+    SHOOTER_LEADER.setControl(ctrlLeader.withVelocity(RPM / 60.0));
+    SHOOTER_FOLLOWER.setControl(ctrlFollower.withVelocity((RPM * Constants.SPIN_RATIO) / 60.0));
   }
 
   public boolean isLineBreakBroken() {
@@ -85,11 +91,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getRPMLeader() {
-    return SHOOTER_LEADER.getVelocity().getValueAsDouble() * 60;
+    return SHOOTER_LEADER.getVelocity().getValueAsDouble() * 60.0;
   }
 
   public double getRPMFollower() {
-    return SHOOTER_LEADER.getVelocity().getValueAsDouble() * 60;
+    return SHOOTER_FOLLOWER.getVelocity().getValueAsDouble() * 60.0;
   }
 
   public double getRPMFeeder() {
@@ -98,13 +104,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 8;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 10;
   }
 
   public void setupShuffleboard() {
 
     SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
-    SHOOTER_TAB.addDouble("Lead RPM", () -> getRPMLeader());
+    SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
     SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
     SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
     SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
@@ -119,8 +125,16 @@ public class Shooter extends SubsystemBase {
     SHOOTER_TAB.add("Run SHT RPM", new InstantCommand(() -> setRPMShoot(shootRPM.getDouble(0))));
     SHOOTER_TAB.add("Stop SHT", new InstantCommand(() -> stopShooter()));
     SHOOTER_TAB.add("Stop FD", new InstantCommand(() -> stopFeeder()));
+    SHOOTER_TAB.add("Reverse Feeder",
+      new InstantCommand(() -> setFeederVoltage(-6.0), this)
+        .andThen(new WaitCommand(2.0))
+        .andThen(() -> stopFeeder(), this)
+    );
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("Leader RPM", getRPMLeader());
+    SmartDashboard.putNumber("Follower RPM", getRPMFollower());
+  }
 }
