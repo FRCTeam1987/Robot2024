@@ -91,7 +91,7 @@ public class Wrist extends SubsystemBase {
     GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 30).getEntry();
     WRIST_TAB.add(
         "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
-    WRIST_TAB.addDouble("Degrees", () -> getDegrees());
-    WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
+    // WRIST_TAB.addDouble("Degrees", () -> getDegrees());
+    // WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
   }
 }

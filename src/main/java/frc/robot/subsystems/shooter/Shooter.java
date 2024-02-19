@@ -109,11 +109,11 @@ public class Shooter extends SubsystemBase {
 
   public void setupShuffleboard() {
 
-    SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
-    SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
-    SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
-    SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
-    SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
+    // SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
+    // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
+    // SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
+    // SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
+    // SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
 
     SHOOTER_TAB.addBoolean("HasNote", () -> isLineBreakBroken());
 
@@ -134,7 +134,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Leader RPM", getRPMLeader());
-    SmartDashboard.putNumber("Follower RPM", getRPMFollower());
+
   }
 }
