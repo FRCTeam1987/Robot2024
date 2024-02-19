@@ -25,9 +25,9 @@ public class Constants {
 
   public static final int WRIST_ID = 54;
 
-  public static final double INTAKE_COLLECT_VOLTS = 8;  // 6
+  public static final double INTAKE_COLLECT_VOLTS = 8; // 6
 
-  public static final double FEEDER_FEEDFWD_VOLTS = 7;  // 4
+  public static final double FEEDER_FEEDFWD_VOLTS = 7; // 4
   public static final double FEEDER_RETRACT_VOLTS = -2;
 
   public static final double SHOOTER_RPM = 3600;

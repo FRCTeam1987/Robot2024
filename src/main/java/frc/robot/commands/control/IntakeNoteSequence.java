@@ -30,11 +30,12 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             () -> {
               shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
-              //wrist.setDegrees(40);
+              // wrist.setDegrees(40);
             },
             shooter,
             intake),
-        new WaitUntilCommand(() -> hasNote.calculate(shooter.isLineBreakBroken())), // probably debounce this
+        new WaitUntilCommand(
+            () -> hasNote.calculate(shooter.isLineBreakBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
