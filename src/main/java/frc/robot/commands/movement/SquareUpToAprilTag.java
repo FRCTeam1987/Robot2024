@@ -37,11 +37,12 @@ public class SquareUpToAprilTag extends Command {
   private double distanceToTarget;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
   private int noVisibleTargetLoops = 0;
-  private double targetHeight = 1.45; // 1.23
+  private double targetHeight = 1.45; // 1.23 Meters
 
-  public SquareUpToAprilTag(Drivetrain drivetrain, String limeLightName) {
+  public SquareUpToAprilTag(Drivetrain drivetrain, String limeLightName, double targetHeight) {
     this.drivetrain = drivetrain;
     this.limeLightName = limeLightName;
+    this.targetHeight = targetHeight;
   }
 
   @Override

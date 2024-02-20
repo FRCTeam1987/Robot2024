@@ -1,11 +1,14 @@
 package frc.robot.constants;
 
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import frc.robot.LimelightHelpers;
+import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.InterpolatingTreeMap;
 
 public class Constants {
   public static final LimelightHelpers LIMELIGHT = new LimelightHelpers();
   public static final String LIMELIGHT_SCORING = "limelight-scoring";
+  public static final double SPEAKER_APRILTAG_HEIGHT = 1.45;
+  public static final double TRAP_APRILTAG_HEIGHT = 1.23;
 
   public static final double INTAKE_LIMELIGHT_HEIGHT = 0.42; // In meters
   public static final double INTAKE_LIMELIGHT_ANGLE = -13; // In degrees
@@ -27,21 +30,23 @@ public class Constants {
 
   public static final double INTAKE_COLLECT_VOLTS = 8; // 6
 
-  public static final double FEEDER_FEEDFWD_VOLTS = 7; // 4
+  public static final double FEEDER_FEEDFWD_VOLTS = 6; // 4
   public static final double FEEDER_RETRACT_VOLTS = -2;
 
-  public static final double SHOOTER_RPM = 3600;
+  public static final double SHOOTER_RPM = 7000;
   public static final double SPIN_RATIO = 0.75;
 
-  public static final InterpolatingTreeMap<Double, Double> DISTANCE_WRIST_ANGLE_MAP =
-      new InterpolatingTreeMap<Double, Double>(null, null);
+  public static final InterpolatingTreeMap<
+          InterpolatingDouble,
+          InterpolatingDouble> // TODO Update Limelight Constants with new position
+      DISTANCE_WRIST_ANGLE_MAP = // (Meters, Wrist Degrees)
+      new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
 
   static {
-    // distanceWristAngleMap.put(-3.75, 35.3); // old
-    DISTANCE_WRIST_ANGLE_MAP.put(7.8, 39.1);
-    DISTANCE_WRIST_ANGLE_MAP.put(8.20, 40.8);
-    DISTANCE_WRIST_ANGLE_MAP.put(10.37, 40.8);
-    // distanceWristAngleMap.put(11.07, 44.0); // old
-    DISTANCE_WRIST_ANGLE_MAP.put(12.89, 40.5);
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(4.06), new InterpolatingDouble(36.0));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.51), new InterpolatingDouble(37.0));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.004), new InterpolatingDouble(38.5));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(2.519), new InterpolatingDouble(40.0));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(2.09), new InterpolatingDouble(43.0));
   }
 }

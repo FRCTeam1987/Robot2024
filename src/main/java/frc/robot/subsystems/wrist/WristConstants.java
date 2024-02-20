@@ -2,18 +2,18 @@ package frc.robot.subsystems.wrist;
 
 public class WristConstants {
 
-  public static final double WRIST_KP = 1.0;
+  public static final double WRIST_KP = 4.8;
   public static final double WRIST_KI = 0.0;
   public static final double WRIST_KD = 0.01;
-  public static final double WRIST_KV = 0.3;
+  public static final double WRIST_KV = 0.03;
 
   public static final double WRIST_ALLOWABLE_ERROR = 0.3;
 
   public static final double WRIST_CURRENT_LIMIT = 35;
 
-  public static final double WRIST_MOTION_ACCELERATION = 40;
-  public static final double WRIST_MOTION_CRUISE_VELOCITY = 130;
-  public static final double WRIST_MOTION_JERK = 1200;
+  public static final double WRIST_MOTION_ACCELERATION = 100;
+  public static final double WRIST_MOTION_CRUISE_VELOCITY = 8600;
+  public static final double WRIST_MOTION_JERK = 0;
 
   public static final double WRIST_MIN_DEG = 21;
   public static final double WRIST_MAX_DEG = 84;

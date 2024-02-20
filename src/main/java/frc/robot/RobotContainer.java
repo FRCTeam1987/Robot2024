@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.LockWristAndPoint;
 import frc.robot.commands.control.ShootNote;
@@ -142,12 +143,7 @@ public class RobotContainer {
     COMMANDS_TAB.add("LockWrist&Point", new LockWristAndPoint(SHOOTER, WRIST, DRIVETRAIN));
     COMMANDS_TAB.addDouble(
         "Distance of Last Shot",
-        () ->
-            LimelightHelpers.calculateDistanceToTarget(
-                LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
-                Constants.SHOOTER_LIMELIGHT_HEIGHT,
-                1.45,
-                Constants.SHOOTER_LIMELIGHT_ANGLE));
+        () -> SHOOTER.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT));
     COMMANDS_TAB.add(
         "IntakeNote", new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
     COMMANDS_TAB.add("Set Wrist as at Home", new InstantCommand(() -> WRIST.zeroSensor()));
@@ -171,9 +167,13 @@ public class RobotContainer {
             () -> (-driverController.getLeftX() * MaxSpeed),
             () -> (-driverController.getLeftY() * MaxSpeed)));
     LIMELIGHT_TAB.add(
-        "Square Up AprilTag", new SquareUpToAprilTag(DRIVETRAIN, Constants.LIMELIGHT_SCORING));
+        "Square Up AprilTag",
+        new SquareUpToAprilTag(
+            DRIVETRAIN, Constants.LIMELIGHT_SCORING, Constants.SPEAKER_APRILTAG_HEIGHT));
     LIMELIGHT_TAB.add(
-        "Climb Test", new SquareUpToAprilTag(DRIVETRAIN, Constants.LIMELIGHT_SCORING)
+        "Climb Test",
+        new SquareUpToAprilTag(
+            DRIVETRAIN, Constants.LIMELIGHT_SCORING, Constants.TRAP_APRILTAG_HEIGHT)
         // .andThen(
         //     new InstantCommand(
         //             () ->
@@ -195,11 +195,9 @@ public class RobotContainer {
 
     // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring,
     // "ts"));
-    // LIMELIGHT_TAB.addNumber("Distance", () ->
-    // LimelightHelpers.calculateDistanceToTarget(LimelightHelpers.getTY(limelight_scoring), 0.13,
-    // 1.23, 35));
 
     SmartDashboard.putData("Taxi", autoChooser);
+    SmartDashboard.putData("3 Piece 1", autoChooser);
   }
 
   public RobotContainer() {
@@ -207,7 +205,7 @@ public class RobotContainer {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     setupShuffleboard();
-    // WRIST.setDefaultCommand(new AimLockWrist(WRIST, Constants.LIMELIGHT_SCORING));
+    WRIST.setDefaultCommand(new AimLockWrist(WRIST));
   }
 
   public static RobotContainer get() {

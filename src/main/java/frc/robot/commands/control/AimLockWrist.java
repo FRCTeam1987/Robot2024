@@ -10,15 +10,14 @@ import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.util.InterpolatingDouble;
 
 public class AimLockWrist extends Command {
-  private String scoringLimelight;
   private Wrist wrist;
 
   /** Creates a new AimLockWrist. */
-  public AimLockWrist(Wrist wrist, String scoringLimelight) {
+  public AimLockWrist(Wrist wrist) {
     this.wrist = wrist;
-    this.scoringLimelight = scoringLimelight;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -30,16 +29,34 @@ public class AimLockWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotContainer.get().SHOOTER.isLineBreakBroken()) {
-      double degrees =
-          Constants.DISTANCE_WRIST_ANGLE_MAP.get(LimelightHelpers.getTY(scoringLimelight));
-      if (degrees < 21 || degrees > 42) {
-        DriverStation.reportError("WristAim Map Out of Range", false);
-      } else {
+    if (LimelightHelpers.getTV(Constants.LIMELIGHT_SCORING)) {
+      if (RobotContainer.get().SHOOTER.isLineBreakBroken()) {
+        // try {
+        double distance =
+            LimelightHelpers.calculateDistanceToTarget(
+                LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
+                Constants.SHOOTER_LIMELIGHT_HEIGHT,
+                Constants.SPEAKER_APRILTAG_HEIGHT,
+                Constants.SHOOTER_LIMELIGHT_ANGLE);
+        System.out.println("Calculating for: " + distance);
+        double degrees =
+            Constants.DISTANCE_WRIST_ANGLE_MAP.getInterpolated(new InterpolatingDouble(distance))
+                .value;
+        // if (degrees < 21 || degrees > 42) {
+        //   DriverStation.reportError("WristAim Map Out of Range", false);
+        // } else {
+        System.out.println("Degrees attempted: " + degrees);
         wrist.setDegrees(degrees);
+        // }
+        // } catch (Exception ignored) {
+        // }
+
+      } else {
+        wrist.goHome();
       }
     } else {
-      wrist.goHome();
+      DriverStation.reportError("Cannot see apriltag", false);
+      return;
     }
   }
 

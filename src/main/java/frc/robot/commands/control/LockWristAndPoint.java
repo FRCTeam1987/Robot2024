@@ -21,6 +21,6 @@ public class LockWristAndPoint extends ParallelCommandGroup {
     // addCommands().
     addCommands(
         new PointAtAprilTag(drivetrain, Constants.LIMELIGHT, Constants.LIMELIGHT_SCORING),
-        new AimLockWrist(wrist, Constants.LIMELIGHT_SCORING));
+        new AimLockWrist(wrist));
   }
 }

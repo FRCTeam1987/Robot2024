@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.LimelightHelpers;
 import frc.robot.constants.Constants;
 
 public class Shooter extends SubsystemBase {
@@ -102,12 +103,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 10;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 35;
   }
 
   public void setupShuffleboard() {
 
-    // SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
+    SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
     // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
     // SHOOTER_TAB.addDouble("SHT Err", () ->
     // SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
@@ -133,4 +134,12 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {}
+
+  public double ShooterCameraDistanceToTarget(double targetHeight) {
+    return LimelightHelpers.calculateDistanceToTarget(
+        LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
+        Constants.SHOOTER_LIMELIGHT_HEIGHT,
+        targetHeight,
+        Constants.SHOOTER_LIMELIGHT_ANGLE);
+  }
 }

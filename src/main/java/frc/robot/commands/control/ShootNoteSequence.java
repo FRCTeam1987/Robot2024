@@ -36,7 +36,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             wrist),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
-        new WaitCommand(0.5), // Time for writst to get to position
+        new WaitCommand(0.2), // Time for writst to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
@@ -55,7 +55,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
               shooter.stopShooter();
             },
             shooter),
-        new WaitCommand(0.1),
-        new InstantCommand(() -> wrist.goHome(), wrist));
+        new WaitCommand(0.1));
+    // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 }
