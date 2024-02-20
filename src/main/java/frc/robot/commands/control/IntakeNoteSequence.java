@@ -43,6 +43,6 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             },
             shooter,
             intake),
-        new InstantCommand(() -> wrist.setRotationsDEPRECATED(0), wrist));
+        new InstantCommand(() -> wrist.goHome(), wrist));
   }
 }

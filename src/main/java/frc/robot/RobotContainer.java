@@ -25,6 +25,7 @@ import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.LockWristAndPoint;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
+import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
@@ -192,6 +193,7 @@ public class RobotContainer {
     LIMELIGHT_TAB.add(
         "Drive To Note", new DriveToNote(DRIVETRAIN, () -> -driverController.getLeftY()));
     LIMELIGHT_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN));
+    LIMELIGHT_TAB.add("Collect Note Auto", new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST));
 
     // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring,
     // "ts"));

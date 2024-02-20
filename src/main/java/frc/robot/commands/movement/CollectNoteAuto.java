@@ -14,12 +14,21 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
+import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.wrist.Wrist;
 
-public class DriveToNoteAuto extends Command {
+public class CollectNoteAuto extends Command {
   /** Creates a new DriveToPiece. */
   private final Drivetrain drivetrain;
+
+  private final Shooter shooter;
+  private final Intake intake;
+  private final Wrist wrist;
+  private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
 
   private static final String limelight = "limelight-intake";
 
@@ -47,8 +56,12 @@ public class DriveToNoteAuto extends Command {
   // TODO find correct value and change name  public DriveToNoteAuto(final CommandSwerveDrivetrain
   // drivetrain) {
 
-  public DriveToNoteAuto(final Drivetrain drivetrain) {
+  public CollectNoteAuto(
+      final Drivetrain drivetrain, final Shooter shooter, final Intake intake, final Wrist wrist) {
     this.drivetrain = drivetrain;
+    this.shooter = shooter;
+    this.intake = intake;
+    this.wrist = wrist;
 
     // Create the PID controller
     rotationController = new PIDController(kP, kI, kD);
@@ -72,6 +85,7 @@ public class DriveToNoteAuto extends Command {
             Constants.INTAKE_LIMELIGHT_HEIGHT,
             targetHeight,
             Constants.INTAKE_LIMELIGHT_ANGLE);
+    new IntakeNoteSequence(shooter, intake, wrist); // Start intaking immediately
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -124,12 +138,17 @@ public class DriveToNoteAuto extends Command {
       DriverStation.reportWarning("DriveToNote Drove Too Far", false);
       System.out.println("DriveToNote Drove Too Far");
     }
+
+    // Backups such that the command drives too far the motors will still stop
+    shooter.stopFeeder();
+    shooter.stopShooter();
+    intake.stopCollecting();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isDistanceTraveledTooFar();
+    return isDistanceTraveledTooFar() || hasNote.calculate(shooter.isLineBreakBroken());
   }
 
   private double distanceTraveled() {
