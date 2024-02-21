@@ -40,10 +40,6 @@ public class Wrist extends SubsystemBase {
     setupShuffleboard();
   }
 
-  public void setRotationsDEPRECATED(double rots) {
-    WRIST_MOTOR.setControl(new PositionVoltage(rots));
-  }
-
   public void goHome() {
     WRIST_MOTOR.setControl(new PositionVoltage(0));
   }
