@@ -3,6 +3,8 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -34,6 +36,8 @@ public class Intake extends SubsystemBase {
     INTAKE_BOTTOM.getConfigurator().apply(INTAKE_TOP_CFG);
 
     INTAKE_TOP.setInverted(true);
+    INTAKE_TOP.setNeutralMode(NeutralModeValue.Coast);
+    INTAKE_BOTTOM.setNeutralMode(NeutralModeValue.Coast);
     setupShuffleboard();
   }
 
@@ -54,6 +58,10 @@ public class Intake extends SubsystemBase {
   public void stopCollecting() {
     INTAKE_TOP.set(0.0);
     INTAKE_BOTTOM.set(0.0);
+  }
+
+  public void stopTop() {
+    INTAKE_TOP.set(0.0);
   }
 
   public double getRPMTop() {

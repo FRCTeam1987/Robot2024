@@ -102,6 +102,10 @@ public class Shooter extends SubsystemBase {
     return 0.0;
   }
 
+  public double getFeederCurrent() {
+    return  FEEDER_TEMP.getOutputCurrent();
+  }
+
   public boolean isShooterAtSetpoint() {
     return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 35;
   }
@@ -109,6 +113,7 @@ public class Shooter extends SubsystemBase {
   public void setupShuffleboard() {
 
     SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
+    SHOOTER_TAB.addDouble("Feeder Current", this::getFeederCurrent);
     // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
     // SHOOTER_TAB.addDouble("SHT Err", () ->
     // SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
@@ -127,7 +132,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_TAB.add("Stop FD", new InstantCommand(() -> stopFeeder()));
     SHOOTER_TAB.add(
         "Reverse Feeder",
-        new InstantCommand(() -> setFeederVoltage(-6.0), this)
+        new InstantCommand(() -> setFeederVoltage(-10.0), this)
             .andThen(new WaitCommand(2.0))
             .andThen(() -> stopFeeder(), this));
   }

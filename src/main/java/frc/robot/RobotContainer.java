@@ -105,8 +105,8 @@ public class RobotContainer {
                 DRIVETRAIN,
                 Constants.LIMELIGHT,
                 Constants.LIMELIGHT_SCORING,
-                () -> (-driverController.getLeftX() * MaxSpeed),
-                () -> (-driverController.getLeftY() * MaxSpeed)));
+                () -> (driverController.getLeftY() * MaxSpeed),
+                () -> (driverController.getLeftX() * MaxSpeed)));
 
     driverController
         .x()

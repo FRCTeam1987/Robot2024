@@ -8,7 +8,9 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.LimelightHelpers;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -34,6 +36,11 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             },
             shooter,
             intake),
+        new WaitCommand(0.2),
+        new WaitUntilCommand(() -> shooter.getFeederCurrent() > 12),
+        new InstantCommand(() -> {
+          intake.stopTop();
+        }, intake),
         new WaitUntilCommand(
             () -> hasNote.calculate(shooter.isLineBreakBroken())), // probably debounce this
         new InstantCommand(
