@@ -8,9 +8,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -24,16 +21,16 @@ public class Shooter extends SubsystemBase {
 
   private final TalonFX SHOOTER_LEADER;
   private final TalonFX SHOOTER_FOLLOWER;
-  // private final TalonFX FEEDER;
-  private final CANSparkMax FEEDER_TEMP;
+  private final TalonFX FEEDER;
+  // private final CANSparkMax FEEDER_TEMP;
   private final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
   public Shooter(final int SHOOTER_LEAEDER_ID, final int SHOOTER_FOLLOWER_ID, final int FEEDER_ID) {
 
     SHOOTER_LEADER = new TalonFX(SHOOTER_LEAEDER_ID, "rio");
     SHOOTER_FOLLOWER = new TalonFX(SHOOTER_FOLLOWER_ID, "rio");
-    // FEEDER = new TalonFX(FEEDER_ID, "rio");
-    FEEDER_TEMP = new CANSparkMax(Constants.SHOOTER_FEEDER_ID_TEMP, MotorType.kBrushless);
+    FEEDER = new TalonFX(FEEDER_ID, "rio");
+    // FEEDER_TEMP = new CANSparkMax(Constants.SHOOTER_FEEDER_ID_TEMP, MotorType.kBrushless);
     final TalonFXConfiguration SHOOTER_CONFIG = new TalonFXConfiguration();
     SHOOTER_CONFIG.HardwareLimitSwitch.ForwardLimitEnable = false;
     SHOOTER_CONFIG.HardwareLimitSwitch.ReverseLimitEnable = false;
@@ -56,10 +53,10 @@ public class Shooter extends SubsystemBase {
 
     // SHOOTER_FOLLOWER.setControl(new Follower(SHOOTER_LEADER.getDeviceID(), true));
     SHOOTER_FOLLOWER.setInverted(true);
-    // FEEDER.getConfigurator().apply(FEEDER_CFG);
-    // FEEDER.setInverted(true);
-    FEEDER_TEMP.setInverted(true);
-    FEEDER_TEMP.setIdleMode(IdleMode.kBrake);
+    FEEDER.getConfigurator().apply(FEEDER_CFG);
+    FEEDER.setInverted(true);
+    // FEEDER_TEMP.setInverted(true);
+    // FEEDER_TEMP.setIdleMode(IdleMode.kBrake);
 
     setupShuffleboard();
   }
@@ -76,8 +73,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFeederVoltage(double voltage) {
-    // FEEDER.setVoltage(voltage);
-    FEEDER_TEMP.setVoltage(voltage);
+    FEEDER.setVoltage(voltage);
+    // FEEDER_TEMP.setVoltage(voltage);
   }
 
   public void stopShooter() {
@@ -86,7 +83,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void stopFeeder() {
-    FEEDER_TEMP.set(0.0);
+    // FEEDER_TEMP.set(0.0);
+    FEEDER.set(0.0);
   }
 
   public double getRPMLeader() {
@@ -98,12 +96,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getRPMFeeder() {
-    // return FEEDER.getVelocity().getValueAsDouble() * 60;
-    return 0.0;
+    return FEEDER.getVelocity().getValueAsDouble() * 60;
+    // return 0.0;
   }
 
   public double getFeederCurrent() {
-    return  FEEDER_TEMP.getOutputCurrent();
+    // return FEEDER_TEMP.getOutputCurrent();
+    return FEEDER.getSupplyCurrent().getValueAsDouble();
   }
 
   public boolean isShooterAtSetpoint() {
@@ -113,7 +112,7 @@ public class Shooter extends SubsystemBase {
   public void setupShuffleboard() {
 
     SHOOTER_TAB.addDouble("Follow RPM", () -> getRPMFollower());
-    SHOOTER_TAB.addDouble("Feeder Current", this::getFeederCurrent);
+    SHOOTER_TAB.addDouble("Feeder Current", () -> this.getFeederCurrent());
     // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
     // SHOOTER_TAB.addDouble("SHT Err", () ->
     // SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());

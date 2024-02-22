@@ -25,6 +25,7 @@ import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.LockWristAndPoint;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
+import frc.robot.commands.control.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
@@ -46,6 +47,7 @@ public class RobotContainer {
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public static GenericEntry SHOOT_ANGLE;
   public final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("LIMELIGHT");
+  public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController driverController =
@@ -115,7 +117,7 @@ public class RobotContainer {
             new frc.robot.commands.control.ShootNoteSequence(
                 SHOOTER, WRIST, Constants.SHOOTER_RPM, 0));
     driverController
-        .leftTrigger()
+        .rightBumper()
         .onTrue(new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST));
     driverController
         .leftBumper()
@@ -194,6 +196,8 @@ public class RobotContainer {
         "Drive To Note", new DriveToNote(DRIVETRAIN, () -> -driverController.getLeftY()));
     LIMELIGHT_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN));
     LIMELIGHT_TAB.add("Collect Note Auto", new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST));
+
+    SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
 
     // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring,
     // "ts"));
