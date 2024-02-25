@@ -42,7 +42,7 @@ public class AimLockWrist extends Command {
         System.out.println("Calculating for: " + distance);
         double degrees =
             Constants.DISTANCE_WRIST_ANGLE_MAP.getInterpolated(new InterpolatingDouble(distance))
-                .value  - 5.0;
+                .value ;
         // if (degrees < 21 || degrees > 42) {
         //   DriverStation.reportError("WristAim Map Out of Range", false);
         // } else {

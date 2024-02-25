@@ -30,7 +30,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
+              wrist.setDegrees(wristDegrees);
               shooter.setRPMShoot(shootRPM);
             },
             shooter,
@@ -60,7 +60,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 
-    public ShootNoteSequence(Shooter shooter, Wrist wrist, Elevator elevator, double shootRPM, double wristDegrees, double elevatorInches) {
+  public ShootNoteSequence(Shooter shooter, Wrist wrist, double shootRPM) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
@@ -70,13 +70,50 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             () -> {
               wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
               shooter.setRPMShoot(shootRPM);
-              elevator.setLengthInches(elevatorInches);
             },
             shooter,
             wrist),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new WaitCommand(0.2), // Time for writst to get to position
+        new InstantCommand(
+            () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
+            shooter), // Constants.FEEDER_FEEDFWD_VOLTS
+        new WaitUntilCommand(
+            () ->
+                lineBreakDebouncer.calculate(
+                    !shooter.isLineBreakBroken())), // probably debounce this
+        new InstantCommand(
+            () -> {
+              shooter.stopFeeder();
+            },
+            shooter),
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isLineBreakBroken())),
+        new InstantCommand(
+            () -> {
+              shooter.stopShooter();
+            },
+            shooter),
+        new WaitCommand(0.1));
+    // new InstantCommand(() -> wrist.goHome(), wrist));
+  }
+    public ShootNoteSequence(Shooter shooter, Wrist wrist, Elevator elevator, double shootRPM, double wristDegrees, double elevatorInches) {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
+
+    addCommands(
+        new InstantCommand(
+            () -> {
+              wrist.setDegrees(wristDegrees);
+              shooter.setRPMShoot(shootRPM);
+              elevator.setLengthInches(elevatorInches);
+            },
+            shooter,
+            wrist),
+        new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
+        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint() && elevator.isAtSetpoint()),
+        new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS

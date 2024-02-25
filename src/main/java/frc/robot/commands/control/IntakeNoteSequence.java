@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -24,7 +25,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
   private final Debouncer hasNote = new Debouncer(0.00, DebounceType.kRising);
 
   /** Creates a new IntakeNoteSequence. */
-  public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist) {
+  public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -33,6 +34,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
               shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
               wrist.setDegrees(WristConstants.INITIAL_ANGLE_DEGREES);
+              elevator.goHome();
             },
             shooter,
             intake,

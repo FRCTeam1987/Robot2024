@@ -63,7 +63,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void goHome() {
-    WRIST_MOTOR.setControl(new PositionVoltage(0));
+    setDegrees(WristConstants.INITIAL_ANGLE_DEGREES);
   }
 
   public void zeroSensor() {

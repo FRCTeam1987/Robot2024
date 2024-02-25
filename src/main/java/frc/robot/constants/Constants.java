@@ -44,10 +44,10 @@ public class Constants {
       new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
 
   static {
-    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(4.06), new InterpolatingDouble(36.0));
-    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.51), new InterpolatingDouble(37.0));
-    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.004), new InterpolatingDouble(38.5));
-    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(2.519), new InterpolatingDouble(40.0));
-    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(2.09), new InterpolatingDouble(43.0));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(2.26), new InterpolatingDouble(36.0));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(2.67), new InterpolatingDouble(30.5));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.00), new InterpolatingDouble(30.3));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.00), new InterpolatingDouble(30.3));
+    DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.2), new InterpolatingDouble(28.4));
   }
 }

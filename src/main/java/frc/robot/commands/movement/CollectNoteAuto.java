@@ -17,6 +17,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -28,6 +29,7 @@ public class CollectNoteAuto extends Command {
   private final Shooter shooter;
   private final Intake intake;
   private final Wrist wrist;
+  private final Elevator elevator;
   private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
 
   private static final String limelight = "limelight-intake";
@@ -57,11 +59,12 @@ public class CollectNoteAuto extends Command {
   // drivetrain) {
 
   public CollectNoteAuto(
-      final Drivetrain drivetrain, final Shooter shooter, final Intake intake, final Wrist wrist) {
+      final Drivetrain drivetrain, final Shooter shooter, final Intake intake, final Wrist wrist, final Elevator elevator) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.intake = intake;
     this.wrist = wrist;
+    this.elevator = elevator;
 
     // Create the PID controller
     rotationController = new PIDController(kP, kI, kD);
@@ -85,7 +88,7 @@ public class CollectNoteAuto extends Command {
             Constants.INTAKE_LIMELIGHT_HEIGHT,
             targetHeight,
             Constants.INTAKE_LIMELIGHT_ANGLE);
-    new IntakeNoteSequence(shooter, intake, wrist); // Start intaking immediately
+    new IntakeNoteSequence(shooter, intake, wrist, elevator); // Start intaking immediately
   }
 
   // Called every time the scheduler runs while the command is scheduled.
