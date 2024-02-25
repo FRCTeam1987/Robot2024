@@ -14,13 +14,14 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristConstants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeNoteSequence extends SequentialCommandGroup {
 
-  private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
+  private final Debouncer hasNote = new Debouncer(0.00, DebounceType.kRising);
 
   /** Creates a new IntakeNoteSequence. */
   public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist) {
@@ -31,12 +32,13 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             () -> {
               shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
-              // wrist.setDegrees(40);
+              wrist.setDegrees(WristConstants.INITIAL_ANGLE_DEGREES);
             },
             shooter,
-            intake),
-        new WaitCommand(0.2),
-        new WaitUntilCommand(() -> shooter.getFeederCurrent() > 16),
+            intake,
+            wrist),
+        new WaitCommand(0.6),
+        new WaitUntilCommand(() -> (shooter.getFeederCurrent() > 24 || shooter.isLineBreakBroken())),
         new InstantCommand(
             () -> {
               intake.stopTop();
@@ -50,7 +52,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
               intake.stopCollecting();
             },
             shooter,
-            intake),
-        new InstantCommand(() -> wrist.goHome(), wrist));
+            intake));
+        // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 }

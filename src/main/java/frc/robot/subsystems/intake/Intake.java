@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -19,22 +20,34 @@ public class Intake extends SubsystemBase {
     INTAKE_TOP = new TalonFX(INTAKE_OUT_ID, "canfd");
     INTAKE_BOTTOM = new TalonFX(INTAKE_IN_ID, "canfd");
 
-    final Slot0Configs INTAKE_TOP_CFG = new Slot0Configs();
-    INTAKE_TOP_CFG.kP = 0.1;
-    INTAKE_TOP_CFG.kI = 0;
-    INTAKE_TOP_CFG.kD = 0;
-    INTAKE_TOP_CFG.kV = 0.01;
+    final Slot0Configs TOP_SLOT0_CFG = new Slot0Configs();
+    TOP_SLOT0_CFG.kP = 0.1;
+    TOP_SLOT0_CFG.kI = 0;
+    TOP_SLOT0_CFG.kD = 0;
+    TOP_SLOT0_CFG.kV = 0.01;
 
-    final Slot0Configs INTAKE_BOTTOM_CFG = new Slot0Configs();
-    INTAKE_BOTTOM_CFG.kP = 0.1;
-    INTAKE_BOTTOM_CFG.kI = 0;
-    INTAKE_BOTTOM_CFG.kD = 0;
-    INTAKE_BOTTOM_CFG.kV = 0.01;
+    final Slot0Configs BOTTOM_SLOT0_CFG = new Slot0Configs();
+    BOTTOM_SLOT0_CFG.kP = 0.1;
+    BOTTOM_SLOT0_CFG.kI = 0;
+    BOTTOM_SLOT0_CFG.kD = 0;
+    BOTTOM_SLOT0_CFG.kV = 0.01;
 
-    INTAKE_TOP.getConfigurator().apply(INTAKE_BOTTOM_CFG);
-    INTAKE_BOTTOM.getConfigurator().apply(INTAKE_TOP_CFG);
+    final TalonFXConfiguration TOP_CFG = new TalonFXConfiguration();
+    TOP_CFG.Slot0 = TOP_SLOT0_CFG;
+    TOP_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
+    // TOP_CFG.CurrentLimits.StatorCurrentLimit = 45;
+    // TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    INTAKE_TOP.setInverted(true);
+    final TalonFXConfiguration BOTTOM_CFG = new TalonFXConfiguration();
+    TOP_CFG.Slot0 = BOTTOM_SLOT0_CFG;
+    TOP_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
+    // TOP_CFG.CurrentLimits.StatorCurrentLimit = 30;
+    // TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    INTAKE_TOP.getConfigurator().apply(TOP_CFG);
+    INTAKE_BOTTOM.getConfigurator().apply(BOTTOM_CFG);
+
+    INTAKE_TOP.setInverted(false);
     INTAKE_TOP.setNeutralMode(NeutralModeValue.Coast);
     INTAKE_BOTTOM.setNeutralMode(NeutralModeValue.Coast);
     setupShuffleboard();

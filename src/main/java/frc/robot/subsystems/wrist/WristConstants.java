@@ -15,8 +15,8 @@ public class WristConstants {
   public static final double WRIST_MOTION_CRUISE_VELOCITY = 8600;
   public static final double WRIST_MOTION_JERK = 0;
 
-  public static final double WRIST_MIN_DEG = 21;
-  public static final double WRIST_MAX_DEG = 84;
+  public static final double WRIST_MIN_DEG = 13;
+  public static final double WRIST_MAX_DEG = 72;
 
   public static final double WRIST_MAX_ROT = 3;
   public static final double WRIST_MIN_ROT = 0;
@@ -25,4 +25,6 @@ public class WristConstants {
       (WRIST_MAX_ROT - WRIST_MIN_ROT) / (WRIST_MAX_DEG - WRIST_MIN_DEG);
   public static final double CONVERSION_FACTOR_ROTS_TO_DEGREES =
       (WRIST_MAX_DEG - WRIST_MIN_DEG) / (WRIST_MAX_ROT - WRIST_MIN_ROT);
+
+  public static final double INITIAL_ANGLE_DEGREES = 13.0;
 }

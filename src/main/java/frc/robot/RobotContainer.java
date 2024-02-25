@@ -9,6 +9,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.LockWristAndPoint;
+import frc.robot.commands.control.PoopNote;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.control.SpitNote;
@@ -41,11 +44,12 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotContainer {
   private static RobotContainer instance;
-  private double MaxSpeed = 6; // 6 meters per second desired top speed
+  private double MaxSpeed = 5.0; // 6 meters per second desired top speed
   private double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public static GenericEntry SHOOT_ANGLE;
+  public static GenericEntry POOP_RPM;
   public final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("LIMELIGHT");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
@@ -73,18 +77,22 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
   private final SendableChooser<Command> autoChooser;
 
+  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
+  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(4.0);
+
   private void configureBindings() {
     DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
         DRIVETRAIN.applyRequest(
             () ->
                 drive
-                    .withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with
+                    .withVelocityX(translationXSlewRate.calculate(-driverController.getLeftY()) * MaxSpeed) // Drive forward with
                     // negative Y (forward)
-                    .withVelocityY(
-                        -driverController.getLeftX()
+                    .withVelocityY(translationYSlewRate.calculate(
+                        -driverController.getLeftX())
                             * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        -driverController.getRightX()
+                    .withRotationalRate(rotationSlewRate.calculate(
+                        -driverController.getRightX())
                             * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
@@ -143,6 +151,8 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    POOP_RPM = COMMANDS_TAB.add("Poop RPM", 1000).getEntry();
+    COMMANDS_TAB.add("Poop Note", new PoopNote(SHOOTER, POOP_RPM.getDouble(1000)));
     COMMANDS_TAB.add("LockWrist&Point", new LockWristAndPoint(SHOOTER, WRIST, DRIVETRAIN));
     COMMANDS_TAB.addDouble(
         "Distance of Last Shot",
@@ -211,7 +221,7 @@ public class RobotContainer {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     setupShuffleboard();
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST));
+    // WRIST.setDefaultCommand(new AimLockWrist(WRIST));
   }
 
   public static RobotContainer get() {
@@ -227,5 +237,36 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
     // return Commands.print("No autonomous command configured");
+  }
+
+  public static final double DEADBAND = 0.05;
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+
+  /**
+   * Squares the specified value, while preserving the sign. This method is used on all joystick
+   * inputs. This is useful as a non-linear range is more natural for the driver.
+   *
+   * @param value input value
+   * @return square of the value
+   */
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, DEADBAND);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+
+    return value;
   }
 }

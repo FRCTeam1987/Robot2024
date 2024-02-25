@@ -1,10 +1,14 @@
 package frc.robot.subsystems.wrist;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.proto.Wpimath;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -20,21 +24,39 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
     final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
 
-    WRIST_CONFIG.Slot0.kP = WristConstants.WRIST_KP;
+    WRIST_CONFIG.Slot0.kP = 500.0; //WristConstants.WRIST_KP;
     WRIST_CONFIG.Slot0.kI = WristConstants.WRIST_KI;
     WRIST_CONFIG.Slot0.kD = WristConstants.WRIST_KD;
     WRIST_CONFIG.Slot0.kV = WristConstants.WRIST_KV;
+    // WRIST_CONFIG.Slot0.kS = 0.4;
+
+    // final CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs();
+    // currentLimits.SupplyCurrentLimit = 20; // Limit to 1 amps
+    // currentLimits.SupplyCurrentThreshold = 25; // If we exceed 4 amps
+    // currentLimits.SupplyTimeThreshold = 0.2; // For at least 1 second
+    // currentLimits.SupplyCurrentLimitEnable = true; // And enable it
+
+    // currentLimits.StatorCurrentLimit = 20; // Limit stator to 20 amps
+    // currentLimits.StatorCurrentLimitEnable = true; // And enable it
+
+    // WRIST_CONFIG.CurrentLimits = currentLimits;
 
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimit = WristConstants.WRIST_CURRENT_LIMIT;
+    // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimit = WristConstants.WRIST_CURRENT_LIMIT;
+    // WRIST_CONFIG.SupplyCurrentT
+    // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimitEnable  = true;
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    WRIST_CONFIG.MotionMagic.MotionMagicAcceleration = WristConstants.WRIST_MOTION_ACCELERATION;
-    WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity =
-        WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
-    // WRIST_CONFIG.MotionMagic.MotionMagicJerk = WristConstants.WRIST_MOTION_JERK;
+    WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 50;
+        // WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
+    WRIST_CONFIG.MotionMagic.MotionMagicAcceleration = WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity;
+    // WristConstants.WRIST_MOTION_ACCELERATION;
+    // WRIST_CONFIG.MotionMagic.MotionMagicJerk = 10;
+    WRIST_CONFIG.Feedback.SensorToMechanismRatio = (100/10) * (36/18); // 22:1
+    // WristConstants.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
-    WRIST_MOTOR.setPosition(0);
+    WRIST_MOTOR.setPosition(WristConstants.INITIAL_ANGLE_DEGREES / 360.0);
     WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
 
     setupShuffleboard();
@@ -45,7 +67,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void zeroSensor() {
-    WRIST_MOTOR.setPosition(0);
+    WRIST_MOTOR.setPosition(WristConstants.INITIAL_ANGLE_DEGREES / 360.0);
   }
 
   public boolean isAtSetpoint() {
@@ -54,8 +76,11 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getDegrees() {
-    return WRIST_MOTOR.getPosition().getValueAsDouble()
-        * WristConstants.CONVERSION_FACTOR_ROTS_TO_DEGREES;
+    // initial angle irl is 13 degrees
+    // 44 degrees at 1.67 rotations
+    // Reduction is 18T to 36T pulley, 10T to 100T gear
+    return WRIST_MOTOR.getPosition().getValueAsDouble() * 360.0;
+        // * WristConstants.CONVERSION_FACTOR_ROTS_TO_DEGREES;
   }
 
   public void setDegrees(double degrees) {
@@ -63,10 +88,10 @@ public class Wrist extends SubsystemBase {
       System.out.println("Out of Wrist Range!");
       return;
     } else {
-      double arbFF = WristConstants.WRIST_KV * Math.sin(Math.toRadians(90.0 - getDegrees()));
+      double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
       WRIST_MOTOR.setControl(
           new MotionMagicVoltage(
-              (WristConstants.CONVERSION_FACTOR_DEGREES_TO_ROTS * degrees) - 1,
+              degrees / 360.0,
               true,
               arbFF,
               0,
