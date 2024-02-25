@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
 
@@ -57,5 +58,45 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             shooter),
         new WaitCommand(0.1));
     // new InstantCommand(() -> wrist.goHome(), wrist));
+  }
+
+    public ShootNoteSequence(Shooter shooter, Wrist wrist, Elevator elevator, double shootRPM, double wristDegrees, double elevatorInches) {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
+
+    addCommands(
+        new InstantCommand(
+            () -> {
+              wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
+              shooter.setRPMShoot(shootRPM);
+              elevator.setLengthInches(elevatorInches);
+            },
+            shooter,
+            wrist),
+        new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
+        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
+        new WaitCommand(0.2), // Time for writst to get to position
+        new InstantCommand(
+            () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
+            shooter), // Constants.FEEDER_FEEDFWD_VOLTS
+        new WaitUntilCommand(
+            () ->
+                lineBreakDebouncer.calculate(
+                    !shooter.isLineBreakBroken())), // probably debounce this
+        new InstantCommand(
+            () -> {
+              shooter.stopFeeder();
+            },
+            shooter),
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isLineBreakBroken())),
+        new InstantCommand(
+            () -> {
+              shooter.stopShooter();
+              elevator.goHome();
+            },
+            shooter),
+        new WaitCommand(0.1));
+        //new InstantCommand(() -> wrist.goHome(), wrist));
   }
 }

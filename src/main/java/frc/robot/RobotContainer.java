@@ -143,6 +143,7 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    COMMANDS_TAB.add("Subwoofer Shot", new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
     COMMANDS_TAB.add("LockWrist&Point", new LockWristAndPoint(SHOOTER, WRIST, DRIVETRAIN));
     COMMANDS_TAB.addDouble(
         "Distance of Last Shot",
