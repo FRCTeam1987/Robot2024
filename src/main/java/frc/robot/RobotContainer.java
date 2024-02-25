@@ -151,6 +151,7 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    COMMANDS_TAB.add("Subwoofer Shot", new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
     POOP_RPM = COMMANDS_TAB.add("Poop RPM", 1000).getEntry();
     COMMANDS_TAB.add("Poop Note", new PoopNote(SHOOTER, POOP_RPM.getDouble(1000)));
     COMMANDS_TAB.add("LockWrist&Point", new LockWristAndPoint(SHOOTER, WRIST, DRIVETRAIN));

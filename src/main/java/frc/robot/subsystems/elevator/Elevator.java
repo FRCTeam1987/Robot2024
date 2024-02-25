@@ -71,6 +71,9 @@ public class Elevator extends SubsystemBase {
     return ELEVATOR_LEADER.getRotorPosition().getValueAsDouble()
         * ElevatorConstants.CONVERSION_FACTOR_TICKS_TO_INCHES;
   }
+  public void goHome() {
+    setLengthInches(0.0);
+  }
 
   public void coastElevator() {
     ELEVATOR_LEADER.setNeutralMode(NeutralModeValue.Coast);
