@@ -59,7 +59,11 @@ public class CollectNoteAuto extends Command {
   // drivetrain) {
 
   public CollectNoteAuto(
-      final Drivetrain drivetrain, final Shooter shooter, final Intake intake, final Wrist wrist, final Elevator elevator) {
+      final Drivetrain drivetrain,
+      final Shooter shooter,
+      final Intake intake,
+      final Wrist wrist,
+      final Elevator elevator) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.intake = intake;

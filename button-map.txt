@@ -1,0 +1,5 @@
+
+Y - Shoot Note
+Left Bumper - Spin Shooter
+Right Bumper - Collect
+Right Trigger - Lock to Speaker

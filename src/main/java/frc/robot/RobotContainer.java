@@ -7,10 +7,8 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,9 +17,10 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.GoHome;
@@ -77,7 +76,7 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
-  private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
   private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
@@ -88,13 +87,15 @@ public class RobotContainer {
         DRIVETRAIN.applyRequest(
             () ->
                 drive
-                    .withVelocityX(translationXSlewRate.calculate(driverController.getLeftY()) * MaxSpeed) // Drive forward with
+                    .withVelocityX(
+                        translationXSlewRate.calculate(driverController.getLeftY())
+                            * MaxSpeed) // Drive forward with
                     // negative Y (forward)
-                    .withVelocityY(translationYSlewRate.calculate(
-                        driverController.getLeftX())
+                    .withVelocityY(
+                        translationYSlewRate.calculate(driverController.getLeftX())
                             * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(rotationSlewRate.calculate(
-                        -driverController.getRightX())
+                    .withRotationalRate(
+                        rotationSlewRate.calculate(-driverController.getRightX())
                             * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
@@ -112,7 +113,6 @@ public class RobotContainer {
     driverController.back().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
     driverController.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
 
-
     driverController
         .rightTrigger()
         .whileTrue(
@@ -122,7 +122,7 @@ public class RobotContainer {
                 Constants.LIMELIGHT_SCORING,
                 () -> (driverController.getLeftX() * MaxSpeed),
                 () -> (-driverController.getLeftY() * MaxSpeed)));
-    SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry(); 
+    SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
     driverController
         .x()
         .onTrue(
@@ -130,7 +130,8 @@ public class RobotContainer {
                 SHOOTER, WRIST, Constants.SHOOTER_RPM));
     driverController
         .rightBumper()
-        .onTrue(new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
+        .onTrue(
+            new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
     driverController
         .leftBumper()
         .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
@@ -156,7 +157,9 @@ public class RobotContainer {
 
   public void setupShuffleboard() {
 
-    COMMANDS_TAB.add("Subwoofer Shot", new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
+    COMMANDS_TAB.add(
+        "Subwoofer Shot",
+        new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
     POOP_RPM = COMMANDS_TAB.add("Poop RPM", 1000).getEntry();
     COMMANDS_TAB.add("Poop Note", new PoopNote(SHOOTER, POOP_RPM.getDouble(1000)));
     COMMANDS_TAB.add("LockWrist&Point", new LockWristAndPoint(SHOOTER, WRIST, DRIVETRAIN));
@@ -164,7 +167,8 @@ public class RobotContainer {
         "Distance of Last Shot",
         () -> SHOOTER.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT));
     COMMANDS_TAB.add(
-        "IntakeNote", new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
+        "IntakeNote",
+        new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
     COMMANDS_TAB.add("Set Wrist as at Home", new InstantCommand(() -> WRIST.zeroSensor()));
     COMMANDS_TAB.add(
         "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 6000, 0));
@@ -210,25 +214,28 @@ public class RobotContainer {
     LIMELIGHT_TAB.add(
         "Drive To Note", new DriveToNote(DRIVETRAIN, () -> -driverController.getLeftY()));
     LIMELIGHT_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN));
-    LIMELIGHT_TAB.add("Collect Note Auto", new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR));
+    LIMELIGHT_TAB.add(
+        "Collect Note Auto", new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR));
 
     SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
 
     // LIMELIGHT_TAB.addNumber("Skew", () -> limelight.getLimelightNTDouble(limelight_scoring,
     // "ts"));
 
-    //SmartDashboard.putData("Taxi", autoChooser);
-    //SmartDashboard.putData("3 Piece 1", autoChooser);
-    //SmartDashboard.putData("3PieceFar", autoChooser);
+    // SmartDashboard.putData("Taxi", autoChooser);
+    // SmartDashboard.putData("3 Piece 1", autoChooser);
+    // SmartDashboard.putData("3PieceFar", autoChooser);
+    autoChooser.addOption("3 Piece Far", new PathPlannerAuto("3 Piece Far"));
+    autoChooser.addOption("temp", new PathPlannerAuto("temp"));
+    autoChooser.addOption("ampa", new PathPlannerAuto("ampa"));
+    COMMANDS_TAB.add(autoChooser);
   }
 
   public RobotContainer() {
     instance = this;
+    registerNamedCommands();
     setupShuffleboard();
     configureBindings();
-    registerNamedCommands();
-    autoChooser = new SendableChooser<>();
-    autoChooser.addOption("3 Piece Far", new PathPlannerAuto("3 Piece Far"));
 
     WRIST.setDefaultCommand(new AimLockWrist(WRIST));
   }
@@ -241,13 +248,45 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.SHOOTER_RPM, 40));
     NamedCommands.registerCommand(
-        "ShootNoteSubFar", new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 36, 10));
-    NamedCommands.registerCommand("IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
-    //NamedCommands.registerCommand("ResetOdo", new InstantCommand(() -> DRIVETRAIN.seedFieldRelative()));
+        "ShootNoteSubFar",
+        new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 36, 10));
+    NamedCommands.registerCommand(
+        "IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
+    NamedCommands.registerCommand(
+        "PoopStart",
+        new InstantCommand(
+            () -> {
+              SHOOTER.setRPMShoot(750);
+              SHOOTER.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS);
+              INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
+            },
+            SHOOTER,
+            INTAKE));
+    NamedCommands.registerCommand(
+        "PoopStop",
+        new InstantCommand(
+            () -> {
+              SHOOTER.stopShooter();
+              SHOOTER.stopFeeder();
+              INTAKE.stopCollecting();
+            },
+            SHOOTER,
+            INTAKE));
+    // NamedCommands.registerCommand("ResetOdo", new InstantCommand(() ->
+    // DRIVETRAIN.seedFieldRelative()));
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return autoChooser.getSelected().andThen(
+        new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM), SHOOTER)
+            .andThen(new WaitUntilCommand(() -> SHOOTER.isShooterAtSetpoint()))
+            .andThen(new InstantCommand(() -> SHOOTER.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS), SHOOTER))
+            .andThen(new WaitCommand(0.25))
+            .andThen(new InstantCommand(() -> {
+                SHOOTER.stopFeeder();
+                SHOOTER.stopShooter();
+            }, SHOOTER))
+    );
     // return Commands.print("No autonomous command configured");
   }
 

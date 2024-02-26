@@ -4,12 +4,10 @@
 
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -24,6 +22,10 @@ public class Shooter extends SubsystemBase {
   private final TalonFX SHOOTER_LEADER;
   private final TalonFX SHOOTER_FOLLOWER;
   private final TalonFX FEEDER;
+
+  private final VelocityVoltage VOLTAGE_VELOCITY_LEADER;
+  private final VelocityVoltage VOLTAGE_VELOCITY_FOLLOWER;
+
   // private final CANSparkMax FEEDER_TEMP;
   private final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
@@ -36,23 +38,38 @@ public class Shooter extends SubsystemBase {
     final TalonFXConfiguration SHOOTER_CONFIG = new TalonFXConfiguration();
     SHOOTER_CONFIG.HardwareLimitSwitch.ForwardLimitEnable = false;
     SHOOTER_CONFIG.HardwareLimitSwitch.ReverseLimitEnable = false;
-    SHOOTER_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.2;
+    SHOOTER_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.04;
     // SHOOTER_CONFIG.Slot0.kS = 0.22;
     // SHOOTER_CONFIG.Slot0.kV = 0.12;
 
-    SHOOTER_CONFIG.Slot0.kP = 1.7;
-    SHOOTER_CONFIG.Slot0.kI = 0.1;
-    SHOOTER_CONFIG.Slot0.kD = 0;
-    SHOOTER_CONFIG.Slot0.kV = 0.0;
+    SHOOTER_CONFIG.Slot0.kP = 1.0;
+    SHOOTER_CONFIG.Slot0.kI =
+        0.0; // An error of 1 rotation per second increases output by 0.5V every second
+    SHOOTER_CONFIG.Slot0.kD =
+        0.000; // A change of 1 rotation per second squared results in 0.01 volts output
+    SHOOTER_CONFIG.Slot0.kV =
+        0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
+    // Rotation per second
+    SHOOTER_CONFIG.Slot0.kS = 0.05; // Add 0.05 V output to overcome static friction
+    // Peak output of 10 volts
+    SHOOTER_CONFIG.CurrentLimits.StatorCurrentLimit = 35;
+    SHOOTER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
+    SHOOTER_CONFIG.Voltage.PeakForwardVoltage = 10;
+    SHOOTER_CONFIG.Voltage.PeakReverseVoltage = -10;
 
     final TalonFXConfiguration FEEDER_CFG = new TalonFXConfiguration();
     FEEDER_CFG.Slot0.kP = 86.0;
     FEEDER_CFG.Slot0.kI = 1;
     FEEDER_CFG.Slot0.kD = 0;
     FEEDER_CFG.Slot0.kV = 0;
-    //FEEDER_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
+    // FEEDER_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
     FEEDER_CFG.CurrentLimits.StatorCurrentLimit = 35;
     FEEDER_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    VOLTAGE_VELOCITY_LEADER =
+        new VelocityVoltage(0, 0, true, 0, 0, false, false, false).withSlot(0);
+    VOLTAGE_VELOCITY_FOLLOWER =
+        new VelocityVoltage(0, 0, true, 0, 0, false, false, false).withSlot(0);
 
     SHOOTER_LEADER.getConfigurator().apply(SHOOTER_CONFIG);
     SHOOTER_FOLLOWER.getConfigurator().apply(SHOOTER_CONFIG);
@@ -70,10 +87,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMShoot(double RPM) {
-    VelocityVoltage ctrlLeader = new VelocityVoltage(0);
-    VelocityVoltage ctrlFollower = new VelocityVoltage(0);
-    SHOOTER_LEADER.setControl(ctrlLeader.withVelocity(RPM / 60.0));
-    SHOOTER_FOLLOWER.setControl(ctrlFollower.withVelocity((RPM * Constants.SPIN_RATIO) / 60.0));
+    // VelocityVoltage ctrlLeader = new VelocityVoltage(0);
+    // VelocityVoltage ctrlFollower = new VelocityVoltage(0);
+    SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity(RPM / 60.0));
+    SHOOTER_FOLLOWER.setControl(
+        VOLTAGE_VELOCITY_FOLLOWER.withVelocity((RPM * Constants.SPIN_RATIO) / 60.0));
+    // SHOOTER_LEADER.setControl(m_leaderTorqueVelocity.withVelocity(RPM /
+    // 60.0).withFeedForward(1.0));
+    // SHOOTER_FOLLOWER.setControl(m_followerTorqueVelocity.withVelocity((RPM *
+    // Constants.SPIN_RATIO) / 60.0).withFeedForward(1.0));
   }
 
   public boolean isLineBreakBroken() {
@@ -114,7 +136,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 7;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 10;
   }
 
   public void setupShuffleboard() {
@@ -123,8 +145,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_TAB.addDouble("Lead RPM", () -> getRPMLeader());
     SHOOTER_TAB.addDouble("Feeder Current", () -> this.getFeederCurrent());
     // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
-     SHOOTER_TAB.addDouble("SHT Err", () ->
-     SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
+    SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
     // SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
     // SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
 

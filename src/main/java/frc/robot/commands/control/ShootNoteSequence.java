@@ -97,7 +97,14 @@ public class ShootNoteSequence extends SequentialCommandGroup {
         new WaitCommand(0.1));
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
-    public ShootNoteSequence(Shooter shooter, Wrist wrist, Elevator elevator, double shootRPM, double wristDegrees, double elevatorInches) {
+
+  public ShootNoteSequence(
+      Shooter shooter,
+      Wrist wrist,
+      Elevator elevator,
+      double shootRPM,
+      double wristDegrees,
+      double elevatorInches) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
@@ -112,7 +119,8 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             shooter,
             wrist),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
-        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint() && elevator.isAtSetpoint()),
+        new WaitUntilCommand(
+            () -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint() && elevator.isAtSetpoint()),
         new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
@@ -134,6 +142,6 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             },
             shooter),
         new WaitCommand(0.1));
-        //new InstantCommand(() -> wrist.goHome(), wrist));
+    // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 }

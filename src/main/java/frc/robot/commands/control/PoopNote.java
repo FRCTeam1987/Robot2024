@@ -4,8 +4,6 @@
 
 package frc.robot.commands.control;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -15,7 +13,6 @@ import frc.robot.subsystems.shooter.Shooter;
 
 public class PoopNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
-
   public PoopNote(Shooter shooter, double poopRPM) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -30,9 +27,7 @@ public class PoopNote extends SequentialCommandGroup {
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
-        new WaitUntilCommand(
-            () ->
-                    !shooter.isLineBreakBroken()), // probably debounce this
+        new WaitUntilCommand(() -> !shooter.isLineBreakBroken()), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();

@@ -1,14 +1,9 @@
 package frc.robot.subsystems.wrist;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.proto.Wpimath;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -24,7 +19,7 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
     final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
 
-    WRIST_CONFIG.Slot0.kP = 500.0; //WristConstants.WRIST_KP;
+    WRIST_CONFIG.Slot0.kP = 500.0; // WristConstants.WRIST_KP;
     WRIST_CONFIG.Slot0.kI = WristConstants.WRIST_KI;
     WRIST_CONFIG.Slot0.kD = WristConstants.WRIST_KD;
     WRIST_CONFIG.Slot0.kV = WristConstants.WRIST_KV;
@@ -48,11 +43,12 @@ public class Wrist extends SubsystemBase {
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 50;
-        // WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
-    WRIST_CONFIG.MotionMagic.MotionMagicAcceleration = WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity;
+    // WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
+    WRIST_CONFIG.MotionMagic.MotionMagicAcceleration =
+        WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity;
     // WristConstants.WRIST_MOTION_ACCELERATION;
     // WRIST_CONFIG.MotionMagic.MotionMagicJerk = 10;
-    WRIST_CONFIG.Feedback.SensorToMechanismRatio = (100/10) * (36/18); // 22:1
+    WRIST_CONFIG.Feedback.SensorToMechanismRatio = (100 / 10) * (36 / 18); // 22:1
     // WristConstants.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
@@ -80,7 +76,7 @@ public class Wrist extends SubsystemBase {
     // 44 degrees at 1.67 rotations
     // Reduction is 18T to 36T pulley, 10T to 100T gear
     return WRIST_MOTOR.getPosition().getValueAsDouble() * 360.0;
-        // * WristConstants.CONVERSION_FACTOR_ROTS_TO_DEGREES;
+    // * WristConstants.CONVERSION_FACTOR_ROTS_TO_DEGREES;
   }
 
   public void setDegrees(double degrees) {
@@ -90,14 +86,7 @@ public class Wrist extends SubsystemBase {
     } else {
       double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
       WRIST_MOTOR.setControl(
-          new MotionMagicVoltage(
-              degrees / 360.0,
-              true,
-              arbFF,
-              0,
-              false,
-              false,
-              false));
+          new MotionMagicVoltage(degrees / 360.0, true, arbFF, 0, false, false, false));
     }
   }
 

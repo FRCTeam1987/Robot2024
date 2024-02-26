@@ -20,11 +20,10 @@ public class GoHome extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(() -> elevator.goHome()),
-      new InstantCommand(() -> wrist.goHome()),
-      new InstantCommand(() -> shooter.stopShooter()),
-      new InstantCommand(() -> shooter.stopFeeder()),
-      new InstantCommand(() -> intake.stopCollecting())
-      );
+        new InstantCommand(() -> elevator.goHome()),
+        new InstantCommand(() -> wrist.goHome()),
+        new InstantCommand(() -> shooter.stopShooter()),
+        new InstantCommand(() -> shooter.stopFeeder()),
+        new InstantCommand(() -> intake.stopCollecting()));
   }
 }
