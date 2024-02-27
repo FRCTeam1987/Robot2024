@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
     // SHOOTER_CONFIG.Slot0.kS = 0.22;
     // SHOOTER_CONFIG.Slot0.kV = 0.12;
 
-    SHOOTER_CONFIG.Slot0.kP = 1.0;
+    SHOOTER_CONFIG.Slot0.kP = 1.6;
     SHOOTER_CONFIG.Slot0.kI =
         0.0; // An error of 1 rotation per second increases output by 0.5V every second
     SHOOTER_CONFIG.Slot0.kD =
@@ -98,6 +98,17 @@ public class Shooter extends SubsystemBase {
     // Constants.SPIN_RATIO) / 60.0).withFeedForward(1.0));
   }
 
+  public void setRPMShootNoSpin(double RPM) {
+    // VelocityVoltage ctrlLeader = new VelocityVoltage(0);
+    // VelocityVoltage ctrlFollower = new VelocityVoltage(0);
+    SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity(RPM / 60.0));
+    SHOOTER_FOLLOWER.setControl(VOLTAGE_VELOCITY_FOLLOWER.withVelocity(RPM / 60.0));
+    // SHOOTER_LEADER.setControl(m_leaderTorqueVelocity.withVelocity(RPM /
+    // 60.0).withFeedForward(1.0));
+    // SHOOTER_FOLLOWER.setControl(m_followerTorqueVelocity.withVelocity((RPM *
+    // Constants.SPIN_RATIO) / 60.0).withFeedForward(1.0));
+  }
+
   public boolean isLineBreakBroken() {
     return SHOOTER_LEADER.getForwardLimit().asSupplier().get().value == 0;
   }
@@ -136,7 +147,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 10;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 5;
   }
 
   public void setupShuffleboard() {

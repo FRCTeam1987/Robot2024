@@ -15,7 +15,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.subsystems.wrist.WristConstants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -33,7 +32,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             () -> {
               shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
-              wrist.setDegrees(WristConstants.INITIAL_ANGLE_DEGREES);
+              wrist.setDegrees(21); // testing
               elevator.goHome();
             },
             shooter,

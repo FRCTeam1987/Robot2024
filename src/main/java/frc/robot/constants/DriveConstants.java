@@ -46,7 +46,7 @@ public class DriveConstants {
   private static final double kSteerFrictionVoltage = 0.25;
   private static final double kDriveFrictionVoltage = 0.25;
 
-  private static final double kDriveGearRatio = 5.902777777777778;
+  private static final double kDriveGearRatio = 6.75;
   private static final double kSteerGearRatio = 21.428571428571427;
   private static final double kWheelRadiusInches = 2;
   private static final int kPigeonId = 1;

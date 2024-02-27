@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.GoHome;
@@ -156,7 +154,6 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
-
     COMMANDS_TAB.add(
         "Subwoofer Shot",
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
@@ -228,6 +225,7 @@ public class RobotContainer {
     autoChooser.addOption("3 Piece Far", new PathPlannerAuto("3 Piece Far"));
     autoChooser.addOption("temp", new PathPlannerAuto("temp"));
     autoChooser.addOption("ampa", new PathPlannerAuto("ampa"));
+    autoChooser.addOption("sourcea", new PathPlannerAuto("sourcea"));
     COMMANDS_TAB.add(autoChooser);
   }
 
@@ -247,6 +245,9 @@ public class RobotContainer {
   public void registerNamedCommands() {
     NamedCommands.registerCommand(
         "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.SHOOTER_RPM, 40));
+    NamedCommands.registerCommand("ShootNoteAimbot", new ShootNoteSequence(SHOOTER, WRIST, 5200));
+    NamedCommands.registerCommand(
+        "SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(5200)));
     NamedCommands.registerCommand(
         "ShootNoteSubFar",
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 36, 10));
@@ -256,9 +257,10 @@ public class RobotContainer {
         "PoopStart",
         new InstantCommand(
             () -> {
-              SHOOTER.setRPMShoot(750);
-              SHOOTER.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS);
-              INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
+              SHOOTER.setRPMShootNoSpin(850);
+              SHOOTER.setFeederVoltage(7.0);
+              INTAKE.setVolts(-8.0);
+              WRIST.setDegrees(15);
             },
             SHOOTER,
             INTAKE));
@@ -277,16 +279,18 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected().andThen(
-        new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM), SHOOTER)
-            .andThen(new WaitUntilCommand(() -> SHOOTER.isShooterAtSetpoint()))
-            .andThen(new InstantCommand(() -> SHOOTER.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS), SHOOTER))
-            .andThen(new WaitCommand(0.25))
-            .andThen(new InstantCommand(() -> {
-                SHOOTER.stopFeeder();
-                SHOOTER.stopShooter();
-            }, SHOOTER))
-    );
+    return autoChooser.getSelected();
+    // .andThen(
+    //     new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM), SHOOTER)
+    //         .andThen(new WaitUntilCommand(() -> SHOOTER.isShooterAtSetpoint()))
+    //         .andThen(new InstantCommand(() ->
+    // SHOOTER.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS), SHOOTER))
+    //         .andThen(new WaitCommand(0.25))
+    //         .andThen(new InstantCommand(() -> {
+    //             SHOOTER.stopFeeder();
+    //             SHOOTER.stopShooter();
+    //         }, SHOOTER))
+    // );
     // return Commands.print("No autonomous command configured");
   }
 

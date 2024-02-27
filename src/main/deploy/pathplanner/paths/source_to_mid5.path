@@ -1,0 +1,156 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.2487928194348223,
+        "y": 1.5
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.65407500858927,
+        "y": 1.9630138156205834
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.134385676722503,
+        "y": 0.5678265719675102
+      },
+      "prevControl": {
+        "x": 5.31879441380497,
+        "y": 0.5678265719675102
+      },
+      "nextControl": {
+        "x": 7.538893631247557,
+        "y": 0.5678265719675102
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.4,
+        "y": 1.5
+      },
+      "prevControl": {
+        "x": 7.4,
+        "y": 1.1812736271919169
+      },
+      "nextControl": {
+        "x": 7.4,
+        "y": 2.1720474320734664
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.4,
+        "y": 3.63
+      },
+      "prevControl": {
+        "x": 7.4,
+        "y": 2.9924070493265598
+      },
+      "nextControl": {
+        "x": 7.4,
+        "y": 5.357373706590007
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.434023933218042,
+        "y": 2.7083018680350786
+      },
+      "prevControl": {
+        "x": 4.048593863048671,
+        "y": 3.5859986883263337
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 53.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": -50.04164633680637,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 53.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Poop Start",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStart"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake Note",
+      "waypointRelativePos": 2.6,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -33.203607397966316,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "source_side",
+  "previewStartingState": {
+    "rotation": 0.30661530860018277,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
