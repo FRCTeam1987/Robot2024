@@ -119,7 +119,7 @@
     },
     {
       "name": "Intake Note",
-      "waypointRelativePos": 2.6,
+      "waypointRelativePos": 2.9,
       "command": {
         "type": "sequential",
         "data": {

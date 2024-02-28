@@ -226,6 +226,7 @@ public class RobotContainer {
     autoChooser.addOption("temp", new PathPlannerAuto("temp"));
     autoChooser.addOption("ampa", new PathPlannerAuto("ampa"));
     autoChooser.addOption("sourcea", new PathPlannerAuto("sourcea"));
+    autoChooser.addOption("amp_close", new PathPlannerAuto("amp_close"));
     COMMANDS_TAB.add(autoChooser);
   }
 
