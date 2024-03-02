@@ -9,7 +9,7 @@ public class WristConstants {
 
   public static final double WRIST_ALLOWABLE_ERROR = 0.3;
 
-  public static final double WRIST_CURRENT_LIMIT = 35;
+  public static final double WRIST_CURRENT_LIMIT = 25;
 
   public static final double WRIST_MOTION_ACCELERATION = 100;
   public static final double WRIST_MOTION_CRUISE_VELOCITY = 8600;

@@ -20,7 +20,7 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
     final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
 
-    WRIST_CONFIG.Slot0.kP = 500.0; // WristConstants.WRIST_KP;
+    WRIST_CONFIG.Slot0.kP = 250.0; // WristConstants.WRIST_KP; 500
     WRIST_CONFIG.Slot0.kI = WristConstants.WRIST_KI;
     WRIST_CONFIG.Slot0.kD = WristConstants.WRIST_KD;
     WRIST_CONFIG.Slot0.kV = WristConstants.WRIST_KV;
@@ -43,13 +43,13 @@ public class Wrist extends SubsystemBase {
     // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimitEnable  = true;
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 50;
+    WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 15;  // 50
     // WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
     WRIST_CONFIG.MotionMagic.MotionMagicAcceleration =
-        WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity;
+        WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity / 2.0;
     // WristConstants.WRIST_MOTION_ACCELERATION;
     // WRIST_CONFIG.MotionMagic.MotionMagicJerk = 10;
-    WRIST_CONFIG.Feedback.SensorToMechanismRatio = (100 / 10) * (36 / 18); // 22:1
+    WRIST_CONFIG.Feedback.SensorToMechanismRatio = (100.0 / 10.0) * (36.0 / 18.0) * (3.0 / 1.0); // 66:1
     // WristConstants.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
