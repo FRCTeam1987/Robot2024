@@ -13,14 +13,15 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.wrist.Wrist;
 
-public class ShootNote extends SequentialCommandGroup {
+public class ShootAmp extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   private Debouncer lineBreakDebouncer;
 
   private static final double DEBOUNCE_TIME = 0.06;
 
-  public ShootNote(Shooter shooter, Elevator elevator, double shootRPM) {
+  public ShootAmp(Shooter shooter, Elevator elevator, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
@@ -28,16 +29,13 @@ public class ShootNote extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setRPMShoot(shootRPM);
-              if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0) {
-                elevator.setLengthInches(10.0);
-              } else {
-                elevator.setLengthInches(0.0);
-              }
+              shooter.setRPMShoot(500);
+              elevator.setLengthInches(6.2);
+              wrist.setDegrees(25.0 + 90.0);
             },
             shooter),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
-        new WaitUntilCommand(() -> shooter.isShooterAtSetpoint()),
+        new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())),
         new WaitCommand(0.5), // Time for wrist to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),

@@ -147,7 +147,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 5;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 8;
   }
 
   public void setupShuffleboard() {

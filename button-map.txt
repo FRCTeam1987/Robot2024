@@ -1,5 +1,7 @@
-
+A - Brake Drive (While Held)
+B - X Stance Drive (While Held)
+Back - Reset Pose (When Pressed)
+Start - Go Home (When Pressed) (sends all positions to home, stops rollers)
 Y - Shoot Note
-Left Bumper - Spin Shooter
 Right Bumper - Collect
 Right Trigger - Lock to Speaker

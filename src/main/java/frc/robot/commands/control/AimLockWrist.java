@@ -9,15 +9,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.InterpolatingDouble;
 
 public class AimLockWrist extends Command {
   private Wrist wrist;
+  private Shooter shooter;
+  private Elevator elevator;
 
   /** Creates a new AimLockWrist. */
-  public AimLockWrist(Wrist wrist) {
+  public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator) {
+    this.elevator = elevator;
     this.wrist = wrist;
+    this.shooter = shooter;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -40,14 +46,28 @@ public class AimLockWrist extends Command {
                 Constants.SPEAKER_APRILTAG_HEIGHT,
                 Constants.SHOOTER_LIMELIGHT_ANGLE);
         System.out.println("Calculating for: " + distance);
-        double degrees =
-            Constants.DISTANCE_WRIST_ANGLE_MAP.getInterpolated(new InterpolatingDouble(distance))
-                .value;
+        double degrees = 0.0;
+        if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0
+            && elevator.getLengthInches() > 9.0) {
+          degrees =
+              Constants.DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.getInterpolated(
+                      new InterpolatingDouble(distance))
+                  .value;
+          System.out.println("Degrees attempted: " + degrees);
+          wrist.setDegrees(degrees);
+        } else if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) > 2.0) {
+          degrees =
+              Constants.DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.getInterpolated(
+                      new InterpolatingDouble(distance))
+                  .value;
+          System.out.println("Degrees attempted: " + degrees);
+          wrist.setDegrees(degrees);
+        }
+
         // if (degrees < 21 || degrees > 42) {
         //   DriverStation.reportError("WristAim Map Out of Range", false);
         // } else {
-        System.out.println("Degrees attempted: " + degrees);
-        wrist.setDegrees(degrees);
+
         // }
         // } catch (Exception ignored) {
         // }

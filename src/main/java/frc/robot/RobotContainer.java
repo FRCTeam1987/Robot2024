@@ -9,22 +9,24 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.GoHome;
+import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.IntakeNoteSequence;
-import frc.robot.commands.control.LockWristAndPoint;
 import frc.robot.commands.control.PoopNote;
+import frc.robot.commands.control.ReverseIntake;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.control.SpitNote;
@@ -33,6 +35,7 @@ import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.SquareUpToAprilTag;
+import frc.robot.commands.movement.TeleopSwerve;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -43,9 +46,6 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotContainer {
   private static RobotContainer instance;
-  private double MaxSpeed = 5.0; // 6 meters per second desired top speed
-  private double MaxAngularRate =
-      1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public static GenericEntry SHOOT_ANGLE;
   public static GenericEntry POOP_RPM;
@@ -53,7 +53,7 @@ public class RobotContainer {
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandXboxController driverController =
+  private final CommandXboxController DRIVER_CONTROLLER =
       new CommandXboxController(0); // My joystick
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
@@ -67,77 +67,101 @@ public class RobotContainer {
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+          .withDeadband(Constants.MaxSpeed * 0.1)
+          .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
   // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+  private final Telemetry logger = new Telemetry(Constants.MaxSpeed);
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(4.0);
-
   private void configureBindings() {
-    DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
-        DRIVETRAIN.applyRequest(
-            () ->
-                drive
-                    .withVelocityX(
-                        translationXSlewRate.calculate(driverController.getLeftY())
-                            * MaxSpeed) // Drive forward with
-                    // negative Y (forward)
-                    .withVelocityY(
-                        translationYSlewRate.calculate(driverController.getLeftX())
-                            * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        rotationSlewRate.calculate(-driverController.getRightX())
-                            * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            ));
+    DRIVETRAIN.setDefaultCommand(
+        new TeleopSwerve(
+            DRIVETRAIN,
+            () -> -DRIVER_CONTROLLER.getLeftX(),
+            () -> DRIVER_CONTROLLER.getLeftY(),
+            () -> DRIVER_CONTROLLER.getRightX(),
+            () -> 1.0,
+            () -> DRIVER_CONTROLLER.getHID().getPOV(),
+            () -> false));
 
-    driverController.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
-    driverController
+    DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
+    DRIVER_CONTROLLER
         .b()
         .whileTrue(
             DRIVETRAIN.applyRequest(
                 () ->
                     point.withModuleDirection(
                         new Rotation2d(
-                            -driverController.getLeftY(), -driverController.getLeftX()))));
+                            -DRIVER_CONTROLLER.getLeftY(), -DRIVER_CONTROLLER.getLeftX()))));
 
     // reset the field-centric heading on left bumper press
-    driverController.back().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
-    driverController.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
+    DRIVER_CONTROLLER.back().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
+    DRIVER_CONTROLLER.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
 
-    driverController
+    DRIVER_CONTROLLER
         .rightTrigger()
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
                 Constants.LIMELIGHT,
                 Constants.LIMELIGHT_SCORING,
-                () -> (driverController.getLeftX() * MaxSpeed),
-                () -> (-driverController.getLeftY() * MaxSpeed)));
+                () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
+                () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
+                () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
-    driverController
+    DRIVER_CONTROLLER
         .x()
         .onTrue(
-            new frc.robot.commands.control.ShootNoteSequence(
-                SHOOTER, WRIST, Constants.SHOOTER_RPM));
-    driverController
-        .rightBumper()
-        .onTrue(
-            new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
-    driverController
+            new InstantCommand(
+                () -> {
+                  SHOOTER.setRPMShootNoSpin(850);
+                  SHOOTER.setFeederVoltage(7.0);
+                  INTAKE.setVolts(-8.0);
+                  WRIST.setDegrees(15);
+                },
+                SHOOTER,
+                INTAKE));
+    DRIVER_CONTROLLER
+        .x()
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  SHOOTER.stopShooter();
+                  SHOOTER.stopFeeder();
+                  INTAKE.stopCollecting();
+                },
+                SHOOTER,
+                INTAKE));
+    // driverController
+    //     .x()
+    //     .onTrue(
+    //         new frc.robot.commands.control.ShootNoteSequence(
+    //             SHOOTER, WRIST, Constants.SHOOTER_RPM));
+    DRIVER_CONTROLLER
         .leftBumper()
-        .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
+        .onTrue(
+            new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
+                .andThen(
+                    new InstantCommand(
+                            () -> DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0))
+                        .andThen(new WaitCommand(0.7))
+                        .andThen(
+                            new InstantCommand(
+                                () ->
+                                    DRIVER_CONTROLLER
+                                        .getHID()
+                                        .setRumble(RumbleType.kBothRumble, 0.0)))));
+    // driverController
+    //     .leftBumper()
+    //     .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
 
-    driverController.y().onTrue(new ShootNote(SHOOTER, Constants.SHOOTER_RPM));
+    DRIVER_CONTROLLER.rightBumper().onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.SHOOTER_RPM));
     // .andThen(
     //     new InstantCommand(
-    //         () ->
+    //         () ->s
     //             COMMANDS_TAB.addDouble(
     //                 "Distance of Last Shot",
     //                 () ->
@@ -157,9 +181,9 @@ public class RobotContainer {
     COMMANDS_TAB.add(
         "Subwoofer Shot",
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
-    POOP_RPM = COMMANDS_TAB.add("Poop RPM", 1000).getEntry();
-    COMMANDS_TAB.add("Poop Note", new PoopNote(SHOOTER, POOP_RPM.getDouble(1000)));
-    COMMANDS_TAB.add("LockWrist&Point", new LockWristAndPoint(SHOOTER, WRIST, DRIVETRAIN));
+    POOP_RPM = COMMANDS_TAB.add("Poop RPM", 500).getEntry();
+    COMMANDS_TAB.add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
+    COMMANDS_TAB.add("Poop Note", new PoopNote(SHOOTER, POOP_RPM.getDouble(500)));
     COMMANDS_TAB.addDouble(
         "Distance of Last Shot",
         () -> SHOOTER.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT));
@@ -183,8 +207,9 @@ public class RobotContainer {
             DRIVETRAIN,
             Constants.LIMELIGHT,
             Constants.LIMELIGHT_SCORING,
-            () -> (driverController.getLeftX() * MaxSpeed),
-            () -> (driverController.getLeftY() * MaxSpeed)));
+            () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
+            () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
+            () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
     LIMELIGHT_TAB.add(
         "Square Up AprilTag",
         new SquareUpToAprilTag(
@@ -209,7 +234,7 @@ public class RobotContainer {
     //         .andThen(DRIVETRAIN.("Taxi")));
 
     LIMELIGHT_TAB.add(
-        "Drive To Note", new DriveToNote(DRIVETRAIN, () -> -driverController.getLeftY()));
+        "Drive To Note", new DriveToNote(DRIVETRAIN, () -> -DRIVER_CONTROLLER.getLeftY()));
     LIMELIGHT_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN));
     LIMELIGHT_TAB.add(
         "Collect Note Auto", new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR));
@@ -236,7 +261,8 @@ public class RobotContainer {
     setupShuffleboard();
     configureBindings();
 
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST));
+    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
+    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
   }
 
   public static RobotContainer get() {

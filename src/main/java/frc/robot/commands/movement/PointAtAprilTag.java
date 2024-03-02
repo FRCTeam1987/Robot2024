@@ -19,11 +19,12 @@ public class PointAtAprilTag extends Command {
   private String limeLightName;
   private DoubleSupplier velocityXSupplier = () -> 0.0;
   private DoubleSupplier velocityYSupplier = () -> 0.0;
+  private DoubleSupplier rotationSupplier = () -> 0.0;
   private Drivetrain drivetrain;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
 
   public PointAtAprilTag(Drivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
-    this(drivetrain, limelight, limeLightName, () -> 0.0, () -> 0.0);
+    this(drivetrain, limelight, limeLightName, () -> 0.0, () -> 0.0, () -> 0.0);
   }
 
   public PointAtAprilTag(
@@ -31,12 +32,14 @@ public class PointAtAprilTag extends Command {
       LimelightHelpers limelight,
       String limeLightName,
       DoubleSupplier velocityXSupplier,
-      DoubleSupplier velocityYSupplier) {
+      DoubleSupplier velocityYSupplier,
+      DoubleSupplier rotationSupplier) {
     this.drivetrain = drivetrain;
     this.limelight = limelight;
     this.limeLightName = limeLightName;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
+    this.rotationSupplier = rotationSupplier;
   }
 
   @Override
@@ -48,10 +51,6 @@ public class PointAtAprilTag extends Command {
   public void execute() {
 
     System.out.println("Starting Execute");
-    if (!LimelightHelpers.getTV(limeLightName)) {
-      System.out.println("NO TARGET FOUND");
-      return;
-    }
 
     double xOffset = LimelightHelpers.getTX(limeLightName);
 
@@ -62,10 +61,17 @@ public class PointAtAprilTag extends Command {
       rotationRate = 0;
     }
 
+    if (!limelight.getTV(limeLightName)) {
+      rotationRate = rotationSupplier.getAsDouble();
+    }
+
     swerveRequest =
         swerveRequest.withSpeeds(
-            new ChassisSpeeds(
-                velocityXSupplier.getAsDouble(), velocityYSupplier.getAsDouble(), -rotationRate));
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+                velocityXSupplier.getAsDouble(),
+                -velocityYSupplier.getAsDouble(),
+                -rotationRate,
+                drivetrain.getPigeon2().getRotation2d()));
 
     // Apply the request to the drivetrain
     drivetrain.setControl(swerveRequest);

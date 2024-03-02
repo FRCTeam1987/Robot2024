@@ -16,7 +16,7 @@ public class WristConstants {
   public static final double WRIST_MOTION_JERK = 0;
 
   public static final double WRIST_MIN_DEG = 13;
-  public static final double WRIST_MAX_DEG = 72;
+  public static final double WRIST_MAX_DEG = 111;
 
   public static final double WRIST_MAX_ROT = 3;
   public static final double WRIST_MIN_ROT = 0;

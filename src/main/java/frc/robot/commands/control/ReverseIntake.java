@@ -4,12 +4,9 @@
 
 package frc.robot.commands.control;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
@@ -19,35 +16,23 @@ import frc.robot.subsystems.wrist.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeNoteSequence extends SequentialCommandGroup {
-
-  private final Debouncer hasNote = new Debouncer(0.00, DebounceType.kRising);
-
-  /** Creates a new IntakeNoteSequence. */
-  public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator) {
+public class ReverseIntake extends SequentialCommandGroup {
+  /** Creates a new ReverseIntake. */
+  public ReverseIntake(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
-              intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
+              shooter.setFeederVoltage(-Constants.FEEDER_FEEDFWD_VOLTS);
+              intake.setVolts(-Constants.INTAKE_COLLECT_VOLTS);
               wrist.setDegrees(21); // testing
               elevator.goHome();
             },
             shooter,
             intake,
             wrist),
-        new WaitCommand(0.1),
-        new WaitUntilCommand(
-            () -> (shooter.getFeederCurrent() > 30 || shooter.isLineBreakBroken())),
-        new InstantCommand(
-            () -> {
-              intake.stopTop();
-            },
-            intake),
-        new WaitUntilCommand(
-            () -> hasNote.calculate(shooter.isLineBreakBroken())), // probably debounce this
+        new WaitCommand(3.0),
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
@@ -55,6 +40,5 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             },
             shooter,
             intake));
-    // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 }
