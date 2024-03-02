@@ -9,6 +9,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -45,7 +47,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotContainer {
-  private static RobotContainer instance;
+  private static RobotContainer instance;  
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public static GenericEntry SHOOT_ANGLE;
@@ -78,16 +80,35 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(Constants.MaxSpeed);
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
+  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
+  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(4.0);
+
   private void configureBindings() {
-    DRIVETRAIN.setDefaultCommand(
-        new TeleopSwerve(
-            DRIVETRAIN,
-            () -> -DRIVER_CONTROLLER.getLeftX(),
-            () -> DRIVER_CONTROLLER.getLeftY(),
-            () -> DRIVER_CONTROLLER.getRightX(),
-            () -> 1.0,
-            () -> DRIVER_CONTROLLER.getHID().getPOV(),
-            () -> false));
+    DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
+    DRIVETRAIN.applyRequest(
+        () ->
+            drive
+                .withVelocityX(
+                    translationXSlewRate.calculate(-DRIVER_CONTROLLER.getLeftY())
+                        * Constants.MaxSpeed) // Drive forward with
+                // negative Y (forward)
+                .withVelocityY(
+                    translationYSlewRate.calculate(-DRIVER_CONTROLLER.getLeftX())
+                        * Constants.MaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(
+                    rotationSlewRate.calculate(-DRIVER_CONTROLLER.getRightX())
+                        * Constants.MaxAngularRate) // Drive counterclockwise with negative X (left)
+        ));
+    // DRIVETRAIN.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         DRIVETRAIN,
+    //         () -> -DRIVER_CONTROLLER.getLeftX(),
+    //         () -> DRIVER_CONTROLLER.getLeftY(),
+    //         () -> DRIVER_CONTROLLER.getRightX(),
+    //         () -> 1.0,
+    //         () -> DRIVER_CONTROLLER.getHID().getPOV(),
+    //         () -> false));
 
     DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
     DRIVER_CONTROLLER
