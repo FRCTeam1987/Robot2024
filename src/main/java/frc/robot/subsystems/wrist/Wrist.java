@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Wrist extends SubsystemBase {
   private final TalonFX WRIST_MOTOR;
   private final ShuffleboardTab WRIST_TAB = Shuffleboard.getTab("WRIST");
+  private double IncrementValue = 0.0;
 
   // Constructor
   public Wrist(final int wristMotorID) {
@@ -80,6 +81,8 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setDegrees(double degrees) {
+    degrees = degrees + IncrementValue;
+
     if (degrees > WristConstants.WRIST_MAX_DEG || degrees < WristConstants.WRIST_MIN_DEG) {
       System.out.println("Out of Wrist Range!");
       return;
@@ -88,6 +91,15 @@ public class Wrist extends SubsystemBase {
       WRIST_MOTOR.setControl(
           new MotionMagicVoltage(degrees / 360.0, true, arbFF, 0, false, false, false));
     }
+  }
+
+  public void incrementWrist(double IncrementAmount) {
+    IncrementValue = IncrementValue + IncrementAmount;
+    System.out.println("Wrist Increment Value now: " + IncrementValue);
+  }
+
+  public double getIncrementValue() {
+    return IncrementValue;
   }
 
   @Override

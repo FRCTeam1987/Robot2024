@@ -47,14 +47,16 @@ import frc.robot.subsystems.wrist.Wrist;
 public class RobotContainer {
   private static RobotContainer instance;
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
+  public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public static GenericEntry SHOOT_ANGLE;
   public static GenericEntry POOP_RPM;
   public final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("LIMELIGHT");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandXboxController DRIVER_CONTROLLER =
-      new CommandXboxController(0); // My joystick
+  private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
+  private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
+
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
@@ -97,7 +99,6 @@ public class RobotContainer {
                         new Rotation2d(
                             -DRIVER_CONTROLLER.getLeftY(), -DRIVER_CONTROLLER.getLeftX()))));
 
-    // reset the field-centric heading on left bumper press
     DRIVER_CONTROLLER.back().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
     DRIVER_CONTROLLER.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
 
@@ -178,11 +179,48 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    MATCH_TAB.addBoolean("Has Note", () -> SHOOTER.isLineBreakBroken()).withPosition(0, 0);
+    MATCH_TAB
+        .add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR))
+        .withPosition(1, 0);
+    MATCH_TAB
+        .add("Increment Wrist +10 deg", new InstantCommand(() -> WRIST.incrementWrist(10)))
+        .withPosition(1, 1);
+    MATCH_TAB
+        .add("Increment Wrist -10 deg", new InstantCommand(() -> WRIST.incrementWrist(-10)))
+        .withPosition(2, 1);
+    MATCH_TAB
+        .addDouble("Increment Wrist Value", () -> WRIST.getIncrementValue())
+        .withPosition(3, 1);
+    MATCH_TAB
+        .add("Increment Elevator +1 in", new InstantCommand(() -> ELEVATOR.incrementElevator(1)))
+        .withPosition(1, 2);
+    MATCH_TAB
+        .add("Increment Elevator -1 in.", new InstantCommand(() -> ELEVATOR.incrementElevator(-1)))
+        .withPosition(2, 2);
+    MATCH_TAB
+        .addDouble("Increment Elevator Value", () -> ELEVATOR.getIncrementValue())
+        .withPosition(3, 2);
+    MATCH_TAB.add(
+        "InstaSuck",
+        new InstantCommand(
+                () -> {
+                  SHOOTER.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
+                  INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
+                })
+            .andThen(new WaitCommand(0.1))
+            .andThen(
+                new InstantCommand(
+                    () -> {
+                      SHOOTER.stopFeeder();
+                      INTAKE.stopTop();
+                      INTAKE.stopCollecting();
+                    })));
+
     COMMANDS_TAB.add(
         "Subwoofer Shot",
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
     POOP_RPM = COMMANDS_TAB.add("Poop RPM", 500).getEntry();
-    COMMANDS_TAB.add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
     COMMANDS_TAB.add("Poop Note", new PoopNote(SHOOTER, POOP_RPM.getDouble(500)));
     COMMANDS_TAB.addDouble(
         "Distance of Last Shot",

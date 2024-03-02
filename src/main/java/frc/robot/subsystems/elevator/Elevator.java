@@ -23,6 +23,7 @@ public class Elevator extends SubsystemBase {
 
   private final TalonFX ELEVATOR_FOLLOWER;
   private final ShuffleboardTab ELEVATOR_TAB = Shuffleboard.getTab("ELEVATOR");
+  private double IncrementValue = 0.0;
 
   public Elevator(final int ELEVATOR_LEADER_ID, final int ELEVATOR_FOLLOWER_ID) {
     ELEVATOR_LEADER = new TalonFX(ELEVATOR_LEADER_ID, "canfd");
@@ -55,7 +56,8 @@ public class Elevator extends SubsystemBase {
     setupShuffleboard();
   }
 
-  public void setLengthInches(final double LENGTH) {
+  public void setLengthInches(double LENGTH) {
+    LENGTH = LENGTH + IncrementValue;
     if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
         || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
       DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
@@ -65,6 +67,15 @@ public class Elevator extends SubsystemBase {
       ELEVATOR_LEADER.setControl(
           ctrl.withPosition(LENGTH * ElevatorConstants.CONVERSION_FACTOR_INCHES_TO_TICKS));
     }
+  }
+
+  public void incrementElevator(double IncrementAmount) {
+    IncrementValue = IncrementValue + IncrementAmount;
+    System.out.println("Elevator Increment Value now: " + IncrementValue);
+  }
+
+  public double getIncrementValue() {
+    return IncrementValue;
   }
 
   public double getLengthInches() {
