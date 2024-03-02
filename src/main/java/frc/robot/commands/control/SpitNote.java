@@ -4,8 +4,6 @@
 
 package frc.robot.commands.control;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -18,9 +16,6 @@ import frc.robot.subsystems.shooter.Shooter;
 
 public class SpitNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
-  private Debouncer lineBreakDebouncer;
-
-  private static final double DEBOUNCE_TIME = 0.06;
 
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   GenericEntry SpitRPM = SHOOTER_TAB.add("SpitRPM", 900).getEntry();
@@ -28,7 +23,6 @@ public class SpitNote extends SequentialCommandGroup {
   public SpitNote(Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
 
     addCommands(
         new InstantCommand(
