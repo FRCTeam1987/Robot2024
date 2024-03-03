@@ -43,13 +43,14 @@ public class Wrist extends SubsystemBase {
     // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimitEnable  = true;
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 15;  // 50
+    WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 15; // 50
     // WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
     WRIST_CONFIG.MotionMagic.MotionMagicAcceleration =
         WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity / 2.0;
     // WristConstants.WRIST_MOTION_ACCELERATION;
     // WRIST_CONFIG.MotionMagic.MotionMagicJerk = 10;
-    WRIST_CONFIG.Feedback.SensorToMechanismRatio = (100.0 / 10.0) * (36.0 / 18.0) * (3.0 / 1.0); // 66:1
+    WRIST_CONFIG.Feedback.SensorToMechanismRatio =
+        (100.0 / 10.0) * (36.0 / 18.0) * (3.0 / 1.0); // 66:1
     // WristConstants.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);

@@ -9,7 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
+import frc.robot.commands.control.MoveGates;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.IntakeNoteSequence;
@@ -37,17 +37,17 @@ import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.SquareUpToAprilTag;
-import frc.robot.commands.movement.TeleopSwerve;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotContainer {
-  private static RobotContainer instance;  
+  private static RobotContainer instance;
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public static GenericEntry SHOOT_ANGLE;
@@ -62,6 +62,7 @@ public class RobotContainer {
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
+  public final Climber CLIMBER = new Climber(Constants.CLIMB_LEFT, Constants.CLIMB_RIGHT);
   public final Shooter SHOOTER =
       new Shooter(
           Constants.SHOOTER_LEADER_ID, Constants.SHOOTER_FOLLOWER_ID, Constants.SHOOTER_FEEDER_ID);
@@ -86,20 +87,21 @@ public class RobotContainer {
 
   private void configureBindings() {
     DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
-    DRIVETRAIN.applyRequest(
-        () ->
-            drive
-                .withVelocityX(
-                    translationXSlewRate.calculate(-DRIVER_CONTROLLER.getLeftY())
-                        * Constants.MaxSpeed) // Drive forward with
-                // negative Y (forward)
-                .withVelocityY(
-                    translationYSlewRate.calculate(-DRIVER_CONTROLLER.getLeftX())
-                        * Constants.MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(
-                    rotationSlewRate.calculate(-DRIVER_CONTROLLER.getRightX())
-                        * Constants.MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));
+        DRIVETRAIN.applyRequest(
+            () ->
+                drive
+                    .withVelocityX(
+                        translationXSlewRate.calculate(-DRIVER_CONTROLLER.getLeftY())
+                            * Constants.MaxSpeed) // Drive forward with
+                    // negative Y (forward)
+                    .withVelocityY(
+                        translationYSlewRate.calculate(-DRIVER_CONTROLLER.getLeftX())
+                            * Constants.MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(
+                        rotationSlewRate.calculate(-DRIVER_CONTROLLER.getRightX())
+                            * Constants
+                                .MaxAngularRate) // Drive counterclockwise with negative X (left)
+            ));
     // DRIVETRAIN.setDefaultCommand(
     //     new TeleopSwerve(
     //         DRIVETRAIN,
@@ -200,6 +202,8 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
+        COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
     MATCH_TAB.addBoolean("Has Note", () -> SHOOTER.isLineBreakBroken()).withPosition(0, 0);
     MATCH_TAB
         .add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR))

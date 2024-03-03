@@ -29,6 +29,9 @@ public class Constants {
   public static final int ELEVATOR_LEADER_ID = 60;
   public static final int ELEVATOR_FOLLOWER_ID = 61;
 
+  public static final int CLIMB_LEFT = 53;
+  public static final int CLIMB_RIGHT = 54;
+
   public static final int INTAKE_TOP_ID = 51; // front / top most roller
   public static final int INTAKE_BOTTOM_ID = 52; // inside / bottom most roller
 
@@ -45,6 +48,10 @@ public class Constants {
   public static final double SHOOTER_IDLE_RPM = 4000;
   public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500;
   public static final double SPIN_RATIO = 0.75;
+
+  public static final double CLIMBER_NOMINAL_VOLTAGE = 2.5;
+  public static final double CLIMBER_MAINTAIN_VOLTAGE = 0.35;
+  public static final double CLIMBER_CUTOFF_AMPERAGE = 40;
 
   public static final InterpolatingTreeMap<
           InterpolatingDouble,
