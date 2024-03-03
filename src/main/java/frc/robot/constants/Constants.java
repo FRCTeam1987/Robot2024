@@ -40,10 +40,10 @@ public class Constants {
   public static final double FEEDER_SHOOT_VOLTS = 5; // 4
   public static final double FEEDER_RETRACT_VOLTS = -2;
 
-  public static final double SHOOTER_RPM = 5500;
-  public static final double SHOOTER_RPM_CLOSERANGE = 3500;
-  public static final double SHOOTER_IDLE_RPM = 4000;
-  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500;
+  public static final double SHOOTER_RPM = 3500;
+  public static final double SHOOTER_RPM_CLOSERANGE = 3500; //NEEDS to bee smaller
+  public static final double SHOOTER_IDLE_RPM = 2500;
+  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 3250;//NEEDS to bee smaller
   public static final double SPIN_RATIO = 0.75;
 
   public static final InterpolatingTreeMap<
@@ -62,13 +62,13 @@ public class Constants {
     // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(new InterpolatingDouble(0.9), new
     // InterpolatingDouble(36.0));
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(2.0), new InterpolatingDouble(36.0));
+        new InterpolatingDouble(3.58), new InterpolatingDouble(29.0));
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(2.5), new InterpolatingDouble(32.0));
-    DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(3.00), new InterpolatingDouble(29.2));
-    DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(3.5), new InterpolatingDouble(28.425));
+        new InterpolatingDouble(2.986), new InterpolatingDouble(30.5));
+            DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
+        new InterpolatingDouble(2.448), new InterpolatingDouble(33.0));
+            DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
+        new InterpolatingDouble(2.279), new InterpolatingDouble(34.0));
 
     DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(
         new InterpolatingDouble(1.99), new InterpolatingDouble(34.0));
