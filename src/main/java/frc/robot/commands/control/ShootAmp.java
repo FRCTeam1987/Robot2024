@@ -31,10 +31,12 @@ public class ShootAmp extends SequentialCommandGroup {
             () -> {
               shooter.setRPMShoot(500);
               elevator.setLengthInches(6.2);
-              wrist.setDegrees(25.0 + 90.0);
+              // wrist.setDegrees(110.0);  // 25.0 + 90.0
             },
-            shooter),
-        new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
+            shooter,
+            elevator),
+        new WaitCommand(0.5), // reset for isAtSetpoint commands to level out
+        new InstantCommand(() -> wrist.setDegrees(110.0), wrist),
         new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())),
         new WaitCommand(0.5), // Time for wrist to get to position
         new InstantCommand(
@@ -50,12 +52,16 @@ public class ShootAmp extends SequentialCommandGroup {
             },
             shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isLineBreakBroken())),
+        new InstantCommand(() -> wrist.setDegrees(40.0), shooter),
+        new WaitCommand(0.2),
         new InstantCommand(
             () -> {
               shooter.stopShooter();
               elevator.goHome();
+              wrist.setDegrees(25.0);
             },
             shooter,
-            elevator));
+            elevator,
+            wrist));
   }
 }

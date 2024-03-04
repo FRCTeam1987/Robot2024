@@ -29,6 +29,7 @@ import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.PoopNote;
 import frc.robot.commands.control.ReverseIntake;
+import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.control.SpitNote;
@@ -36,7 +37,9 @@ import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
+import frc.robot.commands.movement.ShootTrap;
 import frc.robot.commands.movement.SquareUpToAprilTag;
+import frc.robot.commands.movement.TeleopSwerve;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -83,34 +86,34 @@ public class RobotContainer {
 
   private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
   private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(4.0);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(6.0);
 
   private void configureBindings() {
-    DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
-        DRIVETRAIN.applyRequest(
-            () ->
-                drive
-                    .withVelocityX(
-                        translationXSlewRate.calculate(-DRIVER_CONTROLLER.getLeftY())
-                            * Constants.MaxSpeed) // Drive forward with
-                    // negative Y (forward)
-                    .withVelocityY(
-                        translationYSlewRate.calculate(-DRIVER_CONTROLLER.getLeftX())
-                            * Constants.MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        rotationSlewRate.calculate(-DRIVER_CONTROLLER.getRightX())
-                            * Constants
-                                .MaxAngularRate) // Drive counterclockwise with negative X (left)
-            ));
-    // DRIVETRAIN.setDefaultCommand(
-    //     new TeleopSwerve(
-    //         DRIVETRAIN,
-    //         () -> -DRIVER_CONTROLLER.getLeftX(),
-    //         () -> DRIVER_CONTROLLER.getLeftY(),
-    //         () -> DRIVER_CONTROLLER.getRightX(),
-    //         () -> 1.0,
-    //         () -> DRIVER_CONTROLLER.getHID().getPOV(),
-    //         () -> false));
+    // DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
+    //     DRIVETRAIN.applyRequest(
+    //         () ->
+    //             drive
+    //                 .withVelocityX(
+    //                     translationXSlewRate.calculate(-DRIVER_CONTROLLER.getLeftY())
+    //                         * Constants.MaxSpeed) // Drive forward with
+    //                 // negative Y (forward)
+    //                 .withVelocityY(
+    //                     translationYSlewRate.calculate(-DRIVER_CONTROLLER.getLeftX())
+    //                         * Constants.MaxSpeed) // Drive left with negative X (left)
+    //                 .withRotationalRate(
+    //                     rotationSlewRate.calculate(-DRIVER_CONTROLLER.getRightX())
+    //                         * Constants
+    //                             .MaxAngularRate) // Drive counterclockwise with negative X (left)
+    //         ));
+    DRIVETRAIN.setDefaultCommand(
+        new TeleopSwerve(
+            DRIVETRAIN,
+            () -> -DRIVER_CONTROLLER.getLeftY(), //left right
+            () -> -DRIVER_CONTROLLER.getLeftX(), //Forward Backward
+            () -> DRIVER_CONTROLLER.getRightX(),
+            () -> 1.0,
+            () -> DRIVER_CONTROLLER.getHID().getPOV(),
+            () -> false));
 
     DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
     DRIVER_CONTROLLER
@@ -138,27 +141,7 @@ public class RobotContainer {
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
     DRIVER_CONTROLLER
         .x()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  SHOOTER.setRPMShootNoSpin(850);
-                  SHOOTER.setFeederVoltage(7.0);
-                  INTAKE.setVolts(-8.0);
-                  WRIST.setDegrees(15);
-                },
-                SHOOTER,
-                INTAKE));
-    DRIVER_CONTROLLER
-        .x()
-        .onFalse(
-            new InstantCommand(
-                () -> {
-                  SHOOTER.stopShooter();
-                  SHOOTER.stopFeeder();
-                  INTAKE.stopCollecting();
-                },
-                SHOOTER,
-                INTAKE));
+        .onTrue(new PoopNote(SHOOTER, 500));
     // driverController
     //     .x()
     //     .onTrue(
@@ -183,6 +166,7 @@ public class RobotContainer {
     //     .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
 
     DRIVER_CONTROLLER.rightBumper().onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.SHOOTER_RPM));
+    DRIVER_CONTROLLER.a().onTrue(new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     // .andThen(
     //     new InstantCommand(
     //         () ->s
@@ -242,6 +226,8 @@ public class RobotContainer {
                       INTAKE.stopCollecting();
                     })));
 
+    COMMANDS_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    COMMANDS_TAB.add("Shoot Trap", new ShootTrap(ELEVATOR, WRIST, SHOOTER));
     COMMANDS_TAB.add(
         "Subwoofer Shot",
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
@@ -270,8 +256,8 @@ public class RobotContainer {
             DRIVETRAIN,
             Constants.LIMELIGHT,
             Constants.LIMELIGHT_SCORING,
-            () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
             () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
+            () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
             () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
     LIMELIGHT_TAB.add(
         "Square Up AprilTag",
@@ -324,7 +310,7 @@ public class RobotContainer {
     setupShuffleboard();
     configureBindings();
 
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
+    // WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
   }
 

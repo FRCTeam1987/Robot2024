@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -46,7 +47,7 @@ public class Wrist extends SubsystemBase {
     WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 15; // 50
     // WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
     WRIST_CONFIG.MotionMagic.MotionMagicAcceleration =
-        WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity / 2.0;
+        WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity / 4.0;
     // WristConstants.WRIST_MOTION_ACCELERATION;
     // WRIST_CONFIG.MotionMagic.MotionMagicJerk = 10;
     WRIST_CONFIG.Feedback.SensorToMechanismRatio =
@@ -62,6 +63,14 @@ public class Wrist extends SubsystemBase {
 
   public void goHome() {
     setDegrees(WristConstants.INITIAL_ANGLE_DEGREES);
+  }
+
+  public void setCoast() {
+    WRIST_MOTOR.setNeutralMode(NeutralModeValue.Coast);
+  }
+
+  public void setBrake() {
+    WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void zeroSensor() {
@@ -89,6 +98,8 @@ public class Wrist extends SubsystemBase {
       return;
     } else {
       double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
+      DriverStation.reportWarning("Wrist degrees: " + degrees, false);
+      ;
       WRIST_MOTOR.setControl(
           new MotionMagicVoltage(degrees / 360.0, true, arbFF, 0, false, false, false));
     }
@@ -118,5 +129,7 @@ public class Wrist extends SubsystemBase {
     WRIST_TAB.addDouble("Current Amps", () -> WRIST_MOTOR.getStatorCurrent().getValueAsDouble());
     WRIST_TAB.addDouble("Current volts", () -> WRIST_MOTOR.getMotorVoltage().getValueAsDouble());
     WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
+    WRIST_TAB.add("Set Coast", new InstantCommand(() -> setCoast(), this));
+    WRIST_TAB.add("Set Brake", new InstantCommand(() -> setBrake(), this));
   }
 }

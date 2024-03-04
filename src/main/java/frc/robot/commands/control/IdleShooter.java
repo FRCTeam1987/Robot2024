@@ -32,16 +32,16 @@ public class IdleShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooter.isLineBreakBroken()) {
+    // if (shooter.isLineBreakBroken()) {
       if (debounce.calculate(
           shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0)) {
         shooter.setRPMShoot(Constants.SHOOTER_IDLE_CLOSERANGE_RPM);
       } else {
         shooter.setRPMShoot(Constants.SHOOTER_IDLE_RPM);
       }
-    } else {
-      shooter.stopShooter();
-    }
+    // } else {
+    //   shooter.stopShooter();
+    // }
   }
 
   // Called once the command ends or is interrupted.
