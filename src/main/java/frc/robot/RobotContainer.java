@@ -91,11 +91,11 @@ public class RobotContainer {
     //         () ->
     //             drive
     //                 .withVelocityX(
-    //                     translationXSlewRate.calculate(-DRIVER_CONTROLLER.getLeftY())
+    //                     translationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY())
     //                         * Constants.MaxSpeed) // Drive forward with
     //                 // negative Y (forward)
     //                 .withVelocityY(
-    //                     translationYSlewRate.calculate(-DRIVER_CONTROLLER.getLeftX())
+    //                     translationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX())
     //                         * Constants.MaxSpeed) // Drive left with negative X (left)
     //                 .withRotationalRate(
     //                     rotationSlewRate.calculate(-DRIVER_CONTROLLER.getRightX())
@@ -105,9 +105,9 @@ public class RobotContainer {
     DRIVETRAIN.setDefaultCommand(
         new TeleopSwerve(
             DRIVETRAIN,
-            () -> -DRIVER_CONTROLLER.getLeftY(), //left right
-            () -> -DRIVER_CONTROLLER.getLeftX(), //Forward Backward
-            () -> DRIVER_CONTROLLER.getRightX(),
+            () -> translationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()), // left right
+            () -> translationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()), // Forward Backward
+            () -> rotationSlewRate.calculate(DRIVER_CONTROLLER.getRightX()),
             () -> 1.0,
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
             () -> false));
@@ -122,7 +122,15 @@ public class RobotContainer {
                         new Rotation2d(
                             -DRIVER_CONTROLLER.getLeftY(), -DRIVER_CONTROLLER.getLeftX()))));
 
-    DRIVER_CONTROLLER.back().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
+    DRIVER_CONTROLLER
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  DRIVETRAIN.resetPose(new Pose2d());
+                  System.out.println(DRIVETRAIN.getPose().getRotation());
+                },
+                DRIVETRAIN));
     DRIVER_CONTROLLER.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
 
     DRIVER_CONTROLLER
@@ -136,9 +144,7 @@ public class RobotContainer {
                 () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
-    DRIVER_CONTROLLER
-        .x()
-        .onTrue(new PoopNote(SHOOTER, 500));
+    DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
     // driverController
     //     .x()
     //     .onTrue(
@@ -151,7 +157,7 @@ public class RobotContainer {
                 .andThen(
                     new InstantCommand(
                             () -> DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0))
-                        .andThen(new WaitCommand(0.7))
+                        .andThen(new WaitCommand(0.5))
                         .andThen(
                             new InstantCommand(
                                 () ->
@@ -183,6 +189,18 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    COMMANDS_TAB.addDouble(
+        "MOD 0 TEMP",
+        () -> DRIVETRAIN.getModule(0).getDriveMotor().getDeviceTemp().getValueAsDouble());
+    COMMANDS_TAB.addDouble(
+        "MOD 1 TEMP",
+        () -> DRIVETRAIN.getModule(1).getDriveMotor().getDeviceTemp().getValueAsDouble());
+    COMMANDS_TAB.addDouble(
+        "MOD 2 TEMP",
+        () -> DRIVETRAIN.getModule(2).getDriveMotor().getDeviceTemp().getValueAsDouble());
+    COMMANDS_TAB.addDouble(
+        "MOD 3 TEMP",
+        () -> DRIVETRAIN.getModule(3).getDriveMotor().getDeviceTemp().getValueAsDouble());
     MATCH_TAB.addBoolean("Has Note", () -> SHOOTER.isLineBreakBroken()).withPosition(0, 0);
     MATCH_TAB
         .add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR))
@@ -305,7 +323,7 @@ public class RobotContainer {
     setupShuffleboard();
     configureBindings();
 
-    // WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
+    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
   }
 

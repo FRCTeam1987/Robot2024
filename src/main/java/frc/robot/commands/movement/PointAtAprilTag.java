@@ -4,24 +4,36 @@
 
 package frc.robot.commands.movement;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
   private LimelightHelpers limelight;
 
-  private double kP = 0.08; // TODO: changeme please :)
+  private double kP = 0.14; // TODO: changeme please :)
   private double acceptableError = 1.0; // Degrees within acceptance
   private String limeLightName;
   private DoubleSupplier velocityXSupplier = () -> 0.0;
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
   private Drivetrain drivetrain;
-  private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
+    private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
+  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(6.0);
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(Constants.MaxSpeed * 0.1)
+          .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   public PointAtAprilTag(Drivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
     this(drivetrain, limelight, limeLightName, () -> 0.0, () -> 0.0, () -> 0.0);
@@ -65,17 +77,16 @@ public class PointAtAprilTag extends Command {
       rotationRate = rotationSupplier.getAsDouble();
     }
 
-    swerveRequest =
-        swerveRequest.withSpeeds(
-            ChassisSpeeds.fromFieldRelativeSpeeds(
-                velocityYSupplier.getAsDouble(), //left right
-                velocityXSupplier.getAsDouble(), //Fowawrd Backward
-                -rotationRate,
-                drivetrain.getPigeon2().getRotation2d()
-                ));
 
-    // Apply the request to the drivetrain
-    drivetrain.setControl(swerveRequest);
+    FieldCentric driveRequest =
+        drive
+            .withVelocityX(translationYSlewRate.calculate(velocityYSupplier.getAsDouble())) // Drive forward with
+            // negative Y (forward)
+            .withVelocityY(translationXSlewRate.calculate(velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
+            .withRotationalRate(
+                rotationSlewRate.calculate(-rotationRate)); // Drive counterclockwise with negative X (left)
+
+    drivetrain.setControl(driveRequest);
   }
 
   @Override
@@ -88,8 +99,15 @@ public class PointAtAprilTag extends Command {
   @Override
   public void end(boolean interrupted) {
     System.out.println("Command Finished!");
-    drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
+FieldCentric driveRequest =
+        drive
+            .withVelocityX(0.0) // Drive forward with
+            // negative Y (forward)
+            .withVelocityY(0.0) // Drive left with negative X (left)
+            .withRotationalRate(
+                0.0); // Drive counterclockwise with negative X (left)
 
+    drivetrain.setControl(driveRequest);
     if (interrupted) {}
   }
 }

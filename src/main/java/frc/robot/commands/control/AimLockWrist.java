@@ -4,7 +4,6 @@
 
 package frc.robot.commands.control;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -76,7 +75,7 @@ public class AimLockWrist extends Command {
         wrist.goHome();
       }
     } else {
-      DriverStation.reportError("Cannot see apriltag", false);
+      // DriverStation.reportError("Cannot see apriltag", false);
       return;
     }
   }

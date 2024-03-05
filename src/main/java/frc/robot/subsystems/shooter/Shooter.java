@@ -27,7 +27,6 @@ public class Shooter extends SubsystemBase {
   private final VelocityVoltage VOLTAGE_VELOCITY_FOLLOWER;
   private final double SHOOTER_CONFIG_FEEDFOWARD = 0.15;
 
-
   // private final CANSparkMax FEEDER_TEMP;
   private final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
@@ -45,7 +44,7 @@ public class Shooter extends SubsystemBase {
     // SHOOTER_CONFIG.Slot0.kV = 0.12;
 
     SHOOTER_CONFIG.Slot0.kP = 0.75;
-    SHOOTER_CONFIG.Slot0.kA = 0.74; //acceleration
+    SHOOTER_CONFIG.Slot0.kA = 0.74; // acceleration
     SHOOTER_CONFIG.Slot0.kI =
         0.0; // An error of 1 rotation per second increases output by 0.5V every second
     SHOOTER_CONFIG.Slot0.kD =
@@ -70,9 +69,11 @@ public class Shooter extends SubsystemBase {
     FEEDER_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     VOLTAGE_VELOCITY_LEADER =
-        new VelocityVoltage(0, 0, true, SHOOTER_CONFIG_FEEDFOWARD, 0, false, false, false).withSlot(0);
+        new VelocityVoltage(0, 0, true, SHOOTER_CONFIG_FEEDFOWARD, 0, false, false, false)
+            .withSlot(0);
     VOLTAGE_VELOCITY_FOLLOWER =
-        new VelocityVoltage(0, 0, true, SHOOTER_CONFIG_FEEDFOWARD, 0, false, false, false).withSlot(0);
+        new VelocityVoltage(0, 0, true, SHOOTER_CONFIG_FEEDFOWARD, 0, false, false, false)
+            .withSlot(0);
 
     SHOOTER_LEADER.getConfigurator().apply(SHOOTER_CONFIG);
     SHOOTER_FOLLOWER.getConfigurator().apply(SHOOTER_CONFIG);
@@ -159,7 +160,8 @@ public class Shooter extends SubsystemBase {
     SHOOTER_TAB.addDouble("Feeder Current", () -> this.getFeederCurrent());
     // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
     SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
-    SHOOTER_TAB.addDouble("SHOOTER Current", () -> SHOOTER_LEADER.getStatorCurrent().getValueAsDouble());
+    SHOOTER_TAB.addDouble(
+        "SHOOTER Current", () -> SHOOTER_LEADER.getStatorCurrent().getValueAsDouble());
     // SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
     // SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
 

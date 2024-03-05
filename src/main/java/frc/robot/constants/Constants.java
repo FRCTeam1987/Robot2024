@@ -21,6 +21,9 @@ public class Constants {
   public static final double SHOOTER_LIMELIGHT_HEIGHT = 0.13; // In meters
   public static final double SHOOTER_LIMELIGHT_ANGLE = 35; // In degrees
 
+  public static final int CLIMBER_RIGHT_ID = 57;
+  public static final int CLIMBER_LEFT_ID = 58;
+
   public static final int SHOOTER_LEADER_ID = 56;
   public static final int SHOOTER_FOLLOWER_ID = 53;
   public static final int SHOOTER_FEEDER_ID = 55;
@@ -41,9 +44,9 @@ public class Constants {
   public static final double FEEDER_RETRACT_VOLTS = -2;
 
   public static final double SHOOTER_RPM = 3500;
-  public static final double SHOOTER_RPM_CLOSERANGE = 3500; //NEEDS to bee smaller
+  public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to bee smaller
   public static final double SHOOTER_IDLE_RPM = 2500;
-  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 3250;//NEEDS to bee smaller
+  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 3250; // NEEDS to bee smaller
   public static final double SPIN_RATIO = 0.75;
 
   public static final InterpolatingTreeMap<
@@ -65,9 +68,9 @@ public class Constants {
         new InterpolatingDouble(3.58), new InterpolatingDouble(29.0));
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
         new InterpolatingDouble(2.986), new InterpolatingDouble(30.5));
-            DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
+    DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
         new InterpolatingDouble(2.448), new InterpolatingDouble(33.0));
-            DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
+    DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
         new InterpolatingDouble(2.279), new InterpolatingDouble(34.0));
 
     DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(

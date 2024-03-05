@@ -152,7 +152,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
   }
 
   public void resetPose(final Pose2d newPose) {
-    DriverStation.reportWarning("===== called ====", false);
     this.seedFieldRelative(newPose);
   }
 

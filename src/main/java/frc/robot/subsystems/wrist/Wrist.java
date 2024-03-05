@@ -5,7 +5,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -98,7 +97,7 @@ public class Wrist extends SubsystemBase {
       return;
     } else {
       double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
-      DriverStation.reportWarning("Wrist degrees: " + degrees, false);
+      // DriverStation.reportWarning("Wrist degrees: " + degrees, false);
       ;
       WRIST_MOTOR.setControl(
           new MotionMagicVoltage(degrees / 360.0, true, arbFF, 0, false, false, false));

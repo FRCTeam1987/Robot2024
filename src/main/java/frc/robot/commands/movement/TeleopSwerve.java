@@ -1,9 +1,10 @@
 package frc.robot.commands.movement;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Util;
@@ -43,9 +44,12 @@ public class TeleopSwerve extends Command {
 
   private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
   private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(3.5);
-  private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
-
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(6.0);
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(Constants.MaxSpeed * 0.1)
+          .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
   public static final double DEADBAND = 0.05;
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = Constants.MaxSpeed;
@@ -100,9 +104,9 @@ public class TeleopSwerve extends Command {
     // invert the controller input and apply the deadband and squaring to make the robot more
     // responsive to small changes in the controller
     double xPercentage =
-        translationXSlewRate.calculate(modifyAxis(-translationXSupplier.getAsDouble()));
+        translationXSlewRate.calculate(modifyAxis(translationXSupplier.getAsDouble()));
     double yPercentage =
-        translationYSlewRate.calculate(modifyAxis(-translationYSupplier.getAsDouble()));
+        translationYSlewRate.calculate(modifyAxis(translationYSupplier.getAsDouble()));
     double rotationPercentage =
         rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
 
@@ -126,16 +130,16 @@ public class TeleopSwerve extends Command {
       useDPad = true;
       switch (mPovDegree.getAsInt()) {
         case 0:
-          setPoint = -90;
+          setPoint = 0;
           break;
         case 90:
-          setPoint = 180;
+          setPoint = -90;
           break;
         case 180:
-          setPoint = 90;
+          setPoint = 180;
           break;
         case 270:
-          setPoint = 0;
+          setPoint = 90;
           break;
         default:
           break;
@@ -153,25 +157,29 @@ public class TeleopSwerve extends Command {
     double yVelocity =
         yPercentage * MAX_VELOCITY_METERS_PER_SECOND * mSpeedMultiplier.getAsDouble();
     double rotationalVelocity = rotationPercentage * MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    FieldCentric driveRequest =
+        drive
+            .withVelocityX(xVelocity) // Drive forward with
+            // negative Y (forward)
+            .withVelocityY(yVelocity) // Drive left with negative X (left)
+            .withRotationalRate(
+                rotationalVelocity); // Drive counterclockwise with negative X (left)
 
-    swerveRequest =
-        swerveRequest.withSpeeds(
-            ChassisSpeeds.fromFieldRelativeSpeeds(
-                xVelocity, yVelocity, rotationalVelocity, drivetrain.getPigeon2().getRotation2d()));
-
-    // Apply the request to the drivetrain
-    drivetrain.setControl(swerveRequest);
+    drivetrain.setControl(driveRequest);
   }
 
   @Override
   public void end(boolean interrupted) {
-    swerveRequest =
-        swerveRequest.withSpeeds(
-            ChassisSpeeds.fromFieldRelativeSpeeds(
-                0.0, 0.0, 0.0, drivetrain.getPigeon2().getRotation2d()));
 
-    // Apply the request to the drivetrain
-    drivetrain.setControl(swerveRequest); // Stop
+
+    FieldCentric driveRequest =
+        drive
+            .withVelocityX(0.0) // Drive forward with
+            // negative Y (forward)
+            .withVelocityY(0.0) // Drive left with negative X (left)
+            .withRotationalRate(0.0); // Drive counterclockwise with negative X (left)
+
+    drivetrain.setControl(driveRequest);
 
     super.end(interrupted);
   }
