@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
+import frc.robot.commands.control.Climb;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.IntakeNoteSequence;
@@ -104,6 +105,7 @@ public class RobotContainer {
   private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(Constants.rotationSlewRate);
 
   private boolean isAmpPrimed = false;
+  private boolean isClimbPrimed = false;
 
   private void configureBindings() {
     // DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -131,6 +133,16 @@ public class RobotContainer {
                 new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST)
                     .andThen(new InstantCommand(() -> isAmpPrimed = true)),
                 () -> isAmpPrimed));
+
+    CO_DRIVER_CONTROLLER
+        .y()
+        .onTrue(
+            new ConditionalCommand(
+                new Climb(ELEVATOR, CLIMBER)
+                    .andThen(new InstantCommand(() -> isClimbPrimed = false)),
+                new InstantCommand(() -> ELEVATOR.setLengthInches(Constants.ELEVATOR_TRAP_HEIGHT))
+                    .andThen(new InstantCommand(() -> isClimbPrimed = true)),
+                () -> isClimbPrimed));
 
     DRIVETRAIN.setDefaultCommand(
         new TeleopSwerve(
@@ -226,8 +238,8 @@ public class RobotContainer {
     SHOOTER_TAB.add("Brake Wrist", new InstantCommand(() -> WRIST.brake()));
     COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
     COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
-    MATCH_TAB.addBoolean("Center LineBreak", () -> SHOOTER.isCenterBroken()).withPosition(0, 0);
-    MATCH_TAB.addBoolean("Rear LineBreak", () -> SHOOTER.isRearBroken()).withPosition(0, 0);
+    MATCH_TAB.addBoolean("Center LineBreak", () -> SHOOTER.isCenterBroken()).withPosition(0, 1);
+    MATCH_TAB.addBoolean("Rear LineBreak", () -> SHOOTER.isRearBroken()).withPosition(0, 2);
     MATCH_TAB
         .add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR))
         .withPosition(1, 0);
@@ -249,21 +261,33 @@ public class RobotContainer {
     MATCH_TAB
         .addDouble("Increment Elevator Value", () -> ELEVATOR.getIncrementValue())
         .withPosition(3, 2);
-    MATCH_TAB.add(
-        "InstaSuck",
-        new InstantCommand(
-                () -> {
-                  SHOOTER.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
-                  INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
-                })
-            .andThen(new WaitCommand(0.1))
-            .andThen(
-                new InstantCommand(
+    MATCH_TAB
+        .add(
+            "InstaSuck",
+            new InstantCommand(
                     () -> {
-                      SHOOTER.stopFeeder();
-                      INTAKE.stopTop();
-                      INTAKE.stopCollecting();
-                    })));
+                      SHOOTER.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
+                      INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
+                    })
+                .andThen(new WaitCommand(0.1))
+                .andThen(
+                    new InstantCommand(
+                        () -> {
+                          SHOOTER.stopFeeder();
+                          INTAKE.stopTop();
+                          INTAKE.stopCollecting();
+                        })))
+        .withPosition(0, 3);
+    MATCH_TAB
+        .add("Prepare Shoot Amp", new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST))
+        .withPosition(1, 5);
+    MATCH_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST)).withPosition(1, 6);
+    MATCH_TAB
+        .add(
+            "Prep Climb",
+            new InstantCommand(() -> ELEVATOR.setLengthInches(Constants.ELEVATOR_TRAP_HEIGHT)))
+        .withPosition(2, 5);
+    MATCH_TAB.add("Climb", new Climb(ELEVATOR, CLIMBER)).withPosition(2, 6);
 
     COMMANDS_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     COMMANDS_TAB.add("Shoot Trap", new ShootTrap(ELEVATOR, WRIST, SHOOTER));

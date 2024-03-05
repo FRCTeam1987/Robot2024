@@ -9,7 +9,7 @@ Rotate - right joystick
 X - poop
 A - Line up and shoot amp (1 press)
 Dpad - lock cardinal direction
-Y (Home no work) - Climb
 
 Co-driver
 A - 1 deploy shooter and wrist - 1 to shoot note amp 
+Y (Home no work) - Climb

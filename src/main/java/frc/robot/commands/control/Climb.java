@@ -7,9 +7,9 @@ package frc.robot.commands.control;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Util;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -19,7 +19,9 @@ public class Climb extends SequentialCommandGroup {
   /** Creates a new Climb. */
   private Elevator Elevator;
 
-  public Climb(Elevator Elevator) {
+  private Climber Climber;
+
+  public Climb(Elevator Elevator, Climber Climber) {
     this.Elevator = Elevator;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -34,6 +36,7 @@ public class Climb extends SequentialCommandGroup {
             () ->
                 Util.isWithinTolerance(
                     Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_HEIGHT, 3)));
-                    //Climber Subsystem needs to be integrated. 
+    // Climber Subsystem needs to be integrated.
+    new MoveGates(Climber, true);
   }
 }
