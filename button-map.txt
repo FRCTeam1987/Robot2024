@@ -1,7 +1,15 @@
-A - Brake Drive (While Held)
-B - X Stance Drive (While Held)
-Back - Reset Pose (When Pressed)
-Start - Go Home (When Pressed) (sends all positions to home, stops rollers)
-Y - Shoot Note
-Right Bumper - Collect
-Right Trigger - Lock to Speaker
+Left trigger - Aim Intake (source)
+Left bumper - Intake
+Right trigger - aim Speaker (Holding)
+Right bumber - shooter Speaker
+Back - reset Pose
+Start - go home (all systems)
+Drive - left joystick
+Rotate - right joystick
+X - poop
+A - Line up and shoot amp (1 press)
+Dpad - lock cardinal direction
+Home - Climb
+
+Co-driver
+2 new buttons - 1 deploy shooter and wrist - 1 to shoot note amp
