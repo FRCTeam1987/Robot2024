@@ -28,10 +28,12 @@ public class Vision extends SubsystemBase {
   private double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
   // Angle between horizontal and the camera.
   private double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0.1);
+  private String CAMERA_NAME = "";
 
   public Vision(String photonCameraName, double cameraHeightMeters, double cameraAngleDegrees) {
 
     this.camera = new PhotonCamera(photonCameraName);
+    this.CAMERA_NAME = photonCameraName;
     this.CAMERA_HEIGHT_METERS = cameraHeightMeters;
     this.CAMERA_PITCH_RADIANS = Units.degreesToRadians(cameraAngleDegrees);
     // this.camera.setPipelineIndex(Constants.Tape01);
@@ -76,6 +78,26 @@ public class Vision extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public PhotonCamera getCamera() {
+    return camera;
+  }
+
+  public String getCameraName() {
+    return CAMERA_NAME;
+  }
+
+  public double getCameraHeight() {
+    return CAMERA_HEIGHT_METERS;
+  }
+
+  public double getCameraRadians() {
+    return CAMERA_PITCH_RADIANS;
+  }
+
+  public double getCameraDegrees() {
+    return Units.radiansToDegrees(CAMERA_PITCH_RADIANS);
   }
 
   public double getYawVal() {

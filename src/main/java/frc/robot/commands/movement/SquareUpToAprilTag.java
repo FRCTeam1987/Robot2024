@@ -10,7 +10,6 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Util;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 
@@ -53,9 +52,9 @@ public class SquareUpToAprilTag extends Command {
     distanceToTarget =
         Vision.calculateDistanceToTarget(
             photonVision.getPitchVal(),
-            Constants.SPEAKER_PROTON_HEIGHT,
+            photonVision.getCameraHeight(),
             targetHeight,
-            Constants.SPEAKER_PROTON_ANGLE);
+            photonVision.getCameraDegrees());
   }
 
   @Override
@@ -73,9 +72,9 @@ public class SquareUpToAprilTag extends Command {
       distanceToTarget =
           Vision.calculateDistanceToTarget(
               photonVision.getPitchVal(),
-              Constants.SPEAKER_PROTON_HEIGHT,
+              photonVision.getCameraHeight(),
               targetHeight,
-              Constants.SPEAKER_PROTON_ANGLE);
+              photonVision.getCameraDegrees());
 
       if (skew > 70) {
         skew = skew - 90;

@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 
@@ -70,9 +69,9 @@ public class DriveToNoteAuto extends Command {
     distanceToTarget =
         Vision.calculateDistanceToTarget(
             photonVision.getPitchVal(),
-            Constants.INTAKE_PROTON_HEIGHT,
+            photonVision.getCameraHeight(),
             targetHeight,
-            Constants.INTAKE_PROTON_ANGLE);
+            photonVision.getCameraDegrees());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,9 +89,9 @@ public class DriveToNoteAuto extends Command {
     distanceToTarget =
         Vision.calculateDistanceToTarget(
             photonVision.getPitchVal(),
-            Constants.INTAKE_PROTON_HEIGHT,
+            photonVision.getCameraHeight(),
             targetHeight,
-            Constants.INTAKE_PROTON_ANGLE);
+            photonVision.getCameraDegrees());
 
     distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 

@@ -1,6 +1,5 @@
 package frc.robot.constants;
 
-import frc.robot.subsystems.Vision;
 import frc.robot.util.InterpolatingDouble;
 import frc.robot.util.InterpolatingTreeMap;
 
@@ -14,19 +13,6 @@ public class Constants {
   public static final double TRAP_APRILTAG_HEIGHT = 1.23;
   public static final double AMP_APRILTAG_HEIGHT = 0.535;
 
-  public static final double INTAKE_PROTON_HEIGHT = 0.65176; // In meters
-  public static final double INTAKE_PROTON_ANGLE = 60; // In degrees
-  public static final double SPEAKER_PROTON_HEIGHT = 0.30226; // In meters
-  public static final double SPEAKER_PROTON_ANGLE = 130; // In degrees
-  public static final double AMP_PROTON_HEIGHT = 0.35636; // In meters
-  public static final double AMP_PROTON_ANGLE = 130; // In degrees
-  public static final Vision INTAKE_PROTON =
-      new Vision("INTAKE_PROTON", INTAKE_PROTON_HEIGHT, INTAKE_PROTON_ANGLE);
-  public static final Vision SPEAKER_PROTON =
-      new Vision("SPEAKER_PROTON", SPEAKER_PROTON_HEIGHT, SPEAKER_PROTON_ANGLE);
-  public static final Vision AMP_PROTON =
-      new Vision("AMP_PROTON", AMP_PROTON_HEIGHT, AMP_PROTON_ANGLE);
-
   public static final int CLIMBER_RIGHT_ID = 57;
   public static final int CLIMBER_LEFT_ID = 58;
 
@@ -38,6 +24,10 @@ public class Constants {
   public static final int SHOOTER_FOLLOWER_ID = 53;
   public static final int SHOOTER_FEEDER_ID = 55;
   public static final int SHOOTER_FEEDER_ID_TEMP = 10;
+
+  public static final int SHOOTER_AMP_RPM = 500;
+  public static final double ELEVATOR_AMP_HEIGHT = 6.2;
+  public static final double WRIST_AMP_DEGREES = 110.0;
 
   public static final int LEFT_CANDLE = 28;
   public static final int RIGHT_CANDLE = 29;

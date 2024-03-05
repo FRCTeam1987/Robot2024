@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,6 +29,7 @@ import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.commands.control.MoveGates;
 import frc.robot.commands.control.PoopNote;
+import frc.robot.commands.control.PrepareShootAmp;
 import frc.robot.commands.control.ReverseIntake;
 import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootNote;
@@ -43,6 +45,7 @@ import frc.robot.commands.movement.TeleopSwerve;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.candle.Candles;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
@@ -63,6 +66,10 @@ public class RobotContainer {
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
 
+  public final Vision INTAKE_PROTON = new Vision("INTAKE_PROTON", 0.65176, 60);
+  public final Vision SPEAKER_PROTON = new Vision("SPEAKER_PROTON", 0.30226, 130);
+  public final Vision AMP_PROTON = new Vision("AMP_PROTON", 0.35636, 130);
+
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
@@ -71,7 +78,10 @@ public class RobotContainer {
   public final Climber CLIMBER = new Climber(Constants.CLIMB_LEFT, Constants.CLIMB_RIGHT);
   public final Shooter SHOOTER =
       new Shooter(
-          Constants.SHOOTER_LEADER_ID, Constants.SHOOTER_FOLLOWER_ID, Constants.SHOOTER_FEEDER_ID);
+          Constants.SHOOTER_LEADER_ID,
+          Constants.SHOOTER_FOLLOWER_ID,
+          Constants.SHOOTER_FEEDER_ID,
+          SPEAKER_PROTON);
   public final Wrist WRIST = new Wrist(Constants.WRIST_ID);
   public final Elevator ELEVATOR =
       new Elevator(Constants.ELEVATOR_LEADER_ID, Constants.ELEVATOR_FOLLOWER_ID);
@@ -93,6 +103,8 @@ public class RobotContainer {
       new SlewRateLimiter(Constants.translationYSlewRate);
   private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(Constants.rotationSlewRate);
 
+  private boolean isAmpPrimed = false;
+
   private void configureBindings() {
     // DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
     //     DRIVETRAIN.applyRequest(
@@ -110,6 +122,16 @@ public class RobotContainer {
     //                         * Constants
     //                             .MaxAngularRate) // Drive counterclockwise with negative X (left)
     //         ));
+    CO_DRIVER_CONTROLLER
+        .a()
+        .onTrue(
+            new ConditionalCommand(
+                new ShootAmp(SHOOTER, ELEVATOR, WRIST)
+                    .andThen(new InstantCommand(() -> isAmpPrimed = false)),
+                new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST)
+                    .andThen(new InstantCommand(() -> isAmpPrimed = true)),
+                () -> isAmpPrimed));
+
     DRIVETRAIN.setDefaultCommand(
         new TeleopSwerve(
             DRIVETRAIN,
@@ -118,7 +140,7 @@ public class RobotContainer {
             () -> DRIVER_CONTROLLER.getRightX(),
             () -> 1.0,
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
-            () -> DRIVER_CONTROLLER.a().getAsBoolean()));
+            () -> DRIVER_CONTROLLER.leftTrigger().getAsBoolean()));
 
     // DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
     DRIVER_CONTROLLER
@@ -146,10 +168,11 @@ public class RobotContainer {
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
-                Constants.SPEAKER_PROTON,
+                SPEAKER_PROTON,
                 () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
     DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
     // driverController
@@ -260,24 +283,23 @@ public class RobotContainer {
         "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 6000, 0));
     COMMANDS_TAB.add("SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
     COMMANDS_TAB.add("StopShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(0)));
-    PHOTON_TAB.add("Rotate to AprilTag", new PointAtAprilTag(DRIVETRAIN, Constants.SPEAKER_PROTON));
+    PHOTON_TAB.add("Rotate to AprilTag", new PointAtAprilTag(DRIVETRAIN, SPEAKER_PROTON));
     PHOTON_TAB.addDouble("Current Heading", () -> DRIVETRAIN.getPose().getRotation().getDegrees());
     PHOTON_TAB.addDouble("Current poseX", () -> DRIVETRAIN.getPose().getX());
     COMMANDS_TAB.add(
         "Driving Rotate to AprilTag",
         new PointAtAprilTag(
             DRIVETRAIN,
-            Constants.SPEAKER_PROTON,
+            SPEAKER_PROTON,
             () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
             () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
             () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
     PHOTON_TAB.add(
         "Square Up AprilTag",
-        new SquareUpToAprilTag(
-            DRIVETRAIN, Constants.SPEAKER_PROTON, Constants.SPEAKER_APRILTAG_HEIGHT));
+        new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_PROTON, Constants.SPEAKER_APRILTAG_HEIGHT));
     PHOTON_TAB.add(
         "Climb Test",
-        new SquareUpToAprilTag(DRIVETRAIN, Constants.SPEAKER_PROTON, Constants.TRAP_APRILTAG_HEIGHT)
+        new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_PROTON, Constants.TRAP_APRILTAG_HEIGHT)
         // .andThen(
         //     new InstantCommand(
         //             () ->
@@ -295,11 +317,11 @@ public class RobotContainer {
 
     PHOTON_TAB.add(
         "Drive To Note",
-        new DriveToNote(DRIVETRAIN, () -> -DRIVER_CONTROLLER.getLeftY(), Constants.INTAKE_PROTON));
-    PHOTON_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN, Constants.INTAKE_PROTON));
+        new DriveToNote(DRIVETRAIN, () -> -DRIVER_CONTROLLER.getLeftY(), INTAKE_PROTON));
+    PHOTON_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN, INTAKE_PROTON));
     PHOTON_TAB.add(
         "Collect Note Auto",
-        new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR, Constants.INTAKE_PROTON));
+        new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR, INTAKE_PROTON));
 
     SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
 
@@ -324,7 +346,7 @@ public class RobotContainer {
     setupShuffleboard();
     configureBindings();
 
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
+    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_PROTON));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
   }
 

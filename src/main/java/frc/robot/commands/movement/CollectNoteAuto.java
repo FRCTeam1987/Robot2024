@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.control.IntakeNoteSequence;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.elevator.Elevator;
@@ -91,9 +90,9 @@ public class CollectNoteAuto extends Command {
     distanceToTarget =
         Vision.calculateDistanceToTarget(
             photonVision.getPitchVal(),
-            Constants.INTAKE_PROTON_HEIGHT,
+            photonVision.getCameraHeight(),
             targetHeight,
-            Constants.INTAKE_PROTON_ANGLE);
+            photonVision.getCameraDegrees());
     new IntakeNoteSequence(shooter, intake, wrist, elevator); // Start intaking immediately
   }
 
@@ -112,9 +111,9 @@ public class CollectNoteAuto extends Command {
     distanceToTarget =
         Vision.calculateDistanceToTarget(
             photonVision.getPitchVal(),
-            Constants.INTAKE_PROTON_HEIGHT,
+            photonVision.getCameraHeight(),
             targetHeight,
-            Constants.INTAKE_PROTON_ANGLE);
+            photonVision.getCameraDegrees());
 
     distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 
