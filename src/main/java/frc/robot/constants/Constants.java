@@ -29,6 +29,9 @@ public class Constants {
   public static final double ELEVATOR_AMP_HEIGHT = 6.2;
   public static final double WRIST_AMP_DEGREES = 110.0;
 
+  public static final double ELEVATOR_TRAP_HEIGHT = 15.0;
+  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 5.0;
+
   public static final int LEFT_CANDLE = 28;
   public static final int RIGHT_CANDLE = 29;
 
