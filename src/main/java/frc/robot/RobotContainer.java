@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
+import frc.robot.commands.control.AutoClimb;
 import frc.robot.commands.control.Climb;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
@@ -168,7 +169,9 @@ public class RobotContainer {
 
     DRIVER_CONTROLLER
         .a()
-        .whileTrue(new squareUpAndShootAmp(AMP_PROTON, DRIVETRAIN, WRIST, ELEVATOR, SHOOTER)); //MUST BE HELDx
+        .whileTrue(
+            new squareUpAndShootAmp(
+                AMP_PROTON, DRIVETRAIN, WRIST, ELEVATOR, SHOOTER)); // MUST BE HELD
     DRIVER_CONTROLLER
         .b()
         .whileTrue(
@@ -252,6 +255,7 @@ public class RobotContainer {
     SHOOTER_TAB.add("Brake Wrist", new InstantCommand(() -> WRIST.brake()));
     COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
     COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
+    COMMANDS_TAB.add("Auto Climb", new AutoClimb(ELEVATOR, CLIMBER, SPEAKER_PROTON, DRIVETRAIN));
     MATCH_TAB.addBoolean("Center LineBreak", () -> SHOOTER.isCenterBroken()).withPosition(0, 1);
     MATCH_TAB.addBoolean("Rear LineBreak", () -> SHOOTER.isRearBroken()).withPosition(0, 2);
     MATCH_TAB
