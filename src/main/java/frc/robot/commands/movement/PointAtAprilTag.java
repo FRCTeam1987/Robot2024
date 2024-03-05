@@ -7,48 +7,50 @@ package frc.robot.commands.movement;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
+
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
-  private LimelightHelpers limelight;
+  private LimelightHelpers photonvision;
 
   private double kP = 0.14; // TODO: changeme please :)
   private double acceptableError = 1.0; // Degrees within acceptance
-  private String limeLightName;
+  private String photonName;
   private DoubleSupplier velocityXSupplier = () -> 0.0;
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
   private Drivetrain drivetrain;
-    private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(6.0);
+  private final SlewRateLimiter translationXSlewRate =
+      new SlewRateLimiter(Constants.translationXSlewRate);
+  private final SlewRateLimiter translationYSlewRate =
+      new SlewRateLimiter(Constants.translationYSlewRate);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(Constants.rotationSlewRate);
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(Constants.MaxSpeed * 0.1)
           .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
-  public PointAtAprilTag(Drivetrain drivetrain, LimelightHelpers limelight, String limeLightName) {
-    this(drivetrain, limelight, limeLightName, () -> 0.0, () -> 0.0, () -> 0.0);
+  public PointAtAprilTag(Drivetrain drivetrain, LimelightHelpers photonvision, String photonName) {
+    this(drivetrain, photonvision, photonName, () -> 0.0, () -> 0.0, () -> 0.0);
   }
 
   public PointAtAprilTag(
       Drivetrain drivetrain,
-      LimelightHelpers limelight,
-      String limeLightName,
+      LimelightHelpers photonvision,
+      String photonName,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier) {
     this.drivetrain = drivetrain;
-    this.limelight = limelight;
-    this.limeLightName = limeLightName;
+    this.photonvision = photonvision;
+    this.photonName = photonName;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
@@ -64,7 +66,7 @@ public class PointAtAprilTag extends Command {
 
     System.out.println("Starting Execute");
 
-    double xOffset = LimelightHelpers.getTX(limeLightName);
+    double xOffset = LimelightHelpers.getTX(photonName);
 
     double rotationRate = kP * xOffset;
     System.out.println(rotationRate);
@@ -73,17 +75,22 @@ public class PointAtAprilTag extends Command {
       rotationRate = 0;
     }
 
-    if (!limelight.getTV(limeLightName)) {
+    if (!photonvision.getTV(photonName)) {
       rotationRate = rotationSupplier.getAsDouble();
     }
 
     FieldCentric driveRequest =
         drive
-            .withVelocityX(translationYSlewRate.calculate(velocityYSupplier.getAsDouble())) // Drive forward with
+            .withVelocityX(
+                translationYSlewRate.calculate(
+                    velocityYSupplier.getAsDouble())) // Drive forward with
             // negative Y (forward)
-            .withVelocityY(translationXSlewRate.calculate(velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
+            .withVelocityY(
+                translationXSlewRate.calculate(
+                    velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
             .withRotationalRate(
-                rotationSlewRate.calculate(-rotationRate)); // Drive counterclockwise with negative X (left)
+                rotationSlewRate.calculate(
+                    -rotationRate)); // Drive counterclockwise with negative X (left)
 
     drivetrain.setControl(driveRequest);
   }
@@ -98,13 +105,12 @@ public class PointAtAprilTag extends Command {
   @Override
   public void end(boolean interrupted) {
     System.out.println("Command Finished!");
-FieldCentric driveRequest =
+    FieldCentric driveRequest =
         drive
             .withVelocityX(0.0) // Drive forward with
             // negative Y (forward)
             .withVelocityY(0.0) // Drive left with negative X (left)
-            .withRotationalRate(
-                0.0); // Drive counterclockwise with negative X (left)
+            .withRotationalRate(0.0); // Drive counterclockwise with negative X (left)
 
     drivetrain.setControl(driveRequest);
     if (interrupted) {}

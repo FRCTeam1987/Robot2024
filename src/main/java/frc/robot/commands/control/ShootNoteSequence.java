@@ -43,8 +43,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
-                lineBreakDebouncer.calculate(
-                    !shooter.isCenterBroken())), // probably debounce this
+                lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
@@ -81,8 +80,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
-                lineBreakDebouncer.calculate(
-                    !shooter.isCenterBroken())), // probably debounce this
+                lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
@@ -127,8 +125,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
-                lineBreakDebouncer.calculate(
-                    !shooter.isCenterBroken())), // probably debounce this
+                lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();

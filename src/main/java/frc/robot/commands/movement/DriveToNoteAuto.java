@@ -69,9 +69,9 @@ public class DriveToNoteAuto extends Command {
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
             LimelightHelpers.getTY(limelight),
-            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
-            Constants.INTAKE_LIMELIGHT_ANGLE);
+            Constants.INTAKE_PROTON_ANGLE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -90,9 +90,9 @@ public class DriveToNoteAuto extends Command {
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
             LimelightHelpers.getTY(limelight),
-            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
-            Constants.INTAKE_LIMELIGHT_ANGLE);
+            Constants.INTAKE_PROTON_ANGLE);
 
     distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 

@@ -42,9 +42,11 @@ public class TeleopSwerve extends Command {
   private final DoubleSupplier translationYSupplier;
   private final DoubleSupplier rotationSupplier;
 
-  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(6.0);
+  private final SlewRateLimiter translationXSlewRate =
+      new SlewRateLimiter(Constants.translationXSlewRate);
+  private final SlewRateLimiter translationYSlewRate =
+      new SlewRateLimiter(Constants.translationYSlewRate);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(Constants.rotationSlewRate);
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(Constants.MaxSpeed * 0.1)
@@ -170,7 +172,6 @@ public class TeleopSwerve extends Command {
 
   @Override
   public void end(boolean interrupted) {
-
 
     FieldCentric driveRequest =
         drive

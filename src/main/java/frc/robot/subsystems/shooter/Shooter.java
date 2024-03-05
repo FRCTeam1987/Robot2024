@@ -120,7 +120,7 @@ public class Shooter extends SubsystemBase {
   public boolean isRearBroken() {
     return SHOOTER_LEADER.getReverseLimit().asSupplier().get().value == 0;
   }
-  
+
   public void setFeederVoltage(double voltage) {
     FEEDER.setVoltage(voltage);
     // FEEDER_TEMP.setVoltage(voltage);
@@ -192,8 +192,8 @@ public class Shooter extends SubsystemBase {
   public double ShooterCameraDistanceToTarget(double targetHeight) {
     return LimelightHelpers.calculateDistanceToTarget(
         LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
-        Constants.SHOOTER_LIMELIGHT_HEIGHT,
+        Constants.SPEAKER_PROTON_HEIGHT,
         targetHeight,
-        Constants.SHOOTER_LIMELIGHT_ANGLE);
+        Constants.SPEAKER_PROTON_ANGLE);
   }
 }

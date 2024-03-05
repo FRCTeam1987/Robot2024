@@ -89,9 +89,9 @@ public class CollectNoteAuto extends Command {
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
             LimelightHelpers.getTY(limelight),
-            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
-            Constants.INTAKE_LIMELIGHT_ANGLE);
+            Constants.INTAKE_PROTON_ANGLE);
     new IntakeNoteSequence(shooter, intake, wrist, elevator); // Start intaking immediately
   }
 
@@ -111,9 +111,9 @@ public class CollectNoteAuto extends Command {
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
             LimelightHelpers.getTY(limelight),
-            Constants.INTAKE_LIMELIGHT_HEIGHT,
+            Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
-            Constants.INTAKE_LIMELIGHT_ANGLE);
+            Constants.INTAKE_PROTON_ANGLE);
 
     distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 

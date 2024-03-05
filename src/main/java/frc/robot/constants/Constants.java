@@ -16,13 +16,19 @@ public class Constants {
   public static final double TRAP_APRILTAG_HEIGHT = 1.23;
   public static final double AMP_APRILTAG_HEIGHT = 0.535;
 
-  public static final double INTAKE_LIMELIGHT_HEIGHT = 0.42; // In meters
-  public static final double INTAKE_LIMELIGHT_ANGLE = -13; // In degrees
-  public static final double SHOOTER_LIMELIGHT_HEIGHT = 0.13; // In meters
-  public static final double SHOOTER_LIMELIGHT_ANGLE = 35; // In degrees
+  public static final double INTAKE_PROTON_HEIGHT = 0.65176; // In meters
+  public static final double INTAKE_PROTON_ANGLE = 60; // In degrees
+  public static final double SPEAKER_PROTON_HEIGHT = 0.30226; // In meters
+  public static final double SPEAKER_PROTON_ANGLE = 130; // In degrees
+  public static final double AMP_PROTON_HEIGHT = 0.35636; // In meters
+  public static final double AMP_PROTON_ANGLE = 130; // In degrees
 
   public static final int CLIMBER_RIGHT_ID = 57;
   public static final int CLIMBER_LEFT_ID = 58;
+
+  public static final double translationXSlewRate = 4.0;
+  public static final double translationYSlewRate = 4.0;
+  public static final double rotationSlewRate = 8.0;
 
   public static final int SHOOTER_LEADER_ID = 56;
   public static final int SHOOTER_FOLLOWER_ID = 53;

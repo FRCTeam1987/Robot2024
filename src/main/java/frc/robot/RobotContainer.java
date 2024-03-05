@@ -87,9 +87,11 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(Constants.MaxSpeed);
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(4.0);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(6.0);
+  private final SlewRateLimiter translationXSlewRate =
+      new SlewRateLimiter(Constants.translationXSlewRate);
+  private final SlewRateLimiter translationYSlewRate =
+      new SlewRateLimiter(Constants.translationYSlewRate);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(Constants.rotationSlewRate);
 
   private void configureBindings() {
     // DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -118,7 +120,7 @@ public class RobotContainer {
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
             () -> false));
 
-    DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
+    // DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
     DRIVER_CONTROLLER
         .b()
         .whileTrue(
@@ -203,7 +205,7 @@ public class RobotContainer {
     COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
     COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
     MATCH_TAB.addBoolean("Center LineBreak", () -> SHOOTER.isCenterBroken()).withPosition(0, 0);
-        MATCH_TAB.addBoolean("Rear LineBreak", () -> SHOOTER.isRearBroken()).withPosition(0, 0);
+    MATCH_TAB.addBoolean("Rear LineBreak", () -> SHOOTER.isRearBroken()).withPosition(0, 0);
     MATCH_TAB
         .add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR))
         .withPosition(1, 0);

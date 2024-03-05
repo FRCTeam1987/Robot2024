@@ -41,9 +41,9 @@ public class AimLockWrist extends Command {
         double distance =
             LimelightHelpers.calculateDistanceToTarget(
                 LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
-                Constants.SHOOTER_LIMELIGHT_HEIGHT,
+                Constants.SPEAKER_PROTON_HEIGHT,
                 Constants.SPEAKER_APRILTAG_HEIGHT,
-                Constants.SHOOTER_LIMELIGHT_ANGLE);
+                Constants.SPEAKER_PROTON_ANGLE);
         System.out.println("Calculating for: " + distance);
         double degrees = 0.0;
         if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0

@@ -53,9 +53,9 @@ public class SquareUpToAprilTag extends Command {
     distanceToTarget =
         LimelightHelpers.calculateDistanceToTarget(
             LimelightHelpers.getTY(limeLightName),
-            Constants.SHOOTER_LIMELIGHT_HEIGHT,
+            Constants.SPEAKER_PROTON_HEIGHT,
             targetHeight,
-            Constants.SHOOTER_LIMELIGHT_ANGLE);
+            Constants.SPEAKER_PROTON_ANGLE);
   }
 
   @Override
@@ -73,9 +73,9 @@ public class SquareUpToAprilTag extends Command {
       distanceToTarget =
           LimelightHelpers.calculateDistanceToTarget(
               LimelightHelpers.getTY(limeLightName),
-              Constants.SHOOTER_LIMELIGHT_HEIGHT,
+              Constants.SPEAKER_PROTON_HEIGHT,
               targetHeight,
-              Constants.SHOOTER_LIMELIGHT_ANGLE);
+              Constants.SPEAKER_PROTON_ANGLE);
 
       if (skew > 70) {
         skew = skew - 90;
