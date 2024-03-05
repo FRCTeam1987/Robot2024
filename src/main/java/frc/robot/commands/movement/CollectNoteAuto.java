@@ -155,7 +155,7 @@ public class CollectNoteAuto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isDistanceTraveledTooFar() || hasNote.calculate(shooter.isLineBreakBroken());
+    return isDistanceTraveledTooFar() || hasNote.calculate(shooter.isCenterBroken());
   }
 
   private double distanceTraveled() {

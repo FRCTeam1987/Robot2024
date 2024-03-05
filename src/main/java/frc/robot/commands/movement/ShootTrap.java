@@ -37,7 +37,7 @@ public class ShootTrap extends SequentialCommandGroup {
         new WaitCommand(0.5),
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new InstantCommand(() -> shooter.setFeederVoltage(6.0), shooter),
-        new WaitUntilCommand(() -> !shooter.isLineBreakBroken()),
+        new WaitUntilCommand(() -> !shooter.isCenterBroken()),
         new WaitCommand(0.2),
         new InstantCommand(
             () -> {

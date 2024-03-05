@@ -27,7 +27,7 @@ public class PoopNote extends SequentialCommandGroup {
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
-        new WaitUntilCommand(() -> !shooter.isLineBreakBroken()), // probably debounce this
+        new WaitUntilCommand(() -> !shooter.isCenterBroken()), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();

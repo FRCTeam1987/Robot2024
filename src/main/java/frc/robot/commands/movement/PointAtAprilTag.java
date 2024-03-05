@@ -77,7 +77,6 @@ public class PointAtAprilTag extends Command {
       rotationRate = rotationSupplier.getAsDouble();
     }
 
-
     FieldCentric driveRequest =
         drive
             .withVelocityX(translationYSlewRate.calculate(velocityYSupplier.getAsDouble())) // Drive forward with

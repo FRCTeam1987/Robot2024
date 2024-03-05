@@ -120,6 +120,14 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR.set(0);
   }
 
+  public void coast() {
+    WRIST_MOTOR.setNeutralMode(NeutralModeValue.Coast);
+  }
+
+  public void brake() {
+    WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
+  }
+
   public void setupShuffleboard() {
     GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 30).getEntry();
     WRIST_TAB.add(

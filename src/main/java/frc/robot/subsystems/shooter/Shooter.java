@@ -113,10 +113,14 @@ public class Shooter extends SubsystemBase {
     // Constants.SPIN_RATIO) / 60.0).withFeedForward(1.0));
   }
 
-  public boolean isLineBreakBroken() {
+  public boolean isCenterBroken() {
     return SHOOTER_LEADER.getForwardLimit().asSupplier().get().value == 0;
   }
 
+  public boolean isRearBroken() {
+    return SHOOTER_LEADER.getReverseLimit().asSupplier().get().value == 0;
+  }
+  
   public void setFeederVoltage(double voltage) {
     FEEDER.setVoltage(voltage);
     // FEEDER_TEMP.setVoltage(voltage);
@@ -165,7 +169,7 @@ public class Shooter extends SubsystemBase {
     // SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
     // SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
 
-    SHOOTER_TAB.addBoolean("HasNote", () -> isLineBreakBroken());
+    SHOOTER_TAB.addBoolean("HasNote", () -> isCenterBroken());
 
     GenericEntry feedRPM = SHOOTER_TAB.add("Desired FD Vlts", 900).getEntry();
     GenericEntry shootRPM = SHOOTER_TAB.add("Desired SHT RPM", 900).getEntry();
