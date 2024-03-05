@@ -29,14 +29,14 @@ public class ShootAmp extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setRPMShoot(500);
-              elevator.setLengthInches(6.2);
+              shooter.setRPMShoot(Constants.SHOOTER_AMP_RPM);
+              elevator.setLengthInches(Constants.ELEVATOR_AMP_HEIGHT);
               // wrist.setDegrees(110.0);  // 25.0 + 90.0
             },
             shooter,
             elevator),
         new WaitCommand(0.5), // reset for isAtSetpoint commands to level out
-        new InstantCommand(() -> wrist.setDegrees(110.0), wrist),
+        new InstantCommand(() -> wrist.setDegrees(Constants.WRIST_AMP_DEGREES), wrist),
         new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())),
         new WaitCommand(0.5), // Time for wrist to get to position
         new InstantCommand(

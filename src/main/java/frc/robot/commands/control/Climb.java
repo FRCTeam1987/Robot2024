@@ -17,12 +17,7 @@ import frc.robot.subsystems.elevator.Elevator;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Climb extends SequentialCommandGroup {
   /** Creates a new Climb. */
-  private Elevator Elevator;
-
-  private Climber Climber;
-
   public Climb(Elevator Elevator, Climber Climber) {
-    this.Elevator = Elevator;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

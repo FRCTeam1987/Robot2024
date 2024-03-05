@@ -43,6 +43,7 @@ import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.ShootTrap;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.movement.TeleopSwerve;
+import frc.robot.commands.movement.squareUpAndShootAmp;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -124,6 +125,17 @@ public class RobotContainer {
     //                         * Constants
     //                             .MaxAngularRate) // Drive counterclockwise with negative X (left)
     //         ));
+
+    DRIVETRAIN.setDefaultCommand(
+        new TeleopSwerve(
+            DRIVETRAIN,
+            () -> -DRIVER_CONTROLLER.getLeftY(), // left right
+            () -> -DRIVER_CONTROLLER.getLeftX(), // Forward Backward
+            () -> DRIVER_CONTROLLER.getRightX(),
+            () -> 1.0,
+            () -> DRIVER_CONTROLLER.getHID().getPOV(),
+            () -> DRIVER_CONTROLLER.leftTrigger().getAsBoolean()));
+
     CO_DRIVER_CONTROLLER
         .a()
         .onTrue(
@@ -144,17 +156,19 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> isClimbPrimed = true)),
                 () -> isClimbPrimed));
 
-    DRIVETRAIN.setDefaultCommand(
-        new TeleopSwerve(
-            DRIVETRAIN,
-            () -> -DRIVER_CONTROLLER.getLeftY(), // left right
-            () -> -DRIVER_CONTROLLER.getLeftX(), // Forward Backward
-            () -> DRIVER_CONTROLLER.getRightX(),
-            () -> 1.0,
-            () -> DRIVER_CONTROLLER.getHID().getPOV(),
-            () -> DRIVER_CONTROLLER.leftTrigger().getAsBoolean()));
+    DRIVER_CONTROLLER
+        .y()
+        .onTrue(
+            new ConditionalCommand(
+                new ShootAmp(SHOOTER, ELEVATOR, WRIST)
+                    .andThen(new InstantCommand(() -> isAmpPrimed = false)),
+                new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST)
+                    .andThen(new InstantCommand(() -> isAmpPrimed = true)),
+                () -> isAmpPrimed));
 
-    // DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
+    DRIVER_CONTROLLER
+        .a()
+        .whileTrue(new squareUpAndShootAmp(AMP_PROTON, DRIVETRAIN, WRIST, ELEVATOR, SHOOTER)); //MUST BE HELDx
     DRIVER_CONTROLLER
         .b()
         .whileTrue(
@@ -320,10 +334,10 @@ public class RobotContainer {
             () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
     PHOTON_TAB.add(
         "Square Up AprilTag",
-        new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_PROTON, Constants.SPEAKER_APRILTAG_HEIGHT));
+        new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_PROTON, Constants.SPEAKER_APRILTAG_HEIGHT, 3));
     PHOTON_TAB.add(
         "Climb Test",
-        new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_PROTON, Constants.TRAP_APRILTAG_HEIGHT)
+        new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_PROTON, Constants.TRAP_APRILTAG_HEIGHT, 3)
         // .andThen(
         //     new InstantCommand(
         //             () ->

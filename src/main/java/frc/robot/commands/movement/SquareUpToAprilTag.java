@@ -25,7 +25,7 @@ public class SquareUpToAprilTag extends Command {
   private final LinearFilter SKEW_FILTER = LinearFilter.movingAverage(8);
 
   private final double ACCEPTABLE_SKEW_ERROR = 0.0; // Degrees within acceptance
-  private final double ACCEPTABLE_DISTANCE = 3; // 1.3
+  private double ACCEPTABLE_DISTANCE = 3; // 1.3
   private final double ACCEPTABLE_DISTANCE_ERROR = 0.05; // metersP within acceptance
 
   private Vision photonVision;
@@ -38,10 +38,12 @@ public class SquareUpToAprilTag extends Command {
   private int noVisibleTargetLoops = 0;
   private double targetHeight = 1.45; // 1.23 Meters
 
-  public SquareUpToAprilTag(Drivetrain drivetrain, Vision photonVision, double targetHeight) {
+  public SquareUpToAprilTag(
+      Drivetrain drivetrain, Vision photonVision, double targetHeight, double acceptableDistance) {
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
     this.targetHeight = targetHeight;
+    this.ACCEPTABLE_DISTANCE = acceptableDistance;
   }
 
   @Override
