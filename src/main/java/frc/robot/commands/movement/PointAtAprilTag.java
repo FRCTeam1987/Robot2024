@@ -9,15 +9,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.LimelightHelpers;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
-
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
-  private LimelightHelpers photonvision;
+  private Vision photonvision;
 
   private double kP = 0.14; // TODO: changeme please :)
   private double acceptableError = 1.0; // Degrees within acceptance
@@ -37,14 +35,13 @@ public class PointAtAprilTag extends Command {
           .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
-  public PointAtAprilTag(Drivetrain drivetrain, LimelightHelpers photonvision, String photonName) {
-    this(drivetrain, photonvision, photonName, () -> 0.0, () -> 0.0, () -> 0.0);
+  public PointAtAprilTag(Drivetrain drivetrain, Vision photonvision) {
+    this(drivetrain, photonvision, () -> 0.0, () -> 0.0, () -> 0.0);
   }
 
   public PointAtAprilTag(
       Drivetrain drivetrain,
-      LimelightHelpers photonvision,
-      String photonName,
+      Vision photonvision,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier) {
@@ -66,7 +63,7 @@ public class PointAtAprilTag extends Command {
 
     System.out.println("Starting Execute");
 
-    double xOffset = LimelightHelpers.getTX(photonName);
+    double xOffset = photonvision.getYawVal();
 
     double rotationRate = kP * xOffset;
     System.out.println(rotationRate);
@@ -75,7 +72,7 @@ public class PointAtAprilTag extends Command {
       rotationRate = 0;
     }
 
-    if (!photonvision.getTV(photonName)) {
+    if (!photonvision.hasTargets()) {
       rotationRate = rotationSupplier.getAsDouble();
     }
 

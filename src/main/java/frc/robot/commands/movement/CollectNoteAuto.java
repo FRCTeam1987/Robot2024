@@ -13,10 +13,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.LimelightHelpers;
 import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -32,7 +32,7 @@ public class CollectNoteAuto extends Command {
   private final Elevator elevator;
   private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
 
-  private static final String limelight = "limelight-intake";
+  private final Vision photonVision;
 
   private Pose2d initialPose;
   private static final double kP = 0.07; // PID proportional gain
@@ -63,12 +63,14 @@ public class CollectNoteAuto extends Command {
       final Shooter shooter,
       final Intake intake,
       final Wrist wrist,
-      final Elevator elevator) {
+      final Elevator elevator,
+      final Vision photonVision) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.intake = intake;
     this.wrist = wrist;
     this.elevator = elevator;
+    this.photonVision = photonVision;
 
     // Create the PID controller
     rotationController = new PIDController(kP, kI, kD);
@@ -87,8 +89,8 @@ public class CollectNoteAuto extends Command {
 
     canSeePieceDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     distanceToTarget =
-        LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight),
+        Vision.calculateDistanceToTarget(
+            photonVision.getPitchVal(),
             Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
             Constants.INTAKE_PROTON_ANGLE);
@@ -98,19 +100,18 @@ public class CollectNoteAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!canSeePieceDebouncer.calculate(LimelightHelpers.getTV(limelight))) {
+    if (!canSeePieceDebouncer.calculate(photonVision.hasTargets())) {
       DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
       System.out.println("DriveToNote Can't see gamePice");
       drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
       return;
     }
 
-    double rotationalVelocity =
-        rotationController.calculate(LimelightHelpers.getTX(limelight), 0.0);
+    double rotationalVelocity = rotationController.calculate(photonVision.getYawVal(), 0.0);
 
     distanceToTarget =
-        LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight),
+        Vision.calculateDistanceToTarget(
+            photonVision.getPitchVal(),
             Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
             Constants.INTAKE_PROTON_ANGLE);

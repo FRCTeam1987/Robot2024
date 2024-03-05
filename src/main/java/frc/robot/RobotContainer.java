@@ -56,7 +56,7 @@ public class RobotContainer {
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public static GenericEntry SHOOT_ANGLE;
   public static GenericEntry POOP_RPM;
-  public final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("LIMELIGHT");
+  public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
   /* Setting up bindings for necessary control of the swerve drive platform */
@@ -118,7 +118,7 @@ public class RobotContainer {
             () -> DRIVER_CONTROLLER.getRightX(),
             () -> 1.0,
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
-            () -> false));
+            () -> DRIVER_CONTROLLER.a().getAsBoolean()));
 
     // DRIVER_CONTROLLER.a().whileTrue(DRIVETRAIN.applyRequest(() -> brake));
     DRIVER_CONTROLLER
@@ -146,8 +146,7 @@ public class RobotContainer {
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
-                Constants.LIMELIGHT,
-                Constants.LIMELIGHT_SCORING,
+                Constants.SPEAKER_PROTON,
                 () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
@@ -261,29 +260,24 @@ public class RobotContainer {
         "ShootNote", new frc.robot.commands.control.ShootNoteSequence(SHOOTER, WRIST, 6000, 0));
     COMMANDS_TAB.add("SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(1800)));
     COMMANDS_TAB.add("StopShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(0)));
-    LIMELIGHT_TAB.add(
-        "Rotate to AprilTag",
-        new PointAtAprilTag(DRIVETRAIN, Constants.LIMELIGHT, Constants.LIMELIGHT_SCORING));
-    LIMELIGHT_TAB.addDouble(
-        "Current Heading", () -> DRIVETRAIN.getPose().getRotation().getDegrees());
-    LIMELIGHT_TAB.addDouble("Current poseX", () -> DRIVETRAIN.getPose().getX());
+    PHOTON_TAB.add("Rotate to AprilTag", new PointAtAprilTag(DRIVETRAIN, Constants.SPEAKER_PROTON));
+    PHOTON_TAB.addDouble("Current Heading", () -> DRIVETRAIN.getPose().getRotation().getDegrees());
+    PHOTON_TAB.addDouble("Current poseX", () -> DRIVETRAIN.getPose().getX());
     COMMANDS_TAB.add(
         "Driving Rotate to AprilTag",
         new PointAtAprilTag(
             DRIVETRAIN,
-            Constants.LIMELIGHT,
-            Constants.LIMELIGHT_SCORING,
+            Constants.SPEAKER_PROTON,
             () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
             () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
             () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
-    LIMELIGHT_TAB.add(
+    PHOTON_TAB.add(
         "Square Up AprilTag",
         new SquareUpToAprilTag(
-            DRIVETRAIN, Constants.LIMELIGHT_SCORING, Constants.SPEAKER_APRILTAG_HEIGHT));
-    LIMELIGHT_TAB.add(
+            DRIVETRAIN, Constants.SPEAKER_PROTON, Constants.SPEAKER_APRILTAG_HEIGHT));
+    PHOTON_TAB.add(
         "Climb Test",
-        new SquareUpToAprilTag(
-            DRIVETRAIN, Constants.LIMELIGHT_SCORING, Constants.TRAP_APRILTAG_HEIGHT)
+        new SquareUpToAprilTag(DRIVETRAIN, Constants.SPEAKER_PROTON, Constants.TRAP_APRILTAG_HEIGHT)
         // .andThen(
         //     new InstantCommand(
         //             () ->
@@ -299,11 +293,13 @@ public class RobotContainer {
     //                     new Pose2d(2, 7, new Rotation2d(0)))) // Starting position of path
     //         .andThen(DRIVETRAIN.("Taxi")));
 
-    LIMELIGHT_TAB.add(
-        "Drive To Note", new DriveToNote(DRIVETRAIN, () -> -DRIVER_CONTROLLER.getLeftY()));
-    LIMELIGHT_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN));
-    LIMELIGHT_TAB.add(
-        "Collect Note Auto", new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR));
+    PHOTON_TAB.add(
+        "Drive To Note",
+        new DriveToNote(DRIVETRAIN, () -> -DRIVER_CONTROLLER.getLeftY(), Constants.INTAKE_PROTON));
+    PHOTON_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN, Constants.INTAKE_PROTON));
+    PHOTON_TAB.add(
+        "Collect Note Auto",
+        new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR, Constants.INTAKE_PROTON));
 
     SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
 

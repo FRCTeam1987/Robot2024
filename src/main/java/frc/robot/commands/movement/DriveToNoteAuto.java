@@ -13,15 +13,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.LimelightHelpers;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
 
 public class DriveToNoteAuto extends Command {
   /** Creates a new DriveToPiece. */
   private final Drivetrain drivetrain;
 
-  private static final String limelight = "limelight-intake";
+  private static Vision photonVision;
 
   private Pose2d initialPose;
   private static final double kP = 0.07; // PID proportional gain
@@ -47,8 +47,9 @@ public class DriveToNoteAuto extends Command {
   // TODO find correct value and change name  public DriveToNoteAuto(final CommandSwerveDrivetrain
   // drivetrain) {
 
-  public DriveToNoteAuto(final Drivetrain drivetrain) {
+  public DriveToNoteAuto(final Drivetrain drivetrain, final Vision photonVision) {
     this.drivetrain = drivetrain;
+    this.photonVision = photonVision;
 
     // Create the PID controller
     rotationController = new PIDController(kP, kI, kD);
@@ -67,8 +68,8 @@ public class DriveToNoteAuto extends Command {
 
     canSeePieceDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     distanceToTarget =
-        LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight),
+        Vision.calculateDistanceToTarget(
+            photonVision.getPitchVal(),
             Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
             Constants.INTAKE_PROTON_ANGLE);
@@ -77,19 +78,18 @@ public class DriveToNoteAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!canSeePieceDebouncer.calculate(LimelightHelpers.getTV(limelight))) {
+    if (!canSeePieceDebouncer.calculate(photonVision.hasTargets())) {
       DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
       System.out.println("DriveToNote Can't see gamePice");
       drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
       return;
     }
 
-    double rotationalVelocity =
-        rotationController.calculate(LimelightHelpers.getTX(limelight), 0.0);
+    double rotationalVelocity = rotationController.calculate(photonVision.getYawVal(), 0.0);
 
     distanceToTarget =
-        LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limelight),
+        Vision.calculateDistanceToTarget(
+            photonVision.getPitchVal(),
             Constants.INTAKE_PROTON_HEIGHT,
             targetHeight,
             Constants.INTAKE_PROTON_ANGLE);

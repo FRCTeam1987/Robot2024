@@ -9,10 +9,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.LimelightHelpers;
 import frc.robot.Util;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
 
 public class SquareUpToAprilTag extends Command {
   private String LOG_PREFIX = "[EXECUTE] ";
@@ -29,7 +29,7 @@ public class SquareUpToAprilTag extends Command {
   private final double ACCEPTABLE_DISTANCE = 3; // 1.3
   private final double ACCEPTABLE_DISTANCE_ERROR = 0.05; // metersP within acceptance
 
-  private String limeLightName;
+  private Vision photonVision;
   private double distanceError;
   private Drivetrain drivetrain;
   private double xOffset;
@@ -39,20 +39,20 @@ public class SquareUpToAprilTag extends Command {
   private int noVisibleTargetLoops = 0;
   private double targetHeight = 1.45; // 1.23 Meters
 
-  public SquareUpToAprilTag(Drivetrain drivetrain, String limeLightName, double targetHeight) {
+  public SquareUpToAprilTag(Drivetrain drivetrain, Vision photonVision, double targetHeight) {
     this.drivetrain = drivetrain;
-    this.limeLightName = limeLightName;
+    this.photonVision = photonVision;
     this.targetHeight = targetHeight;
   }
 
   @Override
   public void initialize() {
     System.out.println("Squaring up to AprilTag...");
-    xOffset = LimelightHelpers.getTX(limeLightName);
-    skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
+    xOffset = photonVision.getYawVal();
+    skew = photonVision.getSkewVal();
     distanceToTarget =
-        LimelightHelpers.calculateDistanceToTarget(
-            LimelightHelpers.getTY(limeLightName),
+        Vision.calculateDistanceToTarget(
+            photonVision.getPitchVal(),
             Constants.SPEAKER_PROTON_HEIGHT,
             targetHeight,
             Constants.SPEAKER_PROTON_ANGLE);
@@ -61,18 +61,18 @@ public class SquareUpToAprilTag extends Command {
   @Override
   public void execute() {
     System.out.println(LOG_PREFIX + "In execute()");
-    if (!LimelightHelpers.getTV(limeLightName)) {
+    if (!photonVision.hasTargets()) {
       System.out.println(LOG_PREFIX + "No visible target.");
       noVisibleTargetLoops++;
       drivetrain.setControl(swerveRequest);
 
     } else {
       noVisibleTargetLoops = 0;
-      xOffset = LimelightHelpers.getTX(limeLightName);
-      skew = LimelightHelpers.getLimelightNTDouble(limeLightName, "ts");
+      xOffset = photonVision.getYawVal();
+      skew = photonVision.getSkewVal();
       distanceToTarget =
-          LimelightHelpers.calculateDistanceToTarget(
-              LimelightHelpers.getTY(limeLightName),
+          Vision.calculateDistanceToTarget(
+              photonVision.getPitchVal(),
               Constants.SPEAKER_PROTON_HEIGHT,
               targetHeight,
               Constants.SPEAKER_PROTON_ANGLE);

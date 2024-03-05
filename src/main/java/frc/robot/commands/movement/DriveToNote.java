@@ -12,8 +12,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
 public class DriveToNote extends Command {
@@ -22,7 +22,7 @@ public class DriveToNote extends Command {
 
   private final Drivetrain drivetrain;
 
-  private static final String limelight = "limelight-intake";
+  private final Vision photonVision;
 
   private Pose2d initialPose;
   private static final double kP = 0.07; // PID proportional gain
@@ -38,10 +38,12 @@ public class DriveToNote extends Command {
   private Debouncer canSeePieceDebouncer;
   private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
 
-  public DriveToNote(final Drivetrain drivetrain, final DoubleSupplier velocitySupplier) {
+  public DriveToNote(
+      final Drivetrain drivetrain, final DoubleSupplier velocitySupplier, Vision photonVision) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.velocitySupplier = velocitySupplier;
     this.drivetrain = drivetrain;
+    this.photonVision = photonVision;
 
     // Create the PID controller
     rotationController = new PIDController(kP, kI, kD);
@@ -64,15 +66,14 @@ public class DriveToNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!canSeePieceDebouncer.calculate(LimelightHelpers.getTV(limelight))) {
+    if (!canSeePieceDebouncer.calculate(photonVision.hasTargets())) {
       DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
       System.out.println("DriveToNote Can't see gamePice");
       drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
       return;
     }
 
-    double rotationalVelocity =
-        rotationController.calculate(LimelightHelpers.getTX(limelight), 0.0);
+    double rotationalVelocity = rotationController.calculate(photonVision.getYawVal(), 0.0);
     double speed =
         distanceTraveled() > slowDownDistance
             ? velocitySupplier.getAsDouble() / 2.0

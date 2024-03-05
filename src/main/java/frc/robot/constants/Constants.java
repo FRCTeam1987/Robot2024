@@ -1,6 +1,6 @@
 package frc.robot.constants;
 
-import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Vision;
 import frc.robot.util.InterpolatingDouble;
 import frc.robot.util.InterpolatingTreeMap;
 
@@ -10,8 +10,6 @@ public class Constants {
   public static double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
-  public static final LimelightHelpers LIMELIGHT = new LimelightHelpers();
-  public static final String LIMELIGHT_SCORING = "limelight-scoring";
   public static final double SPEAKER_APRILTAG_HEIGHT = 1.45;
   public static final double TRAP_APRILTAG_HEIGHT = 1.23;
   public static final double AMP_APRILTAG_HEIGHT = 0.535;
@@ -22,6 +20,12 @@ public class Constants {
   public static final double SPEAKER_PROTON_ANGLE = 130; // In degrees
   public static final double AMP_PROTON_HEIGHT = 0.35636; // In meters
   public static final double AMP_PROTON_ANGLE = 130; // In degrees
+  public static final Vision INTAKE_PROTON =
+      new Vision("INTAKE_PROTON", INTAKE_PROTON_HEIGHT, INTAKE_PROTON_ANGLE);
+  public static final Vision SPEAKER_PROTON =
+      new Vision("SPEAKER_PROTON", SPEAKER_PROTON_HEIGHT, SPEAKER_PROTON_ANGLE);
+  public static final Vision AMP_PROTON =
+      new Vision("AMP_PROTON", AMP_PROTON_HEIGHT, AMP_PROTON_ANGLE);
 
   public static final int CLIMBER_RIGHT_ID = 57;
   public static final int CLIMBER_LEFT_ID = 58;

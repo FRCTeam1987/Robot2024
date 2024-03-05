@@ -5,9 +5,9 @@
 package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -34,13 +34,13 @@ public class AimLockWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV(Constants.LIMELIGHT_SCORING)) {
-      final double ty = LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING);
+    if (Constants.SPEAKER_PROTON.hasTargets()) {
+      final double ty = Constants.SPEAKER_PROTON.getPitchVal();
       if (RobotContainer.get().SHOOTER.isCenterBroken() && (ty > 2 || ty < 4)) {
         // try {
         double distance =
-            LimelightHelpers.calculateDistanceToTarget(
-                LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING),
+            Vision.calculateDistanceToTarget(
+                Constants.SPEAKER_PROTON.getPitchVal(),
                 Constants.SPEAKER_PROTON_HEIGHT,
                 Constants.SPEAKER_APRILTAG_HEIGHT,
                 Constants.SPEAKER_PROTON_ANGLE);
