@@ -68,11 +68,10 @@ public class PointAtAprilTag extends Command {
     swerveRequest =
         swerveRequest.withSpeeds(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                velocityYSupplier.getAsDouble(), //left right
-                velocityXSupplier.getAsDouble(), //Fowawrd Backward
+                velocityYSupplier.getAsDouble(), // left right
+                velocityXSupplier.getAsDouble(), // Fowawrd Backward
                 -rotationRate,
-                drivetrain.getPigeon2().getRotation2d()
-                ));
+                drivetrain.getPigeon2().getRotation2d()));
 
     // Apply the request to the drivetrain
     drivetrain.setControl(swerveRequest);

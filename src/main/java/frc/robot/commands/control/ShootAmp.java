@@ -45,13 +45,13 @@ public class ShootAmp extends SequentialCommandGroup {
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(
-                    !shooter.isLineBreakBroken())), // probably debounce this
+                    !shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
             },
             shooter),
-        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isLineBreakBroken())),
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
         new InstantCommand(() -> wrist.setDegrees(40.0), shooter),
         new WaitCommand(0.2),
         new InstantCommand(

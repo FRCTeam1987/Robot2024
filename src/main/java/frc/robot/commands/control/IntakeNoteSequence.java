@@ -40,14 +40,14 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             wrist),
         new WaitCommand(0.1),
         new WaitUntilCommand(
-            () -> (shooter.getFeederCurrent() > 30 || shooter.isLineBreakBroken())),
+            () -> (shooter.getFeederCurrent() > 30 || shooter.isCenterBroken())),
         new InstantCommand(
             () -> {
               intake.stopTop();
             },
             intake),
         new WaitUntilCommand(
-            () -> hasNote.calculate(shooter.isLineBreakBroken())), // probably debounce this
+            () -> hasNote.calculate(shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();

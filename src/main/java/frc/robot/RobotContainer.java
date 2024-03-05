@@ -22,11 +22,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.control.AimLockWrist;
-import frc.robot.commands.control.MoveGates;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.IntakeNoteSequence;
+import frc.robot.commands.control.MoveGates;
 import frc.robot.commands.control.PoopNote;
 import frc.robot.commands.control.ReverseIntake;
 import frc.robot.commands.control.ShootAmp;
@@ -43,6 +42,7 @@ import frc.robot.commands.movement.TeleopSwerve;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.candle.Candles;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
@@ -63,6 +63,8 @@ public class RobotContainer {
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
 
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
+
+  public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
 
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
   public final Climber CLIMBER = new Climber(Constants.CLIMB_LEFT, Constants.CLIMB_RIGHT);
@@ -108,8 +110,8 @@ public class RobotContainer {
     DRIVETRAIN.setDefaultCommand(
         new TeleopSwerve(
             DRIVETRAIN,
-            () -> -DRIVER_CONTROLLER.getLeftY(), //left right
-            () -> -DRIVER_CONTROLLER.getLeftX(), //Forward Backward
+            () -> -DRIVER_CONTROLLER.getLeftY(), // left right
+            () -> -DRIVER_CONTROLLER.getLeftX(), // Forward Backward
             () -> DRIVER_CONTROLLER.getRightX(),
             () -> 1.0,
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
@@ -139,9 +141,7 @@ public class RobotContainer {
                 () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
-    DRIVER_CONTROLLER
-        .x()
-        .onTrue(new PoopNote(SHOOTER, 500));
+    DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
     // driverController
     //     .x()
     //     .onTrue(
@@ -153,14 +153,17 @@ public class RobotContainer {
             new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
                 .andThen(
                     new InstantCommand(
-                            () -> DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0))
+                            () -> {
+                              DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+                              CANDLES.setColor(0, 155, 0);
+                            })
                         .andThen(new WaitCommand(0.7))
                         .andThen(
                             new InstantCommand(
-                                () ->
-                                    DRIVER_CONTROLLER
-                                        .getHID()
-                                        .setRumble(RumbleType.kBothRumble, 0.0)))));
+                                () -> {
+                                  CANDLES.setColor(0, 155, 0);
+                                  DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                                }))));
     // driverController
     //     .leftBumper()
     //     .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
@@ -186,9 +189,12 @@ public class RobotContainer {
   }
 
   public void setupShuffleboard() {
+    SHOOTER_TAB.add("Coast Wrist", new InstantCommand(() -> WRIST.coast()));
+    SHOOTER_TAB.add("Brake Wrist", new InstantCommand(() -> WRIST.brake()));
     COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
-        COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
-    MATCH_TAB.addBoolean("Has Note", () -> SHOOTER.isLineBreakBroken()).withPosition(0, 0);
+    COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
+    MATCH_TAB.addBoolean("Center LineBreak", () -> SHOOTER.isCenterBroken()).withPosition(0, 0);
+        MATCH_TAB.addBoolean("Rear LineBreak", () -> SHOOTER.isRearBroken()).withPosition(0, 0);
     MATCH_TAB
         .add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR))
         .withPosition(1, 0);
@@ -305,6 +311,7 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    CANDLES.setColor(25, 0, 0);
     instance = this;
     registerNamedCommands();
     setupShuffleboard();

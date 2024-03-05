@@ -37,7 +37,7 @@ public class AimLockWrist extends Command {
   public void execute() {
     if (LimelightHelpers.getTV(Constants.LIMELIGHT_SCORING)) {
       final double ty = LimelightHelpers.getTY(Constants.LIMELIGHT_SCORING);
-      if (RobotContainer.get().SHOOTER.isLineBreakBroken() && (ty > 2 || ty < 4)) {
+      if (RobotContainer.get().SHOOTER.isCenterBroken() && (ty > 2 || ty < 4)) {
         // try {
         double distance =
             LimelightHelpers.calculateDistanceToTarget(

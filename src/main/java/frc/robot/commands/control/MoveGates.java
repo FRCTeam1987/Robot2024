@@ -21,12 +21,19 @@ public class MoveGates extends SequentialCommandGroup {
     addRequirements(CLIMBER);
     addCommands(
         new ParallelCommandGroup(
-            new InstantCommand(() -> CLIMBER.setSpeeds(direction ? Constants.CLIMBER_NOMINAL_VOLTAGE : -Constants.CLIMBER_NOMINAL_VOLTAGE)),
+            new InstantCommand(
+                () ->
+                    CLIMBER.setSpeeds(
+                        direction
+                            ? Constants.CLIMBER_NOMINAL_VOLTAGE
+                            : -Constants.CLIMBER_NOMINAL_VOLTAGE)),
             new SequentialCommandGroup(
-                new WaitUntilCommand(() -> CLIMBER.getLeftCurrent() > Constants.CLIMBER_CUTOFF_AMPERAGE),
+                new WaitUntilCommand(
+                    () -> CLIMBER.getLeftCurrent() > Constants.CLIMBER_CUTOFF_AMPERAGE),
                 new InstantCommand(() -> CLIMBER.stopLeft(direction))),
             new SequentialCommandGroup(
-                new WaitUntilCommand(() -> CLIMBER.getRightCurrent() > Constants.CLIMBER_CUTOFF_AMPERAGE),
+                new WaitUntilCommand(
+                    () -> CLIMBER.getRightCurrent() > Constants.CLIMBER_CUTOFF_AMPERAGE),
                 new InstantCommand(() -> CLIMBER.stopRight(direction)))));
   }
 }

@@ -33,12 +33,12 @@ public class IdleShooter extends Command {
   @Override
   public void execute() {
     // if (shooter.isLineBreakBroken()) {
-      if (debounce.calculate(
-          shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0)) {
-        shooter.setRPMShoot(Constants.SHOOTER_IDLE_CLOSERANGE_RPM);
-      } else {
-        shooter.setRPMShoot(Constants.SHOOTER_IDLE_RPM);
-      }
+    if (debounce.calculate(
+        shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0)) {
+      shooter.setRPMShoot(Constants.SHOOTER_IDLE_CLOSERANGE_RPM);
+    } else {
+      shooter.setRPMShoot(Constants.SHOOTER_IDLE_RPM);
+    }
     // } else {
     //   shooter.stopShooter();
     // }
