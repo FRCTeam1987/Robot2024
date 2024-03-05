@@ -30,11 +30,11 @@ public class TeleopSwerve extends Command {
   private PIDController thetaController;
   private PIDController yController;
   private IntSupplier mPovDegree;
-  private BooleanSupplier mShouldYLock;
-  private double mYSetPoint = 0.0;
+  private double mIntakeSetPoint = 45.0; // Change Me to match Source Angle
   private DoubleSupplier mSpeedMultiplier;
   private boolean useDPad = false;
-  private boolean useYLock = false;
+  private BooleanSupplier mShouldIntakeLock = () -> false;
+  private boolean useIntakeLock = false;
   private double setPoint = 0.0;
 
   private final Drivetrain drivetrain;
@@ -75,11 +75,11 @@ public class TeleopSwerve extends Command {
       DoubleSupplier rotationSupplier,
       DoubleSupplier speedMultiplier,
       IntSupplier povDegree,
-      BooleanSupplier shouldYLock) {
+      BooleanSupplier shouldIntakeLock) {
 
     mSpeedMultiplier = speedMultiplier;
     mPovDegree = povDegree;
-    mShouldYLock = shouldYLock;
+    mShouldIntakeLock = shouldIntakeLock;
 
     this.drivetrain = drivetrain;
     this.translationXSupplier = translationXSupplier;
@@ -96,9 +96,9 @@ public class TeleopSwerve extends Command {
   @Override
   public void initialize() {
     useDPad = false;
-    useYLock = false;
+    useIntakeLock = mShouldIntakeLock.getAsBoolean();
     setPoint = 0.0;
-    mYSetPoint = 0.0;
+    mIntakeSetPoint = 0.0;
   }
 
   @Override
@@ -112,15 +112,9 @@ public class TeleopSwerve extends Command {
     double rotationPercentage =
         rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
 
-    if (useYLock && !Util.isWithinTolerance(translationYSupplier.getAsDouble(), 0.0, 0.5)) {
-      useYLock = false;
-      mYSetPoint = 0.0;
-      DriverStation.reportWarning("Stop using Y Lock.", false);
-    } else if (mShouldYLock.getAsBoolean()) {
-      mYSetPoint = 90.0; // Degree to rotate to?
-    }
-    if (useYLock) {
-      yController.setSetpoint(mYSetPoint);
+    useIntakeLock = mShouldIntakeLock.getAsBoolean();
+    if (useIntakeLock) {
+      yController.setSetpoint(mIntakeSetPoint);
       yPercentage = yController.calculate(drivetrain.getPose().getY(), yController.getSetpoint());
     }
 
