@@ -37,6 +37,7 @@ import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.control.SpitNote;
+import frc.robot.commands.control.StopAll;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
@@ -75,6 +76,7 @@ public class RobotContainer {
       new Vision("Arducam_OV2311_USB_Camera_1", 0.30226, 40, Arrays.asList(4, 7));
   public final Vision AMP_PROTON =
       new Vision("Arducam_OV2311_USB_Camera", 0.35636, 40, Arrays.asList(5, 6));
+
 
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
@@ -149,6 +151,8 @@ public class RobotContainer {
                 new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST)
                     .andThen(new InstantCommand(() -> isAmpPrimed = true)),
                 () -> isAmpPrimed));
+
+    CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, CLIMBER, ELEVATOR));
 
     CO_DRIVER_CONTROLLER
         .y()

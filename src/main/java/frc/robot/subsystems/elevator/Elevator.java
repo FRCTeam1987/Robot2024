@@ -91,6 +91,11 @@ public class Elevator extends SubsystemBase {
     ELEVATOR_LEADER.setPosition(0);
   }
 
+  public void zeroVoltage() {
+    MotionMagicVoltage ctrl = new MotionMagicVoltage(0);
+    ELEVATOR_LEADER.setControl(ctrl);
+  }
+
   public void coastElevator() {
     ELEVATOR_LEADER.setNeutralMode(NeutralModeValue.Coast);
     ELEVATOR_FOLLOWER.setNeutralMode(NeutralModeValue.Coast);
