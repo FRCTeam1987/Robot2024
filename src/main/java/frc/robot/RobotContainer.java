@@ -77,7 +77,6 @@ public class RobotContainer {
   public final Vision AMP_PROTON =
       new Vision("Arducam_OV2311_USB_Camera", 0.35636, 40, Arrays.asList(5, 6));
 
-
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
