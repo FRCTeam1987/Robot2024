@@ -22,6 +22,12 @@
           "data": {
             "name": "ShootNoteAimbot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp_to_mid1-4"
+          }
         }
       ]
     }

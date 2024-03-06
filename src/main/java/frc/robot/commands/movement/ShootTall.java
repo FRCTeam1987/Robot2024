@@ -15,44 +15,37 @@ import frc.robot.subsystems.wrist.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ShootTrap extends SequentialCommandGroup {
+public class ShootTall extends SequentialCommandGroup {
   /** Creates a new ShootTrap. */
-  public ShootTrap(final Elevator elevator, final Wrist wrist, final Shooter shooter) {
+  public ShootTall(final Elevator elevator, final Wrist wrist, final Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(
             () -> {
-              elevator.setLengthInches(8.0);
+              elevator.setLengthInches(28);
+              wrist.setDegrees(22);
+              shooter.setRPMShoot(3250);
             },
-            elevator),
-        new WaitUntilCommand(() -> elevator.isAtSetpoint()),
-        new InstantCommand(
-            () -> {
-              wrist.setDegrees(95);
-              shooter.setRPMShoot(1500);
-            },
+            elevator,
             wrist,
             shooter),
-        new WaitCommand(0.5),
-        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
+        new WaitCommand(0.2),
+        new WaitUntilCommand(
+            () -> elevator.isAtSetpoint() && wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new InstantCommand(() -> shooter.setFeederVoltage(6.0), shooter),
         new WaitUntilCommand(() -> !shooter.isCenterBroken()),
         new WaitCommand(0.2),
         new InstantCommand(
             () -> {
-              wrist.setDegrees(30);
+              wrist.setDegrees(12);
+              elevator.setLengthInches(0.5);
               shooter.stopShooter();
               shooter.stopFeeder();
             },
+            elevator,
             wrist,
             shooter),
-        new InstantCommand(
-            () -> {
-              elevator.setLengthInches(0.5);
-              wrist.setDegrees(20);
-            },
-            elevator,
-            wrist));
+        new WaitUntilCommand(() -> elevator.isAtSetpoint() && wrist.isAtSetpoint()));
   }
 }

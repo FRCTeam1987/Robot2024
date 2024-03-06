@@ -18,7 +18,7 @@ public class SpitNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
-  GenericEntry SpitRPM = SHOOTER_TAB.add("SpitRPM", 900).getEntry();
+  GenericEntry SpitRPM = SHOOTER_TAB.add("SpitRPM", 3500).getEntry();
 
   public SpitNote(Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.

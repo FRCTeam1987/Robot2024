@@ -29,14 +29,15 @@ public class ShootNote extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               shooter.setRPMShoot(shootRPM);
-              if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0) {
-                elevator.setLengthInches(10.0);
-              } else {
-                elevator.setLengthInches(0.0);
-              }
+              // if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0)
+              // {
+              //   elevator.setLengthInches(10.0);
+              // } else {
+              //   elevator.setLengthInches(0.0);
+              // }
             },
             shooter),
-        new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
+        new WaitCommand(0.2), // reset for isAtSetpoint commands to level out
         new WaitUntilCommand(() -> shooter.isShooterAtSetpoint()),
         new WaitCommand(0.5), // Time for wrist to get to position
         new InstantCommand(
@@ -54,9 +55,8 @@ public class ShootNote extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               shooter.stopShooter();
-              elevator.goHome();
+              // elevator.goHome();
             },
-            shooter,
-            elevator));
+            shooter));
   }
 }

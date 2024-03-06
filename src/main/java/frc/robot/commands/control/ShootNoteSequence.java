@@ -7,11 +7,15 @@ package frc.robot.commands.control;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
+import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -59,19 +63,22 @@ public class ShootNoteSequence extends SequentialCommandGroup {
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 
-  public ShootNoteSequence(Shooter shooter, Wrist wrist, double shootRPM) {
+  public ShootNoteSequence(
+      Shooter shooter, Wrist wrist, double shootRPM, Drivetrain drivetrain, Vision photonVision) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
 
     addCommands(
-        new InstantCommand(
-            () -> {
-              wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
-              shooter.setRPMShoot(shootRPM);
-            },
-            shooter,
-            wrist),
+        new ParallelCommandGroup(
+            new PointAtAprilTag(drivetrain, photonVision),
+            new InstantCommand(
+                () -> {
+                  wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
+                  shooter.setRPMShoot(shootRPM);
+                },
+                shooter,
+                wrist)),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new WaitCommand(0.4), // Time for writst to get to position

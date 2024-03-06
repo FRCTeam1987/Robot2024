@@ -19,17 +19,17 @@ public class Climber extends SubsystemBase {
     CLIMB_LEFT = new TalonFX(CLIMB_LEFT_ID, "canfd");
     CLIMB_RIGHT = new TalonFX(CLIMB_RIGHT_ID, "canfd");
 
-    CLIMB_RIGHT.setInverted(true);
-
-    CLIMB_LEFT.setNeutralMode(NeutralModeValue.Brake);
-    CLIMB_RIGHT.setNeutralMode(NeutralModeValue.Brake);
+    // CLIMB_RIGHT.setInverted(true);
 
     TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
-    extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    extensionConfig.CurrentLimits.StatorCurrentLimit = ClimberConstants.EXTENSION_CURRENT_LIMIT;
+    // extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    // extensionConfig.CurrentLimits.StatorCurrentLimit = ClimberConstants.EXTENSION_CURRENT_LIMIT;
 
-    CLIMB_LEFT.getConfigurator().apply(extensionConfig);
-    CLIMB_RIGHT.getConfigurator().apply(extensionConfig);
+    // CLIMB_LEFT.getConfigurator().apply(extensionConfig);
+    // CLIMB_RIGHT.getConfigurator().apply(extensionConfig);
+    CLIMB_RIGHT.setInverted(true);
+    CLIMB_LEFT.setNeutralMode(NeutralModeValue.Brake);
+    CLIMB_RIGHT.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void setSpeeds(double speed) {

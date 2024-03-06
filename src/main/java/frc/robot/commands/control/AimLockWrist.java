@@ -4,6 +4,7 @@
 
 package frc.robot.commands.control;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -38,32 +39,29 @@ public class AimLockWrist extends Command {
   public void execute() {
     if (speakerProton.hasTargets()) {
       final double ty = speakerProton.getPitchVal();
+      SmartDashboard.putNumber("ty", ty);
       if (RobotContainer.get().SHOOTER.isCenterBroken() && (ty > 2 || ty < 4)) {
         // try {
-        double distance =
-            Vision.calculateDistanceToTarget(
-                speakerProton.getPitchVal(),
-                speakerProton.getCameraHeight(),
-                Constants.SPEAKER_APRILTAG_HEIGHT,
-                speakerProton.getCameraDegrees());
+        double Pitch = speakerProton.getPitchVal();
         // System.out.println("Calculating for: " + distance);
         double degrees = 0.0;
-        if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0
-            && elevator.getLengthInches() > 9.0) {
-          degrees =
-              Constants.DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.getInterpolated(
-                      new InterpolatingDouble(distance))
-                  .value;
-          // System.out.println("Degrees attempted: " + degrees);
-          wrist.setDegrees(degrees);
-        } else if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) > 2.0) {
-          degrees =
-              Constants.DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.getInterpolated(
-                      new InterpolatingDouble(distance))
-                  .value;
-          // System.out.println("Degrees attempted: " + degrees);
-          wrist.setDegrees(degrees);
-        }
+        // if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0
+        //     && elevator.getLengthInches() > 9.0) {
+        //   degrees =
+        //       Constants.DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.getInterpolated(
+        //               new InterpolatingDouble(distance))
+        //           .value;
+        //   // System.out.println("Degrees attempted: " + degrees);
+        //   wrist.setDegrees(degrees);
+        // } else if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) >
+        // 2.0) {
+        degrees =
+            Constants.DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.getInterpolated(
+                    new InterpolatingDouble(Pitch))
+                .value;
+        // System.out.println("Degrees attempted: " + degrees);
+        wrist.setDegrees(degrees);
+        // }
 
         // if (degrees < 21 || degrees > 42) {
         //   DriverStation.reportError("WristAim Map Out of Range", false);

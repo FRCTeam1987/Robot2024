@@ -49,7 +49,7 @@ public class Elevator extends SubsystemBase {
     ELEVATOR_LEADER.getConfigurator().apply(extensionConfig);
     ELEVATOR_FOLLOWER.getConfigurator().apply(extensionConfig);
 
-    ELEVATOR_LEADER.setPosition(0);
+    setZero();
 
     ELEVATOR_FOLLOWER.setControl(new Follower(ELEVATOR_LEADER.getDeviceID(), false));
 
@@ -106,15 +106,20 @@ public class Elevator extends SubsystemBase {
         < ElevatorConstants.EXTENSION_ALLOWABLE_ERROR;
   }
 
+  public void setZero() {
+    ELEVATOR_LEADER.setPosition(0);
+  }
+
   @Override
   public void periodic() {}
 
   public void setupShuffleboard() {
-    GenericEntry length = ELEVATOR_TAB.add("DesiredLen In.", 10).getEntry();
+    GenericEntry length = ELEVATOR_TAB.add("DesiredLen In.", 2).getEntry();
     ELEVATOR_TAB.add(
         "GoTo DesiredLen", new InstantCommand(() -> setLengthInches(length.getDouble(0))));
     ELEVATOR_TAB.addDouble("ActualLen In.", () -> getLengthInches());
     ELEVATOR_TAB.add("Coast", new InstantCommand(() -> coastElevator()).ignoringDisable(true));
     ELEVATOR_TAB.add("Brake", new InstantCommand(() -> brakeElevator()).ignoringDisable(true));
+    // ELEVATOR_TAB.addnumber("Elevator voltage", );
   }
 }

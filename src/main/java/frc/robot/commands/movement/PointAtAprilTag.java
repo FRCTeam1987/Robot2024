@@ -17,9 +17,8 @@ import java.util.function.DoubleSupplier;
 public class PointAtAprilTag extends Command {
   private Vision photonvision;
 
-  private double kP = 0.14; // TODO: changeme please :)
+  private double kP = 0.10; // TODO: changeme please :)
   private double acceptableError = 1.0; // Degrees within acceptance
-  private String photonName;
   private DoubleSupplier velocityXSupplier = () -> 0.0;
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
@@ -47,7 +46,6 @@ public class PointAtAprilTag extends Command {
       DoubleSupplier rotationSupplier) {
     this.drivetrain = drivetrain;
     this.photonvision = photonvision;
-    this.photonName = photonName;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
@@ -55,13 +53,13 @@ public class PointAtAprilTag extends Command {
 
   @Override
   public void initialize() {
-    System.out.println("Starting rotation to april tag");
+    // System.out.println("Starting rotation to april tag");
   }
 
   @Override
   public void execute() {
 
-    System.out.println("Starting Execute");
+    // System.out.println("Starting Execute");
 
     double xOffset = photonvision.getYawVal();
 
@@ -80,11 +78,11 @@ public class PointAtAprilTag extends Command {
         drive
             .withVelocityX(
                 translationYSlewRate.calculate(
-                    velocityYSupplier.getAsDouble())) // Drive forward with
+                    -velocityYSupplier.getAsDouble())) // Drive forward with
             // negative Y (forward)
             .withVelocityY(
                 translationXSlewRate.calculate(
-                    velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
+                    -velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
             .withRotationalRate(
                 rotationSlewRate.calculate(
                     -rotationRate)); // Drive counterclockwise with negative X (left)
@@ -101,7 +99,7 @@ public class PointAtAprilTag extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Command Finished!");
+    // System.out.println("Command Finished!");
     FieldCentric driveRequest =
         drive
             .withVelocityX(0.0) // Drive forward with

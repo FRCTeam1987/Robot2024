@@ -54,7 +54,7 @@ public class Wrist extends SubsystemBase {
     // WristConstants.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
-    WRIST_MOTOR.setPosition(WristConstants.INITIAL_ANGLE_DEGREES / 360.0);
+    setZero();
     WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
 
     setupShuffleboard();
@@ -128,15 +128,20 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
   }
 
+  public void setZero() {
+    WRIST_MOTOR.setPosition(WristConstants.INITIAL_ANGLE_DEGREES / 360.0);
+  }
+
   public void setupShuffleboard() {
-    GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 30).getEntry();
+    GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 52).getEntry();
     WRIST_TAB.add(
         "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
     WRIST_TAB.addDouble("Degrees", () -> getDegrees());
+    WRIST_TAB.addDouble("Wrist degrees with offset", () -> getDegrees());
     WRIST_TAB.addDouble("Current Amps", () -> WRIST_MOTOR.getStatorCurrent().getValueAsDouble());
     WRIST_TAB.addDouble("Current volts", () -> WRIST_MOTOR.getMotorVoltage().getValueAsDouble());
     WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
-    WRIST_TAB.add("Set Coast", new InstantCommand(() -> setCoast(), this));
-    WRIST_TAB.add("Set Brake", new InstantCommand(() -> setBrake(), this));
+    WRIST_TAB.add("Set Coast", new InstantCommand(() -> setCoast(), this).ignoringDisable(true));
+    WRIST_TAB.add("Set Brake", new InstantCommand(() -> setBrake(), this).ignoringDisable(true));
   }
 }

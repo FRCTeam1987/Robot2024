@@ -4,10 +4,9 @@
 
 package frc.robot.commands.control;
 
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Util;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
@@ -18,20 +17,25 @@ import frc.robot.subsystems.elevator.Elevator;
 public class Climb extends SequentialCommandGroup {
   /** Creates a new Climb. */
   public Climb(Elevator Elevator, Climber Climber) {
+    addRequirements(Elevator, Climber);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new ConditionalCommand(
-            new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
-            new InstantCommand(
-                () -> {
-                  System.out.println("Climb command left, Climber Location wrong");
-                  return;
-                }),
-            () ->
-                Util.isWithinTolerance(
-                    Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_HEIGHT, 3)));
+        // new ConditionalCommand(
+        // new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
+        new InstantCommand(
+            () -> Elevator.setLengthInches(Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT)),
+        new WaitCommand(2.0),
+        new MoveGates(Climber, true));
+
+    // new InstantCommand(
+    //     () -> {
+    //       System.out.println("Climb command left, Climber Location wrong");
+    //       return;
+    //     }),
+    // () ->
+    //     Util.isWithinTolerance(
+    //         Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_HEIGHT, 0.5)));
     // Climber Subsystem needs to be integrated.
-    new MoveGates(Climber, true);
   }
 }

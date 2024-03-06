@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -43,7 +41,8 @@ import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
-import frc.robot.commands.movement.ShootTrap;
+import frc.robot.commands.movement.ShootSubwoofer;
+import frc.robot.commands.movement.ShootTall;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.movement.TeleopSwerve;
 import frc.robot.constants.Constants;
@@ -56,6 +55,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
+import java.util.Arrays;
 
 public class RobotContainer {
   private static RobotContainer instance;
@@ -70,9 +70,11 @@ public class RobotContainer {
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
 
-  public final Vision INTAKE_PROTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60, Arrays.asList(0));
-  public final Vision SPEAKER_PROTON = new Vision("Arducam_OV2311_USB_Camera_1", 0.30226, 130, Arrays.asList(4, 7));
-  public final Vision AMP_PROTON = new Vision("Arducam_OV2311_USB_Camera", 0.35636, 130, Arrays.asList(6, 3));
+  public final Vision INTAKE_PROTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
+  public final Vision SPEAKER_PROTON =
+      new Vision("Arducam_OV2311_USB_Camera_1", 0.30226, 40, Arrays.asList(4, 7));
+  public final Vision AMP_PROTON =
+      new Vision("Arducam_OV2311_USB_Camera", 0.35636, 40, Arrays.asList(5, 6));
 
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
@@ -152,10 +154,10 @@ public class RobotContainer {
         .y()
         .onTrue(
             new ConditionalCommand(
-                new Climb(ELEVATOR, CLIMBER)
-                    .andThen(new InstantCommand(() -> isClimbPrimed = false)),
-                new InstantCommand(() -> ELEVATOR.setLengthInches(Constants.ELEVATOR_TRAP_HEIGHT))
-                    .andThen(new InstantCommand(() -> isClimbPrimed = true)),
+                new Climb(ELEVATOR, CLIMBER),
+                new InstantCommand(
+                        () -> ELEVATOR.setLengthInches(Constants.ELEVATOR_TRAP_HEIGHT), ELEVATOR)
+                    .andThen(() -> isClimbPrimed = true),
                 () -> isClimbPrimed));
 
     CO_DRIVER_CONTROLLER.x().onTrue(new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
@@ -218,6 +220,7 @@ public class RobotContainer {
 
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
     DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
+    // DRIVER_CONTROLLER.new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER)
     // driverController
     //     .x()
     //     .onTrue(
@@ -270,16 +273,25 @@ public class RobotContainer {
     COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
     COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
     COMMANDS_TAB.add("Auto Climb", new AutoClimb(ELEVATOR, CLIMBER, SPEAKER_PROTON, DRIVETRAIN));
+    COMMANDS_TAB.addNumber("Speaeker Pitch", () -> SPEAKER_PROTON.getPitchVal());
+    COMMANDS_TAB.add(
+        "Zero Subsystems",
+        new InstantCommand(
+                () -> {
+                  ELEVATOR.setZero();
+                  WRIST.setZero();
+                })
+            .ignoringDisable(isAmpPrimed));
     MATCH_TAB.addBoolean("Center LineBreak", () -> SHOOTER.isCenterBroken()).withPosition(0, 1);
     MATCH_TAB.addBoolean("Rear LineBreak", () -> SHOOTER.isRearBroken()).withPosition(0, 2);
     MATCH_TAB
         .add("Reverse Intake", new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR))
         .withPosition(1, 0);
     MATCH_TAB
-        .add("Increment Wrist +10 deg", new InstantCommand(() -> WRIST.incrementWrist(10)))
+        .add("Increment Wrist +1 deg", new InstantCommand(() -> WRIST.incrementWrist(1)))
         .withPosition(1, 1);
     MATCH_TAB
-        .add("Increment Wrist -10 deg", new InstantCommand(() -> WRIST.incrementWrist(-10)))
+        .add("Increment Wrist -1 deg", new InstantCommand(() -> WRIST.incrementWrist(-1)))
         .withPosition(2, 1);
     MATCH_TAB
         .addDouble("Increment Wrist Value", () -> WRIST.getIncrementValue())
@@ -322,7 +334,8 @@ public class RobotContainer {
     MATCH_TAB.add("Climb", new Climb(ELEVATOR, CLIMBER)).withPosition(2, 6);
 
     COMMANDS_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
-    COMMANDS_TAB.add("Shoot Trap", new ShootTrap(ELEVATOR, WRIST, SHOOTER));
+    COMMANDS_TAB.add("Shoot Subwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
+    COMMANDS_TAB.add("Shoot Tall", new ShootTall(ELEVATOR, WRIST, SHOOTER));
     COMMANDS_TAB.add(
         "Subwoofer Shot",
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 52, 2));
@@ -342,6 +355,7 @@ public class RobotContainer {
     PHOTON_TAB.add("Rotate to AprilTag", new PointAtAprilTag(DRIVETRAIN, SPEAKER_PROTON));
     PHOTON_TAB.addDouble("Current Heading", () -> DRIVETRAIN.getPose().getRotation().getDegrees());
     PHOTON_TAB.addDouble("Current poseX", () -> DRIVETRAIN.getPose().getX());
+
     COMMANDS_TAB.add(
         "Driving Rotate to AprilTag",
         new PointAtAprilTag(
@@ -382,7 +396,9 @@ public class RobotContainer {
                 SPEAKER_PROTON.getCameraHeight(),
                 Constants.SPEAKER_APRILTAG_HEIGHT,
                 SPEAKER_PROTON.getCameraDegrees()));
-    PHOTON_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN, INTAKE_PROTON));
+    PHOTON_TAB.add(
+        "Drive To Note Auto",
+        new DriveToNoteAuto(DRIVETRAIN, INTAKE_PROTON, SHOOTER, INTAKE, WRIST, ELEVATOR));
     PHOTON_TAB.add(
         "Collect Note Auto",
         new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR, INTAKE_PROTON));
@@ -400,6 +416,7 @@ public class RobotContainer {
     autoChooser.addOption("ampa", new PathPlannerAuto("ampa"));
     autoChooser.addOption("sourcea", new PathPlannerAuto("sourcea"));
     autoChooser.addOption("amp_close", new PathPlannerAuto("amp_close"));
+    autoChooser.addOption("amp_subwoofer", new PathPlannerAuto("amp_subwoofer"));
     COMMANDS_TAB.add(autoChooser);
   }
 
@@ -421,7 +438,9 @@ public class RobotContainer {
   public void registerNamedCommands() {
     NamedCommands.registerCommand(
         "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.SHOOTER_RPM, 40));
-    NamedCommands.registerCommand("ShootNoteAimbot", new ShootNoteSequence(SHOOTER, WRIST, 5200));
+    NamedCommands.registerCommand(
+        "ShootNoteAimbot",
+        new ShootNoteSequence(SHOOTER, WRIST, Constants.SHOOTER_RPM, DRIVETRAIN, SPEAKER_PROTON));
     NamedCommands.registerCommand(
         "SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(5200)));
     NamedCommands.registerCommand(
@@ -450,6 +469,8 @@ public class RobotContainer {
             },
             SHOOTER,
             INTAKE));
+    NamedCommands.registerCommand("ShootSubwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
+    NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     // NamedCommands.registerCommand("ResetOdo", new InstantCommand(() ->
     // DRIVETRAIN.seedFieldRelative()));
   }
