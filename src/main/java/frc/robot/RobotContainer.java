@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -39,6 +37,7 @@ import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.control.SpitNote;
+import frc.robot.commands.control.StopAll;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
@@ -56,6 +55,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
+import java.util.Arrays;
 
 public class RobotContainer {
   private static RobotContainer instance;
@@ -70,9 +70,12 @@ public class RobotContainer {
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
 
-  public final Vision INTAKE_PROTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60, Arrays.asList(0));
-  public final Vision SPEAKER_PROTON = new Vision("Arducam_OV2311_USB_Camera_1", 0.30226, 130, Arrays.asList(4, 7));
-  public final Vision AMP_PROTON = new Vision("Arducam_OV2311_USB_Camera", 0.35636, 130, Arrays.asList(6, 3));
+  public final Vision INTAKE_PROTON =
+      new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60, Arrays.asList(0));
+  public final Vision SPEAKER_PROTON =
+      new Vision("Arducam_OV2311_USB_Camera_1", 0.30226, 130, Arrays.asList(4, 7));
+  public final Vision AMP_PROTON =
+      new Vision("Arducam_OV2311_USB_Camera", 0.35636, 130, Arrays.asList(6, 3));
 
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
@@ -147,6 +150,8 @@ public class RobotContainer {
                 new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST)
                     .andThen(new InstantCommand(() -> isAmpPrimed = true)),
                 () -> isAmpPrimed));
+
+    CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, CLIMBER, ELEVATOR));
 
     CO_DRIVER_CONTROLLER
         .y()

@@ -5,13 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.List;
 import java.util.Optional;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
@@ -35,7 +31,11 @@ public class Vision extends SubsystemBase {
   private double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0.1);
   private String CAMERA_NAME = "";
 
-  public Vision(String photonCameraName, double cameraHeightMeters, double cameraAngleDegrees, List<Integer> validIDs) {
+  public Vision(
+      String photonCameraName,
+      double cameraHeightMeters,
+      double cameraAngleDegrees,
+      List<Integer> validIDs) {
 
     this.camera = new PhotonCamera(photonCameraName);
     this.CAMERA_NAME = photonCameraName;
@@ -54,22 +54,25 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     var result = this.camera.getLatestResult();
     if (result.hasTargets()) {
-      Optional<PhotonTrackedTarget> trackedTarget = result.getTargets().stream().filter(target -> validFiducials.contains((target.getFiducialId()))).findFirst();
-      if(!trackedTarget.isPresent()) {
+      Optional<PhotonTrackedTarget> trackedTarget =
+          result.getTargets().stream()
+              .filter(target -> validFiducials.contains((target.getFiducialId())))
+              .findFirst();
+      if (!trackedTarget.isPresent()) {
         return;
       }
       int fiducialID = trackedTarget.get().getFiducialId();
       // if (this.validFiducials.contains(fiducialID)) {
-        this.yawVal = trackedTarget.get().getYaw();
-        this.pitchVal = trackedTarget.get().getPitch();
-        this.skewVal = trackedTarget.get().getSkew();
-        this.areaVal = trackedTarget.get().getArea();
-        this.hasTarget = true;
+      this.yawVal = trackedTarget.get().getYaw();
+      this.pitchVal = trackedTarget.get().getPitch();
+      this.skewVal = trackedTarget.get().getSkew();
+      this.areaVal = trackedTarget.get().getArea();
+      this.hasTarget = true;
 
-        // PHOTON_TAB.addNumber("Yaw Value", () -> yawVal);
-        // PHOTON_TAB.addNumber("Pitch Value", () -> pitchVal);
-        // PHOTON_TAB.addNumber("Area Value", () -> areaVal);
-        // PHOTON_TAB.addBoolean("LEDs OnOff", () -> this.LED_Enable);
+      // PHOTON_TAB.addNumber("Yaw Value", () -> yawVal);
+      // PHOTON_TAB.addNumber("Pitch Value", () -> pitchVal);
+      // PHOTON_TAB.addNumber("Area Value", () -> areaVal);
+      // PHOTON_TAB.addBoolean("LEDs OnOff", () -> this.LED_Enable);
       // }
     } else {
       this.hasTarget = false;
