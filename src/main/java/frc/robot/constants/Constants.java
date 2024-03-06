@@ -48,7 +48,7 @@ public class Constants {
 
   public static final double INTAKE_COLLECT_VOLTS = -6; // 6
 
-  public static final double FEEDER_FEEDFWD_VOLTS = 2; // 6 // 4
+  public static final double FEEDER_FEEDFWD_VOLTS = 4; // 6 // 4
   public static final double FEEDER_SHOOT_VOLTS = 5; // 4
   public static final double FEEDER_RETRACT_VOLTS = -2;
 

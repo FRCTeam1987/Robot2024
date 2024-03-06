@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.climber;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,10 +18,18 @@ public class Climber extends SubsystemBase {
   public Climber(int CLIMB_LEFT_ID, int CLIMB_RIGHT_ID) {
     CLIMB_LEFT = new TalonFX(CLIMB_LEFT_ID, "canfd");
     CLIMB_RIGHT = new TalonFX(CLIMB_RIGHT_ID, "canfd");
+
     CLIMB_RIGHT.setInverted(true);
 
     CLIMB_LEFT.setNeutralMode(NeutralModeValue.Brake);
     CLIMB_RIGHT.setNeutralMode(NeutralModeValue.Brake);
+
+    TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
+    extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    extensionConfig.CurrentLimits.StatorCurrentLimit = ClimberConstants.EXTENSION_CURRENT_LIMIT;
+
+    CLIMB_LEFT.getConfigurator().apply(extensionConfig);
+    CLIMB_RIGHT.getConfigurator().apply(extensionConfig);
   }
 
   public void setSpeeds(double speed) {
@@ -34,6 +43,11 @@ public class Climber extends SubsystemBase {
 
   public void stopRight(boolean direction) {
     CLIMB_RIGHT.setVoltage(direction ? Constants.CLIMBER_MAINTAIN_VOLTAGE : 0);
+  }
+
+  public void stopAll() {
+    CLIMB_LEFT.setVoltage(0);
+    CLIMB_RIGHT.setVoltage(0);
   }
 
   public double getLeftCurrent() {

@@ -8,9 +8,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
   private PhotonCamera camera;
@@ -21,7 +26,7 @@ public class Vision extends SubsystemBase {
   private double areaVal = 0;
   private boolean hasTarget = false;
   private boolean LED_Enable = false;
-  public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
+  private List<Integer> validFiducials;
 
   // Constants such as camera and target height stored. Change per robot and goal!
   private double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0.1);
@@ -30,19 +35,17 @@ public class Vision extends SubsystemBase {
   private double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0.1);
   private String CAMERA_NAME = "";
 
-  public Vision(String photonCameraName, double cameraHeightMeters, double cameraAngleDegrees) {
+  public Vision(String photonCameraName, double cameraHeightMeters, double cameraAngleDegrees, List<Integer> validIDs) {
 
     this.camera = new PhotonCamera(photonCameraName);
     this.CAMERA_NAME = photonCameraName;
     this.CAMERA_HEIGHT_METERS = cameraHeightMeters;
     this.CAMERA_PITCH_RADIANS = Units.degreesToRadians(cameraAngleDegrees);
+    this.validFiducials = validIDs;
     // this.camera.setPipelineIndex(Constants.Tape01);
   }
 
   public static Vision getInstance() {
-    if (instance == null) {
-      instance = new Vision("", 0.0, 0.0);
-    }
     return instance;
   }
 
@@ -51,16 +54,23 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     var result = this.camera.getLatestResult();
     if (result.hasTargets()) {
-      this.yawVal = result.getBestTarget().getYaw();
-      this.pitchVal = result.getBestTarget().getPitch();
-      this.skewVal = result.getBestTarget().getSkew();
-      this.areaVal = result.getBestTarget().getArea();
-      this.hasTarget = true;
+      Optional<PhotonTrackedTarget> trackedTarget = result.getTargets().stream().filter(target -> validFiducials.contains((target.getFiducialId()))).findFirst();
+      if(!trackedTarget.isPresent()) {
+        return;
+      }
+      int fiducialID = trackedTarget.get().getFiducialId();
+      // if (this.validFiducials.contains(fiducialID)) {
+        this.yawVal = trackedTarget.get().getYaw();
+        this.pitchVal = trackedTarget.get().getPitch();
+        this.skewVal = trackedTarget.get().getSkew();
+        this.areaVal = trackedTarget.get().getArea();
+        this.hasTarget = true;
 
-      PHOTON_TAB.addNumber("Yaw Value", () -> yawVal);
-      PHOTON_TAB.addNumber("Pitch Value", () -> pitchVal);
-      PHOTON_TAB.addNumber("Area Value", () -> areaVal);
-      PHOTON_TAB.addBoolean("LEDs OnOff", () -> this.LED_Enable);
+        // PHOTON_TAB.addNumber("Yaw Value", () -> yawVal);
+        // PHOTON_TAB.addNumber("Pitch Value", () -> pitchVal);
+        // PHOTON_TAB.addNumber("Area Value", () -> areaVal);
+        // PHOTON_TAB.addBoolean("LEDs OnOff", () -> this.LED_Enable);
+      // }
     } else {
       this.hasTarget = false;
     }
@@ -163,7 +173,7 @@ public class Vision extends SubsystemBase {
             Units.degreesToRadians(getPitchVal()));
     double rangeInInches = Units.metersToInches(range);
 
-    PHOTON_TAB.addNumber("Camera Distance", () -> rangeInInches);
+    // PHOTON_TAB.addNumber("Camera Distance", () -> rangeInInches);
 
     return range;
   }
@@ -194,7 +204,7 @@ public class Vision extends SubsystemBase {
     // Calculate the distance using trigonometry
     double distance = heightDifference / Math.tan(angleToTargetRadians);
 
-    System.out.println("Distance to target: " + distance);
+    // System.out.println("Distance to target: " + distance);
     return distance;
   }
 }

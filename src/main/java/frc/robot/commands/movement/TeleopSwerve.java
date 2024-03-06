@@ -30,7 +30,7 @@ public class TeleopSwerve extends Command {
   private PIDController thetaController;
   private PIDController yController;
   private IntSupplier mPovDegree;
-  private double mIntakeSetPoint = 45.0; // Change Me to match Source Angle
+  private double mIntakeSetPoint = -35.0; // Change Me to match Source Angle
   private DoubleSupplier mSpeedMultiplier;
   private boolean useDPad = false;
   private BooleanSupplier mShouldIntakeLock = () -> false;
@@ -98,7 +98,6 @@ public class TeleopSwerve extends Command {
     useDPad = false;
     useIntakeLock = mShouldIntakeLock.getAsBoolean();
     setPoint = 0.0;
-    mIntakeSetPoint = 0.0;
   }
 
   @Override
@@ -113,9 +112,13 @@ public class TeleopSwerve extends Command {
         rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
 
     useIntakeLock = mShouldIntakeLock.getAsBoolean();
+
     if (useIntakeLock) {
-      yController.setSetpoint(mIntakeSetPoint);
-      yPercentage = yController.calculate(drivetrain.getPose().getY(), yController.getSetpoint());
+      // System.out.println("SET INTAKE LOCK");
+      thetaController.setSetpoint(mIntakeSetPoint);
+      rotationPercentage =
+          thetaController.calculate(
+              drivetrain.getPose().getRotation().getDegrees(), thetaController.getSetpoint());
     }
 
     if (useDPad && !Util.isWithinTolerance(rotationSupplier.getAsDouble(), 0.0, 0.25)) {

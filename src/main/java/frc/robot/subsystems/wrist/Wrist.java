@@ -49,8 +49,8 @@ public class Wrist extends SubsystemBase {
         WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity / 4.0;
     // WristConstants.WRIST_MOTION_ACCELERATION;
     // WRIST_CONFIG.MotionMagic.MotionMagicJerk = 10;
-    WRIST_CONFIG.Feedback.SensorToMechanismRatio =
-        (100.0 / 10.0) * (36.0 / 18.0) * (3.0 / 1.0); // 66:1
+    WRIST_CONFIG.Feedback.SensorToMechanismRatio = (120.0 / 10.0) * (80.0 / 12.0);
+    // (100.0 / 10.0) * (36.0 / 18.0) * (3.0 / 1.0); // 66:1
     // WristConstants.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);

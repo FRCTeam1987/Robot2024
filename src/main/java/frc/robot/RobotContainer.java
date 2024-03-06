@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -44,7 +46,6 @@ import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.ShootTrap;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.movement.TeleopSwerve;
-import frc.robot.commands.movement.squareUpAndShootAmp;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -69,9 +70,9 @@ public class RobotContainer {
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
 
-  public final Vision INTAKE_PROTON = new Vision("INTAKE_PROTON", 0.65176, 60);
-  public final Vision SPEAKER_PROTON = new Vision("SPEAKER_PROTON", 0.30226, 130);
-  public final Vision AMP_PROTON = new Vision("AMP_PROTON", 0.35636, 130);
+  public final Vision INTAKE_PROTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60, Arrays.asList(0));
+  public final Vision SPEAKER_PROTON = new Vision("Arducam_OV2311_USB_Camera_1", 0.30226, 130, Arrays.asList(4, 7));
+  public final Vision AMP_PROTON = new Vision("Arducam_OV2311_USB_Camera", 0.35636, 130, Arrays.asList(6, 3));
 
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
@@ -157,6 +158,27 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> isClimbPrimed = true)),
                 () -> isClimbPrimed));
 
+    CO_DRIVER_CONTROLLER.x().onTrue(new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
+    CO_DRIVER_CONTROLLER
+        .b()
+        .onTrue(
+            new InstantCommand(
+                    () -> {
+                      SHOOTER.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
+                      INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
+                    })
+                .andThen(new WaitCommand(0.1))
+                .andThen(
+                    new InstantCommand(
+                        () -> {
+                          SHOOTER.stopFeeder();
+                          INTAKE.stopTop();
+                          INTAKE.stopCollecting();
+                        })));
+
+    // DRIVER_CONTROLLER.b().onTrue(
+
+    // )
     DRIVER_CONTROLLER
         .y()
         .onTrue(
@@ -167,19 +189,11 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> isAmpPrimed = true)),
                 () -> isAmpPrimed));
 
-    DRIVER_CONTROLLER
-        .a()
-        .whileTrue(
-            new squareUpAndShootAmp(
-                AMP_PROTON, DRIVETRAIN, WRIST, ELEVATOR, SHOOTER)); // MUST BE HELD
-    DRIVER_CONTROLLER
-        .b()
-        .whileTrue(
-            DRIVETRAIN.applyRequest(
-                () ->
-                    point.withModuleDirection(
-                        new Rotation2d(
-                            -DRIVER_CONTROLLER.getLeftY(), -DRIVER_CONTROLLER.getLeftX()))));
+    // DRIVER_CONTROLLER
+    //     .a()
+    //     .whileTrue(
+    //         new squareUpAndShootAmp(
+    //             AMP_PROTON, DRIVETRAIN, WRIST, ELEVATOR, SHOOTER)); // MUST BE HELD
 
     DRIVER_CONTROLLER
         .back()
@@ -360,6 +374,14 @@ public class RobotContainer {
     PHOTON_TAB.add(
         "Drive To Note",
         new DriveToNote(DRIVETRAIN, () -> -DRIVER_CONTROLLER.getLeftY(), INTAKE_PROTON));
+    PHOTON_TAB.addNumber(
+        "Distance from Speaker",
+        () ->
+            Vision.calculateDistanceToTarget(
+                SPEAKER_PROTON.getPitchVal(),
+                SPEAKER_PROTON.getCameraHeight(),
+                Constants.SPEAKER_APRILTAG_HEIGHT,
+                SPEAKER_PROTON.getCameraDegrees()));
     PHOTON_TAB.add("Drive To Note Auto", new DriveToNoteAuto(DRIVETRAIN, INTAKE_PROTON));
     PHOTON_TAB.add(
         "Collect Note Auto",

@@ -46,7 +46,7 @@ public class AimLockWrist extends Command {
                 speakerProton.getCameraHeight(),
                 Constants.SPEAKER_APRILTAG_HEIGHT,
                 speakerProton.getCameraDegrees());
-        System.out.println("Calculating for: " + distance);
+        // System.out.println("Calculating for: " + distance);
         double degrees = 0.0;
         if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0
             && elevator.getLengthInches() > 9.0) {
@@ -54,14 +54,14 @@ public class AimLockWrist extends Command {
               Constants.DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.getInterpolated(
                       new InterpolatingDouble(distance))
                   .value;
-          System.out.println("Degrees attempted: " + degrees);
+          // System.out.println("Degrees attempted: " + degrees);
           wrist.setDegrees(degrees);
         } else if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) > 2.0) {
           degrees =
               Constants.DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.getInterpolated(
                       new InterpolatingDouble(distance))
                   .value;
-          System.out.println("Degrees attempted: " + degrees);
+          // System.out.println("Degrees attempted: " + degrees);
           wrist.setDegrees(degrees);
         }
 

@@ -35,14 +35,14 @@ public class Intake extends SubsystemBase {
     final TalonFXConfiguration TOP_CFG = new TalonFXConfiguration();
     TOP_CFG.Slot0 = TOP_SLOT0_CFG;
     TOP_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
-    // TOP_CFG.CurrentLimits.StatorCurrentLimit = 45;
-    // TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
+    TOP_CFG.CurrentLimits.StatorCurrentLimit = 30;
+    TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     final TalonFXConfiguration BOTTOM_CFG = new TalonFXConfiguration();
     TOP_CFG.Slot0 = BOTTOM_SLOT0_CFG;
     TOP_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
-    // TOP_CFG.CurrentLimits.StatorCurrentLimit = 30;
-    // TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
+    TOP_CFG.CurrentLimits.StatorCurrentLimit = 30;
+    TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     INTAKE_TOP.getConfigurator().apply(TOP_CFG);
     INTAKE_BOTTOM.getConfigurator().apply(BOTTOM_CFG);

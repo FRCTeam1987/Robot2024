@@ -87,6 +87,10 @@ public class Elevator extends SubsystemBase {
     setLengthInches(0.0);
   }
 
+  public void zeroPosition() {
+    ELEVATOR_LEADER.setPosition(0);
+  }
+
   public void coastElevator() {
     ELEVATOR_LEADER.setNeutralMode(NeutralModeValue.Coast);
     ELEVATOR_FOLLOWER.setNeutralMode(NeutralModeValue.Coast);
