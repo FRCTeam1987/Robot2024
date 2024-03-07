@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.49,
+      "y": 7.29
+    },
+    "rotation": 90.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp_to_mid1-3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp_to_mid1-4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

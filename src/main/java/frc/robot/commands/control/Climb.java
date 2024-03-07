@@ -1,0 +1,55 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.control;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Util;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.wrist.Wrist;
+
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class Climb extends SequentialCommandGroup {
+  /** Creates a new Climb. */
+  public Climb(Elevator Elevator, Climber Climber, Wrist Wrist, Shooter Shooter) {
+    addRequirements(Elevator, Climber, Wrist, Shooter);
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    addCommands(
+        // new ConditionalCommand(
+        // new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
+        new InstantCommand(() -> Shooter.stopShooter(), Shooter),
+        new InstantCommand(() -> Wrist.stop(), Wrist),
+        new InstantCommand(
+            () -> Elevator.setLengthInches(Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT)),
+        new WaitCommand(0.3),
+        new WaitUntilCommand(
+            () ->
+                Util.isWithinTolerance(
+                    Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT, 0.1)),
+        new WaitCommand(0.35),
+        new MoveGates(Climber, true),
+        new WaitCommand(0.7)
+        // new ShootTrap(Elevator, Wrist, Shooter)
+        );
+
+    // new InstantCommand(
+    //     () -> {
+    //       System.out.println("Climb command left, Climber Location wrong");
+    //       return;
+    //     }),
+    // () ->
+    //     Util.isWithinTolerance(
+    //         Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_HEIGHT, 0.5)));
+    // Climber Subsystem needs to be integrated.
+  }
+}
