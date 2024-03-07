@@ -234,7 +234,7 @@ public class RobotContainer {
     DRIVER_CONTROLLER
         .leftBumper()
         .onTrue(
-            new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
+            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
                 .andThen(
                     new InstantCommand(
                             () -> {
@@ -263,6 +263,7 @@ public class RobotContainer {
                 () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)))
         .onFalse(new ShootNote(SHOOTER, ELEVATOR, Constants.SHOOTER_RPM));
     DRIVER_CONTROLLER.a().onTrue(new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+
     // .andThen(
     //     new InstantCommand(
     //         () ->s
