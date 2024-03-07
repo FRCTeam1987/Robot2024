@@ -139,4 +139,5 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+
 build.dependsOn(spotlessApply)
