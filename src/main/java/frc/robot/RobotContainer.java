@@ -46,6 +46,7 @@ import frc.robot.commands.movement.ShootSubwoofer;
 import frc.robot.commands.movement.ShootTall;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.movement.TeleopSwerve;
+import frc.robot.commands.movement.squareUpAndShootAmp;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -232,7 +233,7 @@ public class RobotContainer {
     DRIVER_CONTROLLER
         .leftBumper()
         .onTrue(
-            new frc.robot.commands.control.IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
+            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
                 .andThen(
                     new InstantCommand(
                             () -> {
@@ -251,7 +252,9 @@ public class RobotContainer {
     //     .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
 
     DRIVER_CONTROLLER.rightBumper().onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.SHOOTER_RPM));
-    DRIVER_CONTROLLER.a().onTrue(new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    DRIVER_CONTROLLER
+        .a()
+        .onTrue(new squareUpAndShootAmp(SPEAKER_PROTON, DRIVETRAIN, WRIST, ELEVATOR, SHOOTER));
     // .andThen(
     //     new InstantCommand(
     //         () ->s
