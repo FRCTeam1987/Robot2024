@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class Wrist extends SubsystemBase {
   private final TalonFX WRIST_MOTOR;
@@ -136,12 +137,14 @@ public class Wrist extends SubsystemBase {
     GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 52).getEntry();
     WRIST_TAB.add(
         "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
-    WRIST_TAB.addDouble("Degrees", () -> getDegrees());
-    WRIST_TAB.addDouble("Wrist degrees with offset", () -> getDegrees());
-    WRIST_TAB.addDouble("Current Amps", () -> WRIST_MOTOR.getStatorCurrent().getValueAsDouble());
-    WRIST_TAB.addDouble("Current volts", () -> WRIST_MOTOR.getMotorVoltage().getValueAsDouble());
-    WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
     WRIST_TAB.add("Set Coast", new InstantCommand(() -> setCoast(), this).ignoringDisable(true));
     WRIST_TAB.add("Set Brake", new InstantCommand(() -> setBrake(), this).ignoringDisable(true));
+    WRIST_TAB.addDouble("Degrees", () -> getDegrees());
+    if (Constants.shouldShuffleboard) {
+      WRIST_TAB.addDouble("Wrist degrees with offset", () -> getDegrees());
+      WRIST_TAB.addDouble("Current Amps", () -> WRIST_MOTOR.getStatorCurrent().getValueAsDouble());
+      WRIST_TAB.addDouble("Current volts", () -> WRIST_MOTOR.getMotorVoltage().getValueAsDouble());
+      WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
+    }
   }
 }

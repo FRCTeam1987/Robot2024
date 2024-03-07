@@ -20,7 +20,7 @@ import frc.robot.subsystems.elevator.Elevator;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoClimb extends SequentialCommandGroup {
   /** Creates a new Climb. */
-  public AutoClimb(Elevator Elevator, Climber Climber, Vision protonVision, Drivetrain drivetrain) {
+  public AutoClimb(Elevator Elevator, Climber Climber, Vision photonVision, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -29,7 +29,7 @@ public class AutoClimb extends SequentialCommandGroup {
             () ->
                 Util.isWithinTolerance(
                     Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_HEIGHT, 3)),
-        new SquareUpToAprilTag(drivetrain, protonVision, Constants.TRAP_APRILTAG_HEIGHT, 0.25),
+        new SquareUpToAprilTag(drivetrain, photonVision, Constants.TRAP_APRILTAG_HEIGHT, 0.25),
         new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
         // Climber Subsystem needs to be integrated.
         new MoveGates(Climber, true));

@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase {
   private final TalonFX SHOOTER_LEADER;
   private final TalonFX SHOOTER_FOLLOWER;
   private final TalonFX FEEDER;
-  private final Vision speakerProton;
+  private final Vision speakerPhoton;
 
   private final VelocityVoltage VOLTAGE_VELOCITY_LEADER;
   private final VelocityVoltage VOLTAGE_VELOCITY_FOLLOWER;
@@ -35,12 +35,12 @@ public class Shooter extends SubsystemBase {
       final int SHOOTER_LEAEDER_ID,
       final int SHOOTER_FOLLOWER_ID,
       final int FEEDER_ID,
-      final Vision speakerProton) {
+      final Vision speakerPhoton) {
 
     SHOOTER_LEADER = new TalonFX(SHOOTER_LEAEDER_ID, "rio");
     SHOOTER_FOLLOWER = new TalonFX(SHOOTER_FOLLOWER_ID, "rio");
     FEEDER = new TalonFX(FEEDER_ID, "rio");
-    this.speakerProton = speakerProton;
+    this.speakerPhoton = speakerPhoton;
     // FEEDER_TEMP = new CANSparkMax(Constants.SHOOTER_FEEDER_ID_TEMP, MotorType.kBrushless);
     final TalonFXConfiguration SHOOTER_CONFIG = new TalonFXConfiguration();
     SHOOTER_CONFIG.HardwareLimitSwitch.ForwardLimitEnable = false;
@@ -166,12 +166,16 @@ public class Shooter extends SubsystemBase {
 
   public void setupShuffleboard() {
 
-    SHOOTER_TAB.addDouble("Lead RPM", () -> getRPMLeader());
-    SHOOTER_TAB.addDouble("Feeder Current", () -> this.getFeederCurrent());
-    // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
-    SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
-    SHOOTER_TAB.addDouble(
-        "SHOOTER Current", () -> SHOOTER_LEADER.getStatorCurrent().getValueAsDouble());
+    if (Constants.shouldShuffleboard) {
+      SHOOTER_TAB.addDouble("Lead RPM", () -> getRPMLeader());
+      SHOOTER_TAB.addDouble("Feeder Current", () -> this.getFeederCurrent());
+      // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
+      SHOOTER_TAB.addDouble(
+          "SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
+      SHOOTER_TAB.addDouble(
+          "SHOOTER Current", () -> SHOOTER_LEADER.getStatorCurrent().getValueAsDouble());
+    }
+
     // SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
     // SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
 
@@ -197,9 +201,9 @@ public class Shooter extends SubsystemBase {
 
   public double ShooterCameraDistanceToTarget(double targetHeight) {
     return Vision.calculateDistanceToTarget(
-        speakerProton.getPitchVal(),
-        speakerProton.getCameraHeight(),
+        speakerPhoton.getPitchVal(),
+        speakerPhoton.getCameraHeight(),
         targetHeight,
-        speakerProton.getCameraDegrees());
+        speakerPhoton.getCameraDegrees());
   }
 }

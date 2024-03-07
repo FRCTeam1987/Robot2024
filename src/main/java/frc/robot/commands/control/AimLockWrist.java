@@ -18,14 +18,14 @@ public class AimLockWrist extends Command {
   private Wrist wrist;
   private Shooter shooter;
   private Elevator elevator;
-  private Vision speakerProton;
+  private Vision speakerPhoton;
 
   /** Creates a new AimLockWrist. */
-  public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator, Vision speakerProton) {
+  public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator, Vision speakerPhoton) {
     this.elevator = elevator;
     this.wrist = wrist;
     this.shooter = shooter;
-    this.speakerProton = speakerProton;
+    this.speakerPhoton = speakerPhoton;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -37,12 +37,12 @@ public class AimLockWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (speakerProton.hasTargets()) {
-      final double ty = speakerProton.getPitchVal();
+    if (speakerPhoton.hasTargets()) {
+      final double ty = speakerPhoton.getPitchVal();
       SmartDashboard.putNumber("ty", ty);
       if (RobotContainer.get().SHOOTER.isCenterBroken() && (ty > 2 || ty < 4)) {
         // try {
-        double Pitch = speakerProton.getPitchVal();
+        double Pitch = speakerPhoton.getPitchVal();
         // System.out.println("Calculating for: " + distance);
         double degrees = 0.0;
         // if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0

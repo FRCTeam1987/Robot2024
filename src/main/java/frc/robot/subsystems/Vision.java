@@ -63,6 +63,9 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (!this.camera.isConnected()) {
+      return;
+    }
     var result = this.camera.getLatestResult();
     // if (!result.hasTargets()) {
     //   return;
@@ -144,19 +147,35 @@ public class Vision extends SubsystemBase {
   }
 
   public double getYawVal() {
-    return this.yawVal;
+    if (this.hasTargets()) {
+      return this.yawVal;
+    } else {
+      return 0.0;
+    }
   }
 
   public double getPitchVal() {
-    return this.pitchVal;
+    if (this.hasTargets()) {
+      return this.pitchVal;
+    } else {
+      return 0.0;
+    }
   }
 
   public double getSkewVal() {
-    return this.skewVal;
+    if (this.hasTargets()) {
+      return this.skewVal;
+    } else {
+      return 0.0;
+    }
   }
 
   public double getAreaVal() {
-    return this.areaVal;
+    if (this.hasTargets()) {
+      return this.areaVal;
+    } else {
+      return 0.0;
+    }
   }
 
   public boolean hasTargets() {
@@ -204,7 +223,6 @@ public class Vision extends SubsystemBase {
             TARGET_HEIGHT_METERS,
             CAMERA_PITCH_RADIANS,
             Units.degreesToRadians(getPitchVal()));
-    double rangeInInches = Units.metersToInches(range);
 
     // PHOTON_TAB.addNumber("Camera Distance", () -> rangeInInches);
 
@@ -223,6 +241,7 @@ public class Vision extends SubsystemBase {
    */
   public static double calculateDistanceToTarget(
       double ty, double cameraHeight, double targetHeight, double cameraAngle) {
+
     double angleToTargetDegrees = ty + cameraAngle;
     double angleToTargetRadians = Math.toRadians(angleToTargetDegrees);
     double heightDifference = targetHeight - cameraHeight;

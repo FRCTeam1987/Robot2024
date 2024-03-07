@@ -5,6 +5,8 @@ import frc.robot.util.InterpolatingTreeMap;
 
 public class Constants {
 
+  public static boolean shouldShuffleboard = false;
+
   public static double MaxSpeed = 5.0; // 6 meters per second desired top speed
   public static double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
@@ -27,7 +29,7 @@ public class Constants {
   public static final double WRIST_AMP_DEGREES = 110.0;
 
   public static final double ELEVATOR_TRAP_HEIGHT = 28.0;
-  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 0.25;
+  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 0.05;
 
   public static final int LEFT_CANDLE = 28;
   public static final int RIGHT_CANDLE = 29;
@@ -55,9 +57,9 @@ public class Constants {
   public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 3250; // NEEDS to bee smaller
   public static final double SPIN_RATIO = 0.75;
 
-  public static final double CLIMBER_NOMINAL_VOLTAGE = 2.5;
+  public static final double CLIMBER_NOMINAL_VOLTAGE = 8;
   public static final double CLIMBER_MAINTAIN_VOLTAGE = 0.15;
-  public static final double CLIMBER_CUTOFF_AMPERAGE = 38;
+  public static final double CLIMBER_CUTOFF_AMPERAGE = 50;
 
   public static final InterpolatingTreeMap<
           InterpolatingDouble,
