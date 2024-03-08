@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
@@ -36,6 +37,7 @@ import frc.robot.commands.control.ReverseIntake;
 import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
+import frc.robot.commands.control.SimpleShootforAmp;
 import frc.robot.commands.control.SpitNote;
 import frc.robot.commands.control.StopAll;
 import frc.robot.commands.movement.CollectNoteAuto;
@@ -113,6 +115,8 @@ public class RobotContainer {
   private boolean isAmpPrimed = false;
   private boolean isClimbPrimed = false;
 
+  private static boolean isAmpPrepped = false;
+
   private void configureBindings() {
     // DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
     //     DRIVETRAIN.applyRequest(
@@ -140,16 +144,6 @@ public class RobotContainer {
             () -> 1.0,
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
             () -> DRIVER_CONTROLLER.leftTrigger().getAsBoolean()));
-
-    CO_DRIVER_CONTROLLER
-        .a()
-        .onTrue(
-            new ConditionalCommand(
-                new ShootAmp(SHOOTER, ELEVATOR, WRIST)
-                    .andThen(new InstantCommand(() -> isAmpPrimed = false)),
-                new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST)
-                    .andThen(new InstantCommand(() -> isAmpPrimed = true)),
-                () -> isAmpPrimed));
 
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, CLIMBER, ELEVATOR));
 
@@ -188,9 +182,11 @@ public class RobotContainer {
         .y()
         .onTrue(
             new ConditionalCommand(
-                new ShootAmp(SHOOTER, ELEVATOR, WRIST)
+                new SimpleShootforAmp(SHOOTER, ELEVATOR, WRIST)
+                    .andThen(new WaitCommand(0.2))
                     .andThen(new InstantCommand(() -> isAmpPrimed = false)),
-                new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST)
+                new PrepareShootAmp(ELEVATOR, WRIST)
+                    .andThen(new WaitCommand(0.2))
                     .andThen(new InstantCommand(() -> isAmpPrimed = true)),
                 () -> isAmpPrimed));
 
@@ -290,6 +286,11 @@ public class RobotContainer {
     COMMANDS_TAB.add("Auto Climb", new AutoClimb(ELEVATOR, CLIMBER, SPEAKER_PHOTON, DRIVETRAIN));
     COMMANDS_TAB.addNumber("Speaeker Pitch", () -> SPEAKER_PHOTON.getPitchVal());
     COMMANDS_TAB.add(
+        "Intake Auto",
+        new ParallelCommandGroup(
+            new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR),
+            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)));
+    COMMANDS_TAB.add(
         "Zero Subsystems",
         new InstantCommand(
                 () -> {
@@ -337,9 +338,7 @@ public class RobotContainer {
                           INTAKE.stopCollecting();
                         })))
         .withPosition(0, 3);
-    MATCH_TAB
-        .add("Prepare Shoot Amp", new PrepareShootAmp(SHOOTER, ELEVATOR, WRIST))
-        .withPosition(1, 5);
+    MATCH_TAB.add("Prepare Shoot Amp", new PrepareShootAmp(ELEVATOR, WRIST)).withPosition(1, 5);
     MATCH_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST)).withPosition(1, 6);
     MATCH_TAB
         .add(
@@ -429,14 +428,16 @@ public class RobotContainer {
     autoChooser.addOption("3 Piece Far", new PathPlannerAuto("3 Piece Far"));
     autoChooser.addOption("temp", new PathPlannerAuto("temp"));
     autoChooser.addOption("ampa", new PathPlannerAuto("ampa"));
+    autoChooser.addOption("ampa-full", new PathPlannerAuto("ampa-full"));
     autoChooser.addOption("sourcea", new PathPlannerAuto("sourcea"));
     autoChooser.addOption("amp_close", new PathPlannerAuto("amp_close"));
     autoChooser.addOption("amp_subwoofer", new PathPlannerAuto("amp_subwoofer"));
+    autoChooser.addOption("Do Nothing", new InstantCommand());
     COMMANDS_TAB.add(autoChooser);
   }
 
   public RobotContainer() {
-    CANDLES.setColor(25, 0, 0);
+    // CANDLES.setColor(100, 0, 0);
     instance = this;
     registerNamedCommands();
     setupShuffleboard();
@@ -486,6 +487,13 @@ public class RobotContainer {
             INTAKE));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
     NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    NamedCommands.registerCommand(
+        "DriveToNoteAuto",
+        new ParallelCommandGroup(
+            new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR),
+            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)));
+    // NamedCommands.registerCommand("DynamicDriveToSpeaker", );
+
     // NamedCommands.registerCommand("ResetOdo", new InstantCommand(() ->
     // DRIVETRAIN.seedFieldRelative()));
   }
@@ -504,6 +512,14 @@ public class RobotContainer {
     //         }, SHOOTER))
     // );
     // return Commands.print("No autonomous command configured");
+  }
+
+  public static boolean isAmpPrepped() {
+    return isAmpPrepped;
+  }
+
+  public static void setAmpPrepped(final boolean isPrepped) {
+    isAmpPrepped = isPrepped;
   }
 
   public static final double DEADBAND = 0.05;

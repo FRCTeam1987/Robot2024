@@ -21,7 +21,7 @@ import frc.robot.subsystems.wrist.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeNoteSequence extends SequentialCommandGroup {
 
-  private final Debouncer hasNote = new Debouncer(0.00, DebounceType.kRising);
+  private final Debouncer hasNote = new Debouncer(0.01, DebounceType.kRising);
 
   /** Creates a new IntakeNoteSequence. */
   public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator) {

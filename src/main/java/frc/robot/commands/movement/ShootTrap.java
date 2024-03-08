@@ -23,7 +23,7 @@ public class ShootTrap extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              elevator.setLengthInches(28.2);
+              elevator.setLengthInchesSlot1(28.2);
             },
             elevator,
             shooter),

@@ -6,6 +6,11 @@ public class ElevatorConstants {
   public static final double EXTENSION_KD = 0.1;
   public static final double EXTENSION_KV = 0.15;
 
+  public static final double EXTENSION_KP_1 = 8.0;
+  public static final double EXTENSION_KI_1 = 0.6;
+  public static final double EXTENSION_KD_1 = 0.1;
+  public static final double EXTENSION_KV_1 = 0.45;
+
   public static final double EXTENSION_MOTION_ACCELERATION = 45000;
   public static final double EXTENSION_CRUISE_VELOCITY = 65000;
   public static final double EXTENSION_ALLOWABLE_ERROR = 5.0;

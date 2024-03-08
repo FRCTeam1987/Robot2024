@@ -7,6 +7,7 @@ package frc.robot.commands.control;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.shooter.Shooter;
 
@@ -32,13 +33,12 @@ public class IdleShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (RobotContainer.isAmpPrepped()) {
+      shooter.setRPMShoot(Constants.SHOOTER_AMP_RPM);
+      return;
+    }
     if (shooter.isCenterBroken()) {
-      if (debounce.calculate(
-          shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0)) {
-        shooter.setRPMShoot(Constants.SHOOTER_IDLE_CLOSERANGE_RPM);
-      } else {
-        shooter.setRPMShoot(Constants.SHOOTER_IDLE_RPM);
-      }
+      shooter.setRPMShoot(Constants.SHOOTER_IDLE_RPM);
     } else {
       shooter.stopShooter();
     }

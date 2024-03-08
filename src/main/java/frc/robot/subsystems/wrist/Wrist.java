@@ -9,12 +9,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.zeroing.ZeroWrist;
 import frc.robot.constants.Constants;
 
 public class Wrist extends SubsystemBase {
   private final TalonFX WRIST_MOTOR;
   private final ShuffleboardTab WRIST_TAB = Shuffleboard.getTab("WRIST");
   private double IncrementValue = 0.0;
+  public static double incrementAimbot = 1.0;
 
   // Constructor
   public Wrist(final int wristMotorID) {
@@ -82,6 +84,14 @@ public class Wrist extends SubsystemBase {
         < WristConstants.WRIST_ALLOWABLE_ERROR;
   }
 
+  public double getVelocity() {
+    return WRIST_MOTOR.getVelocity().getValueAsDouble();
+  }
+
+  public void setVoltage(double volts) {
+    WRIST_MOTOR.setVoltage(volts);
+  }
+
   public double getDegrees() {
     // initial angle irl is 13 degrees
     // 44 degrees at 1.67 rotations
@@ -94,7 +104,7 @@ public class Wrist extends SubsystemBase {
     degrees = degrees + IncrementValue;
 
     if (degrees > WristConstants.WRIST_MAX_DEG || degrees < WristConstants.WRIST_MIN_DEG) {
-      System.out.println("Out of Wrist Range!");
+      System.out.println("Out of Wrist Range! " + degrees);
       return;
     } else {
       double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
@@ -134,7 +144,10 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setupShuffleboard() {
-    GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 52).getEntry();
+    GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 28).getEntry();
+    WRIST_TAB.add("+1 AIMBOT DEG", new InstantCommand(() -> Wrist.incrementAimbot++));
+    WRIST_TAB.add("-1 AIMBOT DEG", new InstantCommand(() -> Wrist.incrementAimbot--));
+    WRIST_TAB.add("ZERO WRIST", new ZeroWrist(this));
     WRIST_TAB.add(
         "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
     WRIST_TAB.add("Set Coast", new InstantCommand(() -> setCoast(), this).ignoringDisable(true));

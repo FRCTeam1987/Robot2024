@@ -28,6 +28,48 @@
           "data": {
             "pathName": "amp_to_mid1-4"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToNoteAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp_to_mid1-5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp_to_mid1-6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToNoteAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp_to_mid1-7"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
         }
       ]
     }

@@ -22,6 +22,54 @@
           "data": {
             "name": "ShootNoteAimbot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "source_to_mid6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToNoteAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "source_to_mid7"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "source_to_mid8"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToNoteAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "source_to_mid9"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
         }
       ]
     }

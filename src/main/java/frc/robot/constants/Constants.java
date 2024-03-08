@@ -11,9 +11,9 @@ public class Constants {
   public static double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
-  public static final double SPEAKER_APRILTAG_HEIGHT = 1.45;
-  public static final double TRAP_APRILTAG_HEIGHT = 1.23;
-  public static final double AMP_APRILTAG_HEIGHT = 0.535;
+  public static final double SPEAKER_APRILTAG_HEIGHT = 1.458;
+  public static final double TRAP_APRILTAG_HEIGHT = 1.315;
+  public static final double AMP_APRILTAG_HEIGHT = 1.35; // 0.535
 
   public static final double translationXSlewRate = 4.0;
   public static final double translationYSlewRate = 4.0;
@@ -24,12 +24,12 @@ public class Constants {
   public static final int SHOOTER_FEEDER_ID = 55;
   public static final int SHOOTER_FEEDER_ID_TEMP = 10;
 
-  public static final int SHOOTER_AMP_RPM = 650;
+  public static final int SHOOTER_AMP_RPM = 550;
   public static final double ELEVATOR_AMP_HEIGHT = 6.2;
   public static final double WRIST_AMP_DEGREES = 110.0;
 
   public static final double ELEVATOR_TRAP_HEIGHT = 28.0;
-  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 0.05;
+  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 0.025;
 
   public static final int LEFT_CANDLE = 28;
   public static final int RIGHT_CANDLE = 29;
@@ -53,13 +53,13 @@ public class Constants {
 
   public static final double SHOOTER_RPM = 3500;
   public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to bee smaller
-  public static final double SHOOTER_IDLE_RPM = 2500;
+  public static final double SHOOTER_IDLE_RPM = 3500;
   public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 3250; // NEEDS to bee smaller
   public static final double SPIN_RATIO = 0.75;
 
-  public static final double CLIMBER_NOMINAL_VOLTAGE = 8;
-  public static final double CLIMBER_MAINTAIN_VOLTAGE = 0.15;
-  public static final double CLIMBER_CUTOFF_AMPERAGE = 50;
+  public static final double CLIMBER_NOMINAL_VOLTAGE = 10;
+  public static final double CLIMBER_MAINTAIN_VOLTAGE = 0.35;
+  public static final double CLIMBER_CUTOFF_AMPERAGE = 65;
 
   public static final InterpolatingTreeMap<
           InterpolatingDouble,
@@ -75,17 +75,24 @@ public class Constants {
 
   static {
     // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(new InterpolatingDouble(0.9), new
-    // InterpolatingDouble(36.0));
+    // // InterpolatingDouble(36.0));
+    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
+    //     new InterpolatingDouble(-7.22), new InterpolatingDouble(32.7));
+
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(-7.22), new InterpolatingDouble(32.7));
+        new InterpolatingDouble(-8.3), new InterpolatingDouble(33.0)); // 10 ft away
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(-10.6), new InterpolatingDouble(30.0));
+        new InterpolatingDouble(-9.7), new InterpolatingDouble(32.0)); // 10 ft away
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(-12.5), new InterpolatingDouble(29.0));
+        new InterpolatingDouble(-10.5), new InterpolatingDouble(31.0)); // 10 ft away
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(-14.3), new InterpolatingDouble(28.3));
+        new InterpolatingDouble(-11.2), new InterpolatingDouble(30.5)); // 11 ft away
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-        new InterpolatingDouble(-15.3), new InterpolatingDouble(27.1));
+        new InterpolatingDouble(-12.5), new InterpolatingDouble(29.0)); // 12 ft away
+    DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
+        new InterpolatingDouble(-14.3), new InterpolatingDouble(28.5)); //
+    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
+    //     new InterpolatingDouble(-15.3), new InterpolatingDouble(27.1));
 
     // DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(
     //     new InterpolatingDouble(1.99), new InterpolatingDouble(34.0));

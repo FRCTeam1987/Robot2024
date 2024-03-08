@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.control.MoveGates;
 
 public class Robot extends TimedRobot {
@@ -26,6 +29,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    m_robotContainer.CANDLES.setColor(100, 0, 0);
     CommandScheduler.getInstance().cancelAll();
   }
 
@@ -37,6 +41,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.CANDLES.setColor(0, 100, 100);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -52,7 +57,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    CommandScheduler.getInstance().schedule(new MoveGates(m_robotContainer.CLIMBER, false));
+    m_robotContainer.CANDLES.setColor(0, 100, 0);
+    CommandScheduler.getInstance()
+        .schedule(
+            new SequentialCommandGroup(
+                new MoveGates(m_robotContainer.CLIMBER, false),
+                new WaitCommand(0.3),
+                new InstantCommand(() -> m_robotContainer.CLIMBER.zeroMotors())));
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

@@ -6,10 +6,6 @@ package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Util;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
@@ -29,17 +25,19 @@ public class Climb extends SequentialCommandGroup {
         // new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
         new InstantCommand(() -> Shooter.stopShooter(), Shooter),
         new InstantCommand(() -> Wrist.stop(), Wrist),
-        new InstantCommand(
-            () -> Elevator.setLengthInches(Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT)),
-        new WaitCommand(0.3),
-        new WaitUntilCommand(
-            () ->
-                Util.isWithinTolerance(
-                    Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT, 0.1)),
-        new WaitCommand(0.35),
-        new MoveGates(Climber, true),
-        new WaitCommand(0.7)
-        // new ShootTrap(Elevator, Wrist, Shooter)
+        new InstantCommand(() -> Elevator.setLengthInchesSlot1(10.0))
+        // new WaitCommand(0.3),
+        // new WaitUntilCommand(
+        //     () ->
+        //         Util.isWithinTolerance(
+        //             Elevator.getLengthInches(), Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT, 0.07)),
+        // new WaitCommand(0.02),
+        // new MoveGatesPosition(Climber),
+        // new ConditionalCommand(
+        //     new ShootTrap(Elevator, Wrist, Shooter),
+        //     new InstantCommand(() -> Elevator.setLengthInchesSlot1(8.5)),
+        //     () -> Shooter.isCenterBroken())
+        //
         );
 
     // new InstantCommand(

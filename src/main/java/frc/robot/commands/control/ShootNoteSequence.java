@@ -71,35 +71,36 @@ public class ShootNoteSequence extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-            new PointAtAprilTag(drivetrain, photonVision),
-            new InstantCommand(
-                () -> {
-                  wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
-                  shooter.setRPMShoot(shootRPM);
-                },
-                shooter,
-                wrist)),
+                new PointAtAprilTag(drivetrain, photonVision),
+                new InstantCommand(
+                    () -> {
+                      wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
+                      shooter.setRPMShoot(shootRPM);
+                    },
+                    shooter,
+                    wrist))
+            .withTimeout(0.25),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
-        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
+        new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint())
+            .withTimeout(0.15),
         new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
-        new WaitUntilCommand(
-            () ->
-                lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(!shooter.isCenterBroken()))
+            .withTimeout(0.04), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
             },
             shooter),
-        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken()))
+            .withTimeout(0.04),
         new InstantCommand(
             () -> {
               shooter.stopShooter();
             },
-            shooter),
-        new WaitCommand(0.1));
+            shooter));
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 

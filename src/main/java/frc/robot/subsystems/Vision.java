@@ -8,6 +8,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +54,22 @@ public class Vision extends SubsystemBase {
     tab = Shuffleboard.getTab("CAM_" + photonCameraName);
     tab.addDouble("pitch", this::getPitchVal);
     tab.addDouble("yaw", this::getYawVal);
+    tab.addDouble(
+        "distance to speaker",
+        () ->
+            PhotonUtils.calculateDistanceToTargetMeters(
+                this.getCameraHeight(),
+                Constants.SPEAKER_APRILTAG_HEIGHT,
+                Units.degreesToRadians(this.getCameraDegrees()),
+                0.0));
+    tab.addDouble(
+        "Our distance to speaker",
+        () ->
+            this.calculateDistanceToTarget(
+                this.getPitchVal(),
+                this.getCameraHeight(),
+                Constants.SPEAKER_APRILTAG_HEIGHT,
+                this.getCameraDegrees()));
     // this.camera.setPipelineIndex(Constants.Tape01);
   }
 

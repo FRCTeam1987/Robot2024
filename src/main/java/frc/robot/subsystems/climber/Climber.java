@@ -5,6 +5,7 @@
 package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,17 +20,37 @@ public class Climber extends SubsystemBase {
     CLIMB_LEFT = new TalonFX(CLIMB_LEFT_ID, "canfd");
     CLIMB_RIGHT = new TalonFX(CLIMB_RIGHT_ID, "canfd");
 
-    // CLIMB_RIGHT.setInverted(true);
+    // -0.2 RIGHT OPEN
+    // 1.8 CLOSED RIGHT
 
     TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
     // extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     // extensionConfig.CurrentLimits.StatorCurrentLimit = ClimberConstants.EXTENSION_CURRENT_LIMIT;
 
-    // CLIMB_LEFT.getConfigurator().apply(extensionConfig);
-    // CLIMB_RIGHT.getConfigurator().apply(extensionConfig);
+    extensionConfig.Slot0.kP = 30.0;
+    extensionConfig.Slot0.kI = 0.0;
+    extensionConfig.Slot0.kD = 0.0;
+
+    CLIMB_LEFT.getConfigurator().apply(extensionConfig);
+    CLIMB_RIGHT.getConfigurator().apply(extensionConfig);
     CLIMB_RIGHT.setInverted(true);
     CLIMB_LEFT.setNeutralMode(NeutralModeValue.Brake);
     CLIMB_RIGHT.setNeutralMode(NeutralModeValue.Brake);
+  }
+
+  public void zeroMotors() {
+    CLIMB_LEFT.setPosition(0.0);
+    CLIMB_RIGHT.setPosition(0.0);
+  }
+
+  public void close() {
+    CLIMB_LEFT.setControl(new PositionVoltage(2.0));
+    CLIMB_RIGHT.setControl(new PositionVoltage(2.0));
+  }
+
+  public boolean isClosed() {
+    return ((CLIMB_LEFT.getClosedLoopError().getValueAsDouble() < 0.55)
+        && (CLIMB_RIGHT.getClosedLoopError().getValueAsDouble() < 0.55));
   }
 
   public void setSpeeds(double speed) {

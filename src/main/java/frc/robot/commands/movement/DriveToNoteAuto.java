@@ -37,7 +37,7 @@ public class DriveToNoteAuto extends Command {
   private static final double kI = 0.00; // PID integral gain
   private static final double kD = 0.00; // PID derivative gain
   private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 3.0; // In Meters
+  private static final double maximumAllowableDistance = 4.0; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
   private final double ACCEPTABLE_DISTANCE = -0.2;
@@ -51,7 +51,7 @@ public class DriveToNoteAuto extends Command {
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
 
   private Debouncer canSeePieceDebouncer;
-  private static final double DEBOUNCE_TIME = 0.2;
+  private static final double DEBOUNCE_TIME = 0.3;
 
   // TODO find correct value and change name  public DriveToNoteAuto(final CommandSwerveDrivetrain
   // drivetrain) {

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.zeroing.ZeroElevator;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
@@ -34,6 +35,10 @@ public class Elevator extends SubsystemBase {
     extensionConfig.Slot0.kI = ElevatorConstants.EXTENSION_KI;
     extensionConfig.Slot0.kD = ElevatorConstants.EXTENSION_KD;
     extensionConfig.Slot0.kV = ElevatorConstants.EXTENSION_KV;
+    extensionConfig.Slot1.kP = ElevatorConstants.EXTENSION_KP_1;
+    extensionConfig.Slot1.kI = ElevatorConstants.EXTENSION_KI_1;
+    extensionConfig.Slot1.kD = ElevatorConstants.EXTENSION_KD_1;
+    extensionConfig.Slot1.kV = ElevatorConstants.EXTENSION_KV_1;
     extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     extensionConfig.CurrentLimits.StatorCurrentLimit = ElevatorConstants.EXTENSION_CURRENT_LIMIT;
     extensionConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -56,6 +61,18 @@ public class Elevator extends SubsystemBase {
     setupShuffleboard();
   }
 
+  public void setVoltage(double volts) {
+    ELEVATOR_LEADER.setVoltage(volts);
+  }
+
+  public double getVelocity() {
+    return ELEVATOR_LEADER.getVelocity().getValueAsDouble();
+  }
+
+  public void stop() {
+    ELEVATOR_LEADER.setVoltage(0);
+  }
+
   public void setLengthInches(double LENGTH) {
     LENGTH = LENGTH + IncrementValue;
     if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
@@ -64,6 +81,20 @@ public class Elevator extends SubsystemBase {
       return;
     } else {
       MotionMagicVoltage ctrl = new MotionMagicVoltage(0);
+      ELEVATOR_LEADER.setControl(
+          ctrl.withPosition(LENGTH * ElevatorConstants.CONVERSION_FACTOR_INCHES_TO_TICKS));
+    }
+  }
+
+  public void setLengthInchesSlot1(double LENGTH) {
+    LENGTH = LENGTH + IncrementValue;
+    if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
+        || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
+      DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
+      return;
+    } else {
+      MotionMagicVoltage ctrl = new MotionMagicVoltage(0, true, 0, 1, false, false, false);
+
       ELEVATOR_LEADER.setControl(
           ctrl.withPosition(LENGTH * ElevatorConstants.CONVERSION_FACTOR_INCHES_TO_TICKS));
     }
@@ -120,6 +151,7 @@ public class Elevator extends SubsystemBase {
 
   public void setupShuffleboard() {
     GenericEntry length = ELEVATOR_TAB.add("DesiredLen In.", 2).getEntry();
+    ELEVATOR_TAB.add("ZERO SUBSYSTEM", new ZeroElevator(this));
     ELEVATOR_TAB.add(
         "GoTo DesiredLen", new InstantCommand(() -> setLengthInches(length.getDouble(0))));
     ELEVATOR_TAB.addDouble("ActualLen In.", () -> getLengthInches());

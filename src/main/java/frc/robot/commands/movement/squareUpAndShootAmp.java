@@ -31,7 +31,7 @@ public class squareUpAndShootAmp extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             new SquareUpToAprilTag(drivetrain, photonVision, Constants.AMP_APRILTAG_HEIGHT, 0.5),
-            new PrepareShootAmp(shooter, elevator, wrist)),
+            new PrepareShootAmp(elevator, wrist)),
         new WaitCommand(0.5), // Allow for systems to move.
         new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())),
         new ShootAmp(shooter, elevator, wrist));

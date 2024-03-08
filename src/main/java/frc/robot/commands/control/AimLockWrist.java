@@ -40,11 +40,11 @@ public class AimLockWrist extends Command {
     if (speakerPhoton.hasTargets()) {
       final double ty = speakerPhoton.getPitchVal();
       SmartDashboard.putNumber("ty", ty);
-      if (RobotContainer.get().SHOOTER.isCenterBroken() && (ty > 2 || ty < 4)) {
+      if (RobotContainer.get().SHOOTER.isCenterBroken()) { // && (ty > 2 || ty < 4)
         // try {
         double Pitch = speakerPhoton.getPitchVal();
         // System.out.println("Calculating for: " + distance);
-        double degrees = 0.0;
+        // double degrees = 0.0;
         // if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) < 2.0
         //     && elevator.getLengthInches() > 9.0) {
         //   degrees =
@@ -55,10 +55,11 @@ public class AimLockWrist extends Command {
         //   wrist.setDegrees(degrees);
         // } else if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) >
         // 2.0) {
-        degrees =
+        double degrees =
             Constants.DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.getInterpolated(
-                    new InterpolatingDouble(Pitch))
-                .value;
+                        new InterpolatingDouble(Pitch))
+                    .value
+                + Wrist.incrementAimbot;
         // System.out.println("Degrees attempted: " + degrees);
         wrist.setDegrees(degrees);
         // }

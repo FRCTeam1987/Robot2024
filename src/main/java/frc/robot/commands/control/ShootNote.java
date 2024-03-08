@@ -18,7 +18,7 @@ public class ShootNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   private Debouncer lineBreakDebouncer;
 
-  private static final double DEBOUNCE_TIME = 0.06;
+  private static final double DEBOUNCE_TIME = 0.08;
 
   public ShootNote(Shooter shooter, Elevator elevator, double shootRPM) {
     // Add your commands in the addCommands() call, e.g.
