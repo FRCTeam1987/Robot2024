@@ -21,6 +21,8 @@ public class ShootNote extends SequentialCommandGroup {
   private static final double DEBOUNCE_TIME = 0.08;
 
   public ShootNote(Shooter shooter, Elevator elevator, double shootRPM) {
+    addRequirements(shooter);
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);

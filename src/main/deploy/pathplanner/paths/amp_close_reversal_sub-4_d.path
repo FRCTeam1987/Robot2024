@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9426084207709504,
-        "y": 6.112395987306442
+        "x": 2.0862402096621326,
+        "y": 4.8421989368211955
       },
       "isLocked": false,
       "linkedName": "subwoofer_shot"
     },
     {
       "anchor": {
-        "x": 2.6484984599381813,
-        "y": 6.751127398268975
+        "x": 2.598162297936386,
+        "y": 4.15149296473179
       },
       "prevControl": {
-        "x": 2.549221234148487,
-        "y": 6.290100027031652
+        "x": 2.024023210266699,
+        "y": 4.174649798740154
       },
       "nextControl": {
-        "x": 2.764833407829106,
-        "y": 7.291368070614106
+        "x": 2.701997866557874,
+        "y": 4.147304949878993
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 5.518334155013218
       },
       "prevControl": {
-        "x": 1.9578548958891901,
-        "y": 6.7489157941278854
+        "x": 1.7346460389978011,
+        "y": 5.193426908122646
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,15 +47,15 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": 45.0,
+      "rotationDegrees": -11.707578302831038,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.25,
+      "name": "IntakeNote",
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {

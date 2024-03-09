@@ -22,6 +22,8 @@ public class ShootAmp extends SequentialCommandGroup {
   private static final double DEBOUNCE_TIME = 0.06;
 
   public ShootAmp(Shooter shooter, Elevator elevator, Wrist wrist) {
+    addRequirements(shooter);
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);

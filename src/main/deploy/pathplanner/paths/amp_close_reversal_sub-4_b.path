@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9426084207709504,
-        "y": 6.112395987306442
+        "x": 1.7081530101657771,
+        "y": 5.871887545606492
       },
       "isLocked": false,
       "linkedName": "subwoofer_shot"
     },
     {
       "anchor": {
-        "x": 2.6484984599381813,
-        "y": 6.751127398268975
+        "x": 2.8308433926114698,
+        "y": 6.917175349747732
       },
       "prevControl": {
-        "x": 2.549221234148487,
-        "y": 6.290100027031652
+        "x": 2.8945596894539687,
+        "y": 6.980891646590232
       },
       "nextControl": {
-        "x": 2.764833407829106,
-        "y": 7.291368070614106
+        "x": 2.477290002018196,
+        "y": 6.5636219591544585
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 5.518334155013218
       },
       "prevControl": {
-        "x": 1.9578548958891901,
-        "y": 6.7489157941278854
+        "x": 1.7081530101657774,
+        "y": 5.871887545606492
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,7 +54,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "IntakeNote",
       "waypointRelativePos": 0.25,
       "command": {
         "type": "parallel",

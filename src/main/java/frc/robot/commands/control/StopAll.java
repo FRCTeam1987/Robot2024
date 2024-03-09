@@ -6,7 +6,6 @@ package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -17,7 +16,8 @@ import frc.robot.subsystems.wrist.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StopAll extends ParallelCommandGroup {
   /** Creates a new StopALl. */
-  public StopAll(Wrist wrist, Shooter shooter, Intake intake, Climber climber, Elevator elevator) {
+  public StopAll(Wrist wrist, Shooter shooter, Intake intake, Elevator elevator) {
+    addRequirements(shooter, intake, wrist, elevator);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -25,7 +25,7 @@ public class StopAll extends ParallelCommandGroup {
         new InstantCommand(() -> shooter.stopFeeder()),
         new InstantCommand(() -> intake.stopCollecting()),
         new InstantCommand(() -> wrist.stop()),
-        new InstantCommand(() -> climber.stopAll()),
+        // new InstantCommand(() -> climber.stopAll()),
         new InstantCommand(() -> elevator.zeroVoltage()),
         new InstantCommand(() -> elevator.coastElevator()));
   }

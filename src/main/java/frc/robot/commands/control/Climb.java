@@ -6,7 +6,8 @@ package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.climber.Climber;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -16,8 +17,8 @@ import frc.robot.subsystems.wrist.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Climb extends SequentialCommandGroup {
   /** Creates a new Climb. */
-  public Climb(Elevator Elevator, Climber Climber, Wrist Wrist, Shooter Shooter) {
-    addRequirements(Elevator, Climber, Wrist, Shooter);
+  public Climb(Elevator Elevator, Wrist Wrist, Shooter Shooter) {
+    addRequirements(Elevator, Wrist, Shooter);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -25,7 +26,10 @@ public class Climb extends SequentialCommandGroup {
         // new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
         new InstantCommand(() -> Shooter.stopShooter(), Shooter),
         new InstantCommand(() -> Wrist.stop(), Wrist),
-        new InstantCommand(() -> Elevator.setLengthInchesSlot1(10.0))
+        new InstantCommand(() -> Elevator.setLengthInchesSlot1(5.9)),
+        new WaitCommand(1.0),
+        new WaitUntilCommand(() -> Elevator.isAtSetpoint()),
+        new InstantCommand(() -> Elevator.stop())
         // new WaitCommand(0.3),
         // new WaitUntilCommand(
         //     () ->

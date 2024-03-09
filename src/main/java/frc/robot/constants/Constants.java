@@ -29,7 +29,7 @@ public class Constants {
   public static final double WRIST_AMP_DEGREES = 110.0;
 
   public static final double ELEVATOR_TRAP_HEIGHT = 28.0;
-  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 0.025;
+  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 5.9;
 
   public static final int LEFT_CANDLE = 28;
   public static final int RIGHT_CANDLE = 29;
@@ -53,8 +53,8 @@ public class Constants {
 
   public static final double SHOOTER_RPM = 3500;
   public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to bee smaller
-  public static final double SHOOTER_IDLE_RPM = 3500;
-  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 3250; // NEEDS to bee smaller
+  public static final double SHOOTER_IDLE_RPM = 2500;
+  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to bee smaller
   public static final double SPIN_RATIO = 0.75;
 
   public static final double CLIMBER_NOMINAL_VOLTAGE = 10;

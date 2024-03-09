@@ -21,6 +21,8 @@ public class SpitNote extends SequentialCommandGroup {
   GenericEntry SpitRPM = SHOOTER_TAB.add("SpitRPM", 3500).getEntry();
 
   public SpitNote(Shooter shooter) {
+    addRequirements(shooter);
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 

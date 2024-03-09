@@ -14,6 +14,7 @@ import frc.robot.subsystems.shooter.Shooter;
 public class PoopNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   public PoopNote(Shooter shooter, double poopRPM) {
+    addRequirements(shooter);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

@@ -25,12 +25,10 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
-import frc.robot.commands.control.AutoClimb;
 import frc.robot.commands.control.Climb;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.IntakeNoteSequence;
-import frc.robot.commands.control.MoveGates;
 import frc.robot.commands.control.PoopNote;
 import frc.robot.commands.control.PrepareShootAmp;
 import frc.robot.commands.control.ReverseIntake;
@@ -45,6 +43,7 @@ import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.ShootSubwoofer;
+import frc.robot.commands.movement.ShootSubwooferFlat;
 import frc.robot.commands.movement.ShootTall;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.movement.TeleopSwerve;
@@ -53,7 +52,6 @@ import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.candle.Candles;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -81,10 +79,10 @@ public class RobotContainer {
 
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
 
-  public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
+  public static final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
 
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
-  public final Climber CLIMBER = new Climber(Constants.CLIMB_LEFT, Constants.CLIMB_RIGHT);
+  //   public final Climber CLIMBER = new Climber(Constants.CLIMB_LEFT, Constants.CLIMB_RIGHT);
   public final Shooter SHOOTER =
       new Shooter(
           Constants.SHOOTER_LEADER_ID,
@@ -145,19 +143,21 @@ public class RobotContainer {
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
             () -> DRIVER_CONTROLLER.leftTrigger().getAsBoolean()));
 
-    CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, CLIMBER, ELEVATOR));
+    CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
+    CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
 
     CO_DRIVER_CONTROLLER
         .y()
         .onTrue(
             new ConditionalCommand(
-                new Climb(ELEVATOR, CLIMBER, WRIST, SHOOTER),
+                new Climb(ELEVATOR, WRIST, SHOOTER),
                 new InstantCommand(
                         () -> ELEVATOR.setLengthInches(Constants.ELEVATOR_TRAP_HEIGHT), ELEVATOR)
                     .andThen(() -> isClimbPrimed = true),
                 () -> isClimbPrimed));
 
     CO_DRIVER_CONTROLLER.x().onTrue(new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
+    CO_DRIVER_CONTROLLER.leftTrigger().onTrue(new ShootTall(ELEVATOR, WRIST, SHOOTER));
     CO_DRIVER_CONTROLLER
         .b()
         .onTrue(
@@ -209,15 +209,17 @@ public class RobotContainer {
 
     DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
 
-    // DRIVER_CONTROLLER
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new PointAtAprilTag(
-    //             DRIVETRAIN,
-    //             SPEAKER_PHOTON,
-    //             () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
-    //             () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
-    //             () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+    CO_DRIVER_CONTROLLER
+        .rightBumper()
+        .whileTrue(
+            new PointAtAprilTag(
+                DRIVETRAIN,
+                SPEAKER_PHOTON,
+                () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
+                () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
+                () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+
+    CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
 
     SHOOT_ANGLE = COMMANDS_TAB.add("Shoot Angle", 30).getEntry();
     DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
@@ -235,14 +237,13 @@ public class RobotContainer {
                     new InstantCommand(
                             () -> {
                               DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0);
-                              CANDLES.setColor(0, 155, 0);
                             })
                         .andThen(new WaitCommand(0.7))
                         .andThen(
                             new InstantCommand(
                                 () -> {
-                                  CANDLES.setColor(0, 155, 0);
                                   DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                                  CANDLES.setColor(0, 128, 0);
                                 }))));
     // driverController
     //     .leftBumper()
@@ -281,9 +282,9 @@ public class RobotContainer {
   public void setupShuffleboard() {
     SHOOTER_TAB.add("Coast Wrist", new InstantCommand(() -> WRIST.coast()));
     SHOOTER_TAB.add("Brake Wrist", new InstantCommand(() -> WRIST.brake()));
-    COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
-    COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
-    COMMANDS_TAB.add("Auto Climb", new AutoClimb(ELEVATOR, CLIMBER, SPEAKER_PHOTON, DRIVETRAIN));
+    // COMMANDS_TAB.add("Close Gates", new MoveGates(CLIMBER, true));
+    // COMMANDS_TAB.add("Open Gates", new MoveGates(CLIMBER, false));
+    // COMMANDS_TAB.add("Auto Climb", new AutoClimb(ELEVATOR, CLIMBER, SPEAKER_PHOTON, DRIVETRAIN));
     COMMANDS_TAB.addNumber("Speaeker Pitch", () -> SPEAKER_PHOTON.getPitchVal());
     COMMANDS_TAB.add(
         "Intake Auto",
@@ -345,7 +346,15 @@ public class RobotContainer {
             "Prep Climb",
             new InstantCommand(() -> ELEVATOR.setLengthInches(Constants.ELEVATOR_TRAP_HEIGHT)))
         .withPosition(2, 5);
-    MATCH_TAB.add("Climb", new Climb(ELEVATOR, CLIMBER, WRIST, SHOOTER)).withPosition(2, 6);
+    // MATCH_TAB.add("Climb", new Climb(ELEVATOR, CLIMBER, WRIST, SHOOTER)).withPosition(2, 6);
+    MATCH_TAB.add("Poop Long", new PoopNote(SHOOTER, 3500));
+    MATCH_TAB.add(
+        "Reset Amp",
+        new InstantCommand(
+            () -> {
+              isAmpPrepped = false;
+              isAmpPrimed = false;
+            }));
 
     COMMANDS_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     COMMANDS_TAB.add("Shoot Subwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
@@ -425,15 +434,19 @@ public class RobotContainer {
     // SmartDashboard.putData("Taxi", autoChooser);
     // SmartDashboard.putData("3 Piece 1", autoChooser);
     // SmartDashboard.putData("3PieceFar", autoChooser);
-    autoChooser.addOption("3 Piece Far", new PathPlannerAuto("3 Piece Far"));
-    autoChooser.addOption("temp", new PathPlannerAuto("temp"));
-    autoChooser.addOption("ampa", new PathPlannerAuto("ampa"));
-    autoChooser.addOption("ampa-full", new PathPlannerAuto("ampa-full"));
-    autoChooser.addOption("sourcea", new PathPlannerAuto("sourcea"));
-    autoChooser.addOption("amp_close", new PathPlannerAuto("amp_close"));
-    autoChooser.addOption("amp_subwoofer", new PathPlannerAuto("amp_subwoofer"));
+    // autoChooser.addOption("ampa", new PathPlannerAuto("ampa"));
+    addAuto("ampa-full");
+    addAuto("sourcea-fullshoot");
+    addAuto("sourcea");
+    addAuto("amp_close");
+    addAuto("amp_subwoofer");
+    addAuto("amp_subwoofer_reversal");
     autoChooser.addOption("Do Nothing", new InstantCommand());
-    COMMANDS_TAB.add(autoChooser);
+    COMMANDS_TAB.add("Auto", autoChooser);
+  }
+
+  public void addAuto(String autoName) {
+    autoChooser.addOption(autoName, new PathPlannerAuto(autoName));
   }
 
   public RobotContainer() {

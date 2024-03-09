@@ -18,6 +18,7 @@ public class PrepareShootAmp extends SequentialCommandGroup {
   public PrepareShootAmp(Elevator elevator, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    addRequirements(elevator, wrist);
 
     addCommands(
         new InstantCommand(

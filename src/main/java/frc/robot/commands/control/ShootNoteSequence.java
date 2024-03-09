@@ -65,6 +65,8 @@ public class ShootNoteSequence extends SequentialCommandGroup {
 
   public ShootNoteSequence(
       Shooter shooter, Wrist wrist, double shootRPM, Drivetrain drivetrain, Vision photonVision) {
+    addRequirements(shooter);
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
@@ -88,14 +90,14 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(!shooter.isCenterBroken()))
-            .withTimeout(0.04), // probably debounce this
+            .withTimeout(0.2), // probably debounce this
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
             },
             shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken()))
-            .withTimeout(0.04),
+            .withTimeout(0.2),
         new InstantCommand(
             () -> {
               shooter.stopShooter();
