@@ -17,7 +17,7 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class ShootAmp extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
-  private Debouncer lineBreakDebouncer;
+  private final Debouncer lineBreakDebouncer;
 
   private static final double DEBOUNCE_TIME = 0.06;
 
@@ -48,11 +48,7 @@ public class ShootAmp extends SequentialCommandGroup {
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         // new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
         new InstantCommand(() -> wrist.setDegrees(35.0), shooter),
         new WaitCommand(0.06),

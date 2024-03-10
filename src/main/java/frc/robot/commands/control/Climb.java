@@ -26,12 +26,12 @@ public class Climb extends SequentialCommandGroup {
     addCommands(
         // new ConditionalCommand(
         // new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
-        new InstantCommand(() -> Shooter.stopShooter(), Shooter),
-        new InstantCommand(() -> Wrist.stop(), Wrist),
+        new InstantCommand(Shooter::stopShooter, Shooter),
+        new InstantCommand(Wrist::stop, Wrist),
         new InstantCommand(() -> Elevator.setLengthInchesSlot1(5.9)),
         new WaitCommand(1.0),
-        new WaitUntilCommand(() -> Elevator.isAtSetpoint()),
-        new InstantCommand(() -> Elevator.stop()),
+        new WaitUntilCommand(Elevator::isAtSetpoint),
+        new InstantCommand(Elevator::stop),
         // new WaitCommand(0.3),
         // new WaitUntilCommand(
         //     () ->
@@ -41,7 +41,7 @@ public class Climb extends SequentialCommandGroup {
         new ConditionalCommand(
             new ShootTrap(Elevator, Wrist, Shooter),
             new InstantCommand(() -> System.out.println("No Note deteced. Climb finished.")),
-            () -> Shooter.isCenterBroken())
+            Shooter::isCenterBroken)
         //
         );
 

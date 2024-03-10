@@ -21,10 +21,10 @@ public class GoHome extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(elevator, wrist, shooter, intake);
     addCommands(
-        new InstantCommand(() -> elevator.goHome()),
-        new InstantCommand(() -> wrist.goHome()),
-        new InstantCommand(() -> shooter.stopShooter()),
-        new InstantCommand(() -> shooter.stopFeeder()),
-        new InstantCommand(() -> intake.stopCollecting()));
+        new InstantCommand(elevator::goHome),
+        new InstantCommand(wrist::goHome),
+        new InstantCommand(shooter::stopShooter),
+        new InstantCommand(shooter::stopFeeder),
+        new InstantCommand(intake::stopCollecting));
   }
 }

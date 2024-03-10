@@ -34,22 +34,21 @@ public class CollectNoteAuto extends Command {
   private final Vision photonVision;
 
   private Pose2d initialPose;
-  private static final double kP = 0.07; // PID proportional gain
-  private static final double kI = 0.00; // PID integral gain
-  private static final double kD = 0.00; // PID derivative gain
-  private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
+  private static final double P = 0.07; // PID proportional gain
+  private static final double I = 0.00; // PID integral gain
+  private static final double D = 0.00; // PID derivative gain
+  private static final double TOLERANCE_DEGREES = 0.1; // Tolerance for reaching the desired angle
   private static final double maximumAllowableDistance = 3.0; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
-  private final double ACCEPTABLE_DISTANCE = -0.2;
-  private double distanceError;
   private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private double distanceToTarget;
-  private double targetHeight = 0.03; // 1.23
+  private final double targetHeight = 0.03; // 1.23
 
   private final PIDController rotationController;
-  private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
+  private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
+      new SwerveRequest.ApplyChassisSpeeds();
 
   private Debouncer canSeePieceDebouncer;
   private static final double DEBOUNCE_TIME = 0.06;
@@ -72,8 +71,8 @@ public class CollectNoteAuto extends Command {
     this.photonVision = photonVision;
 
     // Create the PID controller
-    rotationController = new PIDController(kP, kI, kD);
-    rotationController.setTolerance(kToleranceDegrees);
+    rotationController = new PIDController(P, I, D);
+    rotationController.setTolerance(TOLERANCE_DEGREES);
 
     addRequirements(drivetrain);
   }
@@ -115,7 +114,8 @@ public class CollectNoteAuto extends Command {
             targetHeight,
             photonVision.getCameraDegrees());
 
-    distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
+    double ACCEPTABLE_DISTANCE = -0.2;
+    double distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 
     double forwardBackwardSpeed =
         -DISTANCE_FILTER.calculate(DISTANCE_CONTROLLER.calculate(distanceError));

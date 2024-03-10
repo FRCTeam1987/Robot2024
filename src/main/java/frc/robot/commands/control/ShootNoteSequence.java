@@ -22,7 +22,7 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class ShootNoteSequence extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
-  private Debouncer lineBreakDebouncer;
+  private final Debouncer lineBreakDebouncer;
 
   private static final double DEBOUNCE_TIME = 0.06;
 
@@ -48,17 +48,9 @@ public class ShootNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
-        new InstantCommand(
-            () -> {
-              shooter.stopShooter();
-            },
-            shooter),
+        new InstantCommand(shooter::stopShooter, shooter),
         new WaitCommand(0.1));
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
@@ -91,18 +83,10 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(!shooter.isCenterBroken()))
             .withTimeout(0.2), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken()))
             .withTimeout(0.2),
-        new InstantCommand(
-            () -> {
-              shooter.stopShooter();
-            },
-            shooter));
+        new InstantCommand(shooter::stopShooter, shooter));
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 
@@ -136,11 +120,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
         new InstantCommand(
             () -> {

@@ -8,8 +8,8 @@ import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Candles extends SubsystemBase {
-  private CANdle LEFT_CANDLE;
-  private CANdle RIGHT_CANDLE;
+  private final CANdle LEFT_CANDLE;
+  private final CANdle RIGHT_CANDLE;
 
   /** Creates a new Candles. */
   public Candles(int LEFT_CANDLE_ID, int RIGHT_CANDLE_ID) {

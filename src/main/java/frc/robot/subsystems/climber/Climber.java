@@ -24,8 +24,6 @@ public class Climber extends SubsystemBase {
     // 1.8 CLOSED RIGHT
 
     TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
-    // extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    // extensionConfig.CurrentLimits.StatorCurrentLimit = ClimberConstants.EXTENSION_CURRENT_LIMIT;
 
     extensionConfig.Slot0.kP = 30.0;
     extensionConfig.Slot0.kI = 0.0;

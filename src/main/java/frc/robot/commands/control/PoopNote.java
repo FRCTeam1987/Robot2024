@@ -18,21 +18,13 @@ public class PoopNote extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(
-            () -> {
-              shooter.setRPMShoot(poopRPM);
-            },
-            shooter),
+        new InstantCommand(() -> shooter.setRPMShoot(poopRPM), shooter),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
-        new WaitUntilCommand(() -> shooter.isShooterAtSetpoint()).withTimeout(0.12),
+        new WaitUntilCommand(shooter::isShooterAtSetpoint).withTimeout(0.12),
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(() -> !shooter.isCenterBroken()), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter));
+        new InstantCommand(shooter::stopFeeder, shooter));
   }
 }

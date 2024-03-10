@@ -15,14 +15,12 @@ import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
-  private Vision photonvision;
+  private final Vision photonvision;
 
-  private double kP = 0.10; // TODO: changeme please :)
-  private double acceptableError = 1.0; // Degrees within acceptance
   private DoubleSupplier velocityXSupplier = () -> 0.0;
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
-  private Drivetrain drivetrain;
+  private final Drivetrain drivetrain;
   private final SlewRateLimiter translationXSlewRate =
       new SlewRateLimiter(Constants.translationXSlewRate);
   private final SlewRateLimiter translationYSlewRate =
@@ -63,9 +61,13 @@ public class PointAtAprilTag extends Command {
 
     double xOffset = photonvision.getYawVal();
 
+    // TODO: changeme please :)
+    double kP = 0.10;
     double rotationRate = kP * xOffset;
     System.out.println(rotationRate);
 
+    // Degrees within acceptance
+    double acceptableError = 1.0;
     if (Math.abs(xOffset) < acceptableError) {
       rotationRate = 0;
     }
@@ -92,8 +94,6 @@ public class PointAtAprilTag extends Command {
 
   @Override
   public boolean isFinished() {
-    // double xOffset = limelight.getTX(limeLightName);
-    // return Math.abs(xOffset) < acceptableError;
     return false;
   }
 

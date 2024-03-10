@@ -23,7 +23,7 @@ public class ZeroWrist extends SequentialCommandGroup {
         new InstantCommand(() -> wrist.setVoltage(-3.0)),
         new WaitCommand(0.5),
         new WaitUntilCommand(() -> wrist.getVelocity() == 0.0),
-        new InstantCommand(() -> wrist.setZero()),
-        new InstantCommand(() -> wrist.stop()));
+        new InstantCommand(wrist::setZero),
+        new InstantCommand(wrist::stop));
   }
 }

@@ -28,14 +28,10 @@ public class ShootSubwoofer extends SequentialCommandGroup {
             },
             elevator,
             shooter),
-        new WaitUntilCommand(() -> elevator.isAtSetpoint()),
-        new InstantCommand(
-            () -> {
-              wrist.setDegrees(52);
-            },
-            wrist),
+        new WaitUntilCommand(elevator::isAtSetpoint),
+        new InstantCommand(() -> wrist.setDegrees(52), wrist),
         new WaitCommand(0.44),
-        new WaitUntilCommand(() -> wrist.isAtSetpoint()),
+        new WaitUntilCommand(wrist::isAtSetpoint),
         new InstantCommand(() -> shooter.setFeederVoltage(6.0), shooter),
         new WaitUntilCommand(() -> !shooter.isCenterBroken()),
         new WaitCommand(0.04),

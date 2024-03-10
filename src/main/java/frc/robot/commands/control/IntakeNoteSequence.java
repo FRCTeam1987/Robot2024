@@ -40,7 +40,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             intake,
             wrist),
         new WaitCommand(0.1),
-        new WaitUntilCommand(() -> (shooter.isRearBroken())), // shooter.getFeederCurrent() > 30 ||
+        new WaitUntilCommand(shooter::isRearBroken), // shooter.getFeederCurrent() > 30 ||
         new InstantCommand(
             () -> {
               RobotContainer.CANDLES.setColor(0, 0, 255);

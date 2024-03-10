@@ -11,7 +11,7 @@ import frc.robot.subsystems.elevator.Elevator;
 
 public class GoToHeightElevator extends Command {
   /** Creates a new GoToHeightElevator. */
-  private Elevator elevator;
+  private final Elevator elevator;
 
   private double heightInches = 1;
 

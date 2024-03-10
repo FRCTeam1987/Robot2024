@@ -78,7 +78,6 @@ public class Elevator extends SubsystemBase {
     if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
         || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
       DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
-      return;
     } else {
       MotionMagicVoltage ctrl = new MotionMagicVoltage(0);
       ELEVATOR_LEADER.setControl(
@@ -91,7 +90,6 @@ public class Elevator extends SubsystemBase {
     if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
         || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
       DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
-      return;
     } else {
       MotionMagicVoltage ctrl = new MotionMagicVoltage(0, true, 0, 1, false, false, false);
 
@@ -146,17 +144,14 @@ public class Elevator extends SubsystemBase {
     ELEVATOR_LEADER.setPosition(0);
   }
 
-  @Override
-  public void periodic() {}
-
   public void setupShuffleboard() {
     GenericEntry length = ELEVATOR_TAB.add("DesiredLen In.", 2).getEntry();
     ELEVATOR_TAB.add("ZERO SUBSYSTEM", new ZeroElevator(this));
     ELEVATOR_TAB.add(
         "GoTo DesiredLen", new InstantCommand(() -> setLengthInches(length.getDouble(0))));
-    ELEVATOR_TAB.addDouble("ActualLen In.", () -> getLengthInches());
-    ELEVATOR_TAB.add("Coast", new InstantCommand(() -> coastElevator()).ignoringDisable(true));
-    ELEVATOR_TAB.add("Brake", new InstantCommand(() -> brakeElevator()).ignoringDisable(true));
+    ELEVATOR_TAB.addDouble("ActualLen In.", this::getLengthInches);
+    ELEVATOR_TAB.add("Coast", new InstantCommand(this::coastElevator).ignoringDisable(true));
+    ELEVATOR_TAB.add("Brake", new InstantCommand(this::brakeElevator).ignoringDisable(true));
     // ELEVATOR_TAB.addnumber("Elevator voltage", );
   }
 }

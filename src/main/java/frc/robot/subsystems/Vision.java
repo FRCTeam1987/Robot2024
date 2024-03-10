@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.PhotonCamera;
@@ -18,7 +17,7 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
-  private PhotonCamera camera;
+  private final PhotonCamera camera;
   public static Vision instance;
   private double yawVal = 0;
   private double pitchVal = 0;
@@ -31,13 +30,13 @@ public class Vision extends SubsystemBase {
 
   // Constants such as camera and target height stored. Change per robot and goal!
   private double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0.1);
-  private double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
+  private final double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
   // Angle between horizontal and the camera.
   private double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0.1);
   private String CAMERA_NAME = "";
 
   public Vision(String photonCameraName, double cameraHeightMeters, double cameraAngleDegrees) {
-    this(photonCameraName, cameraHeightMeters, cameraAngleDegrees, Arrays.asList());
+    this(photonCameraName, cameraHeightMeters, cameraAngleDegrees, List.of());
   }
 
   public Vision(
@@ -65,7 +64,7 @@ public class Vision extends SubsystemBase {
     tab.addDouble(
         "Our distance to speaker",
         () ->
-            this.calculateDistanceToTarget(
+            calculateDistanceToTarget(
                 this.getPitchVal(),
                 this.getCameraHeight(),
                 Constants.SPEAKER_APRILTAG_HEIGHT,
@@ -84,21 +83,8 @@ public class Vision extends SubsystemBase {
       return;
     }
     var result = this.camera.getLatestResult();
-    // if (!result.hasTargets()) {
-    //   return;
-    // }
-    // for (PhotonTrackedTarget target : result.getTargets()) {
-    //   if(!validFiducials.contains(target.getFiducialId())) {
-    //     break;
-    //   }
-    //   yawVal = target.getYaw();
-    //   pitchVal = target.getPitch();
-    //   skewVal = target.getSkew();
-    //   areaVal = target.getArea();
-    //   return;
-    // }
     if (result.hasTargets()) {
-      if (validFiducials.size() == 0) {
+      if (validFiducials.isEmpty()) {
         pitchVal = result.getBestTarget().getPitch();
         yawVal = result.getBestTarget().getYaw();
         hasTarget = true;
@@ -127,15 +113,6 @@ public class Vision extends SubsystemBase {
     } else {
       this.hasTarget = false;
     }
-    // if (LED_Enable) {
-    //   cameraLEDOn();
-    //   // Set driver mode to off.
-    //   camera.setDriverMode(false);
-    // } else {
-    //   cameraLEDOff();
-    //   // Set driver mode to on.
-    //   camera.setDriverMode(true);
-    // }
   }
 
   @Override
@@ -213,11 +190,7 @@ public class Vision extends SubsystemBase {
   }
 
   public void cameraLEDToggle() {
-    if (LED_Enable) {
-      LED_Enable = false;
-    } else {
-      LED_Enable = true;
-    }
+    LED_Enable = !LED_Enable;
   }
 
   public void cameraLEDToggleOff() {
@@ -250,7 +223,6 @@ public class Vision extends SubsystemBase {
    * Calculates the distance from the camera to the target based on the vertical angle and the known
    * heights of the camera and the target.
    *
-   * @param cameraName The network table name of the cameraName to query.
    * @param cameraHeight In meters from ground.
    * @param targetHeight In meters from ground.
    * @param cameraAngle In degrees.
@@ -272,9 +244,8 @@ public class Vision extends SubsystemBase {
     }
 
     // Calculate the distance using trigonometry
-    double distance = heightDifference / Math.tan(angleToTargetRadians);
 
     // System.out.println("Distance to target: " + distance);
-    return distance;
+    return heightDifference / Math.tan(angleToTargetRadians);
   }
 }

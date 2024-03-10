@@ -24,7 +24,7 @@ public class ShootTrap extends SequentialCommandGroup {
   private final double wristDegrees = 7;
   private final double rpmSpeed = 550;
 
-  private Debouncer lineBreakDebouncer;
+  private final Debouncer lineBreakDebouncer;
 
   private static final double DEBOUNCE_TIME = 0.06;
 
@@ -54,11 +54,7 @@ public class ShootTrap extends SequentialCommandGroup {
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         // new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
         new InstantCommand(() -> wrist.setDegrees(35.0), shooter),
         new WaitCommand(0.06),

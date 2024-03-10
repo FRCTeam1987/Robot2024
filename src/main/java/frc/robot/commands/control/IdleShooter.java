@@ -13,10 +13,7 @@ import frc.robot.subsystems.shooter.Shooter;
 
 public class IdleShooter extends Command {
   /** Creates a new IdleShooter. */
-  private Shooter shooter;
-
-  private double DEBOUNCE_TIME = 2.0;
-  private Debouncer debounce;
+  private final Shooter shooter;
 
   public IdleShooter(Shooter shooter) {
     addRequirements(shooter);
@@ -27,7 +24,8 @@ public class IdleShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    debounce = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
+    double DEBOUNCE_TIME = 2.0;
+    Debouncer debounce = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

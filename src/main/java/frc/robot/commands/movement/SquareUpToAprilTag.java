@@ -14,7 +14,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 
 public class SquareUpToAprilTag extends Command {
-  private String LOG_PREFIX = "[EXECUTE] ";
+  private final String LOG_PREFIX = "[EXECUTE] ";
 
   private final PIDController LATERAL_CONTROLLER = new PIDController(0.1, 0.001, 0.01);
   private final PIDController ROTATIONAL_CONTROLLER = new PIDController(0.15, 0, 0.01);
@@ -28,9 +28,9 @@ public class SquareUpToAprilTag extends Command {
   private double ACCEPTABLE_DISTANCE = 3; // 1.3
   private final double ACCEPTABLE_DISTANCE_ERROR = 0.05; // metersP within acceptance
 
-  private Vision photonVision;
+  private final Vision photonVision;
   private double distanceError;
-  private Drivetrain drivetrain;
+  private final Drivetrain drivetrain;
   private double xOffset;
   private double skew;
   private double distanceToTarget;
@@ -110,13 +110,9 @@ public class SquareUpToAprilTag extends Command {
 
   @Override
   public boolean isFinished() {
-    if ((Util.isWithinTolerance(distanceToTarget, ACCEPTABLE_DISTANCE, ACCEPTABLE_DISTANCE_ERROR)
+    return (Util.isWithinTolerance(distanceToTarget, ACCEPTABLE_DISTANCE, ACCEPTABLE_DISTANCE_ERROR)
             && Math.abs(skew) <= ACCEPTABLE_SKEW_ERROR)
-        || (noVisibleTargetLoops >= 10)) {
-      return true;
-    } else {
-      return false;
-    }
+        || (noVisibleTargetLoops >= 10);
   }
 
   @Override
