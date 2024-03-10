@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
@@ -141,7 +144,7 @@ public class RobotContainer {
             () -> DRIVER_CONTROLLER.getRightX(),
             () -> 1.0,
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
-            () -> DRIVER_CONTROLLER.leftTrigger().getAsBoolean()));
+            () -> false)); //DRIVER_CONTROLLER.leftTrigger().getAsBoolean()
 
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
     CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
@@ -210,7 +213,7 @@ public class RobotContainer {
     DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
 
     CO_DRIVER_CONTROLLER
-        .rightBumper()
+        .leftBumper()
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
@@ -250,15 +253,16 @@ public class RobotContainer {
     //     .onTrue(new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.SHOOTER_RPM)));
 
     DRIVER_CONTROLLER
-        .rightBumper()
+        .leftTrigger()
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
                 SPEAKER_PHOTON,
                 () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
-                () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)))
-        .onFalse(new ShootNote(SHOOTER, ELEVATOR, Constants.SHOOTER_RPM));
+                () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+
+    DRIVER_CONTROLLER.rightBumper().onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.SHOOTER_RPM));
     DRIVER_CONTROLLER.a().onTrue(new ShootAmp(SHOOTER, ELEVATOR, WRIST));
 
     // .andThen(
@@ -477,17 +481,29 @@ public class RobotContainer {
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 36, 10));
     NamedCommands.registerCommand(
         "IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
-    NamedCommands.registerCommand(
-        "PoopStart",
-        new InstantCommand(
+    NamedCommands.registerCommand("PoopPrep", 
+            new InstantCommand(
             () -> {
-              SHOOTER.setRPMShootNoSpin(850);
-              SHOOTER.setFeederVoltage(7.0);
+              SHOOTER.setRPMShootNoSpin(650);
               INTAKE.setVolts(-8.0);
               WRIST.setDegrees(15);
+            }, SHOOTER, WRIST, INTAKE));
+    NamedCommands.registerCommand("PoopPrep2500", 
+            new InstantCommand(
+            () -> {
+              SHOOTER.setRPMShootNoSpin(2500);
+              WRIST.setDegrees(15);
+            }, SHOOTER, WRIST, INTAKE));
+    NamedCommands.registerCommand(
+        "PoopStart",
+            new InstantCommand(() -> SHOOTER.setFeederVoltage(7.0)));
+    NamedCommands.registerCommand(
+        "PoopPause",
+        new InstantCommand(
+            () -> {
+              SHOOTER.stopShooter();
             },
-            SHOOTER,
-            INTAKE));
+            SHOOTER));
     NamedCommands.registerCommand(
         "PoopStop",
         new InstantCommand(
@@ -502,9 +518,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     NamedCommands.registerCommand(
         "DriveToNoteAuto",
-        new ParallelCommandGroup(
-            new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR),
-            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)));
+        new ParallelDeadlineGroup(
+            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
+            new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)
+            ));
     // NamedCommands.registerCommand("DynamicDriveToSpeaker", );
 
     // NamedCommands.registerCommand("ResetOdo", new InstantCommand(() ->

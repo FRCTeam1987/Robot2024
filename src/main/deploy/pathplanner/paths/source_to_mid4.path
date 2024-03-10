@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.36,
+        "x": 8.55,
         "y": 0.74
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.95182752263074,
+        "x": 7.1418275226307415,
         "y": 0.7390331480952312
       },
       "isLocked": false,
@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.8172410258666005,
+        "x": 2.82,
         "y": 2.70664437878355
       },
       "prevControl": {
-        "x": 3.389882362325875,
+        "x": 3.3926413364592745,
         "y": 1.8888277955410961
       },
       "nextControl": null,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "PoopStop",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStop"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 3.0,

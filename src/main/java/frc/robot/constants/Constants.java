@@ -15,9 +15,9 @@ public class Constants {
   public static final double TRAP_APRILTAG_HEIGHT = 1.315;
   public static final double AMP_APRILTAG_HEIGHT = 1.35; // 0.535
 
-  public static final double translationXSlewRate = 4.0;
-  public static final double translationYSlewRate = 4.0;
-  public static final double rotationSlewRate = 8.0;
+  public static final double translationXSlewRate = 6.0;
+  public static final double translationYSlewRate = 6.0;
+  public static final double rotationSlewRate = 16.0;
 
   public static final int SHOOTER_LEADER_ID = 56;
   public static final int SHOOTER_FOLLOWER_ID = 53;

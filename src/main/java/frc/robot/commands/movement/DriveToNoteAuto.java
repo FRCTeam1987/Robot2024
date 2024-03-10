@@ -37,7 +37,7 @@ public class DriveToNoteAuto extends Command {
   private static final double kI = 0.00; // PID integral gain
   private static final double kD = 0.00; // PID derivative gain
   private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 4.0; // In Meters
+  private static final double maximumAllowableDistance = 2.5; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
   private final double ACCEPTABLE_DISTANCE = -0.2;
@@ -46,6 +46,8 @@ public class DriveToNoteAuto extends Command {
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private double distanceToTarget;
   private double targetHeight = 0.03; // 1.23
+
+  private double previousForwardBackwardSpeed = 0.0;
 
   private final PIDController rotationController;
   private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
@@ -80,7 +82,8 @@ public class DriveToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("DriveToNote - init");
+    DriverStation.reportWarning("DriveToNote - init", false);
+
     // Apply the output to the swerve
     this.initialPose = drivetrain.getPose();
     rotationController.reset();
@@ -101,7 +104,8 @@ public class DriveToNoteAuto extends Command {
     if (!canSeePieceDebouncer.calculate(photonVision.hasTargets())) {
       DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
       // System.out.println("DriveToNote Can't see gamePice");
-      drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
+      drivetrain.setControl(
+          swerveRequest.withSpeeds(new ChassisSpeeds(previousForwardBackwardSpeed, 0, 0)));
       return;
     }
 
@@ -116,21 +120,19 @@ public class DriveToNoteAuto extends Command {
 
     distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 
-    double forwardBackwardSpeed =
-        -DISTANCE_FILTER.calculate(DISTANCE_CONTROLLER.calculate(distanceError));
+    double forwardBackwardSpeed = 3.0; // meters per second
+    // -DISTANCE_FILTER.calculate(DISTANCE_CONTROLLER.calculate(distanceError));
 
-    double speed =
-        distanceTraveled() > slowDownDistance
-            ? forwardBackwardSpeed / 1.5
-            : forwardBackwardSpeed; // TODO edited speeds so that robot goes a resonable speed when
-    // closer
     // System.out.println("========================= DriveToPiece Speed: " + speed);
+    previousForwardBackwardSpeed = forwardBackwardSpeed;
 
     // temp
     drivetrain.setControl(
         swerveRequest.withSpeeds(
             new ChassisSpeeds(
-                speed, 0, rotationalVelocity))); // y position should not be edited  as it is driver
+                forwardBackwardSpeed,
+                0,
+                rotationalVelocity))); // y position should not be edited  as it is driver
     // controlled.
 
   }
@@ -139,7 +141,6 @@ public class DriveToNoteAuto extends Command {
   @Override
   public void end(boolean interrupted) {
     DriverStation.reportWarning("DriveToNote Command Finished", false);
-    System.out.println("DriveToNote Command Finished");
     drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
     new InstantCommand(
         () -> {
@@ -151,7 +152,6 @@ public class DriveToNoteAuto extends Command {
         intake);
     if (isDistanceTraveledTooFar()) {
       DriverStation.reportWarning("DriveToNote Drove Too Far", false);
-      System.out.println("DriveToNote Drove Too Far");
     }
   }
 

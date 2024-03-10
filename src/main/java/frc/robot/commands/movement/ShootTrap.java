@@ -4,10 +4,13 @@
 
 package frc.robot.commands.movement;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -16,34 +19,57 @@ import frc.robot.subsystems.wrist.Wrist;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootTrap extends SequentialCommandGroup {
+
+  private final double elevatorHeight = 28.2;
+  private final double wristDegrees = 7;
+  private final double rpmSpeed = 550;
+
+  private Debouncer lineBreakDebouncer;
+
+  private static final double DEBOUNCE_TIME = 0.06;
+
   /** Creates a new ShootTrap. */
   public ShootTrap(final Elevator elevator, final Wrist wrist, final Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
+
     addCommands(
         new InstantCommand(
             () -> {
-              elevator.setLengthInchesSlot1(28.2);
+              shooter.setRPMShoot(rpmSpeed);
+              elevator.setLengthInches(elevatorHeight);
+              // wrist.setDegrees(110.0);  // 25.0 + 90.0
             },
-            elevator,
-            shooter),
-        new WaitUntilCommand(() -> elevator.isAtSetpoint()),
+            shooter,
+            elevator),
+        // new WaitUntilCommand(() -> (elevator.isAtSetpoint())),
+        new WaitCommand(0.5), // reset for isAtSetpoint commands to level out
+        new InstantCommand(() -> wrist.setDegrees(wristDegrees), wrist),
+        new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())),
+        new WaitCommand(0.6), // Time for wrist to get to position
+        new InstantCommand(
+            () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
+            shooter), // Constants.FEEDER_FEEDFWD_VOLTS
+        new WaitUntilCommand(
+            () ->
+                lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(
             () -> {
-              wrist.setDegrees(7);
+              shooter.stopFeeder();
             },
-            wrist),
-        new WaitCommand(0.44),
-        new WaitUntilCommand(() -> wrist.isAtSetpoint()),
-        new InstantCommand(() -> shooter.setFeederVoltage(-12.0), shooter),
-        new WaitUntilCommand(() -> !shooter.isCenterBroken()),
-        new WaitCommand(0.2),
+            shooter),
+        // new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
+        new InstantCommand(() -> wrist.setDegrees(35.0), shooter),
+        new WaitCommand(0.06),
         new InstantCommand(
             () -> {
               shooter.stopShooter();
-              shooter.stopFeeder();
+              elevator.goHome();
+              wrist.setDegrees(25.0);
             },
-            wrist,
-            shooter));
+            shooter,
+            elevator,
+            wrist));
   }
 }

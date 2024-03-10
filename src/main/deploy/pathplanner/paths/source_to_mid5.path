@@ -32,44 +32,44 @@
     },
     {
       "anchor": {
-        "x": 8.35,
-        "y": 1.54
+        "x": 8.462268503819415,
+        "y": 1.6819066236512112
       },
       "prevControl": {
-        "x": 8.35,
-        "y": 1.221273627191917
+        "x": 8.462268503819415,
+        "y": 1.363180250843128
       },
       "nextControl": {
-        "x": 8.35,
-        "y": 2.2120474320734664
+        "x": 8.462268503819415,
+        "y": 2.353954055724677
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.4,
-        "y": 4.0
+        "x": 8.567258228411132,
+        "y": 4.147541823910326
       },
       "prevControl": {
-        "x": 8.4,
-        "y": 3.36240704932656
+        "x": 8.567258228411132,
+        "y": 3.509948873236886
       },
       "nextControl": {
-        "x": 8.4,
-        "y": 5.727373706590007
+        "x": 8.567258228411132,
+        "y": 5.874915530500333
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.434023933218042,
-        "y": 2.7083018680350786
+        "x": 2.82,
+        "y": 2.71
       },
       "prevControl": {
-        "x": 4.048593863048671,
-        "y": 3.5859986883263337
+        "x": 3.434569929830629,
+        "y": 3.587696820291255
       },
       "nextControl": null,
       "isLocked": false,
@@ -94,15 +94,66 @@
     },
     {
       "waypointRelativePos": 3,
-      "rotationDegrees": 53.0,
+      "rotationDegrees": 72.16028650225014,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Poop Start",
-      "waypointRelativePos": 0.05,
+      "name": "Poop Prep Normal",
+      "waypointRelativePos": 0.55,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake Note",
+      "waypointRelativePos": 2.85,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Prep 2500",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopPrep2500"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "poopstart2500",
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "sequential",
         "data": {
@@ -118,16 +169,16 @@
       }
     },
     {
-      "name": "Intake Note",
-      "waypointRelativePos": 2.9,
+      "name": "PoopStart",
+      "waypointRelativePos": 0.65,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "IntakeNote"
+                "name": "PoopStart"
               }
             }
           ]
@@ -143,7 +194,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -33.203607397966316,
+    "rotation": -52.715752997002284,
     "rotateFast": false
   },
   "reversed": false,

@@ -14,32 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "source_to_mid2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteAimbot"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "source_to_mid3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
-                }
-              }
-            ]
+            "pathName": "source_to_mid4_race"
           }
         },
         {
@@ -55,22 +30,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "source_to_mid12"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
-                }
-              }
-            ]
+            "pathName": "source_to_mid12"
           }
         },
         {
