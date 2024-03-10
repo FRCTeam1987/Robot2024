@@ -119,8 +119,6 @@ public class Shooter extends SubsystemBase {
     // Constants.SPIN_RATIO) / 60.0).withFeedForward(1.0));
   }
 
-  
-
   public boolean isCenterBroken() {
     return SHOOTER_LEADER.getForwardLimit().asSupplier().get().value == 0;
   }

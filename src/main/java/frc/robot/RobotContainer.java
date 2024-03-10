@@ -23,8 +23,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.control.AimLockWrist;
@@ -144,7 +142,7 @@ public class RobotContainer {
             () -> DRIVER_CONTROLLER.getRightX(),
             () -> 1.0,
             () -> DRIVER_CONTROLLER.getHID().getPOV(),
-            () -> false)); //DRIVER_CONTROLLER.leftTrigger().getAsBoolean()
+            () -> false)); // DRIVER_CONTROLLER.leftTrigger().getAsBoolean()
 
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
     CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
@@ -481,22 +479,29 @@ public class RobotContainer {
         new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.SHOOTER_RPM, 36, 10));
     NamedCommands.registerCommand(
         "IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
-    NamedCommands.registerCommand("PoopPrep", 
-            new InstantCommand(
+    NamedCommands.registerCommand(
+        "PoopPrep",
+        new InstantCommand(
             () -> {
               SHOOTER.setRPMShootNoSpin(650);
               INTAKE.setVolts(-8.0);
               WRIST.setDegrees(15);
-            }, SHOOTER, WRIST, INTAKE));
-    NamedCommands.registerCommand("PoopPrep2500", 
-            new InstantCommand(
+            },
+            SHOOTER,
+            WRIST,
+            INTAKE));
+    NamedCommands.registerCommand(
+        "PoopPrep2500",
+        new InstantCommand(
             () -> {
               SHOOTER.setRPMShootNoSpin(2500);
               WRIST.setDegrees(15);
-            }, SHOOTER, WRIST, INTAKE));
+            },
+            SHOOTER,
+            WRIST,
+            INTAKE));
     NamedCommands.registerCommand(
-        "PoopStart",
-            new InstantCommand(() -> SHOOTER.setFeederVoltage(7.0)));
+        "PoopStart", new InstantCommand(() -> SHOOTER.setFeederVoltage(7.0)));
     NamedCommands.registerCommand(
         "PoopPause",
         new InstantCommand(
@@ -520,8 +525,7 @@ public class RobotContainer {
         "DriveToNoteAuto",
         new ParallelDeadlineGroup(
             new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
-            new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)
-            ));
+            new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
     // NamedCommands.registerCommand("DynamicDriveToSpeaker", );
 
     // NamedCommands.registerCommand("ResetOdo", new InstantCommand(() ->
