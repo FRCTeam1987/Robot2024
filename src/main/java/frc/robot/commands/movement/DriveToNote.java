@@ -18,7 +18,7 @@ import java.util.function.DoubleSupplier;
 
 public class DriveToNote extends Command {
   /** Creates a new DriveToPiece. */
-  private DoubleSupplier velocitySupplier;
+  private final DoubleSupplier velocitySupplier;
 
   private final Drivetrain drivetrain;
 
@@ -33,7 +33,8 @@ public class DriveToNote extends Command {
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
   private final PIDController rotationController;
-  private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
+  private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
+      new SwerveRequest.ApplyChassisSpeeds();
 
   private Debouncer canSeePieceDebouncer;
   private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name

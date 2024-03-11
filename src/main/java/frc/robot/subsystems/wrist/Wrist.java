@@ -27,18 +27,6 @@ public class Wrist extends SubsystemBase {
     WRIST_CONFIG.Slot0.kI = WristConstants.WRIST_KI;
     WRIST_CONFIG.Slot0.kD = WristConstants.WRIST_KD;
     WRIST_CONFIG.Slot0.kV = WristConstants.WRIST_KV;
-    // WRIST_CONFIG.Slot0.kS = 0.4;
-
-    // final CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs();
-    // currentLimits.SupplyCurrentLimit = 20; // Limit to 1 amps
-    // currentLimits.SupplyCurrentThreshold = 25; // If we exceed 4 amps
-    // currentLimits.SupplyTimeThreshold = 0.2; // For at least 1 second
-    // currentLimits.SupplyCurrentLimitEnable = true; // And enable it
-
-    // currentLimits.StatorCurrentLimit = 20; // Limit stator to 20 amps
-    // currentLimits.StatorCurrentLimitEnable = true; // And enable it
-
-    // WRIST_CONFIG.CurrentLimits = currentLimits;
 
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimit = WristConstants.WRIST_CURRENT_LIMIT;
     // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimit = WristConstants.WRIST_CURRENT_LIMIT;
@@ -105,11 +93,9 @@ public class Wrist extends SubsystemBase {
 
     if (degrees > WristConstants.WRIST_MAX_DEG || degrees < WristConstants.WRIST_MIN_DEG) {
       System.out.println("Out of Wrist Range! " + degrees);
-      return;
     } else {
       double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
       // DriverStation.reportWarning("Wrist degrees: " + degrees, false);
-      ;
       WRIST_MOTOR.setControl(
           new MotionMagicVoltage(degrees / 360.0, true, arbFF, 0, false, false, false));
     }
@@ -123,9 +109,6 @@ public class Wrist extends SubsystemBase {
   public double getIncrementValue() {
     return IncrementValue;
   }
-
-  @Override
-  public void periodic() {}
 
   public void stop() {
     WRIST_MOTOR.set(0);
@@ -150,11 +133,11 @@ public class Wrist extends SubsystemBase {
     WRIST_TAB.add("ZERO WRIST", new ZeroWrist(this));
     WRIST_TAB.add(
         "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
-    WRIST_TAB.add("Set Coast", new InstantCommand(() -> setCoast(), this).ignoringDisable(true));
-    WRIST_TAB.add("Set Brake", new InstantCommand(() -> setBrake(), this).ignoringDisable(true));
-    WRIST_TAB.addDouble("Degrees", () -> getDegrees());
+    WRIST_TAB.add("Set Coast", new InstantCommand(this::setCoast, this).ignoringDisable(true));
+    WRIST_TAB.add("Set Brake", new InstantCommand(this::setBrake, this).ignoringDisable(true));
+    WRIST_TAB.addDouble("Degrees", this::getDegrees);
     if (Constants.shouldShuffleboard) {
-      WRIST_TAB.addDouble("Wrist degrees with offset", () -> getDegrees());
+      WRIST_TAB.addDouble("Wrist degrees with offset", this::getDegrees);
       WRIST_TAB.addDouble("Current Amps", () -> WRIST_MOTOR.getStatorCurrent().getValueAsDouble());
       WRIST_TAB.addDouble("Current volts", () -> WRIST_MOTOR.getMotorVoltage().getValueAsDouble());
       WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());

@@ -21,12 +21,12 @@ public class StopAll extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(() -> shooter.stopShooter()),
-        new InstantCommand(() -> shooter.stopFeeder()),
-        new InstantCommand(() -> intake.stopCollecting()),
-        new InstantCommand(() -> wrist.stop()),
+        new InstantCommand(shooter::stopShooter),
+        new InstantCommand(shooter::stopFeeder),
+        new InstantCommand(intake::stopCollecting),
+        new InstantCommand(wrist::stop),
         // new InstantCommand(() -> climber.stopAll()),
-        new InstantCommand(() -> elevator.zeroVoltage()),
-        new InstantCommand(() -> elevator.coastElevator()));
+        new InstantCommand(elevator::zeroVoltage),
+        new InstantCommand(elevator::coastElevator));
   }
 }

@@ -9,10 +9,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Rumble extends Command {
-  private XboxController controller;
-  private double strength;
-  private RumbleType type;
-  private long time, finishtime, durationMs;
+  private final XboxController controller;
+  private final double strength;
+  private final RumbleType type;
+  private long finishtime;
+  private final long durationMs;
 
   /** Creates a new Rumble. */
   public Rumble(XboxController controller, RumbleType type, double strength, long durationMs) {
@@ -26,7 +27,7 @@ public class Rumble extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.time = System.currentTimeMillis();
+    long time = System.currentTimeMillis();
     this.finishtime = time + durationMs;
   }
 

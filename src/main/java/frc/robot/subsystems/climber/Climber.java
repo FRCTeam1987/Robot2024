@@ -9,7 +9,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Constants;
 
 public class Climber extends SubsystemBase {
   private final TalonFX CLIMB_LEFT;
@@ -24,8 +23,6 @@ public class Climber extends SubsystemBase {
     // 1.8 CLOSED RIGHT
 
     TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
-    // extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    // extensionConfig.CurrentLimits.StatorCurrentLimit = ClimberConstants.EXTENSION_CURRENT_LIMIT;
 
     extensionConfig.Slot0.kP = 30.0;
     extensionConfig.Slot0.kI = 0.0;
@@ -59,11 +56,11 @@ public class Climber extends SubsystemBase {
   }
 
   public void stopLeft(boolean direction) {
-    CLIMB_LEFT.setVoltage(direction ? Constants.CLIMBER_MAINTAIN_VOLTAGE : 0);
+    CLIMB_LEFT.setVoltage(direction ? ClimberConstants.CLIMBER_MAINTAIN_VOLTAGE : 0);
   }
 
   public void stopRight(boolean direction) {
-    CLIMB_RIGHT.setVoltage(direction ? Constants.CLIMBER_MAINTAIN_VOLTAGE : 0);
+    CLIMB_RIGHT.setVoltage(direction ? ClimberConstants.CLIMBER_MAINTAIN_VOLTAGE : 0);
   }
 
   public void stopAll() {

@@ -40,17 +40,16 @@ public class DriveToNoteAuto extends Command {
   private static final double maximumAllowableDistance = 2.5; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
-  private final double ACCEPTABLE_DISTANCE = -0.2;
-  private double distanceError;
   private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
   private double distanceToTarget;
-  private double targetHeight = 0.03; // 1.23
+  private final double targetHeight = 0.03; // 1.23
 
   private double previousForwardBackwardSpeed = 0.0;
 
   private final PIDController rotationController;
-  private SwerveRequest.ApplyChassisSpeeds swerveRequest = new SwerveRequest.ApplyChassisSpeeds();
+  private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
+      new SwerveRequest.ApplyChassisSpeeds();
 
   private Debouncer canSeePieceDebouncer;
   private static final double DEBOUNCE_TIME = 0.3;
@@ -66,11 +65,11 @@ public class DriveToNoteAuto extends Command {
       final Wrist wrist,
       final Elevator elevator) {
     this.drivetrain = drivetrain;
-    this.photonVision = photonVision;
+    DriveToNoteAuto.photonVision = photonVision;
     this.shooter = shooter;
     this.intake = intake;
-    this.wrist = wrist;
-    this.elevator = elevator;
+    DriveToNoteAuto.wrist = wrist;
+    DriveToNoteAuto.elevator = elevator;
 
     // Create the PID controller
     rotationController = new PIDController(kP, kI, kD);
@@ -90,12 +89,6 @@ public class DriveToNoteAuto extends Command {
 
     canSeePieceDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     new IntakeNoteSequence(shooter, intake, wrist, elevator);
-    // distanceToTarget =
-    //     Vision.calculateDistanceToTarget(
-    //         photonVision.getPitchVal(),
-    //         photonVision.getCameraHeight(),
-    //         targetHeight,
-    //         photonVision.getCameraDegrees());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -111,19 +104,11 @@ public class DriveToNoteAuto extends Command {
 
     double rotationalVelocity = rotationController.calculate(photonVision.getYawVal(), 0.0);
 
-    // distanceToTarget =
-    //     Vision.calculateDistanceToTarget(
-    //         photonVision.getPitchVal(),
-    //         photonVision.getCameraHeight(),
-    //         targetHeight,
-    //         photonVision.getCameraDegrees());
-
-    distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
+    double ACCEPTABLE_DISTANCE = -0.2;
+    double distanceError = distanceToTarget - ACCEPTABLE_DISTANCE;
 
     double forwardBackwardSpeed = 3.0; // meters per second
-    // -DISTANCE_FILTER.calculate(DISTANCE_CONTROLLER.calculate(distanceError));
 
-    // System.out.println("========================= DriveToPiece Speed: " + speed);
     previousForwardBackwardSpeed = forwardBackwardSpeed;
 
     // temp

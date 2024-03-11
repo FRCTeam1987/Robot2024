@@ -11,18 +11,17 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.RobotContainer;
 import frc.robot.commands.movement.PointAtAprilTag;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class ShootNoteSequence extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
-  private Debouncer lineBreakDebouncer;
+  private final Debouncer lineBreakDebouncer;
 
   private static final double DEBOUNCE_TIME = 0.06;
 
@@ -43,22 +42,14 @@ public class ShootNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new WaitCommand(0.2), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
-        new InstantCommand(
-            () -> {
-              shooter.stopShooter();
-            },
-            shooter),
+        new InstantCommand(shooter::stopShooter, shooter),
         new WaitCommand(0.1));
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
@@ -76,7 +67,8 @@ public class ShootNoteSequence extends SequentialCommandGroup {
                 new PointAtAprilTag(drivetrain, photonVision),
                 new InstantCommand(
                     () -> {
-                      wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
+                      // TODO: FIX ME !!!!!
+                      // wrist.setDegrees(RobotContainer.get().getDouble(30));
                       shooter.setRPMShoot(shootRPM);
                     },
                     shooter,
@@ -87,22 +79,14 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             .withTimeout(0.15),
         new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(!shooter.isCenterBroken()))
             .withTimeout(0.2), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken()))
             .withTimeout(0.2),
-        new InstantCommand(
-            () -> {
-              shooter.stopShooter();
-            },
-            shooter));
+        new InstantCommand(shooter::stopShooter, shooter));
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }
 
@@ -131,16 +115,12 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             () -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint() && elevator.isAtSetpoint()),
         new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
+            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
+        new InstantCommand(shooter::stopFeeder, shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
         new InstantCommand(
             () -> {

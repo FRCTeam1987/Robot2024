@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.commands.movement.ShootTrap;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
@@ -26,12 +25,12 @@ public class Climb extends SequentialCommandGroup {
     addCommands(
         // new ConditionalCommand(
         // new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
-        new InstantCommand(() -> Shooter.stopShooter(), Shooter),
-        new InstantCommand(() -> Wrist.stop(), Wrist),
+        new InstantCommand(Shooter::stopShooter, Shooter),
+        new InstantCommand(Wrist::stop, Wrist),
         new InstantCommand(() -> Elevator.setLengthInchesSlot1(5.9)),
         new WaitCommand(1.0),
-        new WaitUntilCommand(() -> Elevator.isAtSetpoint()),
-        new InstantCommand(() -> Elevator.stop()),
+        new WaitUntilCommand(Elevator::isAtSetpoint),
+        new InstantCommand(Elevator::stop),
         // new WaitCommand(0.3),
         // new WaitUntilCommand(
         //     () ->
@@ -41,7 +40,7 @@ public class Climb extends SequentialCommandGroup {
         new ConditionalCommand(
             new ShootTrap(Elevator, Wrist, Shooter),
             new InstantCommand(() -> System.out.println("No Note deteced. Climb finished.")),
-            () -> Shooter.isCenterBroken())
+            Shooter::isCenterBroken)
         //
         );
 

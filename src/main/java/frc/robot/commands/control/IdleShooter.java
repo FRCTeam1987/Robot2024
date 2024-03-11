@@ -8,15 +8,12 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class IdleShooter extends Command {
   /** Creates a new IdleShooter. */
-  private Shooter shooter;
-
-  private double DEBOUNCE_TIME = 2.0;
-  private Debouncer debounce;
+  private final Shooter shooter;
 
   public IdleShooter(Shooter shooter) {
     addRequirements(shooter);
@@ -27,18 +24,19 @@ public class IdleShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    debounce = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
+    double DEBOUNCE_TIME = 2.0;
+    Debouncer debounce = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (RobotContainer.isAmpPrepped()) {
-      shooter.setRPMShoot(Constants.SHOOTER_AMP_RPM);
+      shooter.setRPMShoot(ShooterConstants.SHOOTER_AMP_RPM);
       return;
     }
     if (shooter.isCenterBroken()) {
-      shooter.setRPMShoot(Constants.SHOOTER_IDLE_RPM);
+      shooter.setRPMShoot(ShooterConstants.SHOOTER_IDLE_RPM);
     } else {
       shooter.stopShooter();
     }

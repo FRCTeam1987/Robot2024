@@ -27,11 +27,11 @@ import java.util.function.IntSupplier;
  */
 public class TeleopSwerve extends Command {
 
-  private PIDController thetaController;
-  private PIDController yController;
-  private IntSupplier mPovDegree;
-  private double mIntakeSetPoint = -35.0; // Change Me to match Source Angle
-  private DoubleSupplier mSpeedMultiplier;
+  private final PIDController thetaController;
+  private final PIDController yController;
+  private final IntSupplier mPovDegree;
+  private final double mIntakeSetPoint = -35.0; // Change Me to match Source Angle
+  private final DoubleSupplier mSpeedMultiplier;
   private boolean useDPad = false;
   private BooleanSupplier mShouldIntakeLock = () -> false;
   private boolean useIntakeLock = false;
@@ -191,7 +191,7 @@ public class TeleopSwerve extends Command {
    */
   private static double modifyAxis(double value) {
     // Deadband
-    value = deadband(value, DEADBAND);
+    value = deadband(value);
 
     // Square the axis
     value = Math.copySign(value * value, value);
@@ -199,12 +199,12 @@ public class TeleopSwerve extends Command {
     return value;
   }
 
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
+  private static double deadband(double value) {
+    if (Math.abs(value) > TeleopSwerve.DEADBAND) {
       if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
+        return (value - TeleopSwerve.DEADBAND) / (1.0 - TeleopSwerve.DEADBAND);
       } else {
-        return (value + deadband) / (1.0 - deadband);
+        return (value + TeleopSwerve.DEADBAND) / (1.0 - TeleopSwerve.DEADBAND);
       }
     } else {
       return 0.0;

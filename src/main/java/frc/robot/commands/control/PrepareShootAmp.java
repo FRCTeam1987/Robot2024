@@ -30,6 +30,6 @@ public class PrepareShootAmp extends SequentialCommandGroup {
             elevator),
         new WaitCommand(0.06), // reset for isAtSetpoint commands to level out
         new InstantCommand(() -> wrist.setDegrees(Constants.WRIST_AMP_DEGREES), wrist),
-        new WaitUntilCommand(() -> (wrist.isAtSetpoint())).withTimeout(0.75));
+        new WaitUntilCommand(wrist::isAtSetpoint).withTimeout(0.75));
   }
 }

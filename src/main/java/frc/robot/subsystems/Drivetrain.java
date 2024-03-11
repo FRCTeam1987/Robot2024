@@ -32,8 +32,7 @@ import java.util.function.Supplier;
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
   private static final double kSimLoopPeriod = 0.005; // 5 ms
-  private Notifier m_simNotifier = null;
-  private double m_lastSimTime;
+  private double lastSimTime;
 
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
@@ -53,7 +52,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
       new SwerveRequest.SysIdSwerveSteerGains();
 
   /* Use one of these sysidroutines for your particular test */
-  private SysIdRoutine SysIdRoutineTranslation =
+  private final SysIdRoutine SysIdRoutineTranslation =
       new SysIdRoutine(
           new SysIdRoutine.Config(
               null,
@@ -131,10 +130,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
           var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
+          return alliance.filter(value -> value == Alliance.Red).isPresent();
         }, // Change this if the path needs to be flipped on red vs blue
         this); // Subsystem for requirements
   }
@@ -172,15 +168,16 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
   }
 
   private void startSimThread() {
-    m_lastSimTime = Utils.getCurrentTimeSeconds();
+    lastSimTime = Utils.getCurrentTimeSeconds();
 
     /* Run simulation at a faster rate so PID gains behave more reasonably */
-    m_simNotifier =
+    /* use the measured time delta, get battery voltage from WPILib */
+    Notifier m_simNotifier =
         new Notifier(
             () -> {
               final double currentTime = Utils.getCurrentTimeSeconds();
-              double deltaTime = currentTime - m_lastSimTime;
-              m_lastSimTime = currentTime;
+              double deltaTime = currentTime - lastSimTime;
+              lastSimTime = currentTime;
 
               /* use the measured time delta, get battery voltage from WPILib */
               updateSimState(deltaTime, RobotController.getBatteryVoltage());

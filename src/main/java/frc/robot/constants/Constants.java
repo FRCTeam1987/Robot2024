@@ -5,10 +5,10 @@ import frc.robot.util.InterpolatingTreeMap;
 
 public class Constants {
 
-  public static boolean shouldShuffleboard = false;
+  public static final boolean shouldShuffleboard = false;
 
-  public static double MaxSpeed = 5.0; // 6 meters per second desired top speed
-  public static double MaxAngularRate =
+  public static final double MaxSpeed = 5.0; // 6 meters per second desired top speed
+  public static final double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   public static final double SPEAKER_APRILTAG_HEIGHT = 1.458;
@@ -24,7 +24,6 @@ public class Constants {
   public static final int SHOOTER_FEEDER_ID = 55;
   public static final int SHOOTER_FEEDER_ID_TEMP = 10;
 
-  public static final int SHOOTER_AMP_RPM = 550;
   public static final double ELEVATOR_AMP_HEIGHT = 6.2;
   public static final double WRIST_AMP_DEGREES = 110.0;
 
@@ -47,37 +46,14 @@ public class Constants {
 
   public static final double INTAKE_COLLECT_VOLTS = -6; // 6
 
-  public static final double FEEDER_FEEDFWD_VOLTS = 4; // 6 // 4
-  public static final double FEEDER_SHOOT_VOLTS = 5; // 4
-  public static final double FEEDER_RETRACT_VOLTS = -2;
-
-  public static final double SHOOTER_RPM = 3500;
-  public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to bee smaller
-  public static final double SHOOTER_IDLE_RPM = 2500;
-  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to bee smaller
-  public static final double SPIN_RATIO = 0.75;
-
-  public static final double CLIMBER_NOMINAL_VOLTAGE = 10;
-  public static final double CLIMBER_MAINTAIN_VOLTAGE = 0.35;
-  public static final double CLIMBER_CUTOFF_AMPERAGE = 65;
-
   public static final InterpolatingTreeMap<
           InterpolatingDouble,
           InterpolatingDouble> // TODO Update Limelight Constants with new position
       DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR = // (Meters, Wrist Degrees)
-      new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
-
-  //   public static final InterpolatingTreeMap<
-  //           InterpolatingDouble,
-  //           InterpolatingDouble> // TODO Update Limelight Constants with new position
-  //       DISTANCE_WRIST_ANGLE_MAP_ELEVATOR = // (Meters, Wrist Degrees)
-  //       new InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble>();
+      new InterpolatingTreeMap<>();
 
   static {
     // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(new InterpolatingDouble(0.9), new
-    // // InterpolatingDouble(36.0));
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-7.22), new InterpolatingDouble(32.7));
 
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
         new InterpolatingDouble(-8.3), new InterpolatingDouble(33.0)); // 10 ft away
@@ -91,19 +67,5 @@ public class Constants {
         new InterpolatingDouble(-12.5), new InterpolatingDouble(29.0)); // 12 ft away
     DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
         new InterpolatingDouble(-14.3), new InterpolatingDouble(28.5)); //
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-15.3), new InterpolatingDouble(27.1));
-
-    // DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(
-    //     new InterpolatingDouble(1.99), new InterpolatingDouble(34.0));
-    // DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(
-    //     new InterpolatingDouble(1.75), new InterpolatingDouble(36.0));
-    // DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(
-    //     new InterpolatingDouble(1.3), new InterpolatingDouble(42.0));
-    // DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(
-    //     new InterpolatingDouble(0.93), new InterpolatingDouble(49.0));
-    // DISTANCE_WRIST_ANGLE_MAP_ELEVATOR.put(
-    //     new InterpolatingDouble(0.85), new InterpolatingDouble(49.0));
-    // DISTANCE_WRIST_ANGLE_MAP.put(new InterpolatingDouble(3.2), new InterpolatingDouble(28.4));
   }
 }

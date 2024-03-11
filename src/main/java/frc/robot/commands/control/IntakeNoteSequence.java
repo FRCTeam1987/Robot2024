@@ -15,6 +15,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.wrist.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -31,7 +32,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS);
+              shooter.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(Constants.INTAKE_COLLECT_VOLTS);
               wrist.setDegrees(21); // testing
               elevator.goHome();
@@ -40,10 +41,10 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             intake,
             wrist),
         new WaitCommand(0.1),
-        new WaitUntilCommand(() -> (shooter.isRearBroken())), // shooter.getFeederCurrent() > 30 ||
+        new WaitUntilCommand(shooter::isRearBroken), // shooter.getFeederCurrent() > 30 ||
         new InstantCommand(
             () -> {
-              RobotContainer.CANDLES.setColor(0, 0, 255);
+              RobotContainer.get().CANDLES.setColor(0, 0, 255);
               intake.stopTop();
             },
             intake),
@@ -56,7 +57,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             },
             shooter,
             intake),
-        new InstantCommand(() -> RobotContainer.CANDLES.setColor(0, 255, 255)));
+        new InstantCommand(() -> RobotContainer.get().CANDLES.setColor(0, 255, 255)));
 
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }

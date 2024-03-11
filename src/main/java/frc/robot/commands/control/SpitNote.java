@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class SpitNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
-  GenericEntry SpitRPM = SHOOTER_TAB.add("SpitRPM", 3500).getEntry();
+  final GenericEntry SpitRPM = SHOOTER_TAB.add("SpitRPM", 3500).getEntry();
 
   public SpitNote(Shooter shooter) {
     addRequirements(shooter);
@@ -27,27 +27,15 @@ public class SpitNote extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-        new InstantCommand(
-            () -> {
-              shooter.setRPMShoot(SpitRPM.getDouble(900));
-            },
-            shooter),
+        new InstantCommand(() -> shooter.setRPMShoot(SpitRPM.getDouble(900)), shooter),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
-        new WaitUntilCommand(() -> shooter.isShooterAtSetpoint()),
+        new WaitUntilCommand(shooter::isShooterAtSetpoint),
         new WaitCommand(1.0), // reset for isAtSetpoint commands to level out
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
+            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitCommand(1.0), // reset for isAtSetpoint commands to level out
-        new InstantCommand(
-            () -> {
-              shooter.stopFeeder();
-            },
-            shooter),
-        new InstantCommand(
-            () -> {
-              shooter.stopShooter();
-            },
-            shooter));
+        new InstantCommand(shooter::stopFeeder, shooter),
+        new InstantCommand(shooter::stopShooter, shooter));
   }
 }

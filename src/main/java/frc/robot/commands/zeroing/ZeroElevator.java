@@ -23,7 +23,7 @@ public class ZeroElevator extends SequentialCommandGroup {
         new InstantCommand(() -> elevator.setVoltage(-2.0)),
         new WaitCommand(0.5),
         new WaitUntilCommand(() -> elevator.getVelocity() == 0.0),
-        new InstantCommand(() -> elevator.zeroPosition()),
-        new InstantCommand(() -> elevator.stop()));
+        new InstantCommand(elevator::zeroPosition),
+        new InstantCommand(elevator::stop));
   }
 }

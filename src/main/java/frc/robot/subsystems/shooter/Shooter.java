@@ -45,9 +45,6 @@ public class Shooter extends SubsystemBase {
     final TalonFXConfiguration SHOOTER_CONFIG = new TalonFXConfiguration();
     SHOOTER_CONFIG.HardwareLimitSwitch.ForwardLimitEnable = false;
     SHOOTER_CONFIG.HardwareLimitSwitch.ReverseLimitEnable = false;
-    // SHOOTER_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.04;
-    // SHOOTER_CONFIG.Slot0.kS = 0.22;
-    // SHOOTER_CONFIG.Slot0.kV = 0.12;
 
     SHOOTER_CONFIG.Slot0.kP = 0.75;
     SHOOTER_CONFIG.Slot0.kA = 0.74; // acceleration
@@ -90,36 +87,19 @@ public class Shooter extends SubsystemBase {
     FEEDER.setInverted(true);
     FEEDER.setNeutralMode(NeutralModeValue.Brake);
 
-    // FEEDER_TEMP.setInverted(true);
-    // FEEDER_TEMP.setIdleMode(IdleMode.kBrake);
-
     setupShuffleboard();
   }
 
   public void setRPMShoot(double RPM) {
-    // VelocityVoltage ctrlLeader = new VelocityVoltage(0);
-    // VelocityVoltage ctrlFollower = new VelocityVoltage(0);
     SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity(RPM / 60.0));
     SHOOTER_FOLLOWER.setControl(
-        VOLTAGE_VELOCITY_FOLLOWER.withVelocity((RPM * Constants.SPIN_RATIO) / 60.0));
-    // SHOOTER_LEADER.setControl(m_leaderTorqueVelocity.withVelocity(RPM /
-    // 60.0).withFeedForward(1.0));
-    // SHOOTER_FOLLOWER.setControl(m_followerTorqueVelocity.withVelocity((RPM *
-    // Constants.SPIN_RATIO) / 60.0).withFeedForward(1.0));
+        VOLTAGE_VELOCITY_FOLLOWER.withVelocity((RPM * ShooterConstants.SPIN_RATIO) / 60.0));
   }
 
   public void setRPMShootNoSpin(double RPM) {
-    // VelocityVoltage ctrlLeader = new VelocityVoltage(0);
-    // VelocityVoltage ctrlFollower = new VelocityVoltage(0);
     SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity(RPM / 60.0));
     SHOOTER_FOLLOWER.setControl(VOLTAGE_VELOCITY_FOLLOWER.withVelocity(RPM / 60.0));
-    // SHOOTER_LEADER.setControl(m_leaderTorqueVelocity.withVelocity(RPM /
-    // 60.0).withFeedForward(1.0));
-    // SHOOTER_FOLLOWER.setControl(m_followerTorqueVelocity.withVelocity((RPM *
-    // Constants.SPIN_RATIO) / 60.0).withFeedForward(1.0));
   }
-
-  
 
   public boolean isCenterBroken() {
     return SHOOTER_LEADER.getForwardLimit().asSupplier().get().value == 0;
@@ -169,8 +149,8 @@ public class Shooter extends SubsystemBase {
   public void setupShuffleboard() {
 
     if (Constants.shouldShuffleboard) {
-      SHOOTER_TAB.addDouble("Lead RPM", () -> getRPMLeader());
-      SHOOTER_TAB.addDouble("Feeder Current", () -> this.getFeederCurrent());
+      SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
+      SHOOTER_TAB.addDouble("Feeder Current", this::getFeederCurrent);
       // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
       SHOOTER_TAB.addDouble(
           "SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
@@ -178,10 +158,7 @@ public class Shooter extends SubsystemBase {
           "SHOOTER Current", () -> SHOOTER_LEADER.getStatorCurrent().getValueAsDouble());
     }
 
-    // SHOOTER_TAB.addDouble("FD Vlts", () -> FEEDER_TEMP.getBusVoltage());
-    // SHOOTER_TAB.addDouble("FD RPM", () -> getRPMFeeder());
-
-    SHOOTER_TAB.addBoolean("HasNote", () -> isCenterBroken());
+    SHOOTER_TAB.addBoolean("HasNote", this::isCenterBroken);
 
     GenericEntry feedRPM = SHOOTER_TAB.add("Desired FD Vlts", 900).getEntry();
     GenericEntry shootRPM = SHOOTER_TAB.add("Desired SHT RPM", 900).getEntry();
@@ -189,17 +166,14 @@ public class Shooter extends SubsystemBase {
     SHOOTER_TAB.add(
         "Run FD Vlts", new InstantCommand(() -> setFeederVoltage(feedRPM.getDouble(0))));
     SHOOTER_TAB.add("Run SHT RPM", new InstantCommand(() -> setRPMShoot(shootRPM.getDouble(0))));
-    SHOOTER_TAB.add("Stop SHT", new InstantCommand(() -> stopShooter()));
-    SHOOTER_TAB.add("Stop FD", new InstantCommand(() -> stopFeeder()));
+    SHOOTER_TAB.add("Stop SHT", new InstantCommand(this::stopShooter));
+    SHOOTER_TAB.add("Stop FD", new InstantCommand(this::stopFeeder));
     SHOOTER_TAB.add(
         "Reverse Feeder",
         new InstantCommand(() -> setFeederVoltage(-10.0), this)
             .andThen(new WaitCommand(2.0))
-            .andThen(() -> stopFeeder(), this));
+            .andThen(this::stopFeeder, this));
   }
-
-  @Override
-  public void periodic() {}
 
   public double ShooterCameraDistanceToTarget(double targetHeight) {
     return Vision.calculateDistanceToTarget(

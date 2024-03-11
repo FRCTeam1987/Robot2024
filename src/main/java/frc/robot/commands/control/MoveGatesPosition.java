@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.Climber;
 
 public class MoveGatesPosition extends Command {
-  private Climber CLIMBER;
+  private final Climber CLIMBER;
 
   /** Creates a new MoveGatesPosition. */
   public MoveGatesPosition(Climber CLIMBER) {

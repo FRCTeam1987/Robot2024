@@ -15,16 +15,12 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.InterpolatingDouble;
 
 public class AimLockWrist extends Command {
-  private Wrist wrist;
-  private Shooter shooter;
-  private Elevator elevator;
-  private Vision speakerPhoton;
+  private final Wrist wrist;
+  private final Vision speakerPhoton;
 
   /** Creates a new AimLockWrist. */
   public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator, Vision speakerPhoton) {
-    this.elevator = elevator;
     this.wrist = wrist;
-    this.shooter = shooter;
     this.speakerPhoton = speakerPhoton;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -77,7 +73,6 @@ public class AimLockWrist extends Command {
       }
     } else {
       // DriverStation.reportError("Cannot see apriltag", false);
-      return;
     }
   }
 
