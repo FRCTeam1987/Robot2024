@@ -212,8 +212,8 @@ public class RobotContainer {
   }
 
   public void configureShuffleboard() {
-    SHOOTER_TAB.add("Coast Wrist", new InstantCommand(WRIST::coast));
-    SHOOTER_TAB.add("Brake Wrist", new InstantCommand(WRIST::brake));
+    SHOOTER_TAB.add("Coast Wrist", new InstantCommand(WRIST::coast).ignoringDisable(true));
+    SHOOTER_TAB.add("Brake Wrist", new InstantCommand(WRIST::brake).ignoringDisable(true));
     COMMANDS_TAB.addNumber("Speaker Pitch", SPEAKER_PHOTON::getPitchVal);
     COMMANDS_TAB.add(
         "Intake Auto",
