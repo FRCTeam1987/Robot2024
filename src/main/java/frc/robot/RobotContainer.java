@@ -359,7 +359,7 @@ public class RobotContainer {
     addAuto("amp_subwoofer");
     addAuto("amp_subwoofer_reversal");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
-    COMMANDS_TAB.add("Auto", AUTO_CHOOSER);
+    MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
 
   public void configureDefaultCommands() {
