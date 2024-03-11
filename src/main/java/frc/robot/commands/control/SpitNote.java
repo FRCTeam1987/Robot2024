@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class SpitNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
@@ -32,7 +32,7 @@ public class SpitNote extends SequentialCommandGroup {
         new WaitUntilCommand(shooter::isShooterAtSetpoint),
         new WaitCommand(1.0), // reset for isAtSetpoint commands to level out
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_FEEDFWD_VOLTS),
+            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitCommand(1.0), // reset for isAtSetpoint commands to level out
         new InstantCommand(shooter::stopFeeder, shooter),

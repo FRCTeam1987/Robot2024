@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.movement;
+package frc.robot.commands.control;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.wrist.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -49,7 +49,7 @@ public class ShootTrap extends SequentialCommandGroup {
         new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())),
         new WaitCommand(0.6), // Time for wrist to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->

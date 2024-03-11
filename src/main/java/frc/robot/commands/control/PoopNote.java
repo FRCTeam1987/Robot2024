@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class PoopNote extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
@@ -22,7 +22,7 @@ public class PoopNote extends SequentialCommandGroup {
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
         new WaitUntilCommand(shooter::isShooterAtSetpoint).withTimeout(0.12),
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(() -> !shooter.isCenterBroken()), // probably debounce this
         new InstantCommand(shooter::stopFeeder, shooter));

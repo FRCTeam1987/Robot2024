@@ -24,7 +24,6 @@ public class Constants {
   public static final int SHOOTER_FEEDER_ID = 55;
   public static final int SHOOTER_FEEDER_ID_TEMP = 10;
 
-  public static final int SHOOTER_AMP_RPM = 550;
   public static final double ELEVATOR_AMP_HEIGHT = 6.2;
   public static final double WRIST_AMP_DEGREES = 110.0;
 
@@ -46,20 +45,6 @@ public class Constants {
   public static final int WRIST_ID = 54;
 
   public static final double INTAKE_COLLECT_VOLTS = -6; // 6
-
-  public static final double FEEDER_FEEDFWD_VOLTS = 4; // 6 // 4
-  public static final double FEEDER_SHOOT_VOLTS = 5; // 4
-  public static final double FEEDER_RETRACT_VOLTS = -2;
-
-  public static final double SHOOTER_RPM = 3500;
-  public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to bee smaller
-  public static final double SHOOTER_IDLE_RPM = 2500;
-  public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to bee smaller
-  public static final double SPIN_RATIO = 0.75;
-
-  public static final double CLIMBER_NOMINAL_VOLTAGE = 10;
-  public static final double CLIMBER_MAINTAIN_VOLTAGE = 0.35;
-  public static final double CLIMBER_CUTOFF_AMPERAGE = 65;
 
   public static final InterpolatingTreeMap<
           InterpolatingDouble,

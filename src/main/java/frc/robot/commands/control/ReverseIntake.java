@@ -11,6 +11,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.wrist.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -26,7 +27,7 @@ public class ReverseIntake extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setFeederVoltage(-Constants.FEEDER_FEEDFWD_VOLTS);
+              shooter.setFeederVoltage(-ShooterConstants.FEEDER_FEEDFWD_VOLTS);
               intake.setVolts(-Constants.INTAKE_COLLECT_VOLTS);
               wrist.setDegrees(21); // testing
               elevator.goHome();
