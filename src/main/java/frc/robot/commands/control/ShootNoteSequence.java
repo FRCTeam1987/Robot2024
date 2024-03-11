@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.RobotContainer;
 import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -68,7 +67,8 @@ public class ShootNoteSequence extends SequentialCommandGroup {
                 new PointAtAprilTag(drivetrain, photonVision),
                 new InstantCommand(
                     () -> {
-                      wrist.setDegrees(RobotContainer.SHOOT_ANGLE.getDouble(30));
+                      // TODO: FIX ME !!!!!
+                      // wrist.setDegrees(RobotContainer.get().getDouble(30));
                       shooter.setRPMShoot(shootRPM);
                     },
                     shooter,

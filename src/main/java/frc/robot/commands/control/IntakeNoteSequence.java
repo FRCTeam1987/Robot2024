@@ -43,7 +43,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(shooter::isRearBroken), // shooter.getFeederCurrent() > 30 ||
         new InstantCommand(
             () -> {
-              RobotContainer.CANDLES.setColor(0, 0, 255);
+              RobotContainer.get().CANDLES.setColor(0, 0, 255);
               intake.stopTop();
             },
             intake),
@@ -56,7 +56,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             },
             shooter,
             intake),
-        new InstantCommand(() -> RobotContainer.CANDLES.setColor(0, 255, 255)));
+        new InstantCommand(() -> RobotContainer.get().CANDLES.setColor(0, 255, 255)));
 
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }

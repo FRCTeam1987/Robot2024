@@ -364,24 +364,6 @@ public class RobotContainer {
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
   }
 
-  public void addAuto(String autoName) {
-    AUTO_CHOOSER.addOption(autoName, new PathPlannerAuto(autoName));
-  }
-
-  public RobotContainer() {
-    instance = this;
-    configureNamedCommands();
-    configureShuffleboard();
-    configureDrivetrain();
-    configureDriverController();
-    configureCoDriverController();
-    configureDefaultCommands();
-  }
-
-  public static RobotContainer get() {
-    return instance;
-  }
-
   public void configureNamedCommands() {
     NamedCommands.registerCommand(
         "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.SHOOTER_RPM, 40));
@@ -436,6 +418,24 @@ public class RobotContainer {
         new ParallelDeadlineGroup(
             new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
             new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
+  }
+
+  public void addAuto(String autoName) {
+    AUTO_CHOOSER.addOption(autoName, new PathPlannerAuto(autoName));
+  }
+
+  public RobotContainer() {
+    instance = this;
+    configureNamedCommands();
+    configureShuffleboard();
+    configureDrivetrain();
+    configureDriverController();
+    configureCoDriverController();
+    configureDefaultCommands();
+  }
+
+  public static RobotContainer get() {
+    return instance;
   }
 
   public Command getAutonomousCommand() {
