@@ -39,7 +39,8 @@ public class ShootTrap extends SequentialCommandGroup {
             () -> {
               shooter.setRPMShoot(rpmSpeed);
               elevator.setLengthInches(elevatorHeight);
-              shooter.setFeederVoltage(-0.2);;
+              shooter.setFeederVoltage(-0.2);
+              ;
               // wrist.setDegrees(110.0);  // 25.0 + 90.0
             },
             shooter,
@@ -57,17 +58,17 @@ public class ShootTrap extends SequentialCommandGroup {
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(shooter::stopFeeder, shooter));
-        // new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
-        // new InstantCommand(() -> wrist.setDegrees(35.0), shooter),
-        // new WaitCommand(0.4),
-        // new InstantCommand(
-        //     () -> {
-        //       shooter.stopShooter();
-        //       elevator.goHome();
-        //       wrist.setDegrees(25.0);
-        //     },
-        //     shooter,
-        //     elevator,
-        //     wrist));
+    // new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
+    // new InstantCommand(() -> wrist.setDegrees(35.0), shooter),
+    // new WaitCommand(0.4),
+    // new InstantCommand(
+    //     () -> {
+    //       shooter.stopShooter();
+    //       elevator.goHome();
+    //       wrist.setDegrees(25.0);
+    //     },
+    //     shooter,
+    //     elevator,
+    //     wrist));
   }
 }

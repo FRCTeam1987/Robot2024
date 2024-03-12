@@ -120,7 +120,6 @@ public class RobotContainer {
   public static boolean isAmpPrepped = false;
   public static boolean isClimbPrimed = false;
 
-
   private void configureDriverController() {
     DRIVER_CONTROLLER.a().onTrue(new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
@@ -135,8 +134,9 @@ public class RobotContainer {
                     .andThen(new WaitCommand(0.2))
                     .andThen(new InstantCommand(() -> isAmpPrimed = true)),
                 () -> isAmpPrimed));
-    
-    //DRIVER_CONTROLLER.y().onTrue(new ConditionalCommand(AMP_SCORE_COMMAND, new InstantCommand(), () -> !AMP_SCORE_COMMAND.isFinished()));
+
+    // DRIVER_CONTROLLER.y().onTrue(new ConditionalCommand(AMP_SCORE_COMMAND, new InstantCommand(),
+    // () -> !AMP_SCORE_COMMAND.isFinished()));
 
     DRIVER_CONTROLLER
         .back()
@@ -152,17 +152,19 @@ public class RobotContainer {
     DRIVER_CONTROLLER
         .leftBumper()
         .onTrue(
-            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR).andThen(new Rumble(DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
-                // .andThen(
-                //     new InstantCommand(
-                //             () -> DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0))
-                //         .andThen(new WaitCommand(0.7))
-                //         .andThen(
-                //             new InstantCommand(
-                //                 () -> {
-                //                   DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 0.0);
-                //                   CANDLES.setColor(0, 128, 0);
-                //                 }))));
+            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
+                .andThen(
+                    new Rumble(DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
+    // .andThen(
+    //     new InstantCommand(
+    //             () -> DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0))
+    //         .andThen(new WaitCommand(0.7))
+    //         .andThen(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+    //                   CANDLES.setColor(0, 128, 0);
+    //                 }))));
 
     DRIVER_CONTROLLER
         .rightTrigger()
@@ -251,12 +253,25 @@ public class RobotContainer {
     PROTO_TAB.addDouble("Wrist Err", () -> WRIST.getError());
     PROTO_TAB.addDouble("Shooter Err", () -> SHOOTER.getError());
 
-    PROTO_TAB.add("Wrist GO", new InstantCommand(() -> WRIST.setDegrees(WRIST_ANGLE.getDouble(7.0)), WRIST));
-    PROTO_TAB.add("Elev GO", new InstantCommand(() -> ELEVATOR.setLengthInches(ELEVATOR_HEIGHT.getDouble(0.0)), ELEVATOR));
-    PROTO_TAB.add("Shooter GO", new InstantCommand(() -> SHOOTER.setRPMShoot(SHOOTER_RPM.getDouble(0.0)), SHOOTER));
+    PROTO_TAB.add(
+        "Wrist GO", new InstantCommand(() -> WRIST.setDegrees(WRIST_ANGLE.getDouble(7.0)), WRIST));
+    PROTO_TAB.add(
+        "Elev GO",
+        new InstantCommand(
+            () -> ELEVATOR.setLengthInches(ELEVATOR_HEIGHT.getDouble(0.0)), ELEVATOR));
+    PROTO_TAB.add(
+        "Shooter GO",
+        new InstantCommand(() -> SHOOTER.setRPMShoot(SHOOTER_RPM.getDouble(0.0)), SHOOTER));
 
     PROTO_TAB.add("Elev STOP", new InstantCommand(() -> ELEVATOR.stop(), ELEVATOR));
-    PROTO_TAB.add("Shooter STOP", new InstantCommand(() -> {SHOOTER.stopShooter(); SHOOTER.stopFeeder();}, SHOOTER));
+    PROTO_TAB.add(
+        "Shooter STOP",
+        new InstantCommand(
+            () -> {
+              SHOOTER.stopShooter();
+              SHOOTER.stopFeeder();
+            },
+            SHOOTER));
 
     SHOOTER_TAB.add("Coast Wrist", new InstantCommand(WRIST::coast).ignoringDisable(true));
     SHOOTER_TAB.add("Brake Wrist", new InstantCommand(WRIST::brake).ignoringDisable(true));
@@ -486,7 +501,6 @@ public class RobotContainer {
     configureDriverController();
     configureCoDriverController();
     configureDefaultCommands();
-
   }
 
   public static RobotContainer get() {
@@ -499,13 +513,13 @@ public class RobotContainer {
 
   public void visionPeriodic() {
     try {
-    Optional<EstimatedRobotPose> speakerEstimate = VISION_SPEAKER.getEstimatedGlobalPose();
-    speakerEstimate.ifPresent(
-        estimate -> {
-          Pose2d estimatedPose = estimate.estimatedPose.toPose2d();
-          Matrix<N3, N1> estStdDevs = VISION_SPEAKER.getEstimationStdDevs(estimatedPose);
-          DRIVETRAIN.addVisionMeasurement(estimatedPose, estimate.timestampSeconds, estStdDevs);
-        });
+      Optional<EstimatedRobotPose> speakerEstimate = VISION_SPEAKER.getEstimatedGlobalPose();
+      speakerEstimate.ifPresent(
+          estimate -> {
+            Pose2d estimatedPose = estimate.estimatedPose.toPose2d();
+            Matrix<N3, N1> estStdDevs = VISION_SPEAKER.getEstimationStdDevs(estimatedPose);
+            DRIVETRAIN.addVisionMeasurement(estimatedPose, estimate.timestampSeconds, estStdDevs);
+          });
     } catch (Exception ignored) {
 
     }

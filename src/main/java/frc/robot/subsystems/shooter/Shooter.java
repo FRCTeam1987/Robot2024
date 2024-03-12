@@ -91,17 +91,15 @@ public class Shooter extends SubsystemBase {
 
     setupShuffleboard();
   }
-  
+
   public double getError() {
     return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble();
   }
 
-    public void lockPositionFeeder() {
-      FEEDER.setPosition(0.0);
-      FEEDER.setControl(new PositionVoltage(FEEDER.getPosition().getValueAsDouble()));
+  public void lockPositionFeeder() {
+    FEEDER.setPosition(0.0);
+    FEEDER.setControl(new PositionVoltage(FEEDER.getPosition().getValueAsDouble()));
   }
-
-
 
   public void setRPMShoot(double RPM) {
     SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity(RPM / 60.0));
@@ -198,7 +196,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+
     if (!isCenterBroken()) {
       RobotContainer.get().CANDLES.setColor(0, 128, 0);
     }

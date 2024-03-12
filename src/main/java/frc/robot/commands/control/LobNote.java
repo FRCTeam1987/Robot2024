@@ -23,44 +23,43 @@ public class LobNote extends SequentialCommandGroup {
 
   private final double DEBOUNCE_TIME = 0.08;
 
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+  // Add your commands in the addCommands() call, e.g.
+  // addCommands(new FooCommand(), new BarCommand());
 
   /** Creates a new LobNote. */
   public LobNote(Shooter SHOOTER, Wrist WRIST, Elevator ELEVATOR) {
 
-        lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
+    lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(SHOOTER, WRIST, ELEVATOR);
     addCommands(
-      new InstantCommand(
-        () -> {
-          WRIST.setDegrees(33);
-          SHOOTER.setRPMShoot(ShooterConstants.SHOOTER_LOB_RPM);
-          ELEVATOR.setLengthInches(0);
-        },
-        SHOOTER,
-        WRIST),
-    new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
-    new WaitUntilCommand(
-        () -> WRIST.isAtSetpoint() && SHOOTER.isShooterAtSetpoint() && ELEVATOR.isAtSetpoint()),
-    new WaitCommand(0.4), // Time for writst to get to position
-    new InstantCommand(
-        () -> SHOOTER.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),
-        SHOOTER), // Constants.FEEDER_FEEDFWD_VOLTS
-    new WaitUntilCommand(
-        () ->
-            lineBreakDebouncer.calculate(!SHOOTER.isCenterBroken())), // probably debounce this
-    new InstantCommand(SHOOTER::stopFeeder, SHOOTER),
-    new WaitUntilCommand(() -> lineBreakDebouncer.calculate(SHOOTER.isCenterBroken())),
-    new InstantCommand(
-        () -> {
-          SHOOTER.stopShooter();
-          ELEVATOR.goHome();
-        },
-        SHOOTER),
-    new WaitCommand(0.1)
-    );
+        new InstantCommand(
+            () -> {
+              WRIST.setDegrees(33);
+              SHOOTER.setRPMShoot(ShooterConstants.SHOOTER_LOB_RPM);
+              ELEVATOR.setLengthInches(0);
+            },
+            SHOOTER,
+            WRIST),
+        new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
+        new WaitUntilCommand(
+            () -> WRIST.isAtSetpoint() && SHOOTER.isShooterAtSetpoint() && ELEVATOR.isAtSetpoint()),
+        new WaitCommand(0.4), // Time for writst to get to position
+        new InstantCommand(
+            () -> SHOOTER.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),
+            SHOOTER), // Constants.FEEDER_FEEDFWD_VOLTS
+        new WaitUntilCommand(
+            () ->
+                lineBreakDebouncer.calculate(!SHOOTER.isCenterBroken())), // probably debounce this
+        new InstantCommand(SHOOTER::stopFeeder, SHOOTER),
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(SHOOTER.isCenterBroken())),
+        new InstantCommand(
+            () -> {
+              SHOOTER.stopShooter();
+              ELEVATOR.goHome();
+            },
+            SHOOTER),
+        new WaitCommand(0.1));
   }
 }
