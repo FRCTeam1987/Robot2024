@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.Intake;
@@ -44,7 +43,6 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(shooter::isRearBroken), // shooter.getFeederCurrent() > 30 ||
         new InstantCommand(
             () -> {
-              RobotContainer.get().CANDLES.setColor(0, 0, 255);
               intake.stopTop();
             },
             intake),
@@ -56,8 +54,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
               intake.stopCollecting();
             },
             shooter,
-            intake),
-        new InstantCommand(() -> RobotContainer.get().CANDLES.setColor(0, 255, 255)));
+            intake));
 
     // new InstantCommand(() -> wrist.goHome(), wrist));
   }

@@ -31,4 +31,9 @@ public class Candles extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void setColor(double red, double green, double blue) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'setColor'");
+  }
 }

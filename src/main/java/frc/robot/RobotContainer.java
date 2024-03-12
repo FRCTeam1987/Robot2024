@@ -34,9 +34,7 @@ import frc.robot.commands.control.LobNote;
 import frc.robot.commands.control.PoopNote;
 import frc.robot.commands.control.PrepareShootAmp;
 import frc.robot.commands.control.ReverseIntake;
-import frc.robot.commands.control.Rumble;
 import frc.robot.commands.control.ShootAmp;
-import frc.robot.commands.control.ShootAmpMultiStepSequence;
 import frc.robot.commands.control.ShootNote;
 import frc.robot.commands.control.ShootNoteSequence;
 import frc.robot.commands.control.ShootSubwoofer;
@@ -51,6 +49,8 @@ import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.movement.TeleopSwerve;
+import frc.robot.commands.qol.AsyncRumble;
+import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.VisionConstants;
@@ -76,8 +76,6 @@ public class RobotContainer {
 
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
-
-  public static ShootAmpMultiStepSequence AMP_SCORE_COMMAND;
 
   private GenericEntry SHOOTER_RPM;
   private GenericEntry WRIST_ANGLE;
@@ -154,7 +152,8 @@ public class RobotContainer {
         .onTrue(
             new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
                 .andThen(
-                    new Rumble(DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
+                    new AsyncRumble(
+                        DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
     // .andThen(
     //     new InstantCommand(
     //             () -> DRIVER_CONTROLLER.getHID().setRumble(RumbleType.kBothRumble, 1.0))
@@ -430,6 +429,7 @@ public class RobotContainer {
   public void configureDefaultCommands() {
     WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_PHOTON));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
+    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
   }
 
   public void configureNamedCommands() {

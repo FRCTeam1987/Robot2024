@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Vision;
 
@@ -192,13 +191,5 @@ public class Shooter extends SubsystemBase {
         speakerPhoton.getCameraHeight(),
         targetHeight,
         speakerPhoton.getCameraDegrees());
-  }
-
-  @Override
-  public void periodic() {
-
-    if (!isCenterBroken()) {
-      RobotContainer.get().CANDLES.setColor(0, 128, 0);
-    }
   }
 }
