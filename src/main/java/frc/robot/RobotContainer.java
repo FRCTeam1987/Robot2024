@@ -7,9 +7,14 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -46,6 +51,7 @@ import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.movement.TeleopSwerve;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.candle.Candles;
@@ -55,6 +61,8 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.wrist.Wrist;
 import java.util.Arrays;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
 
 public class RobotContainer {
   private static RobotContainer instance;
@@ -66,11 +74,22 @@ public class RobotContainer {
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
 
+  public final PVision VISION_SPEAKER =
+      new PVision(
+          VisionConstants.CAMERA_NAME_SPEAKER,
+          VisionConstants.TAG_LAYOUT,
+          VisionConstants.ROBOT_TO_CAM_SPEAKER);
+//   public final PVision VISION_AMP =
+//       new PVision(
+//           VisionConstants.CAMERA_NAME_AMP,
+//           VisionConstants.TAG_LAYOUT,
+//           VisionConstants.ROBOT_TO_CAM_AMP);
+
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
   public final Vision SPEAKER_PHOTON =
-      new Vision("Arducam_OV2311_USB_Camera_1", 0.30226, 40, Arrays.asList(4, 7));
+      new Vision("Arducam_OV2311_USB_Camera_1", 0.3, 40, Arrays.asList(4, 7));
   public final Vision AMP_PHOTON =
-      new Vision("Arducam_OV2311_USB_Camera", 0.35636, 40, Arrays.asList(5, 6));
+      new Vision("Arducam_OV2311_USB_Camera", 0.35, 40, Arrays.asList(5, 6));
 
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
@@ -349,6 +368,9 @@ public class RobotContainer {
     PHOTON_TAB.add(
         "Collect Note Auto",
         new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR, INTAKE_PHOTON));
+    PHOTON_TAB.addNumber("Pose x", () -> DRIVETRAIN.getPose().getX());
+    PHOTON_TAB.addNumber("Pose y", () -> DRIVETRAIN.getPose().getY());
+    PHOTON_TAB.addNumber("Pose Theta", () -> DRIVETRAIN.getPose().getRotation().getDegrees());
 
     SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
 
@@ -452,5 +474,53 @@ public class RobotContainer {
 
   public static void setAmpPrepped(final boolean isPrepped) {
     isAmpPrepped = isPrepped;
+  }
+
+  public void visionPeriodic() {
+    Optional<EstimatedRobotPose> speakerEstimate = VISION_SPEAKER.getEstimatedGlobalPose();
+    speakerEstimate.ifPresent(
+        estimate -> {
+          Pose2d estimatedPose = estimate.estimatedPose.toPose2d();
+          Matrix<N3, N1> estStdDevs = VISION_SPEAKER.getEstimationStdDevs(estimatedPose);
+          DRIVETRAIN.addVisionMeasurement(estimatedPose, estimate.timestampSeconds, estStdDevs);
+        });
+    // Optional<EstimatedRobotPose> ampEstimate = VISION_AMP.getEstimatedGlobalPose();
+    // ampEstimate.ifPresent(
+    //     estimate -> {
+    //       Pose2d estimatedPose = estimate.estimatedPose.toPose2d();
+    //       Matrix<N3, N1> estStdDevs = VISION_AMP.getEstimationStdDevs(estimatedPose);
+    //       DRIVETRAIN.addVisionMeasurement(estimatedPose, estimate.timestampSeconds, estStdDevs);
+    //     });
+  }
+
+  public static final double DEADBAND = 0.05;
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+
+  /**
+   * Squares the specified value, while preserving the sign. This method is used on all joystick
+   * inputs. This is useful as a non-linear range is more natural for the driver.
+   *
+   * @param value input value
+   * @return square of the value
+   */
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, DEADBAND);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+
+    return value;
   }
 }
