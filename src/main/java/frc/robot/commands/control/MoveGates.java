@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberConstants;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.Climber;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -25,15 +25,15 @@ public class MoveGates extends SequentialCommandGroup {
                 () ->
                     CLIMBER.setSpeeds(
                         direction
-                            ? ClimberConstants.CLIMBER_NOMINAL_VOLTAGE
-                            : -ClimberConstants.CLIMBER_NOMINAL_VOLTAGE)),
+                            ? Constants.Climber.CLIMBER_NOMINAL_VOLTAGE
+                            : -Constants.Climber.CLIMBER_NOMINAL_VOLTAGE)),
             new SequentialCommandGroup(
                 new WaitUntilCommand(
-                    () -> CLIMBER.getLeftCurrent() > ClimberConstants.CLIMBER_CUTOFF_AMPERAGE),
+                    () -> CLIMBER.getLeftCurrent() > Constants.Climber.CLIMBER_CUTOFF_AMPERAGE),
                 new InstantCommand(() -> CLIMBER.stopLeft(direction))),
             new SequentialCommandGroup(
                 new WaitUntilCommand(
-                    () -> CLIMBER.getRightCurrent() > ClimberConstants.CLIMBER_CUTOFF_AMPERAGE),
+                    () -> CLIMBER.getRightCurrent() > Constants.Climber.CLIMBER_CUTOFF_AMPERAGE),
                 new InstantCommand(() -> CLIMBER.stopRight(direction)))));
   }
 }

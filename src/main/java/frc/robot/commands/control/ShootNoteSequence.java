@@ -8,12 +8,8 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.movement.PointAtAprilTag;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.*;
 
 public class ShootNoteSequence extends SequentialCommandGroup {
   private static final double DEBOUNCE_TIME = 0.06;
@@ -38,7 +34,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new WaitCommand(0.2), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->
@@ -75,7 +71,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             .withTimeout(0.15),
         new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(!shooter.isCenterBroken()))
             .withTimeout(0.2), // probably debounce this
@@ -111,7 +107,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
             () -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint() && elevator.isAtSetpoint()),
         new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS),
+            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->

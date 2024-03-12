@@ -1,4 +1,4 @@
-package frc.robot.subsystems.wrist;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -23,26 +23,26 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
     final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
 
-    WRIST_CONFIG.Slot0.kP = 250.0; // WristConstants.WRIST_KP; 500
-    WRIST_CONFIG.Slot0.kI = WristConstants.WRIST_KI;
-    WRIST_CONFIG.Slot0.kD = WristConstants.WRIST_KD;
-    WRIST_CONFIG.Slot0.kV = WristConstants.WRIST_KV;
+    WRIST_CONFIG.Slot0.kP = 250.0; // Constants.Wrist.WRIST_KP; 500
+    WRIST_CONFIG.Slot0.kI = Constants.Wrist.WRIST_KI;
+    WRIST_CONFIG.Slot0.kD = Constants.Wrist.WRIST_KD;
+    WRIST_CONFIG.Slot0.kV = Constants.Wrist.WRIST_KV;
 
-    WRIST_CONFIG.CurrentLimits.StatorCurrentLimit = WristConstants.WRIST_CURRENT_LIMIT;
-    // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimit = WristConstants.WRIST_CURRENT_LIMIT;
+    WRIST_CONFIG.CurrentLimits.StatorCurrentLimit = Constants.Wrist.WRIST_CURRENT_LIMIT;
+    // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimit = Constants.Wrist.WRIST_CURRENT_LIMIT;
     // WRIST_CONFIG.SupplyCurrentT
     // WRIST_CONFIG.CurrentLimits.SupplyCurrentLimitEnable  = true;
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 15; // 50
-    // WristConstants.WRIST_MOTION_CRUISE_VELOCITY;
+    // Constants.Wrist.WRIST_MOTION_CRUISE_VELOCITY;
     WRIST_CONFIG.MotionMagic.MotionMagicAcceleration =
         WRIST_CONFIG.MotionMagic.MotionMagicCruiseVelocity / 4.0;
-    // WristConstants.WRIST_MOTION_ACCELERATION;
+    // Constants.Wrist.WRIST_MOTION_ACCELERATION;
     // WRIST_CONFIG.MotionMagic.MotionMagicJerk = 10;
     WRIST_CONFIG.Feedback.SensorToMechanismRatio = (120.0 / 10.0) * (80.0 / 12.0);
     // (100.0 / 10.0) * (36.0 / 18.0) * (3.0 / 1.0); // 66:1
-    // WristConstants.WRIST_MOTION_JERK;
+    // Constants.Wrist.WRIST_MOTION_JERK;
 
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
     setZero();
@@ -52,7 +52,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void goHome() {
-    setDegrees(WristConstants.INITIAL_ANGLE_DEGREES);
+    setDegrees(Constants.Wrist.INITIAL_ANGLE_DEGREES);
   }
 
   public void setCoast() {
@@ -64,7 +64,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void zeroSensor() {
-    WRIST_MOTOR.setPosition(WristConstants.INITIAL_ANGLE_DEGREES / 360.0);
+    WRIST_MOTOR.setPosition(Constants.Wrist.INITIAL_ANGLE_DEGREES / 360.0);
   }
 
   public double getError() {
@@ -73,7 +73,7 @@ public class Wrist extends SubsystemBase {
 
   public boolean isAtSetpoint() {
     return WRIST_MOTOR.getClosedLoopError().getValueAsDouble()
-        < WristConstants.WRIST_ALLOWABLE_ERROR;
+        < Constants.Wrist.WRIST_ALLOWABLE_ERROR;
   }
 
   public double getVelocity() {
@@ -89,13 +89,13 @@ public class Wrist extends SubsystemBase {
     // 44 degrees at 1.67 rotations
     // Reduction is 18T to 36T pulley, 10T to 100T gear
     return WRIST_MOTOR.getPosition().getValueAsDouble() * 360.0;
-    // * WristConstants.CONVERSION_FACTOR_ROTS_TO_DEGREES;
+    // * Constants.Wrist.CONVERSION_FACTOR_ROTS_TO_DEGREES;
   }
 
   public void setDegrees(double degrees) {
     degrees = degrees + IncrementValue;
 
-    if (degrees > WristConstants.WRIST_MAX_DEG || degrees < WristConstants.WRIST_MIN_DEG) {
+    if (degrees > Constants.Wrist.WRIST_MAX_DEG || degrees < Constants.Wrist.WRIST_MIN_DEG) {
       System.out.println("Out of Wrist Range! " + degrees);
     } else {
       double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
@@ -127,7 +127,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setZero() {
-    WRIST_MOTOR.setPosition(WristConstants.INITIAL_ANGLE_DEGREES / 360.0);
+    WRIST_MOTOR.setPosition(Constants.Wrist.INITIAL_ANGLE_DEGREES / 360.0);
   }
 
   public void setupShuffleboard() {

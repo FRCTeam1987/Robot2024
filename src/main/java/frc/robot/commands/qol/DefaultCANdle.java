@@ -5,8 +5,8 @@
 package frc.robot.commands.qol;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.candle.Candles;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.Candles;
+import frc.robot.subsystems.Shooter;
 
 public class DefaultCANdle extends Command {
   private final Shooter SHOOTER;

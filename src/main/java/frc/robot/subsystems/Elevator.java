@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.zeroing.ZeroElevator;
+import frc.robot.constants.Constants;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
@@ -31,25 +32,25 @@ public class Elevator extends SubsystemBase {
     ELEVATOR_FOLLOWER = new TalonFX(ELEVATOR_FOLLOWER_ID, "canfd");
 
     TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
-    extensionConfig.Slot0.kP = ElevatorConstants.EXTENSION_KP;
-    extensionConfig.Slot0.kI = ElevatorConstants.EXTENSION_KI;
-    extensionConfig.Slot0.kD = ElevatorConstants.EXTENSION_KD;
-    extensionConfig.Slot0.kV = ElevatorConstants.EXTENSION_KV;
-    extensionConfig.Slot1.kP = ElevatorConstants.EXTENSION_KP_1;
-    extensionConfig.Slot1.kI = ElevatorConstants.EXTENSION_KI_1;
-    extensionConfig.Slot1.kD = ElevatorConstants.EXTENSION_KD_1;
-    extensionConfig.Slot1.kV = ElevatorConstants.EXTENSION_KV_1;
+    extensionConfig.Slot0.kP = Constants.Elevator.EXTENSION_KP;
+    extensionConfig.Slot0.kI = Constants.Elevator.EXTENSION_KI;
+    extensionConfig.Slot0.kD = Constants.Elevator.EXTENSION_KD;
+    extensionConfig.Slot0.kV = Constants.Elevator.EXTENSION_KV;
+    extensionConfig.Slot1.kP = Constants.Elevator.EXTENSION_KP_1;
+    extensionConfig.Slot1.kI = Constants.Elevator.EXTENSION_KI_1;
+    extensionConfig.Slot1.kD = Constants.Elevator.EXTENSION_KD_1;
+    extensionConfig.Slot1.kV = Constants.Elevator.EXTENSION_KV_1;
     extensionConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    extensionConfig.CurrentLimits.StatorCurrentLimit = ElevatorConstants.EXTENSION_CURRENT_LIMIT;
+    extensionConfig.CurrentLimits.StatorCurrentLimit = Constants.Elevator.EXTENSION_CURRENT_LIMIT;
     extensionConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     extensionConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     extensionConfig.Feedback.RotorToSensorRatio = -1;
 
     extensionConfig.MotionMagic.MotionMagicAcceleration =
-        ElevatorConstants.EXTENSION_MOTION_ACCELERATION;
+        Constants.Elevator.EXTENSION_MOTION_ACCELERATION;
     extensionConfig.MotionMagic.MotionMagicCruiseVelocity =
-        ElevatorConstants.EXTENSION_CRUISE_VELOCITY;
-    // extensionConfig.MotionMagic.MotionMagicJerk = ElevatorConstants.EXTENSION_JERK;
+        Constants.Elevator.EXTENSION_CRUISE_VELOCITY;
+    // extensionConfig.MotionMagic.MotionMagicJerk = Constants.Elevator.EXTENSION_JERK;
 
     ELEVATOR_LEADER.getConfigurator().apply(extensionConfig);
     ELEVATOR_FOLLOWER.getConfigurator().apply(extensionConfig);
@@ -75,14 +76,14 @@ public class Elevator extends SubsystemBase {
 
   public void setLengthInchesSlot1(double LENGTH) {
     LENGTH = LENGTH + IncrementValue;
-    if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
-        || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
+    if (LENGTH > Constants.Elevator.MAXIMUM_EXTENSION_LENGTH_INCHES
+        || LENGTH < Constants.Elevator.MINIMUM_EXTENSION_LENGTH_INCHES) {
       DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
     } else {
       MotionMagicVoltage ctrl = new MotionMagicVoltage(0, true, 0, 1, false, false, false);
 
       ELEVATOR_LEADER.setControl(
-          ctrl.withPosition(LENGTH * ElevatorConstants.CONVERSION_FACTOR_INCHES_TO_TICKS));
+          ctrl.withPosition(LENGTH * Constants.Elevator.CONVERSION_FACTOR_INCHES_TO_TICKS));
     }
   }
 
@@ -97,18 +98,18 @@ public class Elevator extends SubsystemBase {
 
   public double getLengthInches() {
     return ELEVATOR_LEADER.getRotorPosition().getValueAsDouble()
-        * ElevatorConstants.CONVERSION_FACTOR_TICKS_TO_INCHES;
+        * Constants.Elevator.CONVERSION_FACTOR_TICKS_TO_INCHES;
   }
 
   public void setLengthInches(double LENGTH) {
     LENGTH = LENGTH + IncrementValue;
-    if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
-        || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
+    if (LENGTH > Constants.Elevator.MAXIMUM_EXTENSION_LENGTH_INCHES
+        || LENGTH < Constants.Elevator.MINIMUM_EXTENSION_LENGTH_INCHES) {
       DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
     } else {
       MotionMagicVoltage ctrl = new MotionMagicVoltage(0);
       ELEVATOR_LEADER.setControl(
-          ctrl.withPosition(LENGTH * ElevatorConstants.CONVERSION_FACTOR_INCHES_TO_TICKS));
+          ctrl.withPosition(LENGTH * Constants.Elevator.CONVERSION_FACTOR_INCHES_TO_TICKS));
     }
   }
 
@@ -137,7 +138,7 @@ public class Elevator extends SubsystemBase {
 
   public boolean isAtSetpoint() {
     return ELEVATOR_LEADER.getClosedLoopError().getValueAsDouble()
-        < ElevatorConstants.EXTENSION_ALLOWABLE_ERROR;
+        < Constants.Elevator.EXTENSION_ALLOWABLE_ERROR;
   }
 
   public void setZero() {

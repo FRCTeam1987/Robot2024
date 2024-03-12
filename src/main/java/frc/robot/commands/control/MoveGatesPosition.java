@@ -5,7 +5,7 @@
 package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.Climber;
 
 public class MoveGatesPosition extends Command {
   private final Climber CLIMBER;

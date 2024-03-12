@@ -11,10 +11,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Wrist;
 
 public class ShootAmp extends SequentialCommandGroup {
   private static final double DEBOUNCE_TIME = 0.06;
@@ -32,7 +31,7 @@ public class ShootAmp extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              shooter.setRPMShoot(ShooterConstants.SHOOTER_AMP_RPM);
+              shooter.setRPMShoot(Constants.Shooter.SHOOTER_AMP_RPM);
               elevator.setLengthInches(Constants.ELEVATOR_AMP_HEIGHT);
               // wrist.setDegrees(110.0);  // 25.0 + 90.0
             },
@@ -44,7 +43,7 @@ public class ShootAmp extends SequentialCommandGroup {
         new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())),
         new WaitCommand(0.6), // Time for wrist to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->

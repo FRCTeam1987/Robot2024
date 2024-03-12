@@ -6,7 +6,7 @@ package frc.robot.commands.qol;
 
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.candle.Candles;
+import frc.robot.subsystems.Candles;
 
 public class AsyncCANdle extends Command {
   private final Candles candles;

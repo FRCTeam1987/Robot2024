@@ -46,6 +46,95 @@ public class Constants {
 
   public static final double INTAKE_COLLECT_VOLTS = -6; // 6
 
+  public static class Trap {
+    public static final double TRAP_DEBOUNCE_TIME = 0.06;
+    public static final double TRAP_ELEVATOR_HEIGHT = 29.5;
+    public static final double TRAP_WRIST_DEGREES = 112.5;
+    public static final double TRAP_RPM_SPEED = 525;
+  }
+
+  public static class Wrist {
+    public static final double WRIST_KP = 4.8;
+    public static final double WRIST_KI = 0.0;
+    public static final double WRIST_KD = 0.01;
+    public static final double WRIST_KV = 0.03;
+
+    public static final double WRIST_ALLOWABLE_ERROR = 0.3;
+
+    public static final double WRIST_CURRENT_LIMIT = 25;
+
+    public static final double WRIST_MOTION_ACCELERATION = 100;
+    public static final double WRIST_MOTION_CRUISE_VELOCITY = 8600;
+    public static final double WRIST_MOTION_JERK = 0;
+
+    public static final double WRIST_MIN_DEG = 7;
+    public static final double WRIST_MAX_DEG = 114; // temp 115;
+
+    public static final double WRIST_MAX_ROT = 3;
+    public static final double WRIST_MIN_ROT = 0;
+
+    public static final double CONVERSION_FACTOR_DEGREES_TO_ROTS =
+        (WRIST_MAX_ROT - WRIST_MIN_ROT) / (WRIST_MAX_DEG - WRIST_MIN_DEG);
+    public static final double CONVERSION_FACTOR_ROTS_TO_DEGREES =
+        (WRIST_MAX_DEG - WRIST_MIN_DEG) / (WRIST_MAX_ROT - WRIST_MIN_ROT);
+
+    public static final double INITIAL_ANGLE_DEGREES = 7.0;
+  }
+
+  public static class Shooter {
+    public static final double FEEDER_FEEDFWD_VOLTS = 4; // 6 // 4
+    public static final double FEEDER_FEEDFWD_VOLTS_AGRESSIVE = 8; // 6 // 4
+    public static final double FEEDER_SHOOT_VOLTS = 5; // 4
+    public static final double FEEDER_RETRACT_VOLTS = -2;
+
+    public static final double SHOOTER_RPM = 3500;
+    public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to bee smaller
+    public static final double SHOOTER_LOB_RPM = 3000; // NEEDS to bee smaller
+    public static final double SHOOTER_IDLE_RPM = 2500;
+    public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to bee smaller
+    public static final double SPIN_RATIO = 0.75;
+    public static final int SHOOTER_AMP_RPM = 550;
+  }
+
+  public static class Elevator {
+
+    public static final double EXTENSION_KP = 2.5;
+    public static final double EXTENSION_KI = 0.0;
+    public static final double EXTENSION_KD = 0.1;
+    public static final double EXTENSION_KV = 0.15;
+
+    public static final double EXTENSION_KP_1 = 8.0;
+    public static final double EXTENSION_KI_1 = 0.6;
+    public static final double EXTENSION_KD_1 = 0.1;
+    public static final double EXTENSION_KV_1 = 0.45;
+
+    public static final double EXTENSION_MOTION_ACCELERATION = 45000;
+    public static final double EXTENSION_CRUISE_VELOCITY = 65000;
+    public static final double EXTENSION_ALLOWABLE_ERROR = 5.0;
+
+    public static final double EXTENSION_CURRENT_LIMIT = 90.0;
+
+    public static final double MINIMUM_EXTENSION_LENGTH_INCHES = 0.0;
+    public static final double MAXIMUM_EXTENSION_LENGTH_INCHES = 30.5;
+
+    public static final double MINIMUM_EXTENSION_ROTATIONS = 0.0;
+    public static final double MAXIMUM_EXTENSION_ROTATIONS = 55.871;
+
+    public static final double CONVERSION_FACTOR_INCHES_TO_TICKS =
+        (MAXIMUM_EXTENSION_ROTATIONS - MINIMUM_EXTENSION_ROTATIONS)
+            / (MAXIMUM_EXTENSION_LENGTH_INCHES - MINIMUM_EXTENSION_LENGTH_INCHES);
+    public static final double CONVERSION_FACTOR_TICKS_TO_INCHES =
+        (MAXIMUM_EXTENSION_LENGTH_INCHES - MINIMUM_EXTENSION_LENGTH_INCHES)
+            / (MAXIMUM_EXTENSION_ROTATIONS - MINIMUM_EXTENSION_ROTATIONS);
+  }
+
+  public static class Climber {
+    public static final double EXTENSION_CURRENT_LIMIT = 23.0;
+    public static final double CLIMBER_NOMINAL_VOLTAGE = 10;
+    public static final double CLIMBER_MAINTAIN_VOLTAGE = 0.35;
+    public static final double CLIMBER_CUTOFF_AMPERAGE = 65;
+  }
+
   public static final InterpolatingTreeMap<
           InterpolatingDouble,
           InterpolatingDouble> // TODO Update Limelight Constants with new position

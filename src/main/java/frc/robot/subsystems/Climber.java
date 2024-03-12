@@ -2,13 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class Climber extends SubsystemBase {
   private final TalonFX CLIMB_LEFT;
@@ -56,11 +57,11 @@ public class Climber extends SubsystemBase {
   }
 
   public void stopLeft(boolean direction) {
-    CLIMB_LEFT.setVoltage(direction ? ClimberConstants.CLIMBER_MAINTAIN_VOLTAGE : 0);
+    CLIMB_LEFT.setVoltage(direction ? Constants.Climber.CLIMBER_MAINTAIN_VOLTAGE : 0);
   }
 
   public void stopRight(boolean direction) {
-    CLIMB_RIGHT.setVoltage(direction ? ClimberConstants.CLIMBER_MAINTAIN_VOLTAGE : 0);
+    CLIMB_RIGHT.setVoltage(direction ? Constants.Climber.CLIMBER_MAINTAIN_VOLTAGE : 0);
   }
 
   public void stopAll() {

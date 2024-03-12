@@ -7,10 +7,9 @@ package frc.robot.commands.control;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Wrist;
 import java.util.function.BooleanSupplier;
 
 public class ShootAmpMultiStepSequence extends Command {
@@ -61,11 +60,11 @@ public class ShootAmpMultiStepSequence extends Command {
         System.out.println("progressing");
         new SequentialCommandGroup(
                 new InstantCommand(
-                    () -> SHOOTER.setRPMShootNoSpin(ShooterConstants.SHOOTER_AMP_RPM), SHOOTER),
+                    () -> SHOOTER.setRPMShootNoSpin(Constants.Shooter.SHOOTER_AMP_RPM), SHOOTER),
                 new WaitUntilCommand(SHOOTER::isShooterAtSetpoint).withTimeout(2.0),
                 // new WaitCommand(1.0), // Time for wrist to get to position
                 new InstantCommand(
-                    () -> SHOOTER.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
+                    () -> SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
                     SHOOTER), // Constants.FEEDER_FEEDFWD_VOLTS
                 new WaitUntilCommand(() -> lineBreakDebouncer.calculate(!SHOOTER.isCenterBroken()))
                     .withTimeout(2.0), // probably debounce this

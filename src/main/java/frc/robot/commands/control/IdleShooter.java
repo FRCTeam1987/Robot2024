@@ -8,8 +8,8 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.Shooter;
 
 public class IdleShooter extends Command {
   /** Creates a new IdleShooter. */
@@ -36,11 +36,11 @@ public class IdleShooter extends Command {
       return;
     }
     if (RobotContainer.isAmpPrepped) {
-      shooter.setRPMShoot(ShooterConstants.SHOOTER_AMP_RPM);
+      shooter.setRPMShoot(Constants.Shooter.SHOOTER_AMP_RPM);
       return;
     }
     if (shooter.isCenterBroken()) {
-      shooter.setRPMShoot(ShooterConstants.SHOOTER_IDLE_RPM);
+      shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM);
     } else {
       shooter.stopShooter();
     }

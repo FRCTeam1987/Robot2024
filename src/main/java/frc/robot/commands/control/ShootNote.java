@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
 
 public class ShootNote extends SequentialCommandGroup {
   private static final double DEBOUNCE_TIME = 0.08;
@@ -38,7 +38,7 @@ public class ShootNote extends SequentialCommandGroup {
         new WaitUntilCommand(shooter::isShooterAtSetpoint),
         new WaitCommand(0.5), // Time for wrist to get to position
         new InstantCommand(
-            () -> shooter.setFeederVoltage(ShooterConstants.FEEDER_SHOOT_VOLTS),
+            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->

@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.Wrist;
 import frc.robot.util.InterpolatingDouble;
 
 public class AimLockWrist extends Command {

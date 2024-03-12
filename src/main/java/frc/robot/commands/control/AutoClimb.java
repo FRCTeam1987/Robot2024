@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Util;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.elevator.Elevator;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

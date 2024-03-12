@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -37,7 +37,7 @@ public class LobNote extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               WRIST.setDegrees(33);
-              SHOOTER.setRPMShoot(ShooterConstants.SHOOTER_LOB_RPM);
+              SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_LOB_RPM);
               ELEVATOR.setLengthInches(0);
             },
             SHOOTER,
@@ -47,7 +47,7 @@ public class LobNote extends SequentialCommandGroup {
             () -> WRIST.isAtSetpoint() && SHOOTER.isShooterAtSetpoint() && ELEVATOR.isAtSetpoint()),
         new WaitCommand(0.4), // Time for writst to get to position
         new InstantCommand(
-            () -> SHOOTER.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),
+            () -> SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),
             SHOOTER), // Constants.FEEDER_FEEDFWD_VOLTS
         new WaitUntilCommand(
             () ->

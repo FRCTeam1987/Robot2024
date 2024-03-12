@@ -14,12 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.control.IntakeNoteSequence;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.*;
 
 public class CollectNoteAuto extends Command {
   private static final double P = 0.07; // PID proportional gain

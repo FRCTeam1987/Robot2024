@@ -27,14 +27,7 @@ import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.constants.VisionConstants;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.candle.Candles;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.*;
 import java.util.Arrays;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -157,7 +150,7 @@ public class RobotContainer {
 
     DRIVER_CONTROLLER
         .rightBumper()
-        .onTrue(new ShootNote(SHOOTER, ELEVATOR, ShooterConstants.SHOOTER_RPM));
+        .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
     DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
   }
 
@@ -182,7 +175,7 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(
                     () -> {
-                      SHOOTER.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS);
+                      SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
                       INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
                     })
                 .andThen(new WaitCommand(0.1))
@@ -293,7 +286,7 @@ public class RobotContainer {
             "InstaSuck",
             new InstantCommand(
                     () -> {
-                      SHOOTER.setFeederVoltage(ShooterConstants.FEEDER_FEEDFWD_VOLTS);
+                      SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
                       INTAKE.setVolts(Constants.INTAKE_COLLECT_VOLTS);
                     })
                 .andThen(new WaitCommand(0.1))
@@ -327,7 +320,7 @@ public class RobotContainer {
     COMMANDS_TAB.add("Shoot Tall", new ShootTall(ELEVATOR, WRIST, SHOOTER));
     COMMANDS_TAB.add(
         "Subwoofer Shot",
-        new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, ShooterConstants.SHOOTER_RPM, 52, 2));
+        new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.Shooter.SHOOTER_RPM, 52, 2));
     COMMANDS_TAB.add("Poop Note", new PoopNote(SHOOTER, 500));
     COMMANDS_TAB.addDouble(
         "Distance of Last Shot",
@@ -414,16 +407,16 @@ public class RobotContainer {
 
   public void configureNamedCommands() {
     NamedCommands.registerCommand(
-        "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, ShooterConstants.SHOOTER_RPM, 40));
+        "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, 40));
     NamedCommands.registerCommand(
         "ShootNoteAimbot",
         new ShootNoteSequence(
-            SHOOTER, WRIST, ShooterConstants.SHOOTER_RPM, DRIVETRAIN, SPEAKER_PHOTON));
+            SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, DRIVETRAIN, SPEAKER_PHOTON));
     NamedCommands.registerCommand(
         "SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(5200)));
     NamedCommands.registerCommand(
         "ShootNoteSubFar",
-        new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, ShooterConstants.SHOOTER_RPM, 36, 10));
+        new ShootNoteSequence(SHOOTER, WRIST, ELEVATOR, Constants.Shooter.SHOOTER_RPM, 36, 10));
     NamedCommands.registerCommand(
         "IntakeNote", new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR));
     NamedCommands.registerCommand(
