@@ -12,6 +12,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristConstants;
 import frc.robot.util.InterpolatingDouble;
 
 public class AimLockWrist extends Command {
@@ -33,6 +34,12 @@ public class AimLockWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (RobotContainer.isClimbPrimed) {
+      return;
+    }
+    if (RobotContainer.isAmpPrepped) {
+      return;
+    }
     if (speakerPhoton.hasTargets()) {
       final double ty = speakerPhoton.getPitchVal();
       SmartDashboard.putNumber("ty", ty);

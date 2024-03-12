@@ -31,7 +31,11 @@ public class IdleShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotContainer.isAmpPrepped()) {
+    if (RobotContainer.isClimbPrimed) {
+      shooter.stopShooter();
+      return;
+    }
+    if (RobotContainer.isAmpPrepped) {
       shooter.setRPMShoot(ShooterConstants.SHOOTER_AMP_RPM);
       return;
     }

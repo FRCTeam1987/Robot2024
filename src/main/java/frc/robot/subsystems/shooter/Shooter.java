@@ -5,6 +5,7 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Vision;
 
@@ -63,8 +65,8 @@ public class Shooter extends SubsystemBase {
     SHOOTER_CONFIG.Voltage.PeakReverseVoltage = -10;
 
     final TalonFXConfiguration FEEDER_CFG = new TalonFXConfiguration();
-    FEEDER_CFG.Slot0.kP = 86.0;
-    FEEDER_CFG.Slot0.kI = 1;
+    FEEDER_CFG.Slot0.kP = 0.15;
+    FEEDER_CFG.Slot0.kI = 0;
     FEEDER_CFG.Slot0.kD = 0;
     FEEDER_CFG.Slot0.kV = 0;
     // FEEDER_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
@@ -89,6 +91,17 @@ public class Shooter extends SubsystemBase {
 
     setupShuffleboard();
   }
+  
+  public double getError() {
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble();
+  }
+
+    public void lockPositionFeeder() {
+      FEEDER.setPosition(0.0);
+      FEEDER.setControl(new PositionVoltage(FEEDER.getPosition().getValueAsDouble()));
+  }
+
+
 
   public void setRPMShoot(double RPM) {
     SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity(RPM / 60.0));
@@ -143,7 +156,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 9;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 1.7;
   }
 
   public void setupShuffleboard() {
@@ -181,5 +194,13 @@ public class Shooter extends SubsystemBase {
         speakerPhoton.getCameraHeight(),
         targetHeight,
         speakerPhoton.getCameraDegrees());
+  }
+
+  @Override
+  public void periodic() {
+    
+    if (!isCenterBroken()) {
+      RobotContainer.get().CANDLES.setColor(0, 128, 0);
+    }
   }
 }

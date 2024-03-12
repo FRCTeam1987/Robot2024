@@ -67,6 +67,10 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR.setPosition(WristConstants.INITIAL_ANGLE_DEGREES / 360.0);
   }
 
+  public double getError() {
+    return WRIST_MOTOR.getClosedLoopError().getValueAsDouble();
+  }
+
   public boolean isAtSetpoint() {
     return WRIST_MOTOR.getClosedLoopError().getValueAsDouble()
         < WristConstants.WRIST_ALLOWABLE_ERROR;

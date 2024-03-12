@@ -24,7 +24,7 @@ public class PrepareShootAmp extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               elevator.setLengthInches(Constants.ELEVATOR_AMP_HEIGHT);
-              RobotContainer.setAmpPrepped(true);
+              RobotContainer.isAmpPrepped = true;
               // wrist.setDegrees(Constants.WRIST_AMP_DEGREES);  // 25.0 + 90.0
             },
             elevator),

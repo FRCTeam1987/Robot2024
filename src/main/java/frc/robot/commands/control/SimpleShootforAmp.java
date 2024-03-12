@@ -51,7 +51,7 @@ public class SimpleShootforAmp extends SequentialCommandGroup {
               shooter.stopShooter();
               elevator.goHome();
               wrist.setDegrees(25.0);
-              RobotContainer.setAmpPrepped(false);
+              RobotContainer.isAmpPrepped = true;
             },
             shooter,
             elevator,

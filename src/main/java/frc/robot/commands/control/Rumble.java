@@ -46,6 +46,6 @@ public class Rumble extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return System.currentTimeMillis() < finishtime;
+    return System.currentTimeMillis() >= finishtime;
   }
 }

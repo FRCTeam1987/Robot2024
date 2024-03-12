@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristConstants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -26,11 +27,15 @@ public class Climb extends SequentialCommandGroup {
         // new ConditionalCommand(
         // new GoToHeightElevator(Elevator, Constants.ELEVATOR_TRAP_COLLAPSED_HEIGHT),
         new InstantCommand(Shooter::stopShooter, Shooter),
+        new InstantCommand(() -> Shooter.setFeederVoltage(-0.2)),
         new InstantCommand(Wrist::stop, Wrist),
+        new InstantCommand(() -> Wrist.setDegrees(WristConstants.INITIAL_ANGLE_DEGREES), Wrist),
         new InstantCommand(() -> Elevator.setLengthInchesSlot1(5.9)),
-        new WaitCommand(1.0),
         new WaitUntilCommand(Elevator::isAtSetpoint),
-        new InstantCommand(Elevator::stop),
+        new WaitCommand(1.0),
+        new InstantCommand(() -> Elevator.setLengthInches(13.0)),
+        new WaitUntilCommand(Elevator::isAtSetpoint),
+        new WaitCommand(4.0),
         // new WaitCommand(0.3),
         // new WaitUntilCommand(
         //     () ->
