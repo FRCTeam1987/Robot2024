@@ -8,13 +8,11 @@ import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -79,11 +77,11 @@ public class RobotContainer {
           VisionConstants.CAMERA_NAME_SPEAKER,
           VisionConstants.TAG_LAYOUT,
           VisionConstants.ROBOT_TO_CAM_SPEAKER);
-//   public final PVision VISION_AMP =
-//       new PVision(
-//           VisionConstants.CAMERA_NAME_AMP,
-//           VisionConstants.TAG_LAYOUT,
-//           VisionConstants.ROBOT_TO_CAM_AMP);
+  //   public final PVision VISION_AMP =
+  //       new PVision(
+  //           VisionConstants.CAMERA_NAME_AMP,
+  //           VisionConstants.TAG_LAYOUT,
+  //           VisionConstants.ROBOT_TO_CAM_AMP);
 
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
   public final Vision SPEAKER_PHOTON =
