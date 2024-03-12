@@ -4,11 +4,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.util.Color;
@@ -16,35 +12,18 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
   private final double MaxSpeed;
-
-  /**
-   * Construct a telemetry object, with the specified max speed of the robot
-   *
-   * @param maxSpeed Maximum speed in meters per second
-   */
-  public Telemetry(double maxSpeed) {
-    MaxSpeed = maxSpeed;
-  }
-
   /* What to publish over networktables for telemetry */
   private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-
   /* Robot pose for field positioning */
   private final NetworkTable table = inst.getTable("Pose");
   private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
   private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
-
   /* Robot speeds for general checking */
   private final NetworkTable driveStats = inst.getTable("Drive");
   private final DoublePublisher velocityX = driveStats.getDoubleTopic("Velocity X").publish();
   private final DoublePublisher velocityY = driveStats.getDoubleTopic("Velocity Y").publish();
   private final DoublePublisher speed = driveStats.getDoubleTopic("Speed").publish();
   private final DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
-
-  /* Keep a reference of the last pose to calculate the speeds */
-  private Pose2d lastPose = new Pose2d();
-  private double lastTime = Utils.getCurrentTimeSeconds();
-
   /* Mechanisms to represent the swerve module states */
   private final Mechanism2d[] moduleMechanisms =
       new Mechanism2d[] {
@@ -82,6 +61,18 @@ public class Telemetry {
             .getRoot("RootDirection", 0.5, 0.5)
             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
       };
+  /* Keep a reference of the last pose to calculate the speeds */
+  private Pose2d lastPose = new Pose2d();
+  private double lastTime = Utils.getCurrentTimeSeconds();
+
+  /**
+   * Construct a telemetry object, with the specified max speed of the robot
+   *
+   * @param maxSpeed Maximum speed in meters per second
+   */
+  public Telemetry(double maxSpeed) {
+    MaxSpeed = maxSpeed;
+  }
 
   /* Accept the swerve drive state and telemeterize it to smartdashboard */
   public void telemeterize(SwerveDriveState state) {

@@ -12,8 +12,8 @@ public class AsyncRumble extends Command {
   private final XboxController controller;
   private final double strength;
   private final RumbleType type;
-  private long finishtime;
   private final long durationMs;
+  private long finishtime;
 
   /** Creates a new Rumble. */
   public AsyncRumble(XboxController controller, RumbleType type, double strength, long durationMs) {

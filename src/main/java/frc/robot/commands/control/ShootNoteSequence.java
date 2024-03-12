@@ -6,11 +6,7 @@ package frc.robot.commands.control;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Vision;
@@ -20,10 +16,10 @@ import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class ShootNoteSequence extends SequentialCommandGroup {
+  private static final double DEBOUNCE_TIME = 0.06;
+
   /** Creates a new IntakeNoteSequence. */
   private final Debouncer lineBreakDebouncer;
-
-  private static final double DEBOUNCE_TIME = 0.06;
 
   public ShootNoteSequence(Shooter shooter, Wrist wrist, double shootRPM, double wristDegrees) {
     // Add your commands in the addCommands() call, e.g.

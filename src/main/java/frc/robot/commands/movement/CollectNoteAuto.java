@@ -22,6 +22,14 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class CollectNoteAuto extends Command {
+  private static final double P = 0.07; // PID proportional gain
+  private static final double I = 0.00; // PID integral gain
+  private static final double D = 0.00; // PID derivative gain
+  private static final double TOLERANCE_DEGREES = 0.1; // Tolerance for reaching the desired angle
+  private static final double maximumAllowableDistance = 3.0; // In Meters
+  private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
+  private static final double DEBOUNCE_TIME = 0.06;
+
   /** Creates a new DriveToPiece. */
   private final Drivetrain drivetrain;
 
@@ -30,28 +38,16 @@ public class CollectNoteAuto extends Command {
   private final Wrist wrist;
   private final Elevator elevator;
   private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
-
   private final Vision photonVision;
-
-  private Pose2d initialPose;
-  private static final double P = 0.07; // PID proportional gain
-  private static final double I = 0.00; // PID integral gain
-  private static final double D = 0.00; // PID derivative gain
-  private static final double TOLERANCE_DEGREES = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 3.0; // In Meters
-  private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
-
   private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
-  private double distanceToTarget;
   private final double targetHeight = 0.03; // 1.23
-
   private final PIDController rotationController;
   private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-
+  private Pose2d initialPose;
+  private double distanceToTarget;
   private Debouncer canSeePieceDebouncer;
-  private static final double DEBOUNCE_TIME = 0.06;
 
   // TODO find correct value and change name  public DriveToNoteAuto(final CommandSwerveDrivetrain
   // drivetrain) {

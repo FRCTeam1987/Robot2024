@@ -5,11 +5,7 @@
 package frc.robot.commands.control;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.shooter.Shooter;
@@ -18,14 +14,14 @@ import frc.robot.subsystems.wrist.Wrist;
 import java.util.function.BooleanSupplier;
 
 public class ShootAmpMultiStepSequence extends Command {
+  private static final double DEBOUNCE_TIME = 0.06;
+  private final Elevator ELEVATOR;
+  private final Wrist WRIST;
+  private final Shooter SHOOTER;
+  private final BooleanSupplier SHOULD_PROGRESS;
   private boolean isPrepped = false;
   private boolean isFinished = false;
-  private Elevator ELEVATOR;
-  private Wrist WRIST;
-  private Shooter SHOOTER;
-  private BooleanSupplier SHOULD_PROGRESS;
   private Debouncer lineBreakDebouncer;
-  private static final double DEBOUNCE_TIME = 0.06;
 
   /** Creates a new ShootAmpMultiStepSequence. */
   public ShootAmpMultiStepSequence(
@@ -59,7 +55,6 @@ public class ShootAmpMultiStepSequence extends Command {
               new InstantCommand(() -> WRIST.setDegrees(Constants.WRIST_AMP_DEGREES), WRIST),
               new WaitUntilCommand(WRIST::isAtSetpoint).withTimeout(0.75))
           .schedule();
-      ;
       isPrepped = true;
     } else {
       if (SHOULD_PROGRESS.getAsBoolean()) {
@@ -89,7 +84,6 @@ public class ShootAmpMultiStepSequence extends Command {
                     ELEVATOR,
                     WRIST))
             .schedule();
-        ;
         isFinished = true;
       }
     }

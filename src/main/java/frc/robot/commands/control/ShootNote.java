@@ -15,10 +15,10 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class ShootNote extends SequentialCommandGroup {
+  private static final double DEBOUNCE_TIME = 0.08;
+
   /** Creates a new IntakeNoteSequence. */
   private final Debouncer lineBreakDebouncer;
-
-  private static final double DEBOUNCE_TIME = 0.08;
 
   public ShootNote(Shooter shooter, Elevator elevator, double shootRPM) {
     addRequirements(shooter);

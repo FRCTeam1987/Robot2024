@@ -20,10 +20,10 @@ import frc.robot.subsystems.wrist.Wrist;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleShootforAmp extends SequentialCommandGroup {
+  private static final double DEBOUNCE_TIME = 0.06;
+
   /** Creates a new SimpleShootforAmp. */
   private final Debouncer lineBreakDebouncer;
-
-  private static final double DEBOUNCE_TIME = 0.06;
 
   public SimpleShootforAmp(Shooter shooter, Elevator elevator, Wrist wrist) {
 

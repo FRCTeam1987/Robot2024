@@ -17,20 +17,19 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
-  private final PhotonCamera camera;
   public static Vision instance;
+  private final PhotonCamera camera;
+  private final List<Integer> validFiducials;
+  private final ShuffleboardTab tab;
+  private final double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
   private double yawVal = 0;
   private double pitchVal = 0;
   private double skewVal = 0;
   private double areaVal = 0;
   private boolean hasTarget = false;
   private boolean LED_Enable = false;
-  private final List<Integer> validFiducials;
-  private final ShuffleboardTab tab;
-
   // Constants such as camera and target height stored. Change per robot and goal!
   private double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0.1);
-  private final double TARGET_HEIGHT_METERS = Units.inchesToMeters(105);
   // Angle between horizontal and the camera.
   private double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0.1);
   private String CAMERA_NAME = "";
@@ -74,6 +73,36 @@ public class Vision extends SubsystemBase {
 
   public static Vision getInstance() {
     return instance;
+  }
+
+  /**
+   * Calculates the distance from the camera to the target based on the vertical angle and the known
+   * heights of the camera and the target.
+   *
+   * @param cameraHeight In meters from ground.
+   * @param targetHeight In meters from ground.
+   * @param cameraAngle In degrees.
+   * @return The distance to the target in inches, or a negative value if invalid.
+   */
+  public static double calculateDistanceToTarget(
+      double ty, double cameraHeight, double targetHeight, double cameraAngle) {
+
+    double angleToTargetDegrees = ty + cameraAngle;
+    double angleToTargetRadians = Math.toRadians(angleToTargetDegrees);
+    double heightDifference = targetHeight - cameraHeight;
+    // PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, angleToTargetRadians,
+    // heightDifference);
+    // Check if the height difference is valid
+    if (heightDifference <= 0) {
+      // Return an error code or handle this case as needed
+      System.err.println("Invalid height difference for distance calculation");
+      return -1;
+    }
+
+    // Calculate the distance using trigonometry
+
+    // System.out.println("Distance to target: " + distance);
+    return heightDifference / Math.tan(angleToTargetRadians);
   }
 
   @Override
@@ -217,35 +246,5 @@ public class Vision extends SubsystemBase {
     // PHOTON_TAB.addNumber("Camera Distance", () -> rangeInInches);
 
     return range;
-  }
-
-  /**
-   * Calculates the distance from the camera to the target based on the vertical angle and the known
-   * heights of the camera and the target.
-   *
-   * @param cameraHeight In meters from ground.
-   * @param targetHeight In meters from ground.
-   * @param cameraAngle In degrees.
-   * @return The distance to the target in inches, or a negative value if invalid.
-   */
-  public static double calculateDistanceToTarget(
-      double ty, double cameraHeight, double targetHeight, double cameraAngle) {
-
-    double angleToTargetDegrees = ty + cameraAngle;
-    double angleToTargetRadians = Math.toRadians(angleToTargetDegrees);
-    double heightDifference = targetHeight - cameraHeight;
-    // PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, angleToTargetRadians,
-    // heightDifference);
-    // Check if the height difference is valid
-    if (heightDifference <= 0) {
-      // Return an error code or handle this case as needed
-      System.err.println("Invalid height difference for distance calculation");
-      return -1;
-    }
-
-    // Calculate the distance using trigonometry
-
-    // System.out.println("Distance to target: " + distance);
-    return heightDifference / Math.tan(angleToTargetRadians);
   }
 }

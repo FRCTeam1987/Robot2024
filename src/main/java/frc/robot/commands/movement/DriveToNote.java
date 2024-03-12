@@ -17,27 +17,24 @@ import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
 public class DriveToNote extends Command {
-  /** Creates a new DriveToPiece. */
-  private final DoubleSupplier velocitySupplier;
-
-  private final Drivetrain drivetrain;
-
-  private final Vision photonVision;
-
-  private Pose2d initialPose;
   private static final double kP = 0.07; // PID proportional gain
   private static final double kI = 0.00; // PID integral gain
   private static final double kD = 0.00; // PID derivative gain
   private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
   private static final double maximumAllowableDistance = 3.0; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
+  private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
 
+  /** Creates a new DriveToPiece. */
+  private final DoubleSupplier velocitySupplier;
+
+  private final Drivetrain drivetrain;
+  private final Vision photonVision;
   private final PIDController rotationController;
   private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-
+  private Pose2d initialPose;
   private Debouncer canSeePieceDebouncer;
-  private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
 
   public DriveToNote(
       final Drivetrain drivetrain, final DoubleSupplier velocitySupplier, Vision photonVision) {

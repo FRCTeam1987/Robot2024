@@ -20,13 +20,11 @@ import frc.robot.subsystems.wrist.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootTrap extends SequentialCommandGroup {
 
+  private static final double DEBOUNCE_TIME = 0.06;
   private final double elevatorHeight = 29.5;
   private final double wristDegrees = 112.5;
   private final double rpmSpeed = 525;
-
   private final Debouncer lineBreakDebouncer;
-
-  private static final double DEBOUNCE_TIME = 0.06;
 
   /** Creates a new ShootTrap. */
   public ShootTrap(final Elevator elevator, final Wrist wrist, final Shooter shooter) {
@@ -40,7 +38,6 @@ public class ShootTrap extends SequentialCommandGroup {
               shooter.setRPMShoot(rpmSpeed);
               elevator.setLengthInches(elevatorHeight);
               shooter.setFeederVoltage(-0.2);
-              ;
               // wrist.setDegrees(110.0);  // 25.0 + 90.0
             },
             shooter,

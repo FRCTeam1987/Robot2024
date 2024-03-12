@@ -18,37 +18,10 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.control.AimLockWrist;
-import frc.robot.commands.control.Climb;
-import frc.robot.commands.control.GoHome;
-import frc.robot.commands.control.IdleShooter;
-import frc.robot.commands.control.IntakeNoteSequence;
-import frc.robot.commands.control.LobNote;
-import frc.robot.commands.control.PoopNote;
-import frc.robot.commands.control.PrepareShootAmp;
-import frc.robot.commands.control.ReverseIntake;
-import frc.robot.commands.control.ShootAmp;
-import frc.robot.commands.control.ShootNote;
-import frc.robot.commands.control.ShootNoteSequence;
-import frc.robot.commands.control.ShootSubwoofer;
-import frc.robot.commands.control.ShootSubwooferFlat;
-import frc.robot.commands.control.ShootTall;
-import frc.robot.commands.control.SimpleShootforAmp;
-import frc.robot.commands.control.SpitNote;
-import frc.robot.commands.control.StopAll;
-import frc.robot.commands.movement.CollectNoteAuto;
-import frc.robot.commands.movement.DriveToNote;
-import frc.robot.commands.movement.DriveToNoteAuto;
-import frc.robot.commands.movement.PointAtAprilTag;
-import frc.robot.commands.movement.SquareUpToAprilTag;
-import frc.robot.commands.movement.TeleopSwerve;
+import frc.robot.commands.control.*;
+import frc.robot.commands.movement.*;
 import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
@@ -67,37 +40,30 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 public class RobotContainer {
+  public static boolean isAmpPrimed = false;
+  public static boolean isAmpPrepped = false;
+  public static boolean isClimbPrimed = false;
   private static RobotContainer instance;
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
-
-  private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
-  private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
-
-  private GenericEntry SHOOTER_RPM;
-  private GenericEntry WRIST_ANGLE;
-  private GenericEntry ELEVATOR_HEIGHT;
-
   public final PVision VISION_SPEAKER =
       new PVision(
           VisionConstants.CAMERA_NAME_SPEAKER,
           VisionConstants.TAG_LAYOUT,
           VisionConstants.ROBOT_TO_CAM_SPEAKER);
+  public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
   //   public final PVision VISION_AMP =
   //       new PVision(
   //           VisionConstants.CAMERA_NAME_AMP,
   //           VisionConstants.TAG_LAYOUT,
   //           VisionConstants.ROBOT_TO_CAM_AMP);
-
-  public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
   public final Vision SPEAKER_PHOTON =
       new Vision("Arducam_OV2311_USB_Camera_1", 0.3, 40, Arrays.asList(4, 7));
   public final Vision AMP_PHOTON =
       new Vision("Arducam_OV2311_USB_Camera", 0.35, 40, Arrays.asList(5, 6));
-
   public final Drivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
@@ -110,13 +76,27 @@ public class RobotContainer {
   public final Wrist WRIST = new Wrist(Constants.WRIST_ID);
   public final Elevator ELEVATOR =
       new Elevator(Constants.ELEVATOR_LEADER_ID, Constants.ELEVATOR_FOLLOWER_ID);
-
+  private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
+  private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
   private final Telemetry logger = new Telemetry(Constants.MaxSpeed);
   private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
+  private GenericEntry SHOOTER_RPM;
+  private GenericEntry WRIST_ANGLE;
+  private GenericEntry ELEVATOR_HEIGHT;
 
-  public static boolean isAmpPrimed = false;
-  public static boolean isAmpPrepped = false;
-  public static boolean isClimbPrimed = false;
+  public RobotContainer() {
+    instance = this;
+    configureNamedCommands();
+    configureShuffleboard();
+    configureDrivetrain();
+    configureDriverController();
+    configureCoDriverController();
+    configureDefaultCommands();
+  }
+
+  public static RobotContainer get() {
+    return instance;
+  }
 
   private void configureDriverController() {
     DRIVER_CONTROLLER.a().onTrue(new ShootAmp(SHOOTER, ELEVATOR, WRIST));
@@ -493,20 +473,6 @@ public class RobotContainer {
     AUTO_CHOOSER.addOption(autoName, new PathPlannerAuto(autoName));
   }
 
-  public RobotContainer() {
-    instance = this;
-    configureNamedCommands();
-    configureShuffleboard();
-    configureDrivetrain();
-    configureDriverController();
-    configureCoDriverController();
-    configureDefaultCommands();
-  }
-
-  public static RobotContainer get() {
-    return instance;
-  }
-
   public Command getAutonomousCommand() {
     return AUTO_CHOOSER.getSelected();
   }
@@ -531,36 +497,5 @@ public class RobotContainer {
     //       Matrix<N3, N1> estStdDevs = VISION_AMP.getEstimationStdDevs(estimatedPose);
     //       DRIVETRAIN.addVisionMeasurement(estimatedPose, estimate.timestampSeconds, estStdDevs);
     //     });
-  }
-
-  public static final double DEADBAND = 0.05;
-
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
-
-  /**
-   * Squares the specified value, while preserving the sign. This method is used on all joystick
-   * inputs. This is useful as a non-linear range is more natural for the driver.
-   *
-   * @param value input value
-   * @return square of the value
-   */
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, DEADBAND);
-
-    // Square the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
   }
 }

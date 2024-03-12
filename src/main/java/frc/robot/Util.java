@@ -8,6 +8,7 @@
 package frc.robot;
 
 public class Util {
+  public static final double DEADBAND = 0.05;
 
   public static double ctreVelocityToLinearVelocity(
       final double ctreVelocity, final double ticksPerRevolution, final double circumference) {
@@ -56,5 +57,34 @@ public class Util {
 
   public static int rotationsToTicks(final double rotations) {
     return (int) (rotations * 2048.0); // FALCON_ENCODER_RESOLUTION
+  }
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+
+  /**
+   * Squares the specified value, while preserving the sign. This method is used on all joystick
+   * inputs. This is useful as a non-linear range is more natural for the driver.
+   *
+   * @param value input value
+   * @return square of the value
+   */
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, DEADBAND);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+
+    return value;
   }
 }

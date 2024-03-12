@@ -9,8 +9,8 @@ import frc.robot.subsystems.candle.Candles;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class DefaultCANdle extends Command {
-  private Shooter SHOOTER;
-  private Candles CANDLES;
+  private final Shooter SHOOTER;
+  private final Candles CANDLES;
 
   /** Creates a new DefaultCANdle. */
   public DefaultCANdle(Candles CANDLES, Shooter SHOOTER) {
@@ -33,7 +33,6 @@ public class DefaultCANdle extends Command {
         return;
       }
       CANDLES.setColor(128, 64, 0);
-      return;
     }
   }
 

@@ -73,18 +73,6 @@ public class Elevator extends SubsystemBase {
     ELEVATOR_LEADER.setVoltage(0);
   }
 
-  public void setLengthInches(double LENGTH) {
-    LENGTH = LENGTH + IncrementValue;
-    if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
-        || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
-      DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
-    } else {
-      MotionMagicVoltage ctrl = new MotionMagicVoltage(0);
-      ELEVATOR_LEADER.setControl(
-          ctrl.withPosition(LENGTH * ElevatorConstants.CONVERSION_FACTOR_INCHES_TO_TICKS));
-    }
-  }
-
   public void setLengthInchesSlot1(double LENGTH) {
     LENGTH = LENGTH + IncrementValue;
     if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
@@ -110,6 +98,18 @@ public class Elevator extends SubsystemBase {
   public double getLengthInches() {
     return ELEVATOR_LEADER.getRotorPosition().getValueAsDouble()
         * ElevatorConstants.CONVERSION_FACTOR_TICKS_TO_INCHES;
+  }
+
+  public void setLengthInches(double LENGTH) {
+    LENGTH = LENGTH + IncrementValue;
+    if (LENGTH > ElevatorConstants.MAXIMUM_EXTENSION_LENGTH_INCHES
+        || LENGTH < ElevatorConstants.MINIMUM_EXTENSION_LENGTH_INCHES) {
+      DriverStation.reportError("Attempt to raise elevator beyond maximum height!", false);
+    } else {
+      MotionMagicVoltage ctrl = new MotionMagicVoltage(0);
+      ELEVATOR_LEADER.setControl(
+          ctrl.withPosition(LENGTH * ElevatorConstants.CONVERSION_FACTOR_INCHES_TO_TICKS));
+    }
   }
 
   public void goHome() {

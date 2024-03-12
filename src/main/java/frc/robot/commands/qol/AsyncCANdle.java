@@ -11,8 +11,8 @@ import frc.robot.subsystems.candle.Candles;
 public class AsyncCANdle extends Command {
   private final Candles candles;
   private final Color8Bit color;
-  private long finishtime;
   private final long durationMs;
+  private long finishtime;
 
   /** Creates a new Rumble. */
   public AsyncCANdle(Candles candles, Color8Bit color, long durationMs) {

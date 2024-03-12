@@ -24,7 +24,8 @@
 
 package frc.robot;
 
-import static frc.robot.constants.VisionConstants.*;
+import static frc.robot.constants.VisionConstants.kMultiTagStdDevs;
+import static frc.robot.constants.VisionConstants.kSingleTagStdDevs;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;

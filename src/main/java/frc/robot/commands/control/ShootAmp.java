@@ -17,10 +17,10 @@ import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class ShootAmp extends SequentialCommandGroup {
+  private static final double DEBOUNCE_TIME = 0.06;
+
   /** Creates a new IntakeNoteSequence. */
   private final Debouncer lineBreakDebouncer;
-
-  private static final double DEBOUNCE_TIME = 0.06;
 
   public ShootAmp(Shooter shooter, Elevator elevator, Wrist wrist) {
     addRequirements(shooter);

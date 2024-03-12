@@ -32,25 +32,18 @@ import java.util.function.Supplier;
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
   private static final double kSimLoopPeriod = 0.005; // 5 ms
-  private double lastSimTime;
-
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
   private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
-  /* Keep track if we've ever applied the operator perspective before or not */
-  private boolean hasAppliedOperatorPerspective = false;
-
   private final SwerveRequest.ApplyChassisSpeeds AutoRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-
   private final SwerveRequest.SysIdSwerveTranslation TranslationCharacterization =
       new SwerveRequest.SysIdSwerveTranslation();
   private final SwerveRequest.SysIdSwerveRotation RotationCharacterization =
       new SwerveRequest.SysIdSwerveRotation();
   private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization =
       new SwerveRequest.SysIdSwerveSteerGains();
-
   /* Use one of these sysidroutines for your particular test */
   private final SysIdRoutine SysIdRoutineTranslation =
       new SysIdRoutine(
@@ -61,7 +54,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
               (state) -> SignalLogger.writeString("state", state.toString())),
           new SysIdRoutine.Mechanism(
               (volts) -> setControl(TranslationCharacterization.withVolts(volts)), null, this));
-
+  /* Change this to the sysid routine you want to test */
+  private final SysIdRoutine RoutineToApply = SysIdRoutineTranslation;
   private final SysIdRoutine SysIdRoutineRotation =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -80,9 +74,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
               (state) -> SignalLogger.writeString("state", state.toString())),
           new SysIdRoutine.Mechanism(
               (volts) -> setControl(SteerCharacterization.withVolts(volts)), null, this));
-
-  /* Change this to the sysid routine you want to test */
-  private final SysIdRoutine RoutineToApply = SysIdRoutineTranslation;
+  private double lastSimTime;
+  /* Keep track if we've ever applied the operator perspective before or not */
+  private boolean hasAppliedOperatorPerspective = false;
 
   public Drivetrain(
       SwerveDrivetrainConstants driveTrainConstants,

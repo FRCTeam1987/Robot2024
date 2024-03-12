@@ -13,10 +13,10 @@ import frc.robot.commands.zeroing.ZeroWrist;
 import frc.robot.constants.Constants;
 
 public class Wrist extends SubsystemBase {
+  public static double incrementAimbot = 1.0;
   private final TalonFX WRIST_MOTOR;
   private final ShuffleboardTab WRIST_TAB = Shuffleboard.getTab("WRIST");
   private double IncrementValue = 0.0;
-  public static double incrementAimbot = 1.0;
 
   // Constructor
   public Wrist(final int wristMotorID) {

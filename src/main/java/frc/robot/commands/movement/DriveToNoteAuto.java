@@ -23,36 +23,32 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class DriveToNoteAuto extends Command {
-  /** Creates a new DriveToPiece. */
-  private final Drivetrain drivetrain;
-
-  private final Intake intake;
-  private final Shooter shooter;
-  private static Vision photonVision;
-  private static Wrist wrist;
-  private static Elevator elevator;
-
-  private Pose2d initialPose;
   private static final double kP = 0.07; // PID proportional gain
   private static final double kI = 0.00; // PID integral gain
   private static final double kD = 0.00; // PID derivative gain
   private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
   private static final double maximumAllowableDistance = 2.5; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
+  private static final double DEBOUNCE_TIME = 0.3;
+  private static Vision photonVision;
+  private static Wrist wrist;
+  private static Elevator elevator;
 
+  /** Creates a new DriveToPiece. */
+  private final Drivetrain drivetrain;
+
+  private final Intake intake;
+  private final Shooter shooter;
   private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
-  private double distanceToTarget;
   private final double targetHeight = 0.03; // 1.23
-
-  private double previousForwardBackwardSpeed = 0.0;
-
   private final PIDController rotationController;
   private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-
+  private Pose2d initialPose;
+  private double distanceToTarget;
+  private double previousForwardBackwardSpeed = 0.0;
   private Debouncer canSeePieceDebouncer;
-  private static final double DEBOUNCE_TIME = 0.3;
 
   // TODO find correct value and change name  public DriveToNoteAuto(final CommandSwerveDrivetrain
   // drivetrain) {

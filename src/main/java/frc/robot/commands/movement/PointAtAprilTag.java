@@ -16,10 +16,6 @@ import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
   private final Vision photonvision;
-
-  private DoubleSupplier velocityXSupplier = () -> 0.0;
-  private DoubleSupplier velocityYSupplier = () -> 0.0;
-  private DoubleSupplier rotationSupplier = () -> 0.0;
   private final Drivetrain drivetrain;
   private final SlewRateLimiter translationXSlewRate =
       new SlewRateLimiter(Constants.translationXSlewRate);
@@ -31,6 +27,9 @@ public class PointAtAprilTag extends Command {
           .withDeadband(Constants.MaxSpeed * 0.1)
           .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+  private DoubleSupplier velocityXSupplier = () -> 0.0;
+  private DoubleSupplier velocityYSupplier = () -> 0.0;
+  private DoubleSupplier rotationSupplier = () -> 0.0;
 
   public PointAtAprilTag(Drivetrain drivetrain, Vision photonvision) {
     this(drivetrain, photonvision, () -> 0.0, () -> 0.0, () -> 0.0);

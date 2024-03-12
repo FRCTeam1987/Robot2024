@@ -27,21 +27,18 @@ import java.util.function.IntSupplier;
  */
 public class TeleopSwerve extends Command {
 
+  public static final double DEADBAND = 0.05;
+  public static final double MAX_VELOCITY_METERS_PER_SECOND = Constants.MaxSpeed;
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = Constants.MaxAngularRate;
   private final PIDController thetaController;
   private final PIDController yController;
   private final IntSupplier mPovDegree;
   private final double mIntakeSetPoint = -35.0; // Change Me to match Source Angle
   private final DoubleSupplier mSpeedMultiplier;
-  private boolean useDPad = false;
-  private BooleanSupplier mShouldIntakeLock = () -> false;
-  private boolean useIntakeLock = false;
-  private double setPoint = 0.0;
-
   private final Drivetrain drivetrain;
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
   private final DoubleSupplier rotationSupplier;
-
   private final SlewRateLimiter translationXSlewRate =
       new SlewRateLimiter(Constants.translationXSlewRate);
   private final SlewRateLimiter translationYSlewRate =
@@ -52,10 +49,10 @@ public class TeleopSwerve extends Command {
           .withDeadband(Constants.MaxSpeed * 0.1)
           .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-  public static final double DEADBAND = 0.05;
-
-  public static final double MAX_VELOCITY_METERS_PER_SECOND = Constants.MaxSpeed;
-  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = Constants.MaxAngularRate;
+  private boolean useDPad = false;
+  private BooleanSupplier mShouldIntakeLock = () -> false;
+  private boolean useIntakeLock = false;
+  private double setPoint = 0.0;
 
   /**
    * Create a new TeleopSwerve command object.
@@ -91,6 +88,35 @@ public class TeleopSwerve extends Command {
     thetaController.enableContinuousInput(-180, 180);
     yController = new PIDController(0.7, 0.0, 0.0);
     yController.enableContinuousInput(-1, 9);
+  }
+
+  /**
+   * Squares the specified value, while preserving the sign. This method is used on all joystick
+   * inputs. This is useful as a non-linear range is more natural for the driver.
+   *
+   * @param value input value
+   * @return square of the value
+   */
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+
+    return value;
+  }
+
+  private static double deadband(double value) {
+    if (Math.abs(value) > TeleopSwerve.DEADBAND) {
+      if (value > 0.0) {
+        return (value - TeleopSwerve.DEADBAND) / (1.0 - TeleopSwerve.DEADBAND);
+      } else {
+        return (value + TeleopSwerve.DEADBAND) / (1.0 - TeleopSwerve.DEADBAND);
+      }
+    } else {
+      return 0.0;
+    }
   }
 
   @Override
@@ -180,34 +206,5 @@ public class TeleopSwerve extends Command {
     drivetrain.setControl(driveRequest);
 
     super.end(interrupted);
-  }
-
-  /**
-   * Squares the specified value, while preserving the sign. This method is used on all joystick
-   * inputs. This is useful as a non-linear range is more natural for the driver.
-   *
-   * @param value input value
-   * @return square of the value
-   */
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value);
-
-    // Square the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
-  }
-
-  private static double deadband(double value) {
-    if (Math.abs(value) > TeleopSwerve.DEADBAND) {
-      if (value > 0.0) {
-        return (value - TeleopSwerve.DEADBAND) / (1.0 - TeleopSwerve.DEADBAND);
-      } else {
-        return (value + TeleopSwerve.DEADBAND) / (1.0 - TeleopSwerve.DEADBAND);
-      }
-    } else {
-      return 0.0;
-    }
   }
 }
