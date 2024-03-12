@@ -100,7 +100,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMShoot(double RPM) {
-    SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity(RPM / 60.0));
+    SHOOTER_LEADER.setControl(
+        VOLTAGE_VELOCITY_LEADER.withVelocity((RPM * Constants.Shooter.SPIN_RATIO) / 60.0));
     SHOOTER_FOLLOWER.setControl(
         VOLTAGE_VELOCITY_FOLLOWER.withVelocity((RPM * Constants.Shooter.SPIN_RATIO) / 60.0));
   }

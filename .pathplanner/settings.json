@@ -3,8 +3,10 @@
   "robotLength": 0.92,
   "holonomicMode": true,
   "pathFolders": [
-    "source_side",
     "amp_side",
+    "driven_source_score",
+    "overture_amp",
+    "source_side",
     "temp"
   ],
   "autoFolders": [],

@@ -247,6 +247,7 @@ public class RobotContainer {
 
     SHOOTER_TAB.add("Coast Wrist", new InstantCommand(WRIST::coast).ignoringDisable(true));
     SHOOTER_TAB.add("Brake Wrist", new InstantCommand(WRIST::brake).ignoringDisable(true));
+    COMMANDS_TAB.add("Shoot Simple", new ShootSimple(SHOOTER, WRIST, 4500, 27.8));
     COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
     COMMANDS_TAB.addNumber("Speaker Pitch", SPEAKER_PHOTON::getPitchVal);
     COMMANDS_TAB.add(
@@ -395,6 +396,7 @@ public class RobotContainer {
     addAuto("amp_close");
     addAuto("amp_subwoofer");
     addAuto("amp_subwoofer_reversal");
+    addAuto("driven_source_score");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
