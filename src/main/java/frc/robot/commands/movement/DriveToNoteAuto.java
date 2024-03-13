@@ -18,10 +18,10 @@ import frc.robot.commands.control.IntakeNoteSequence;
 import frc.robot.subsystems.*;
 
 public class DriveToNoteAuto extends Command {
-  private static final double kP = 0.07; // PID proportional gain
-  private static final double kI = 0.00; // PID integral gain
-  private static final double kD = 0.00; // PID derivative gain
-  private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
+  private static final double P = 0.07; // PID proportional gain
+  private static final double I = 0.00; // PID integral gain
+  private static final double D = 0.00; // PID derivative gain
+  private static final double TOLERANCE_DEGREES = 0.1; // Tolerance for reaching the desired angle
   private static final double maximumAllowableDistance = 2.5; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
   private static final double DEBOUNCE_TIME = 0.3;
@@ -63,8 +63,8 @@ public class DriveToNoteAuto extends Command {
     DriveToNoteAuto.elevator = elevator;
 
     // Create the PID controller
-    rotationController = new PIDController(kP, kI, kD);
-    rotationController.setTolerance(kToleranceDegrees);
+    rotationController = new PIDController(P, I, D);
+    rotationController.setTolerance(TOLERANCE_DEGREES);
 
     addRequirements(drivetrain);
   }

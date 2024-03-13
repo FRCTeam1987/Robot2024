@@ -29,11 +29,7 @@ public class ShootNote extends SequentialCommandGroup {
 
     // elevator.goHome();
     addCommands(
-        new InstantCommand(
-            () -> {
-              shooter.setRPMShoot(shootRPM);
-            },
-            shooter),
+        new InstantCommand(() -> shooter.setRPMShoot(shootRPM), shooter),
         new WaitCommand(0.2), // reset for isAtSetpoint commands to level out
         new WaitUntilCommand(shooter::isShooterAtSetpoint),
         new WaitCommand(0.5), // Time for wrist to get to position

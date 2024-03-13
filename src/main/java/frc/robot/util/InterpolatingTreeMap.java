@@ -3,6 +3,7 @@ package frc.robot.util;
 // From Team 254
 // https://github.com/Team254/FRC-2019-Public/blob/f99f09a15a2c8e7b5df868ec3a4a81105dc88112/src/main/java/com/team254/lib/util/InterpolatingTreeMap.java
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,7 +17,7 @@ import java.util.TreeMap;
 public class InterpolatingTreeMap<
         K extends InverseInterpolable<K> & Comparable<K>, V extends Interpolable<V>>
     extends TreeMap<K, V> {
-  private static final long serialVersionUID = 8347275262778054124L;
+  @Serial private static final long serialVersionUID = 8347275262778054124L;
 
   final int max_;
 

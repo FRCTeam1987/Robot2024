@@ -34,6 +34,6 @@ public class ShootSimple extends SequentialCommandGroup {
         new InstantCommand(() -> shooter.setFeederVoltage(6.0), shooter),
         new WaitUntilCommand(() -> !shooter.isCenterBroken()),
         new WaitCommand(0.06),
-        new InstantCommand(() -> shooter.stopFeeder(), shooter));
+        new InstantCommand(shooter::stopFeeder, shooter));
   }
 }

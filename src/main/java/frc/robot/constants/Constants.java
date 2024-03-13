@@ -8,7 +8,7 @@ public class Constants {
   public static final boolean shouldShuffleboard = false;
 
   public static final double MaxSpeed =
-      DriveConstants.kSpeedAt12VoltsMps; // 6 meters per second desired top speed
+      DriveConstants.SPEED_AT_12_VOLTS_MPS; // 6 meters per second desired top speed
   public static final double MaxAngularRate = Math.toRadians(540.00);
   // 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
@@ -89,10 +89,10 @@ public class Constants {
     public static final double FEEDER_RETRACT_VOLTS = -2;
 
     public static final double SHOOTER_RPM = 4000;
-    public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to bee smaller
-    public static final double SHOOTER_LOB_RPM = 3000; // NEEDS to bee smaller
+    public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to be smaller
+    public static final double SHOOTER_LOB_RPM = 3000; // NEEDS to be smaller
     public static final double SHOOTER_IDLE_RPM = 500; // 2500
-    public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to bee smaller
+    public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to be smaller
     public static final double SPIN_RATIO = 0.75;
     public static final int SHOOTER_AMP_RPM = 550;
   }
