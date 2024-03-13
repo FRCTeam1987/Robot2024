@@ -4,7 +4,9 @@
 
 package frc.robot.commands.qol;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Util;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.Shooter;
@@ -15,6 +17,7 @@ public class DefaultCANdle extends Command {
   private final Shooter SHOOTER;
   private final Candles CANDLES;
   private final Vision PHOTON_SPEAKER;
+  private final double BLINK_CONSTANT = 0.02; // in seconds?
 
   /** Creates a new DefaultCANdle. */
   public DefaultCANdle(Candles CANDLES, Shooter SHOOTER, Vision PHOTON_SPEAKER) {
@@ -32,6 +35,8 @@ public class DefaultCANdle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println(Timer.getFPGATimestamp());
+    // testing
     if (SHOOTER.isRearBroken()) {
       if (SHOOTER.isCenterBroken()) {
         if (PHOTON_SPEAKER.hasTargets()) {
@@ -40,6 +45,17 @@ public class DefaultCANdle extends Command {
                       new InterpolatingDouble(PHOTON_SPEAKER.getPitchVal()))
                   .value;
           if (dist > 2.25 && dist < 4.25) {
+            if (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1)) {
+              if (((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
+                CANDLES.setColorRight(0, 0, 0);
+                return;
+              } else {
+                CANDLES.setColorRight(0, 255, 0);
+                return;
+              }
+            } else {
+              CANDLES.setColorRight(0, 255, 0);
+            }
             CANDLES.setColorRight(0, 255, 0);
           } else {
             CANDLES.setColorRight(255, 0, 0);
