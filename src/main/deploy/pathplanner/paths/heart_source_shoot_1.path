@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.660539361989476,
-        "y": 6.490754988183654
+        "x": 3.2773630684028463,
+        "y": 2.70191039448417
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.198757335602099,
-        "y": 6.3506459814457425
+        "x": 4.186006075014296,
+        "y": 1.266696869054885
       },
-      "isLocked": false,
-      "linkedName": "amp_close_b_end"
+      "isLocked": true,
+      "linkedName": "heart_source_shoot_0_end"
     },
     {
       "anchor": {
-        "x": 1.6248691559226398,
-        "y": 5.65557473971462
+        "x": 6.382166686082795,
+        "y": 1.958448781973036
       },
       "prevControl": {
-        "x": 1.6248691559226398,
-        "y": 6.15557473971462
+        "x": 5.706232735091918,
+        "y": 1.4017016923077108
       },
       "nextControl": {
-        "x": 1.6248691559226398,
-        "y": 5.15557473971462
+        "x": 6.708134421117599,
+        "y": 2.226938902256807
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.660539361989476,
-        "y": 5.147937055748686
+        "x": 7.866803243232191,
+        "y": 2.2757788552010485
       },
       "prevControl": {
-        "x": 2.060539361989476,
-        "y": 5.147937055748686
+        "x": 7.36680324323219,
+        "y": 2.2757788552010485
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "amp_close-4_c_end"
+      "linkedName": "heart_source_shoot_1_end"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.35,
+      "waypointRelativePos": 1,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -54,10 +54,10 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "intakeStart",
-      "waypointRelativePos": 0,
+      "name": "IntakeNote",
+      "waypointRelativePos": 0.6,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -83,9 +83,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "amp_side",
+  "folder": "heart_source_shoot",
   "previewStartingState": {
-    "rotation": 35.0,
+    "rotation": -36.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

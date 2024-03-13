@@ -5,14 +5,15 @@
   "pathFolders": [
     "amp_side",
     "driven_source_score",
+    "heart_source_shoot",
     "overture_amp",
     "source_side",
-    "temp"
+    "heart_source_og"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxVel": 3.75,
+  "defaultMaxAccel": 2.75,
   "defaultMaxAngVel": 540.0,
-  "defaultMaxAngAccel": 540.0,
+  "defaultMaxAngAccel": 360.0,
   "maxModuleSpeed": 5.94
 }

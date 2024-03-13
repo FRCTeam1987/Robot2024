@@ -7,16 +7,17 @@ public class Constants {
 
   public static final boolean shouldShuffleboard = false;
 
-  public static final double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps; // 6 meters per second desired top speed
+  public static final double MaxSpeed =
+      DriveConstants.kSpeedAt12VoltsMps; // 6 meters per second desired top speed
   public static final double MaxAngularRate = Math.toRadians(540.00);
-      // 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  // 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   public static final double SPEAKER_APRILTAG_HEIGHT = 1.458;
   public static final double TRAP_APRILTAG_HEIGHT = 1.315;
   public static final double AMP_APRILTAG_HEIGHT = 1.35; // 0.535
 
-  public static final double translationXSlewRate = 8.0;
-  public static final double translationYSlewRate = 8.0;
+  public static final double translationXSlewRate = 12.0;
+  public static final double translationYSlewRate = 12.0;
   public static final double rotationSlewRate = 8.0;
 
   public static final int SHOOTER_LEADER_ID = 56;

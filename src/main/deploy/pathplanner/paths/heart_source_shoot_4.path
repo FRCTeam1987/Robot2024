@@ -3,47 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2601693150780495,
-        "y": 6.763676334910336
+        "x": 7.934136353451878,
+        "y": 3.823008531369246
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2601693150780497,
-        "y": 6.763676334910336
+        "x": 6.092690897478721,
+        "y": 3.874815984937209
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "heart_source_shoot_3_end"
     },
     {
       "anchor": {
-        "x": 3.1197117448157217,
-        "y": 6.001479118040435
+        "x": 3.2773630684028463,
+        "y": 2.70191039448417
       },
       "prevControl": {
-        "x": 2.1197117448157217,
-        "y": 6.001479118040435
+        "x": 4.304896440302108,
+        "y": 4.026791549095999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "heart_source_shoot_0_end"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.75,
+    "maxAcceleration": 2.75,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 540.0
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0,
+    "rotation": -36.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "temp",
+  "folder": "heart_source_shoot",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

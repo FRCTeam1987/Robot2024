@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.650370094163065,
-        "y": 0.9115217965794632
+        "x": 3.2773630684028463,
+        "y": 2.70191039448417
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.768786851982438,
-        "y": 1.4087338253345767
+        "x": 4.553817678951405,
+        "y": 3.9456734058671756
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "heart_source_shoot_0_end"
     },
     {
       "anchor": {
-        "x": 3.2445741458965647,
-        "y": 2.6599089134459954
+        "x": 7.934136353451878,
+        "y": 3.823008531369246
       },
       "prevControl": {
-        "x": 3.999711544855379,
-        "y": 1.9906877845407767
+        "x": 6.934136353451878,
+        "y": 3.823008531369246
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "driven_source_score_0_end"
+      "linkedName": "heart_source_shoot_3_end"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -38.61716999316712,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "driven_source_score",
+  "folder": "heart_source_shoot",
   "previewStartingState": {
-    "rotation": -11.53582055757919,
+    "rotation": -36.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

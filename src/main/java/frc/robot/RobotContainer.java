@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.*;
 import frc.robot.commands.movement.*;
 import frc.robot.commands.qol.AsyncRumble;
@@ -312,6 +313,23 @@ public class RobotContainer {
               isAmpPrepped = false;
               isAmpPrimed = false;
             }));
+    MATCH_TAB.addNumber(
+        "Velocity X", () -> DRIVETRAIN.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
+    MATCH_TAB.addNumber(
+        "Velocity Y", () -> DRIVETRAIN.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+    MATCH_TAB.addNumber(
+        "Velocity Theta", () -> DRIVETRAIN.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
+    MATCH_TAB.addNumber(
+        "Distance",
+        () ->
+            Math.abs(
+                DRIVETRAIN.getPose().getTranslation().getDistance(new Pose2d().getTranslation())));
+    AUTO_CHOOSER.addOption(
+        "SYSID-QUAS-F", DRIVETRAIN.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    AUTO_CHOOSER.addOption(
+        "SYSID-QUAS-R", DRIVETRAIN.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    AUTO_CHOOSER.addOption("SYSID-DYN-R", DRIVETRAIN.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    AUTO_CHOOSER.addOption("SYSID-DYN-F", DRIVETRAIN.sysIdDynamic(SysIdRoutine.Direction.kForward));
 
     COMMANDS_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     COMMANDS_TAB.add("Shoot Subwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
@@ -394,7 +412,8 @@ public class RobotContainer {
     addAuto("amp_subwoofer");
     addAuto("amp_subwoofer_reversal");
     addAuto("driven_source_score");
-    addAuto("New Auto");
+    addAuto("heart_source_shoot");
+    addAuto("heart_source_og");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
@@ -434,8 +453,8 @@ public class RobotContainer {
         "PoopPrep2500",
         new InstantCommand(
             () -> {
-              SHOOTER.setRPMShootNoSpin(2500);
-              WRIST.setDegrees(15);
+              SHOOTER.setRPMShootNoSpin(4000);
+              WRIST.setDegrees(25);
             },
             SHOOTER,
             WRIST,
