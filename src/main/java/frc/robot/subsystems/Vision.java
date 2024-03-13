@@ -123,7 +123,7 @@ public class Vision extends SubsystemBase {
           result.getTargets().stream()
               .filter(target -> validFiducials.contains((target.getFiducialId())))
               .findFirst();
-      if (!trackedTarget.isPresent()) {
+      if (trackedTarget.isEmpty()) {
         return;
       }
       int fiducialID = trackedTarget.get().getFiducialId();

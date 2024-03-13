@@ -31,7 +31,7 @@ public class Telemetry {
         new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1),
       };
   /* A direction and length changing ligament for speed representation */
-  private final MechanismLigament2d[] m_moduleSpeeds =
+  private final MechanismLigament2d[] moduleSpeeds =
       new MechanismLigament2d[] {
         moduleMechanisms[0]
             .getRoot("RootSpeed", 0.5, 0.5)
@@ -47,7 +47,7 @@ public class Telemetry {
             .append(new MechanismLigament2d("Speed", 0.5, 0)),
       };
   /* A direction changing and length constant ligament for module direction */
-  private final MechanismLigament2d[] m_moduleDirections =
+  private final MechanismLigament2d[] moduleDirections =
       new MechanismLigament2d[] {
         moduleMechanisms[0]
             .getRoot("RootDirection", 0.5, 0.5)
@@ -98,9 +98,9 @@ public class Telemetry {
 
     /* Telemeterize the module's states */
     for (int i = 0; i < 4; ++i) {
-      m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
-      m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-      m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
+      moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
+      moduleDirections[i].setAngle(state.ModuleStates[i].angle);
+      moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
 
       SmartDashboard.putData("Module " + i, moduleMechanisms[i]);
     }

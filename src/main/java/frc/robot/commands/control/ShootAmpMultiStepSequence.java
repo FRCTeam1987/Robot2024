@@ -46,10 +46,7 @@ public class ShootAmpMultiStepSequence extends Command {
       System.out.println("prepping");
       new SequentialCommandGroup(
               new InstantCommand(
-                  () -> {
-                    ELEVATOR.setLengthInches(Constants.ELEVATOR_AMP_HEIGHT);
-                  },
-                  ELEVATOR),
+                  () -> ELEVATOR.setLengthInches(Constants.ELEVATOR_AMP_HEIGHT), ELEVATOR),
               new WaitCommand(0.06), // reset for isAtSetpoint commands to level out
               new InstantCommand(() -> WRIST.setDegrees(Constants.WRIST_AMP_DEGREES), WRIST),
               new WaitUntilCommand(WRIST::isAtSetpoint).withTimeout(0.75))

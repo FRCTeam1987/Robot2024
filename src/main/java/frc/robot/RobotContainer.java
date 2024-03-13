@@ -91,9 +91,6 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> isAmpPrimed = true)),
                 () -> isAmpPrimed));
 
-    // DRIVER_CONTROLLER.y().onTrue(new ConditionalCommand(AMP_SCORE_COMMAND, new InstantCommand(),
-    // () -> !AMP_SCORE_COMMAND.isFinished()));
-
     DRIVER_CONTROLLER
         .back()
         .onTrue(
@@ -219,8 +216,8 @@ public class RobotContainer {
     ELEVATOR_HEIGHT = PROTO_TAB.add("Wrist DEG", 7).getEntry();
     WRIST_ANGLE = PROTO_TAB.add("Elevator IN", 10).getEntry();
 
-    PROTO_TAB.addDouble("Wrist Err", () -> WRIST.getError());
-    PROTO_TAB.addDouble("Shooter Err", () -> SHOOTER.getError());
+    PROTO_TAB.addDouble("Wrist Err", WRIST::getError);
+    PROTO_TAB.addDouble("Shooter Err", SHOOTER::getError);
 
     PROTO_TAB.add(
         "Wrist GO", new InstantCommand(() -> WRIST.setDegrees(WRIST_ANGLE.getDouble(7.0)), WRIST));
@@ -232,7 +229,7 @@ public class RobotContainer {
         "Shooter GO",
         new InstantCommand(() -> SHOOTER.setRPMShoot(SHOOTER_RPM.getDouble(0.0)), SHOOTER));
 
-    PROTO_TAB.add("Elev STOP", new InstantCommand(() -> ELEVATOR.stop(), ELEVATOR));
+    PROTO_TAB.add("Elev STOP", new InstantCommand(ELEVATOR::stop, ELEVATOR));
     PROTO_TAB.add(
         "Shooter STOP",
         new InstantCommand(

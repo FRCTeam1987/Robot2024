@@ -27,11 +27,11 @@ import frc.robot.constants.DriveConstants;
 import java.util.function.Supplier;
 
 /**
- * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem so it can be used
+ * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem, so it can be used
  * in command-based projects easily.
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
-  private static final double kSimLoopPeriod = 0.005; // 5 ms
+  private static final double SIM_LOOP_PERIOD = 0.005; // 5 ms
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -115,7 +115,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         new HolonomicPathFollowerConfig(
             new PIDConstants(10, 0, 0),
             new PIDConstants(10, 0, 0),
-            DriveConstants.kSpeedAt12VoltsMps,
+            DriveConstants.SPEED_AT_12_VOLTS_MPS,
             driveBaseRadius,
             new ReplanningConfig()),
         () -> {
@@ -146,7 +146,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     DriverStation.reportWarning("Requested: " + newPose.toString(), false);
     this.seedFieldRelative(newPose);
     DriverStation.reportWarning("After: " + getPose().toString(), false);
-
   }
 
   /*
@@ -180,7 +179,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
               /* use the measured time delta, get battery voltage from WPILib */
               updateSimState(deltaTime, RobotController.getBatteryVoltage());
             });
-    m_simNotifier.startPeriodic(kSimLoopPeriod);
+    m_simNotifier.startPeriodic(SIM_LOOP_PERIOD);
   }
 
   @Override
