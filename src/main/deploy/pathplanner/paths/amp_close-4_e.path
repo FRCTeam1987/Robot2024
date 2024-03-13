@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.131833147505525,
-        "y": 4.426083808684817
+        "x": 2.4,
+        "y": 3.94
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.975687661686516,
-        "y": 3.7116581411823977
+        "x": 2.009069838179461,
+        "y": 1.8262500957919585
       },
       "isLocked": false,
-      "linkedName": "overture_0_end"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.394068465304582,
-        "y": 3.8304899402120722
+        "x": 6.039598000671488,
+        "y": 1.312945265076538
       },
       "prevControl": {
-        "x": 6.394068465304582,
-        "y": 3.8304899402120722
+        "x": 3.858795529531071,
+        "y": 1.3313212898357103
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "overture_1_end"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -43,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "overture_amp",
+  "folder": "amp_side",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -35.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

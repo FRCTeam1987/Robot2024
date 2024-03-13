@@ -17,8 +17,16 @@ public class Candles extends SubsystemBase {
     RIGHT_CANDLE = new CANdle(RIGHT_CANDLE_ID, "canfd");
   }
 
-  public void setColor(int r, int g, int b) {
+  public void setColorBoth(int r, int g, int b) {
     LEFT_CANDLE.setLEDs(r, g, b);
+    RIGHT_CANDLE.setLEDs(r, g, b);
+  }
+
+  public void setColorLeft(int r, int g, int b) {
+    LEFT_CANDLE.setLEDs(r, g, b);
+  }
+
+  public void setColorRight(int r, int g, int b) {
     RIGHT_CANDLE.setLEDs(r, g, b);
   }
 
@@ -30,10 +38,5 @@ public class Candles extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  public void setColor(double red, double green, double blue) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setColor'");
   }
 }

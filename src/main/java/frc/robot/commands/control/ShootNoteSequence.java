@@ -7,9 +7,9 @@ package frc.robot.commands.control;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.util.InterpolatingDouble;
 
 public class ShootNoteSequence extends SequentialCommandGroup {
   private static final double DEBOUNCE_TIME = 0.06;
@@ -56,11 +56,16 @@ public class ShootNoteSequence extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-                new PointAtAprilTag(drivetrain, photonVision),
+                // new PointAtAprilTag(drivetrain, photonVision),
                 new InstantCommand(
                     () -> {
-                      // TODO: FIX ME !!!!!
-                      // wrist.setDegrees(RobotContainer.get().getDouble(30));
+                      wrist.setDegrees(
+                          Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
+                                  new InterpolatingDouble(
+                                      Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER.getInterpolated(
+                                              new InterpolatingDouble(photonVision.getPitchVal()))
+                                          .value))
+                              .value);
                       shooter.setRPMShoot(shootRPM);
                     },
                     shooter,

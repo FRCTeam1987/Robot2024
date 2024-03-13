@@ -7,12 +7,9 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -26,11 +23,9 @@ import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
-import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.*;
+import frc.robot.util.InterpolatingDouble;
 import java.util.Arrays;
-import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
 
 public class RobotContainer {
   public static boolean isAmpPrimed = false;
@@ -42,17 +37,7 @@ public class RobotContainer {
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
-  public final PVision VISION_SPEAKER =
-      new PVision(
-          VisionConstants.CAMERA_NAME_SPEAKER,
-          VisionConstants.TAG_LAYOUT,
-          VisionConstants.ROBOT_TO_CAM_SPEAKER);
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
-  //   public final PVision VISION_AMP =
-  //       new PVision(
-  //           VisionConstants.CAMERA_NAME_AMP,
-  //           VisionConstants.TAG_LAYOUT,
-  //           VisionConstants.ROBOT_TO_CAM_AMP);
   public final Vision SPEAKER_PHOTON =
       new Vision("Arducam_OV2311_USB_Camera_1", 0.3, 40, Arrays.asList(4, 7));
   public final Vision AMP_PHOTON =
@@ -197,6 +182,12 @@ public class RobotContainer {
                 () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
 
     CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
+    CO_DRIVER_CONTROLLER
+        .a()
+        .onTrue(
+            new ParallelDeadlineGroup(
+                new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
+                new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
   }
 
   private void configureDrivetrain() {
@@ -218,6 +209,12 @@ public class RobotContainer {
   }
 
   public void configureShuffleboard() {
+    PHOTON_TAB.addDouble(
+        "DISTANCE_TO_SPEAKER",
+        () ->
+            Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER.getInterpolated(
+                    new InterpolatingDouble(SPEAKER_PHOTON.getPitchVal()))
+                .value);
     SHOOTER_RPM = PROTO_TAB.add("Shooter RPM", 2500).getEntry();
     ELEVATOR_HEIGHT = PROTO_TAB.add("Wrist DEG", 7).getEntry();
     WRIST_ANGLE = PROTO_TAB.add("Elevator IN", 10).getEntry();
@@ -397,6 +394,7 @@ public class RobotContainer {
     addAuto("amp_subwoofer");
     addAuto("amp_subwoofer_reversal");
     addAuto("driven_source_score");
+    addAuto("New Auto");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
@@ -404,7 +402,7 @@ public class RobotContainer {
   public void configureDefaultCommands() {
     WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_PHOTON));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
-    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
+    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_PHOTON));
   }
 
   public void configureNamedCommands() {
@@ -470,27 +468,5 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return AUTO_CHOOSER.getSelected();
-  }
-
-  public void visionPeriodic() {
-    try {
-      Optional<EstimatedRobotPose> speakerEstimate = VISION_SPEAKER.getEstimatedGlobalPose();
-      speakerEstimate.ifPresent(
-          estimate -> {
-            Pose2d estimatedPose = estimate.estimatedPose.toPose2d();
-            Matrix<N3, N1> estStdDevs = VISION_SPEAKER.getEstimationStdDevs(estimatedPose);
-            DRIVETRAIN.addVisionMeasurement(estimatedPose, estimate.timestampSeconds, estStdDevs);
-          });
-    } catch (Exception ignored) {
-
-    }
-
-    // Optional<EstimatedRobotPose> ampEstimate = VISION_AMP.getEstimatedGlobalPose();
-    // ampEstimate.ifPresent(
-    //     estimate -> {
-    //       Pose2d estimatedPose = estimate.estimatedPose.toPose2d();
-    //       Matrix<N3, N1> estStdDevs = VISION_AMP.getEstimationStdDevs(estimatedPose);
-    //       DRIVETRAIN.addVisionMeasurement(estimatedPose, estimate.timestampSeconds, estStdDevs);
-    //     });
   }
 }

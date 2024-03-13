@@ -87,7 +87,7 @@ public class Shooter extends SubsystemBase {
     FEEDER.setInverted(true);
     FEEDER.setNeutralMode(NeutralModeValue.Brake);
 
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   public double getError() {
@@ -100,8 +100,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPMShoot(double RPM) {
-    SHOOTER_LEADER.setControl(
-        VOLTAGE_VELOCITY_LEADER.withVelocity((RPM * Constants.Shooter.SPIN_RATIO) / 60.0));
+    SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity((RPM) / 60.0));
     SHOOTER_FOLLOWER.setControl(
         VOLTAGE_VELOCITY_FOLLOWER.withVelocity((RPM * Constants.Shooter.SPIN_RATIO) / 60.0));
   }
@@ -159,15 +158,16 @@ public class Shooter extends SubsystemBase {
   public void setupShuffleboard() {
 
     if (Constants.shouldShuffleboard) {
-      SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
+
       SHOOTER_TAB.addDouble("Feeder Current", this::getFeederCurrent);
       // SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
-      SHOOTER_TAB.addDouble(
-          "SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
+
       SHOOTER_TAB.addDouble(
           "SHOOTER Current", () -> SHOOTER_LEADER.getStatorCurrent().getValueAsDouble());
     }
 
+    SHOOTER_TAB.addDouble("SHT Err", () -> SHOOTER_LEADER.getClosedLoopError().getValueAsDouble());
+    SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
     SHOOTER_TAB.addBoolean("HasNote", this::isCenterBroken);
 
     GenericEntry feedRPM = SHOOTER_TAB.add("Desired FD Vlts", 900).getEntry();

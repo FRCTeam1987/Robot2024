@@ -124,6 +124,9 @@ public class TeleopSwerve extends Command {
     useDPad = false;
     useIntakeLock = mShouldIntakeLock.getAsBoolean();
     setPoint = 0.0;
+    translationXSlewRate.reset(0);
+    translationYSlewRate.reset(0);
+    rotationSlewRate.reset(0);
   }
 
   @Override

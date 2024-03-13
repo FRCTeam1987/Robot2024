@@ -50,7 +50,7 @@ public class Intake extends SubsystemBase {
     INTAKE_TOP.setInverted(false);
     INTAKE_TOP.setNeutralMode(NeutralModeValue.Coast);
     INTAKE_BOTTOM.setNeutralMode(NeutralModeValue.Coast);
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   public void setRPM(double RPM) {

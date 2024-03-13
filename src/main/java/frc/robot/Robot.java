@@ -21,12 +21,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    robotContainer.visionPeriodic();
   }
 
   @Override
   public void disabledInit() {
-    RobotContainer.get().CANDLES.setColor(128, 0, 0);
+    RobotContainer.get().CANDLES.setColorBoth(128, 0, 0);
     CommandScheduler.getInstance().cancelAll();
   }
 
@@ -38,7 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    RobotContainer.get().CANDLES.setColor(255, 255, 255);
+    RobotContainer.get().CANDLES.setColorBoth(255, 255, 255);
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
@@ -54,7 +53,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    RobotContainer.get().CANDLES.setColor(0, 128, 0);
+    RobotContainer.get().CANDLES.setColorBoth(0, 128, 0);
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }

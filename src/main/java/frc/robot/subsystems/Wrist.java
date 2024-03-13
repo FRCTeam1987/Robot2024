@@ -13,7 +13,7 @@ import frc.robot.commands.zeroing.ZeroWrist;
 import frc.robot.constants.Constants;
 
 public class Wrist extends SubsystemBase {
-  public static double incrementAimbot = 1.0;
+  public static double incrementAimbot = 0.0;
   private final TalonFX WRIST_MOTOR;
   private final ShuffleboardTab WRIST_TAB = Shuffleboard.getTab("WRIST");
   private double IncrementValue = 0.0;
@@ -48,7 +48,7 @@ public class Wrist extends SubsystemBase {
     setZero();
     WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
 
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   public void goHome() {
@@ -132,19 +132,19 @@ public class Wrist extends SubsystemBase {
 
   public void setupShuffleboard() {
     GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 28).getEntry();
-    WRIST_TAB.add("+1 AIMBOT DEG", new InstantCommand(() -> Wrist.incrementAimbot++));
-    WRIST_TAB.add("-1 AIMBOT DEG", new InstantCommand(() -> Wrist.incrementAimbot--));
+    WRIST_TAB.add("+0.2 AIMBOT DEG", new InstantCommand(() -> Wrist.incrementAimbot += 0.2));
+    WRIST_TAB.add("-0.2 AIMBOT DEG", new InstantCommand(() -> Wrist.incrementAimbot -= 0.2));
     WRIST_TAB.add("ZERO WRIST", new ZeroWrist(this));
     WRIST_TAB.add(
         "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
     WRIST_TAB.add("Set Coast", new InstantCommand(this::setCoast, this).ignoringDisable(true));
     WRIST_TAB.add("Set Brake", new InstantCommand(this::setBrake, this).ignoringDisable(true));
     WRIST_TAB.addDouble("Degrees", this::getDegrees);
+    WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
     if (Constants.shouldShuffleboard) {
       WRIST_TAB.addDouble("Wrist degrees with offset", this::getDegrees);
       WRIST_TAB.addDouble("Current Amps", () -> WRIST_MOTOR.getStatorCurrent().getValueAsDouble());
       WRIST_TAB.addDouble("Current volts", () -> WRIST_MOTOR.getMotorVoltage().getValueAsDouble());
-      WRIST_TAB.addDouble("Error", () -> WRIST_MOTOR.getClosedLoopError().getValueAsDouble());
     }
   }
 }

@@ -27,7 +27,10 @@ public class Elevator extends SubsystemBase {
   private final ShuffleboardTab ELEVATOR_TAB = Shuffleboard.getTab("ELEVATOR");
   private double IncrementValue = 0.0;
 
-  public Elevator(final int ELEVATOR_LEADER_ID, final int ELEVATOR_FOLLOWER_ID) {
+  public Elevator(
+      final int ELEVATOR_LEADER_ID,
+      final int ELEVATOR_FOLLOWER_ID) { // TODO don't use these since they're the same as defined in
+    // constants
     ELEVATOR_LEADER = new TalonFX(ELEVATOR_LEADER_ID, "canfd");
     ELEVATOR_FOLLOWER = new TalonFX(ELEVATOR_FOLLOWER_ID, "canfd");
 
@@ -59,7 +62,7 @@ public class Elevator extends SubsystemBase {
 
     ELEVATOR_FOLLOWER.setControl(new Follower(ELEVATOR_LEADER.getDeviceID(), false));
 
-    setupShuffleboard();
+    // setupShuffleboard();
   }
 
   public void setVoltage(double volts) {

@@ -58,8 +58,11 @@ public class AimLockWrist extends Command {
         // } else if (shooter.ShooterCameraDistanceToTarget(Constants.SPEAKER_APRILTAG_HEIGHT) >
         // 2.0) {
         double degrees =
-            Constants.DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.getInterpolated(
-                        new InterpolatingDouble(Pitch))
+            Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
+                        new InterpolatingDouble(
+                            Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER.getInterpolated(
+                                    new InterpolatingDouble(Pitch))
+                                .value))
                     .value
                 + Wrist.incrementAimbot;
         // System.out.println("Degrees attempted: " + degrees);

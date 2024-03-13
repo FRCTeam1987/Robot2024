@@ -16,10 +16,10 @@ import frc.robot.subsystems.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class squareUpAndShootAmp extends SequentialCommandGroup {
+public class SquareUpAndShootAmp extends SequentialCommandGroup {
 
   /** Creates a new squareUpAndShootAmp. */
-  public squareUpAndShootAmp(
+  public SquareUpAndShootAmp(
       Vision photonVision, Drivetrain drivetrain, Wrist wrist, Elevator elevator, Shooter shooter) {
 
     // Add your commands in the addCommands() call, e.g.

@@ -33,7 +33,7 @@ public class AsyncCANdle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    candles.setColor(color.red, color.green, color.blue);
+    candles.setColorLeft(color.red, color.green, color.blue);
   }
 
   // Called once the command ends or is interrupted.
