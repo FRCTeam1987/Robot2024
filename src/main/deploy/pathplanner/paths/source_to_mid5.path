@@ -190,7 +190,7 @@
     "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
@@ -198,7 +198,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "source_side",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0.30661530860018277,
     "velocity": 0

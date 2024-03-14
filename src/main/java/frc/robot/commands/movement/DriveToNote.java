@@ -12,43 +12,40 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
 public class DriveToNote extends Command {
+  private static final double P = 0.07; // PID proportional gain
+  private static final double I = 0.00; // PID integral gain
+  private static final double D = 0.00; // PID derivative gain
+  private static final double TOLERANCE_DEGREES = 0.1; // Tolerance for reaching the desired angle
+  private static final double maximumAllowableDistance = 3.0; // In Meters
+  private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
+  private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
+
   /** Creates a new DriveToPiece. */
   private final DoubleSupplier velocitySupplier;
 
-  private final Drivetrain drivetrain;
-
+  private final CommandSwerveDrivetrain drivetrain;
   private final Vision photonVision;
-
-  private Pose2d initialPose;
-  private static final double kP = 0.07; // PID proportional gain
-  private static final double kI = 0.00; // PID integral gain
-  private static final double kD = 0.00; // PID derivative gain
-  private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 3.0; // In Meters
-  private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
-
   private final PIDController rotationController;
   private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-
+  private Pose2d initialPose;
   private Debouncer canSeePieceDebouncer;
-  private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
 
   public DriveToNote(
-      final Drivetrain drivetrain, final DoubleSupplier velocitySupplier, Vision photonVision) {
+      final CommandSwerveDrivetrain drivetrain, final DoubleSupplier velocitySupplier, Vision photonVision) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.velocitySupplier = velocitySupplier;
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
 
     // Create the PID controller
-    rotationController = new PIDController(kP, kI, kD);
-    rotationController.setTolerance(kToleranceDegrees);
+    rotationController = new PIDController(P, I, D);
+    rotationController.setTolerance(TOLERANCE_DEGREES);
 
     addRequirements(drivetrain);
   }

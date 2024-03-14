@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2,
+      "y": 1.57
+    },
+    "rotation": -72.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "driven_source_score_0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "driven_source_score_1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToNoteAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "driven_source_score_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "driven_source_score_3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

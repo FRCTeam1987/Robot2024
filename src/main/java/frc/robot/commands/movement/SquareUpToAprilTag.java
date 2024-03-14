@@ -9,8 +9,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Util;
-import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.util.Util;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
 
 public class SquareUpToAprilTag extends Command {
@@ -25,12 +26,11 @@ public class SquareUpToAprilTag extends Command {
   private final LinearFilter SKEW_FILTER = LinearFilter.movingAverage(8);
 
   private final double ACCEPTABLE_SKEW_ERROR = 0.0; // Degrees within acceptance
-  private double ACCEPTABLE_DISTANCE = 3; // 1.3
   private final double ACCEPTABLE_DISTANCE_ERROR = 0.05; // metersP within acceptance
-
   private final Vision photonVision;
+  private final CommandSwerveDrivetrain drivetrain;
+  private double ACCEPTABLE_DISTANCE = 3; // 1.3
   private double distanceError;
-  private final Drivetrain drivetrain;
   private double xOffset;
   private double skew;
   private double distanceToTarget;
@@ -39,7 +39,7 @@ public class SquareUpToAprilTag extends Command {
   private double targetHeight = 1.45; // 1.23 Meters
 
   public SquareUpToAprilTag(
-      Drivetrain drivetrain, Vision photonVision, double targetHeight, double acceptableDistance) {
+      CommandSwerveDrivetrain drivetrain, Vision photonVision, double targetHeight, double acceptableDistance) {
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
     this.targetHeight = targetHeight;

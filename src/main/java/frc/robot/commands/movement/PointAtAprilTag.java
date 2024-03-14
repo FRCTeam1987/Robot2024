@@ -10,17 +10,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
   private final Vision photonvision;
-
-  private DoubleSupplier velocityXSupplier = () -> 0.0;
-  private DoubleSupplier velocityYSupplier = () -> 0.0;
-  private DoubleSupplier rotationSupplier = () -> 0.0;
-  private final Drivetrain drivetrain;
+  private final CommandSwerveDrivetrain drivetrain;
   private final SlewRateLimiter translationXSlewRate =
       new SlewRateLimiter(Constants.translationXSlewRate);
   private final SlewRateLimiter translationYSlewRate =
@@ -31,13 +27,16 @@ public class PointAtAprilTag extends Command {
           .withDeadband(Constants.MaxSpeed * 0.1)
           .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+  private DoubleSupplier velocityXSupplier = () -> 0.0;
+  private DoubleSupplier velocityYSupplier = () -> 0.0;
+  private DoubleSupplier rotationSupplier = () -> 0.0;
 
-  public PointAtAprilTag(Drivetrain drivetrain, Vision photonvision) {
+  public PointAtAprilTag(CommandSwerveDrivetrain drivetrain, Vision photonvision) {
     this(drivetrain, photonvision, () -> 0.0, () -> 0.0, () -> 0.0);
   }
 
   public PointAtAprilTag(
-      Drivetrain drivetrain,
+    CommandSwerveDrivetrain drivetrain,
       Vision photonvision,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
