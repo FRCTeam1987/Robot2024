@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -62,6 +64,16 @@ public class RobotContainer {
   private GenericEntry SHOOTER_RPM;
   private GenericEntry WRIST_ANGLE;
   private GenericEntry ELEVATOR_HEIGHT;
+  
+
+  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+      .withDeadband(DriveConstants.SPEED_AT_12_VOLTS_MPS * 0.1).withRotationalDeadband((1.5*Math.PI) * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+                                                               // driving in open loop
+  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
 
   public RobotContainer() {
     instance = this;
@@ -94,13 +106,14 @@ public class RobotContainer {
 
     DRIVER_CONTROLLER
         .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  DRIVETRAIN.resetPose(new Pose2d());
-                  System.out.println(DRIVETRAIN.getPose().getRotation());
-                },
-                DRIVETRAIN));
+        .onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
+        // .onTrue(
+        //     new InstantCommand(
+        //         () -> {
+        //           DRIVETRAIN.resetPose(new Pose2d());
+        //           System.out.println(DRIVETRAIN.getPose().getRotation());
+        //         },
+        //         DRIVETRAIN));
     DRIVER_CONTROLLER.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
     DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
     DRIVER_CONTROLLER
@@ -190,15 +203,22 @@ public class RobotContainer {
 
   private void configureDrivetrain() {
 
-    DRIVETRAIN.setDefaultCommand(
-        new TeleopSwerve(
-            DRIVETRAIN,
-            () -> -DRIVER_CONTROLLER.getLeftY(),
-            () -> -DRIVER_CONTROLLER.getLeftX(),
-            DRIVER_CONTROLLER::getRightX,
-            () -> 1.0,
-            () -> DRIVER_CONTROLLER.getHID().getPOV(),
-            () -> false));
+    DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
+        DRIVETRAIN.applyRequest(() -> drive.withVelocityX(-DRIVER_CONTROLLER.getLeftY() * DriveConstants.SPEED_AT_12_VOLTS_MPS) // Drive forward with
+                                                                                           // negative Y (forward)
+            .withVelocityY(-DRIVER_CONTROLLER.getLeftX() * DriveConstants.SPEED_AT_12_VOLTS_MPS) // Drive left with negative X (left)
+            .withRotationalRate(-DRIVER_CONTROLLER.getRightX() * Math.PI * 3.5) // Drive counterclockwise with negative X (left)
+        ).ignoringDisable(true));
+
+    // DRIVETRAIN.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         DRIVETRAIN,
+    //         () -> -DRIVER_CONTROLLER.getLeftY(),
+    //         () -> -DRIVER_CONTROLLER.getLeftX(),
+    //         DRIVER_CONTROLLER::getRightX,
+    //         () -> 1.0,
+    //         () -> DRIVER_CONTROLLER.getHID().getPOV(),
+    //         () -> false));
 
     if (Utils.isSimulation()) {
       DRIVETRAIN.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));

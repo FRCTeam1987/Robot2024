@@ -17,7 +17,7 @@ public class DefaultCANdle extends Command {
   private final Shooter SHOOTER;
   private final Candles CANDLES;
   private final Vision PHOTON_SPEAKER;
-  private final double BLINK_CONSTANT = 0.02; // in seconds?
+  private final double BLINK_CONSTANT = 0.002; // in seconds?
 
   /** Creates a new DefaultCANdle. */
   public DefaultCANdle(Candles CANDLES, Shooter SHOOTER, Vision PHOTON_SPEAKER) {
@@ -35,7 +35,7 @@ public class DefaultCANdle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println(Timer.getFPGATimestamp());
+    //System.out.println(Timer.getFPGATimestamp());
     // testing
     if (SHOOTER.isRearBroken()) {
       if (SHOOTER.isCenterBroken()) {

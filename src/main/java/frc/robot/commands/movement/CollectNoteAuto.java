@@ -86,6 +86,7 @@ public class CollectNoteAuto extends Command {
     new IntakeNoteSequence(shooter, intake, wrist, elevator); // Start intaking immediately
   }
 
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {

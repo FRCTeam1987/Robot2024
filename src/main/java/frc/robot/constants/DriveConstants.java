@@ -16,7 +16,7 @@ public class DriveConstants {
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot
-  public static final double SPEED_AT_12_VOLTS_MPS = 5.21;
+  public static final double SPEED_AT_12_VOLTS_MPS = 5.40;
   // The steer motor uses any SwerveModule.SteerRequestType control request with the
   // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
   private static final Slot0Configs STEER_GAINS =
