@@ -40,10 +40,7 @@ public class DefaultCANdle extends Command {
     if (SHOOTER.isRearBroken()) {
       if (SHOOTER.isCenterBroken()) {
         if (PHOTON_SPEAKER.hasTargets()) {
-          double dist =
-              Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER.getInterpolated(
-                      new InterpolatingDouble(PHOTON_SPEAKER.getPitchVal()))
-                  .value;
+          double dist = Util.getInterpolatedDistance(PHOTON_SPEAKER);
           if (dist > 2.25 && dist < 4.25) {
             if (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1)) {
               if (((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
@@ -68,6 +65,8 @@ public class DefaultCANdle extends Command {
         return;
       }
       CANDLES.setColorLeft(128, 64, 0);
+    } else {
+      CANDLES.setColorLeft(255, 0, 0);
     }
   }
 

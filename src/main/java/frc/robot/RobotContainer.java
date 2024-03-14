@@ -64,6 +64,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Elevator;
 import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.Util;
 
 public class RobotContainer {
     private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
@@ -143,8 +144,10 @@ public class RobotContainer {
             new ConditionalCommand(
                 new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE).andThen(() -> isReverseAmpPrimed = false),
                 new PrepRevAmp(ELEVATOR, WRIST)
-                .andThen(new WaitCommand(0.1))
+                .andThen(new WaitCommand(0.8))
                 .andThen(new FireRevAmp(SHOOTER))
+                .andThen(new WaitCommand(0.1))
+                .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2 )))
                     .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
                 () -> isReverseAmpPrimed));
     DRIVER_CONTROLLER
@@ -165,9 +168,9 @@ public class RobotContainer {
             new PointAtAprilTag(
                 DRIVETRAIN,
                 SPEAKER_PHOTON,
-                () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
-                () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
-                () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+                () -> (-DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
+                () -> (-DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
+                () -> (-DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
 
     DRIVER_CONTROLLER
         .rightBumper()
@@ -213,8 +216,8 @@ public class RobotContainer {
             new PointAtAprilTag(
                 DRIVETRAIN,
                 SPEAKER_PHOTON,
-                () -> (DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
-                () -> (DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
+                () -> (-DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
+                () -> (-DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
                 () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
 
     CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
@@ -259,9 +262,7 @@ public class RobotContainer {
     PHOTON_TAB.addDouble(
         "DISTANCE_TO_SPEAKER",
         () ->
-            Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER.getInterpolated(
-                    new InterpolatingDouble(SPEAKER_PHOTON.getPitchVal()))
-                .value);
+            Util.getInterpolatedDistance(SPEAKER_PHOTON));
 
     COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
     COMMANDS_TAB.add(
@@ -312,6 +313,8 @@ public class RobotContainer {
     addAuto("driven_source_score");
     addAuto("heart_source_shoot");
     addAuto("heart_source_og");
+    addAuto("Taxi-Amp");
+    addAuto("Taxi-Source");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }

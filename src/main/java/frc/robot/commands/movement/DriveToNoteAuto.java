@@ -22,7 +22,7 @@ public class DriveToNoteAuto extends Command {
   private static final double I = 0.00; // PID integral gain
   private static final double D = 0.00; // PID derivative gain
   private static final double TOLERANCE_DEGREES = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 2.5; // In Meters
+  private static final double maximumAllowableDistance = 3.25; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
   private static final double DEBOUNCE_TIME = 0.3;
   private static Vision photonVision;

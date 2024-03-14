@@ -18,9 +18,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "heart_source_shoot_1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToNoteAuto"
           }
         },
         {
@@ -30,15 +42,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "heart_source_shoot_3"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "DriveToNoteAuto"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "heart_source_shoot_4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
           }
         }
       ]

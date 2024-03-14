@@ -7,6 +7,14 @@
 
 package frc.robot.util;
 
+import java.util.Optional;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.Vision;
+
 public class Util {
   public static final double DEADBAND = 0.05;
 
@@ -87,4 +95,25 @@ public class Util {
 
     return value;
   }
+
+  public static double getInterpolatedDistance(Vision photonVision) {
+    var result = photonVision.getCamera().getLatestResult();
+   if (result.hasTargets()) {
+    for (PhotonTrackedTarget target : result.getTargets()) {
+      if (target.getFiducialId() == 4) {
+        //DriverStation.reportWarning("Getting value from REDSIDE", false);
+        return Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.getInterpolated(new InterpolatingDouble(target.getPitch())).value;
+      } else if (target.getFiducialId() == 7) {
+                //DriverStation.reportWarning("Getting value from BLUESIDE", false);
+        return Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.getInterpolated(new InterpolatingDouble(target.getPitch())).value;
+      }
+    }
+    return 0.0;
+  }
+  return 0.0;
+}
+
+public static double getInterpolatedWristAngle(Vision photonVision) {
+  return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(new InterpolatingDouble(Util.getInterpolatedDistance(photonVision))).value;
+}
 }

@@ -38,7 +38,34 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             wrist),
         new WaitCommand(0.1),
         new WaitUntilCommand(shooter::isRearBroken),
-        new InstantCommand(intake::stopTop, intake),
+       //new InstantCommand(intake::stopTop, intake),
+        new WaitUntilCommand(
+            () -> shooter.isCenterBroken()),
+        new InstantCommand(
+            () -> {
+              shooter.stopFeeder();
+              intake.stopCollecting();
+            },
+            shooter,
+            intake));
+  }
+
+
+  public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator, boolean val) {
+    addCommands(
+        new InstantCommand(
+            () -> {
+              shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE);
+              intake.setVolts(Constants.INTAKE_COLLECT_VOLTS_MANUAL);
+              wrist.setDegrees(21); // testing
+              elevator.goHome();
+            },
+            shooter,
+            intake,
+            wrist),
+        new WaitCommand(0.1),
+        new WaitUntilCommand(shooter::isRearBroken),
+       //new InstantCommand(intake::stopTop, intake),
         new WaitUntilCommand(
             () -> shooter.isCenterBroken()),
         new InstantCommand(

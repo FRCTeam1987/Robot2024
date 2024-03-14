@@ -13,6 +13,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.Util;
 
 public class AimLockWrist extends Command {
   private final Wrist wrist;
@@ -45,14 +46,7 @@ public class AimLockWrist extends Command {
       final double ty = speakerPhoton.getPitchVal();
       SmartDashboard.putNumber("ty", ty);
       if (shooter.isCenterBroken()) {
-        double Pitch = speakerPhoton.getPitchVal();
-        double degrees =
-            Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
-                        new InterpolatingDouble(
-                            Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER.getInterpolated(
-                                    new InterpolatingDouble(Pitch))
-                                .value))
-                    .value;
+        double degrees = Util.getInterpolatedWristAngle(speakerPhoton);
         wrist.setDegrees(degrees);
 
       } else {

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.Util;
 
 public class ShootNoteSequence extends SequentialCommandGroup {
   private static final double DEBOUNCE_TIME = 0.06;
@@ -60,17 +61,12 @@ public class ShootNoteSequence extends SequentialCommandGroup {
                 new InstantCommand(
                     () -> {
                       wrist.setDegrees(
-                          Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
-                                  new InterpolatingDouble(
-                                      Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER.getInterpolated(
-                                              new InterpolatingDouble(photonVision.getPitchVal()))
-                                          .value))
-                              .value);
+                          Util.getInterpolatedWristAngle(photonVision));
                       shooter.setRPMShoot(shootRPM);
                     },
                     shooter,
                     wrist))
-            .withTimeout(0.25),
+            .withTimeout(0.5),
         new WaitCommand(0.1), // reset for isAtSetpoint commands to level out
         new WaitUntilCommand(() -> wrist.isAtSetpoint() && shooter.isShooterAtSetpoint())
             .withTimeout(0.15),

@@ -112,10 +112,10 @@ public class CollectNoteAuto extends Command {
     double forwardBackwardSpeed =
         -DISTANCE_FILTER.calculate(DISTANCE_CONTROLLER.calculate(distanceError));
 
-    double speed =
-        distanceTraveled() > slowDownDistance
-            ? forwardBackwardSpeed / 1.5
-            : forwardBackwardSpeed; // TODO edited speeds so that robot goes a resonable speed when
+    double speed = 2;
+        // distanceTraveled() > slowDownDistance
+        //     ? forwardBackwardSpeed / 1.5
+        //     : forwardBackwardSpeed; // TODO edited speeds so that robot goes a resonable speed when
     // closer
     // System.out.println("========================= DriveToPiece Speed: " + speed);
 

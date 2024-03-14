@@ -11,8 +11,7 @@
         "x": 2.218926521382483,
         "y": 2.1648147439373577
       },
-      "isLocked": false,
-      "linkedName": "heart_source_shoot_start"
+      "isLocked": false
     },
     {
       "anchor": {
@@ -24,8 +23,7 @@
         "y": 2.2219993068829353
       },
       "nextControl": null,
-      "isLocked": false,
-      "linkedName": "heart_source_shoot_0_end"
+      "isLocked": false
     }
   ],
   "rotationTargets": [],
@@ -39,14 +37,12 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -36.0,
-    "rotateFast": false
+    "rotation": -40.27315647579691
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
-  },
-  "useDefaultConstraints": true
+  }
 }
