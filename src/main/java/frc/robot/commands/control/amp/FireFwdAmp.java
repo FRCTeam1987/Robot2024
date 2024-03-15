@@ -20,10 +20,10 @@ public class FireFwdAmp extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(shooter);
     addCommands(
-      new InstantCommand(() -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE)),
-      new WaitUntilCommand(() -> !shooter.isCenterBroken()),
-      new InstantCommand(() -> shooter.stopFeeder()),
-      new InstantCommand(() -> shooter.stopShooter())
-    );
+        new InstantCommand(
+            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE)),
+        new WaitUntilCommand(() -> !shooter.isCenterBroken()),
+        new InstantCommand(() -> shooter.stopFeeder()),
+        new InstantCommand(() -> shooter.stopShooter()));
   }
 }

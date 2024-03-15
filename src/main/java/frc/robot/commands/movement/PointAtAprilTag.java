@@ -7,7 +7,9 @@ package frc.robot.commands.movement;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -21,7 +23,7 @@ public class PointAtAprilTag extends Command {
       new SlewRateLimiter(Constants.translationXSlewRate);
   private final SlewRateLimiter translationYSlewRate =
       new SlewRateLimiter(Constants.translationYSlewRate);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(Constants.rotationSlewRate);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(1);
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(Constants.MaxSpeed * 0.1)
@@ -31,12 +33,8 @@ public class PointAtAprilTag extends Command {
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
 
-  public PointAtAprilTag(CommandSwerveDrivetrain drivetrain, Vision photonvision) {
-    this(drivetrain, photonvision, () -> 0.0, () -> 0.0, () -> 0.0);
-  }
-
-  public PointAtAprilTag(
-    CommandSwerveDrivetrain drivetrain,
+  public PointAtAprilTag( // USE FAST POINT INSTEAD. DO NOT USE COMMAND IT IS UNRELIABLE
+      CommandSwerveDrivetrain drivetrain,
       Vision photonvision,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
@@ -61,18 +59,32 @@ public class PointAtAprilTag extends Command {
     double xOffset = photonvision.getYawVal();
 
     // TODO: changeme please :)
-    double kP = 0.10;
-    double rotationRate = kP * xOffset;
+    double kP = 0.1;
+
+    double rotationRate = 0;
+
+    if (xOffset > 1) {
+      rotationRate = kP * xOffset;
+    } else {
+      rotationRate = xOffset * 0.2;
+    }
+
+    System.out.println("Attempted RotationRate: " + rotationRate);
+    rotationRate = Math.copySign(MathUtil.clamp(Math.abs(rotationRate), 0, 2.75), rotationRate);
+
+    // double rotationRate = kP * xOffset;
     System.out.println(rotationRate);
 
     // Degrees within acceptance
-    double acceptableError = 1.0;
-    if (Math.abs(xOffset) < acceptableError) {
-      rotationRate = 0;
-    }
+
+    // double acceptableError = 0.25;
+    // if (Math.abs(xOffset) < acceptableError) {
+    //   rotationRate = 0;
+    // }
 
     if (!photonvision.hasTargets()) {
       rotationRate = rotationSupplier.getAsDouble();
+      DriverStation.reportWarning("No Tag found in PointAtAprilTag", false);
     }
 
     FieldCentric driveRequest =

@@ -6,10 +6,8 @@ package frc.robot.commands.control.amp;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 
@@ -27,8 +25,9 @@ public class PrepRevAmp extends SequentialCommandGroup {
               elevator.setLengthInches(Constants.REV_ELEVATOR_AMP_HEIGHT);
               wrist.setDegrees(Constants.REV_WRIST_AMP_DEGREES);
             },
-            elevator, wrist),
-      
-        new WaitUntilCommand(() -> wrist.isAtSetpoint() && elevator.isAtSetpoint()).withTimeout(0.75));
+            elevator,
+            wrist),
+        new WaitUntilCommand(() -> wrist.isAtSetpoint() && elevator.isAtSetpoint())
+            .withTimeout(0.75));
   }
 }

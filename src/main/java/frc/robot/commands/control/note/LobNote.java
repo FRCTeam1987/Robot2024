@@ -47,9 +47,7 @@ public class LobNote extends SequentialCommandGroup {
         new InstantCommand(
             () -> SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),
             SHOOTER),
-        new WaitUntilCommand(
-            () ->
-                lineBreakDebouncer.calculate(!SHOOTER.isCenterBroken())),
+        new WaitUntilCommand(() -> lineBreakDebouncer.calculate(!SHOOTER.isCenterBroken())),
         new InstantCommand(SHOOTER::stopFeeder, SHOOTER),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(SHOOTER.isCenterBroken())),
         new InstantCommand(

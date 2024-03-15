@@ -6,11 +6,10 @@ package frc.robot.commands.control.amp;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -28,8 +27,13 @@ public class PrepFwdAmp extends SequentialCommandGroup {
               wrist.setDegrees(Constants.FWD_WRIST_AMP_DEGREES);
               shooter.setRPMShootNoSpin(Constants.Shooter.SHOOTER_AMP_RPM);
             },
-            elevator, wrist),
-      
-        new WaitUntilCommand(() -> wrist.isAtSetpoint() && elevator.isAtSetpoint() && shooter.isShooterAtSetpoint()).withTimeout(0.75));
+            elevator,
+            wrist),
+        new WaitUntilCommand(
+                () ->
+                    wrist.isAtSetpoint()
+                        && elevator.isAtSetpoint()
+                        && shooter.isShooterAtSetpoint())
+            .withTimeout(0.75));
   }
 }

@@ -86,7 +86,6 @@ public class CollectNoteAuto extends Command {
     new IntakeNoteSequence(shooter, intake, wrist, elevator); // Start intaking immediately
   }
 
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -113,9 +112,9 @@ public class CollectNoteAuto extends Command {
         -DISTANCE_FILTER.calculate(DISTANCE_CONTROLLER.calculate(distanceError));
 
     double speed = 2;
-        // distanceTraveled() > slowDownDistance
-        //     ? forwardBackwardSpeed / 1.5
-        //     : forwardBackwardSpeed; // TODO edited speeds so that robot goes a resonable speed when
+    // distanceTraveled() > slowDownDistance
+    //     ? forwardBackwardSpeed / 1.5
+    //     : forwardBackwardSpeed; // TODO edited speeds so that robot goes a resonable speed when
     // closer
     // System.out.println("========================= DriveToPiece Speed: " + speed);
 

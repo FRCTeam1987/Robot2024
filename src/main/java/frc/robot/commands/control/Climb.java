@@ -22,7 +22,7 @@ public class Climb extends SequentialCommandGroup {
         new InstantCommand(() -> Shooter.setFeederVoltage(-0.2)),
         new InstantCommand(Wrist::stop, Wrist),
         new InstantCommand(() -> Wrist.setDegrees(Constants.Wrist.INITIAL_ANGLE_DEGREES), Wrist),
-        new InstantCommand(() -> Elevator.setLengthInchesSlot1(5.9)),
+        new InstantCommand(() -> Elevator.setLengthInchesSlot1(6.75)),
         new WaitUntilCommand(Elevator::isAtSetpoint),
         new WaitCommand(1.0),
         new InstantCommand(() -> Elevator.setLengthInches(13.0)),
@@ -31,7 +31,6 @@ public class Climb extends SequentialCommandGroup {
         new ConditionalCommand(
             new ShootTrap(Elevator, Wrist, Shooter),
             new InstantCommand(() -> System.out.println("No Note deteced. Climb finished.")),
-            Shooter::isCenterBroken)
-        );
+            Shooter::isCenterBroken));
   }
 }

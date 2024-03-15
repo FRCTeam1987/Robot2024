@@ -4,14 +4,11 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,10 +17,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,9 +32,7 @@ import frc.robot.commands.control.ShootSubwoofer;
 import frc.robot.commands.control.ShootSubwooferFlat;
 import frc.robot.commands.control.ShootTall;
 import frc.robot.commands.control.StopAll;
-import frc.robot.commands.control.amp.FireFwdAmp;
 import frc.robot.commands.control.amp.FireRevAmp;
-import frc.robot.commands.control.amp.PrepFwdAmp;
 import frc.robot.commands.control.amp.PrepRevAmp;
 import frc.robot.commands.control.note.IntakeNoteSequence;
 import frc.robot.commands.control.note.LobNote;
@@ -50,7 +43,7 @@ import frc.robot.commands.control.note.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
-import frc.robot.commands.movement.PointAtAprilTag;
+import frc.robot.commands.movement.FastPoint;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
@@ -58,16 +51,16 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.Elevator;
-import frc.robot.util.InterpolatingDouble;
 import frc.robot.util.Util;
+import java.util.Arrays;
 
 public class RobotContainer {
-    private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
+  private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
@@ -95,16 +88,20 @@ public class RobotContainer {
   public static boolean isForwardAmpPrimed = false;
   public static boolean isReverseAmpPrimed = false;
   public static boolean isClimbPrimed = false;
-  private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  private double MaxSpeed =
+      DriveConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
+  private double MaxAngularRate =
+      1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandSwerveDrivetrain drivetrain = DriveConstants.DriveTrain; // My drivetrain
 
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-                                                               // driving in open loop
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(MaxSpeed * 0.1)
+          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+  // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -138,21 +135,20 @@ public class RobotContainer {
     //                 .andThen(new InstantCommand(() -> isForwardAmpPrimed = true)),
     //             () -> isForwardAmpPrimed));
 
-        DRIVER_CONTROLLER
+    DRIVER_CONTROLLER
         .y()
         .onTrue(
             new ConditionalCommand(
-                new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE).andThen(() -> isReverseAmpPrimed = false),
+                new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
+                    .andThen(() -> isReverseAmpPrimed = false),
                 new PrepRevAmp(ELEVATOR, WRIST)
-                .andThen(new WaitCommand(0.8))
-                .andThen(new FireRevAmp(SHOOTER))
-                .andThen(new WaitCommand(0.1))
-                .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2 )))
+                    .andThen(new WaitCommand(0.8))
+                    .andThen(new FireRevAmp(SHOOTER))
+                    .andThen(new WaitCommand(0.1))
+                    .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
                     .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
                 () -> isReverseAmpPrimed));
-    DRIVER_CONTROLLER
-        .back()
-        .onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
+    DRIVER_CONTROLLER.back().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
     DRIVER_CONTROLLER.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
     DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
     DRIVER_CONTROLLER
@@ -162,15 +158,7 @@ public class RobotContainer {
                 .andThen(
                     new AsyncRumble(
                         DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
-    DRIVER_CONTROLLER
-        .rightTrigger()
-        .whileTrue(
-            new PointAtAprilTag(
-                DRIVETRAIN,
-                SPEAKER_PHOTON,
-                () -> (-DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
-                () -> (-DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
-                () -> (-DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+    DRIVER_CONTROLLER.rightTrigger().onTrue(new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
 
     DRIVER_CONTROLLER
         .rightBumper()
@@ -210,15 +198,7 @@ public class RobotContainer {
                           INTAKE.stopTop();
                           INTAKE.stopCollecting();
                         })));
-    CO_DRIVER_CONTROLLER
-        .leftBumper()
-        .whileTrue(
-            new PointAtAprilTag(
-                DRIVETRAIN,
-                SPEAKER_PHOTON,
-                () -> (-DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
-                () -> (-DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
-                () -> (DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+    CO_DRIVER_CONTROLLER.leftBumper().onTrue(new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
 
     CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
     CO_DRIVER_CONTROLLER
@@ -232,11 +212,24 @@ public class RobotContainer {
   private void configureDrivetrain() {
 
     DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
-        DRIVETRAIN.applyRequest(() -> drive.withVelocityX(-DRIVER_CONTROLLER.getLeftY() * DriveConstants.kSpeedAt12VoltsMps) // Drive forward with
-                                                                                           // negative Y (forward)
-            .withVelocityY(-DRIVER_CONTROLLER.getLeftX() * DriveConstants.kSpeedAt12VoltsMps) // Drive left with negative X (left)
-            .withRotationalRate(-DRIVER_CONTROLLER.getRightX() * Math.PI * 3.5) // Drive counterclockwise with negative X (left)
-        ).ignoringDisable(true));
+        DRIVETRAIN
+            .applyRequest(
+                () ->
+                    drive
+                        .withVelocityX(
+                            -DRIVER_CONTROLLER.getLeftY()
+                                * DriveConstants.kSpeedAt12VoltsMps) // Drive forward with
+                        // negative Y (forward)
+                        .withVelocityY(
+                            -DRIVER_CONTROLLER.getLeftX()
+                                * DriveConstants
+                                    .kSpeedAt12VoltsMps) // Drive left with negative X (left)
+                        .withRotationalRate(
+                            -DRIVER_CONTROLLER.getRightX()
+                                * Math.PI
+                                * 3.5) // Drive counterclockwise with negative X (left)
+                )
+            .ignoringDisable(true));
 
     // DRIVETRAIN.setDefaultCommand(
     //     new TeleopSwerve(
@@ -259,12 +252,10 @@ public class RobotContainer {
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
     ELEVATOR.setupShuffleboard();
-    PHOTON_TAB.addDouble(
-        "DISTANCE_TO_SPEAKER",
-        () ->
-            Util.getInterpolatedDistance(SPEAKER_PHOTON));
+    PHOTON_TAB.addDouble("DISTANCE_TO_SPEAKER", () -> Util.getInterpolatedDistance(SPEAKER_PHOTON));
 
     COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
+    COMMANDS_TAB.add("Fast Point", new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
     COMMANDS_TAB.add(
         "Force Zero All",
         new InstantCommand(
@@ -273,7 +264,7 @@ public class RobotContainer {
                   WRIST.setZero();
                 })
             .ignoringDisable(true));
-    
+
     AUTO_CHOOSER.addOption(
         "SYSID-QUAS-F", DRIVETRAIN.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     AUTO_CHOOSER.addOption(
@@ -374,7 +365,7 @@ public class RobotContainer {
             SHOOTER,
             INTAKE));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
-    //NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    // NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     NamedCommands.registerCommand(
         "DriveToNoteAuto",
         new ParallelDeadlineGroup(

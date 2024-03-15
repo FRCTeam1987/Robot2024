@@ -20,8 +20,7 @@ public class PoopNote extends SequentialCommandGroup {
         new WaitCommand(0.1),
         new WaitUntilCommand(shooter::isShooterAtSetpoint).withTimeout(0.12),
         new InstantCommand(
-            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
-            shooter),
+            () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS), shooter),
         new WaitUntilCommand(() -> !shooter.isCenterBroken()),
         new InstantCommand(shooter::stopFeeder, shooter));
   }

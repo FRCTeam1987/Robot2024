@@ -6,12 +6,10 @@ package frc.robot.commands.qol;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.util.Util;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.Util;
 
 public class DefaultCANdle extends Command {
   private final Shooter SHOOTER;
@@ -35,7 +33,7 @@ public class DefaultCANdle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //System.out.println(Timer.getFPGATimestamp());
+    // System.out.println(Timer.getFPGATimestamp());
     // testing
     if (SHOOTER.isRearBroken()) {
       if (SHOOTER.isCenterBroken()) {

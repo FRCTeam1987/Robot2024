@@ -4,11 +4,7 @@
 
 package frc.robot.commands.movement;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -18,7 +14,11 @@ public class SquareUpShootAmp extends SequentialCommandGroup {
 
   /** Creates a new squareUpAndShootAmp. */
   public SquareUpShootAmp(
-      Vision photonVision, CommandSwerveDrivetrain drivetrain, Wrist wrist, Elevator elevator, Shooter shooter) {
+      Vision photonVision,
+      CommandSwerveDrivetrain drivetrain,
+      Wrist wrist,
+      Elevator elevator,
+      Shooter shooter) {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -28,7 +28,7 @@ public class SquareUpShootAmp extends SequentialCommandGroup {
         //     new PrepForwardShootAmp(elevator, wrist)),
         // new WaitCommand(0.5), // Allow for systems to move.
         // new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint())));
-        //new ShootAmp(shooter, elevator, wrist));
-    );
+        // new ShootAmp(shooter, elevator, wrist));
+        );
   }
 }

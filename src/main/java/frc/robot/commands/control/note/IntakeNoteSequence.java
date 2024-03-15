@@ -4,8 +4,6 @@
 
 package frc.robot.commands.control.note;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -21,7 +19,7 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeNoteSequence extends SequentialCommandGroup {
 
-  //private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
+  // private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
 
   /** Creates a new IntakeNoteSequence. */
   public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator) {
@@ -38,9 +36,8 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             wrist),
         new WaitCommand(0.1),
         new WaitUntilCommand(shooter::isRearBroken),
-       //new InstantCommand(intake::stopTop, intake),
-        new WaitUntilCommand(
-            () -> shooter.isCenterBroken()),
+        // new InstantCommand(intake::stopTop, intake),
+        new WaitUntilCommand(() -> shooter.isCenterBroken()),
         new InstantCommand(
             () -> {
               shooter.stopFeeder();
@@ -50,8 +47,8 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             intake));
   }
 
-
-  public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator, boolean val) {
+  public IntakeNoteSequence(
+      Shooter shooter, Intake intake, Wrist wrist, Elevator elevator, boolean val) {
     addCommands(
         new InstantCommand(
             () -> {
@@ -65,9 +62,8 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             wrist),
         new WaitCommand(0.1),
         new WaitUntilCommand(shooter::isRearBroken),
-       //new InstantCommand(intake::stopTop, intake),
-        new WaitUntilCommand(
-            () -> shooter.isCenterBroken()),
+        // new InstantCommand(intake::stopTop, intake),
+        new WaitUntilCommand(() -> shooter.isCenterBroken()),
         new InstantCommand(
             () -> {
               shooter.stopFeeder();

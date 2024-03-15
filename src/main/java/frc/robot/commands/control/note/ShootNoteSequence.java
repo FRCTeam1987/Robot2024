@@ -9,7 +9,6 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
-import frc.robot.util.InterpolatingDouble;
 import frc.robot.util.Util;
 
 public class ShootNoteSequence extends SequentialCommandGroup {
@@ -48,7 +47,11 @@ public class ShootNoteSequence extends SequentialCommandGroup {
   }
 
   public ShootNoteSequence(
-      Shooter shooter, Wrist wrist, double shootRPM, CommandSwerveDrivetrain drivetrain, Vision photonVision) {
+      Shooter shooter,
+      Wrist wrist,
+      double shootRPM,
+      CommandSwerveDrivetrain drivetrain,
+      Vision photonVision) {
     addRequirements(shooter);
 
     // Add your commands in the addCommands() call, e.g.
@@ -57,11 +60,10 @@ public class ShootNoteSequence extends SequentialCommandGroup {
 
     addCommands(
         new ParallelCommandGroup(
-                // new PointAtAprilTag(drivetrain, photonVision),
+                // new FastPoint(drivetrain, photonVision),
                 new InstantCommand(
                     () -> {
-                      wrist.setDegrees(
-                          Util.getInterpolatedWristAngle(photonVision));
+                      wrist.setDegrees(Util.getInterpolatedWristAngle(photonVision));
                       shooter.setRPMShoot(shootRPM);
                     },
                     shooter,

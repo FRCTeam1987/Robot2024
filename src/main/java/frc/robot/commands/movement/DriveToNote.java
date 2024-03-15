@@ -37,7 +37,9 @@ public class DriveToNote extends Command {
   private Debouncer canSeePieceDebouncer;
 
   public DriveToNote(
-      final CommandSwerveDrivetrain drivetrain, final DoubleSupplier velocitySupplier, Vision photonVision) {
+      final CommandSwerveDrivetrain drivetrain,
+      final DoubleSupplier velocitySupplier,
+      Vision photonVision) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.velocitySupplier = velocitySupplier;
     this.drivetrain = drivetrain;

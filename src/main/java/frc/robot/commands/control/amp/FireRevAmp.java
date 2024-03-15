@@ -20,9 +20,8 @@ public class FireRevAmp extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(shooter);
     addCommands(
-      new InstantCommand(() -> shooter.setFeederVoltage(Constants.REV_FEEDER_VOLTAGE)),
-      new WaitUntilCommand(() -> !shooter.isRearBroken() && !shooter.isCenterBroken()),
-      new InstantCommand(() -> shooter.stopFeeder())
-    );
+        new InstantCommand(() -> shooter.setFeederVoltage(Constants.REV_FEEDER_VOLTAGE)),
+        new WaitUntilCommand(() -> !shooter.isRearBroken() && !shooter.isCenterBroken()),
+        new InstantCommand(() -> shooter.stopFeeder()));
   }
 }
