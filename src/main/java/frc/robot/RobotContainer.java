@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -44,6 +46,8 @@ import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.FastPoint;
+import frc.robot.commands.movement.FastPointTwice;
+import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.SquareUpToAprilTag;
 import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
@@ -121,6 +125,7 @@ public class RobotContainer {
     configureCoDriverController();
     configureDefaultCommands();
   }
+  
 
   private void configureDriverController() {
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
@@ -158,7 +163,16 @@ public class RobotContainer {
                 .andThen(
                     new AsyncRumble(
                         DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
-    DRIVER_CONTROLLER.rightTrigger().onTrue(new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
+    // DRIVER_CONTROLLER.rightTrigger().onTrue(new FastPointTwice(DRIVETRAIN, SPEAKER_PHOTON));
+    DRIVER_CONTROLLER
+        .rightTrigger()
+        .whileTrue(
+            new PointAtAprilTag(
+                DRIVETRAIN,
+                SPEAKER_PHOTON,
+                () -> (-DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
+                () -> (-DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
+                () -> (-DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
 
     DRIVER_CONTROLLER
         .rightBumper()
@@ -198,7 +212,7 @@ public class RobotContainer {
                           INTAKE.stopTop();
                           INTAKE.stopCollecting();
                         })));
-    CO_DRIVER_CONTROLLER.leftBumper().onTrue(new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
+    CO_DRIVER_CONTROLLER.leftBumper().onTrue(new FastPointTwice(DRIVETRAIN, SPEAKER_PHOTON));
 
     CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
     CO_DRIVER_CONTROLLER
@@ -252,8 +266,26 @@ public class RobotContainer {
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
     ELEVATOR.setupShuffleboard();
+    COMMANDS_TAB.add("Unjam Shooter",
+        new InstantCommand(() -> {SHOOTER.setFeederVoltage(12); SHOOTER.setShooterVoltage(12);})
+        .andThen(new WaitCommand(1.0))
+        .andThen(new InstantCommand(() -> {SHOOTER.setFeederVoltage(-12); SHOOTER.setShooterVoltage(-12);}))
+        .andThen(new InstantCommand(() -> {SHOOTER.stopFeeder(); SHOOTER.stopShooter();})
+        ));
     PHOTON_TAB.addDouble("DISTANCE_TO_SPEAKER", () -> Util.getInterpolatedDistance(SPEAKER_PHOTON));
 
+    COMMANDS_TAB.add("Coast Swerve", new InstantCommand(() -> {
+    for (int i = 0; i < 3; i++) {
+        drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
+        drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Coast);
+    }
+    }).ignoringDisable(true));
+        COMMANDS_TAB.add("Brake Swerve", new InstantCommand(() -> {
+    for (int i = 0; i < 3; i++) {
+        drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
+        drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Brake);
+    }
+    }).ignoringDisable(true));
     COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
     COMMANDS_TAB.add("Fast Point", new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
     COMMANDS_TAB.add(
@@ -319,6 +351,8 @@ public class RobotContainer {
   public void configureNamedCommands() {
     NamedCommands.registerCommand(
         "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, 40));
+    NamedCommands.registerCommand(
+        "ShootNoteRegular",new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
     NamedCommands.registerCommand(
         "ShootNoteAimbot",
         new ShootNoteSequence(

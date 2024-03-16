@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2995801004621381,
-        "y": 5.142913707210634
+        "x": 1.3,
+        "y": 5.14
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8326509289374175,
-        "y": 4.33766618055528
+        "x": 1.8330708284752797,
+        "y": 4.334752473344645
       },
       "isLocked": false,
       "linkedName": "subwoofer_shot"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 1.2995801004621381,
-        "y": 5.142913707210634
+        "x": 1.3,
+        "y": 5.14
       },
       "prevControl": {
-        "x": 1.7198099400537614,
-        "y": 4.783653066235648
+        "x": 1.7202298395916236,
+        "y": 4.780739359025014
       },
       "nextControl": null,
       "isLocked": false,
@@ -83,7 +83,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "amp_side",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

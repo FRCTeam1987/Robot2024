@@ -6,7 +6,9 @@ package frc.robot.commands.control.note;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.util.Util;
@@ -61,8 +63,10 @@ public class ShootNoteSequence extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
                 // new FastPoint(drivetrain, photonVision),
+                new PointAtAprilTag(drivetrain, photonVision, () -> 0.0, () -> 0.0, () -> 0.0),
                 new InstantCommand(
                     () -> {
+                        DriverStation.reportWarning("Wrist Angle Attempted" + Util.getInterpolatedWristAngle(photonVision), false);
                       wrist.setDegrees(Util.getInterpolatedWristAngle(photonVision));
                       shooter.setRPMShoot(shootRPM);
                     },

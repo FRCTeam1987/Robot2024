@@ -32,6 +32,9 @@ public class PointAtAprilTag extends Command {
   private DoubleSupplier velocityXSupplier = () -> 0.0;
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
+  private DoubleSupplier rotationSupplier2 = () -> 0.0;
+
+    double rotationRate = 0;
 
   public PointAtAprilTag( // USE FAST POINT INSTEAD. DO NOT USE COMMAND IT IS UNRELIABLE
       CommandSwerveDrivetrain drivetrain,
@@ -44,11 +47,30 @@ public class PointAtAprilTag extends Command {
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
+addRequirements(drivetrain);
   }
 
   @Override
   public void initialize() {
     // System.out.println("Starting rotation to april tag");
+
+    // FieldCentric driveRequest =
+    //     drive
+    //         .withVelocityX(
+    //             translationYSlewRate.calculate(
+    //                 -velocityYSupplier.getAsDouble())) // Drive forward with
+    //         // negative Y (forward)
+    //         .withVelocityY(
+    //             translationXSlewRate.calculate(
+    //                 -velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
+    //         .withRotationalRate(
+    //             -this.getRotationRate()); // Drive counterclockwise with negative X (left)
+
+    // drivetrain.setControl(driveRequest);
+  }
+
+  public double getRotationRate() {
+    return rotationRate;
   }
 
   @Override
@@ -59,35 +81,34 @@ public class PointAtAprilTag extends Command {
     double xOffset = photonvision.getYawVal();
 
     // TODO: changeme please :)
-    double kP = 0.1;
+    double kP = 0.15;
 
-    double rotationRate = 0;
 
     if (xOffset > 1) {
       rotationRate = kP * xOffset;
     } else {
-      rotationRate = xOffset * 0.2;
+      rotationRate = xOffset * 0.09;
     }
 
     System.out.println("Attempted RotationRate: " + rotationRate);
-    rotationRate = Math.copySign(MathUtil.clamp(Math.abs(rotationRate), 0, 2.75), rotationRate);
+    //rotationRate = Math.copySign(MathUtil.clamp(Math.abs(rotationRate), 0, 2.75), rotationRate);
 
     // double rotationRate = kP * xOffset;
-    System.out.println(rotationRate);
 
     // Degrees within acceptance
 
-    // double acceptableError = 0.25;
-    // if (Math.abs(xOffset) < acceptableError) {
-    //   rotationRate = 0;
-    // }
+    double acceptableError = 0.15;
+    if (Math.abs(rotationRate) < acceptableError) {
+      rotationRate = 0;
+    }
+
+    System.out.println(rotationRate);
 
     if (!photonvision.hasTargets()) {
       rotationRate = rotationSupplier.getAsDouble();
       DriverStation.reportWarning("No Tag found in PointAtAprilTag", false);
     }
-
-    FieldCentric driveRequest =
+    drivetrain.setControl(
         drive
             .withVelocityX(
                 translationYSlewRate.calculate(
@@ -97,10 +118,9 @@ public class PointAtAprilTag extends Command {
                 translationXSlewRate.calculate(
                     -velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
             .withRotationalRate(
-                rotationSlewRate.calculate(
-                    -rotationRate)); // Drive counterclockwise with negative X (left)
+                -rotationRate) // Drive counterclockwise with negative X (left)
 
-    drivetrain.setControl(driveRequest);
+                );
   }
 
   @Override

@@ -109,6 +109,11 @@ public class Shooter extends SubsystemBase {
     SHOOTER_FOLLOWER.setControl(VOLTAGE_VELOCITY_FOLLOWER.withVelocity(RPM / 60.0));
   }
 
+  public void setShooterVoltage(double volts) {
+    SHOOTER_LEADER.setVoltage(volts);
+    SHOOTER_FOLLOWER.setVoltage(volts);
+  }
+
   public boolean isCenterBroken() {
     return SHOOTER_LEADER.getForwardLimit().asSupplier().get().value == 0;
   }

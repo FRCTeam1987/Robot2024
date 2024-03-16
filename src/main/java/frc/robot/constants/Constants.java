@@ -98,7 +98,7 @@ public class Constants {
     public static final double SHOOTER_LOB_RPM = 3000; // NEEDS to be smaller
     public static final double SHOOTER_IDLE_RPM = 2500; // 2500
     public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to be smaller
-    public static final double SPIN_RATIO = 0.85;
+    public static final double SPIN_RATIO = 0.75; //0.85
     public static final int SHOOTER_AMP_RPM = 550;
   }
 
