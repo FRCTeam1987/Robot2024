@@ -7,7 +7,6 @@ package frc.robot.commands.movement;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,7 +33,7 @@ public class PointAtAprilTag extends Command {
   private DoubleSupplier rotationSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier2 = () -> 0.0;
 
-    double rotationRate = 0;
+  double rotationRate = 0;
 
   public PointAtAprilTag( // USE FAST POINT INSTEAD. DO NOT USE COMMAND IT IS UNRELIABLE
       CommandSwerveDrivetrain drivetrain,
@@ -47,7 +46,7 @@ public class PointAtAprilTag extends Command {
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
-addRequirements(drivetrain);
+    addRequirements(drivetrain);
   }
 
   @Override
@@ -83,7 +82,6 @@ addRequirements(drivetrain);
     // TODO: changeme please :)
     double kP = 0.15;
 
-
     if (xOffset > 1) {
       rotationRate = kP * xOffset;
     } else {
@@ -91,7 +89,7 @@ addRequirements(drivetrain);
     }
 
     System.out.println("Attempted RotationRate: " + rotationRate);
-    //rotationRate = Math.copySign(MathUtil.clamp(Math.abs(rotationRate), 0, 2.75), rotationRate);
+    // rotationRate = Math.copySign(MathUtil.clamp(Math.abs(rotationRate), 0, 2.75), rotationRate);
 
     // double rotationRate = kP * xOffset;
 
@@ -117,10 +115,8 @@ addRequirements(drivetrain);
             .withVelocityY(
                 translationXSlewRate.calculate(
                     -velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
-            .withRotationalRate(
-                -rotationRate) // Drive counterclockwise with negative X (left)
-
-                );
+            .withRotationalRate(-rotationRate) // Drive counterclockwise with negative X (left)
+        );
   }
 
   @Override

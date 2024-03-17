@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,9 +18,31 @@ public class Candles extends SubsystemBase {
     RIGHT_CANDLE = new CANdle(RIGHT_CANDLE_ID, "canfd");
   }
 
+  public void setAnimationBoth(Animation animation) {
+    LEFT_CANDLE.clearAnimation(0);
+    RIGHT_CANDLE.clearAnimation(0);
+    LEFT_CANDLE.animate(animation);
+    RIGHT_CANDLE.animate(animation);
+  }
+
+  public void setAnimationRight(Animation animation) {
+    RIGHT_CANDLE.animate(animation);
+  }
+
+  public void setAnimationLeft(Animation animation) {
+    LEFT_CANDLE.animate(animation);
+  }
+
   public void setColorBoth(int r, int g, int b) {
     LEFT_CANDLE.setLEDs(r, g, b);
     RIGHT_CANDLE.setLEDs(r, g, b);
+  }
+
+  public void stop() {
+    LEFT_CANDLE.clearAnimation(0);
+    RIGHT_CANDLE.clearAnimation(0);
+    LEFT_CANDLE.clearAnimation(1);
+    RIGHT_CANDLE.clearAnimation(1);
   }
 
   public void setColorLeft(int r, int g, int b) {

@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "overture_amp_1"
@@ -27,6 +33,12 @@
           "type": "path",
           "data": {
             "pathName": "overture_amp_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
           }
         },
         {

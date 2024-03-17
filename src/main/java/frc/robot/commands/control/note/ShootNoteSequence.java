@@ -66,7 +66,9 @@ public class ShootNoteSequence extends SequentialCommandGroup {
                 new PointAtAprilTag(drivetrain, photonVision, () -> 0.0, () -> 0.0, () -> 0.0),
                 new InstantCommand(
                     () -> {
-                        DriverStation.reportWarning("Wrist Angle Attempted" + Util.getInterpolatedWristAngle(photonVision), false);
+                      DriverStation.reportWarning(
+                          "Wrist Angle Attempted" + Util.getInterpolatedWristAngle(photonVision),
+                          false);
                       wrist.setDegrees(Util.getInterpolatedWristAngle(photonVision));
                       shooter.setRPMShoot(shootRPM);
                     },

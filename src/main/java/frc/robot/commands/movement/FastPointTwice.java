@@ -16,9 +16,6 @@ public class FastPointTwice extends SequentialCommandGroup {
   public FastPointTwice(CommandSwerveDrivetrain drivetrain, Vision photonvision) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      new FastPoint(drivetrain, photonvision),
-      new FastPoint(drivetrain, photonvision)
-    );
+    addCommands(new FastPoint(drivetrain, photonvision), new FastPoint(drivetrain, photonvision));
   }
 }

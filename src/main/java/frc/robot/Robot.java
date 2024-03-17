@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.led.LarsonAnimation;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.SingleFadeAnimation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,6 +19,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    m_robotContainer.CANDLES.setAnimationBoth(
+        new LarsonAnimation(255, 255, 0, 0, 1.0, 8, BounceMode.Front, 1));
   }
 
   @Override
@@ -24,7 +29,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 0, 0, 0, 0.7, 8));
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -34,6 +41,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    // m_robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 255, 255, 0, 1.5, 8));
+    m_robotContainer.CANDLES.setAnimationRight(
+        new LarsonAnimation(255, 255, 255, 0, 0.1, 8, BounceMode.Front, 1));
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -49,6 +59,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.CANDLES.stop();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

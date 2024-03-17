@@ -4,11 +4,10 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,7 +28,9 @@ import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.Climb;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
+import frc.robot.commands.control.NewShootAmpAuto;
 import frc.robot.commands.control.ReverseIntake;
+import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootSubwoofer;
 import frc.robot.commands.control.ShootSubwooferFlat;
 import frc.robot.commands.control.ShootTall;
@@ -40,6 +41,7 @@ import frc.robot.commands.control.note.IntakeNoteSequence;
 import frc.robot.commands.control.note.LobNote;
 import frc.robot.commands.control.note.PoopNote;
 import frc.robot.commands.control.note.ShootNote;
+import frc.robot.commands.control.note.ShootNoteAimbotFixed;
 import frc.robot.commands.control.note.ShootNoteSequence;
 import frc.robot.commands.control.note.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
@@ -65,6 +67,7 @@ import java.util.Arrays;
 
 public class RobotContainer {
   private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
+  // public final PowerDistribution PDH = new PowerDistribution(1, ModuleType.kRev);
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
@@ -125,7 +128,6 @@ public class RobotContainer {
     configureCoDriverController();
     configureDefaultCommands();
   }
-  
 
   private void configureDriverController() {
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
@@ -266,28 +268,52 @@ public class RobotContainer {
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
     ELEVATOR.setupShuffleboard();
-    COMMANDS_TAB.add("Unjam Shooter",
-        new InstantCommand(() -> {SHOOTER.setFeederVoltage(12); SHOOTER.setShooterVoltage(12);})
-        .andThen(new WaitCommand(1.0))
-        .andThen(new InstantCommand(() -> {SHOOTER.setFeederVoltage(-12); SHOOTER.setShooterVoltage(-12);}))
-        .andThen(new InstantCommand(() -> {SHOOTER.stopFeeder(); SHOOTER.stopShooter();})
-        ));
+    COMMANDS_TAB.add(
+        "Unjam Shooter",
+        new InstantCommand(
+                () -> {
+                  SHOOTER.setFeederVoltage(12);
+                  SHOOTER.setShooterVoltage(12);
+                })
+            .andThen(new WaitCommand(1.0))
+            .andThen(
+                new InstantCommand(
+                    () -> {
+                      SHOOTER.setFeederVoltage(-12);
+                      SHOOTER.setShooterVoltage(-12);
+                    }))
+            .andThen(
+                new InstantCommand(
+                    () -> {
+                      SHOOTER.stopFeeder();
+                      SHOOTER.stopShooter();
+                    })));
     PHOTON_TAB.addDouble("DISTANCE_TO_SPEAKER", () -> Util.getInterpolatedDistance(SPEAKER_PHOTON));
 
-    COMMANDS_TAB.add("Coast Swerve", new InstantCommand(() -> {
-    for (int i = 0; i < 3; i++) {
-        drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
-        drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Coast);
-    }
-    }).ignoringDisable(true));
-        COMMANDS_TAB.add("Brake Swerve", new InstantCommand(() -> {
-    for (int i = 0; i < 3; i++) {
-        drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
-        drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Brake);
-    }
-    }).ignoringDisable(true));
+    COMMANDS_TAB.add(
+        "Coast Swerve",
+        new InstantCommand(
+                () -> {
+                  for (int i = 0; i < 3; i++) {
+                    drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
+                    drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Coast);
+                  }
+                })
+            .ignoringDisable(true));
+    COMMANDS_TAB.add("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    COMMANDS_TAB.add(
+        "Brake Swerve",
+        new InstantCommand(
+                () -> {
+                  for (int i = 0; i < 3; i++) {
+                    drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
+                    drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Brake);
+                  }
+                })
+            .ignoringDisable(true));
     COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
     COMMANDS_TAB.add("Fast Point", new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
+    COMMANDS_TAB.add("NewShootAMpAuto", new NewShootAmpAuto(SHOOTER, ELEVATOR, WRIST));
     COMMANDS_TAB.add(
         "Force Zero All",
         new InstantCommand(
@@ -352,7 +378,11 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, 40));
     NamedCommands.registerCommand(
-        "ShootNoteRegular",new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
+        "ShootNoteRegular",
+        new ShootNoteAimbotFixed(
+                SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, SPEAKER_PHOTON, WRIST)
+            .withTimeout(3.0)
+            .andThen(new PoopNote(SHOOTER, 1000).withTimeout(0.7)));
     NamedCommands.registerCommand(
         "ShootNoteAimbot",
         new ShootNoteSequence(
@@ -399,7 +429,9 @@ public class RobotContainer {
             SHOOTER,
             INTAKE));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
-    // NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    NamedCommands.registerCommand("GoHome", new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
+    NamedCommands.registerCommand("NewShootAmp", new NewShootAmpAuto(SHOOTER, ELEVATOR, WRIST));
     NamedCommands.registerCommand(
         "DriveToNoteAuto",
         new ParallelDeadlineGroup(
