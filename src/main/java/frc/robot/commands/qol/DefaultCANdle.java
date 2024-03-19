@@ -30,57 +30,39 @@ public class DefaultCANdle extends Command {
 
   @Override
   public void execute() {
-    double dist = Util.getInterpolatedDistance(PHOTON_SPEAKER);
-    long currentTimestamp = (long) (Timer.getFPGATimestamp() / BLINK_CONSTANT);
-    if (SHOOTER.isRearBroken()
-        && SHOOTER.isCenterBroken()
-        && PHOTON_SPEAKER.hasTargets()
-        && (dist > 2.25 && dist < 4.25)
-        && (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1))
-        && (currentTimestamp % 2 == 0)) {
-      CANDLES.setColorRightOff();
-      return;
-    }
-
-    if (SHOOTER.isCenterBroken()
-        && PHOTON_SPEAKER.hasTargets()
-        && (dist > 2.25 && dist < 4.25)
-        && (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1))
-        && !(currentTimestamp % 2 == 0)) {
-      CANDLES.setColorRightGreen();
-      return;
-    }
-
-    if (SHOOTER.isCenterBroken()
-        && PHOTON_SPEAKER.hasTargets()
-        && (dist > 2.25 && dist < 4.25)
-        && !(Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1))) {
-      CANDLES.setColorRightGreen();
-      return;
-    }
-
-    if (SHOOTER.isCenterBroken() && PHOTON_SPEAKER.hasTargets() && !(dist > 2.25 && dist < 4.25)) {
-      CANDLES.setColorRightRed();
-      return;
-    }
-
-    if (SHOOTER.isCenterBroken() && !PHOTON_SPEAKER.hasTargets()) {
-      CANDLES.setColorRightRed();
+    if (!SHOOTER.isRearBroken()) {
+      CANDLES.setColorLeftRed();
       return;
     }
 
     if (!SHOOTER.isCenterBroken()) {
       CANDLES.setColorLeftBrown();
+
       return;
     }
 
-    CANDLES.setColorLeftRed();
+    CANDLES.setColorLeft(0, 128, 128);
+    if (!PHOTON_SPEAKER.hasTargets()) {
+      CANDLES.setColorRightRed();
+      return;
+    }
+
+    double dist = Util.getInterpolatedDistance(PHOTON_SPEAKER);
+
+    if (dist < 2.25 && dist > 4.25) {
+      CANDLES.setColorRightRed();
+      return;
+    }
+
+    if (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1)
+        && ((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
+      CANDLES.setColorRightOff();
+      return;
+    }
+
+    CANDLES.setColorRightGreen();
   }
 
   @Override
   public void end(boolean interrupted) {}
-
-  public boolean isFinished() {
-    return false;
-  }
 }
