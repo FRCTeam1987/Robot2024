@@ -23,57 +23,63 @@ public class DefaultCANdle extends Command {
     this.SHOOTER = SHOOTER;
     this.PHOTON_SPEAKER = PHOTON_SPEAKER;
     addRequirements(CANDLES);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // System.out.println(Timer.getFPGATimestamp());
-    // testing
-    if (SHOOTER.isRearBroken()) {
-      if (SHOOTER.isCenterBroken()) {
-        if (PHOTON_SPEAKER.hasTargets()) {
-          double dist = Util.getInterpolatedDistance(PHOTON_SPEAKER);
-          if (dist > 2.25 && dist < 4.25) {
-            if (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1)) {
-              if (((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
-                CANDLES.setColorRight(0, 0, 0);
-                return;
-              } else {
-                CANDLES.setColorRight(0, 255, 0);
-                return;
-              }
-            } else {
-              CANDLES.setColorRight(0, 255, 0);
-            }
-            CANDLES.setColorRight(0, 255, 0);
-          } else {
-            CANDLES.setColorRight(255, 0, 0);
-          }
-        } else {
-          CANDLES.setColorRight(255, 0, 0);
-        }
-
-        CANDLES.setColorLeft(0, 128, 128);
-        return;
-      }
-      CANDLES.setColorLeft(128, 64, 0);
-    } else {
-      CANDLES.setColorLeft(255, 0, 0);
+    double dist = Util.getInterpolatedDistance(PHOTON_SPEAKER);
+    long currentTimestamp = (long) (Timer.getFPGATimestamp() / BLINK_CONSTANT);
+    if (SHOOTER.isRearBroken()
+        && SHOOTER.isCenterBroken()
+        && PHOTON_SPEAKER.hasTargets()
+        && (dist > 2.25 && dist < 4.25)
+        && (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1))
+        && (currentTimestamp % 2 == 0)) {
+      CANDLES.setColorRightOff();
+      return;
     }
+
+    if (SHOOTER.isCenterBroken()
+        && PHOTON_SPEAKER.hasTargets()
+        && (dist > 2.25 && dist < 4.25)
+        && (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1))
+        && !(currentTimestamp % 2 == 0)) {
+      CANDLES.setColorRightGreen();
+      return;
+    }
+
+    if (SHOOTER.isCenterBroken()
+        && PHOTON_SPEAKER.hasTargets()
+        && (dist > 2.25 && dist < 4.25)
+        && !(Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1))) {
+      CANDLES.setColorRightGreen();
+      return;
+    }
+
+    if (SHOOTER.isCenterBroken() && PHOTON_SPEAKER.hasTargets() && !(dist > 2.25 && dist < 4.25)) {
+      CANDLES.setColorRightRed();
+      return;
+    }
+
+    if (SHOOTER.isCenterBroken() && !PHOTON_SPEAKER.hasTargets()) {
+      CANDLES.setColorRightRed();
+      return;
+    }
+
+    if (!SHOOTER.isCenterBroken()) {
+      CANDLES.setColorLeftBrown();
+      return;
+    }
+
+    CANDLES.setColorLeftRed();
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
-  @Override
   public boolean isFinished() {
     return false;
   }

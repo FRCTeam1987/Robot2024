@@ -15,7 +15,7 @@ public class AsyncRumble extends Command {
   private final long durationMs;
   private long finishtime;
 
-  /** Creates a new Rumble. */
+  /** Animates a CANdle for a given amount of time. */
   public AsyncRumble(XboxController controller, RumbleType type, double strength, long durationMs) {
     this.controller = controller;
     this.strength = strength;
