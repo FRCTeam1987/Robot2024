@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3,
+      "y": 6.71
+    },
+    "rotation": 90.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "quick_amp_0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "overture_amp_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "quick_amp_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteAimbot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "quick_amp_3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

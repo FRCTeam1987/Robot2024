@@ -4,18 +4,23 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.led.LarsonAnimation;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.SingleFadeAnimation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
-  private Command autonomousCommand;
+  private Command m_autonomousCommand;
 
-  private RobotContainer robotContainer;
+  private RobotContainer m_robotContainer;
 
   @Override
   public void robotInit() {
-    robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer();
+    m_robotContainer.CANDLES.setAnimationBoth(
+        new LarsonAnimation(255, 255, 0, 0, 1.0, 8, BounceMode.Front, 1));
   }
 
   @Override
@@ -25,8 +30,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    RobotContainer.get().CANDLES.setColor(100, 0, 0);
-    CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 0, 0, 0, 0.7, 8));
   }
 
   @Override
@@ -37,11 +41,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    RobotContainer.get().CANDLES.setColor(0, 100, 100);
-    autonomousCommand = robotContainer.getAutonomousCommand();
+    // m_robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 255, 255, 0, 1.5, 8));
+    m_robotContainer.CANDLES.setAnimationRight(
+        new LarsonAnimation(255, 255, 255, 0, 0.1, 8, BounceMode.Front, 1));
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    if (autonomousCommand != null) {
-      autonomousCommand.schedule();
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
     }
   }
 
@@ -53,9 +59,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    RobotContainer.get().CANDLES.setColor(0, 100, 0);
-    if (autonomousCommand != null) {
-      autonomousCommand.cancel();
+    m_robotContainer.CANDLES.stop();
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
     }
   }
 

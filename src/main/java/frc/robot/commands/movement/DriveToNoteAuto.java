@@ -14,51 +14,44 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.control.IntakeNoteSequence;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.commands.control.note.IntakeNoteSequence;
+import frc.robot.subsystems.*;
 
 public class DriveToNoteAuto extends Command {
-  /** Creates a new DriveToPiece. */
-  private final Drivetrain drivetrain;
-
-  private final Intake intake;
-  private final Shooter shooter;
+  private static final double P = 0.07; // PID proportional gain
+  private static final double I = 0.00; // PID integral gain
+  private static final double D = 0.00; // PID derivative gain
+  private static final double TOLERANCE_DEGREES = 0.1; // Tolerance for reaching the desired angle
+  private static final double maximumAllowableDistance = 3.25; // In Meters
+  private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
+  private static final double DEBOUNCE_TIME = 0.3;
   private static Vision photonVision;
   private static Wrist wrist;
   private static Elevator elevator;
 
-  private Pose2d initialPose;
-  private static final double kP = 0.07; // PID proportional gain
-  private static final double kI = 0.00; // PID integral gain
-  private static final double kD = 0.00; // PID derivative gain
-  private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 2.5; // In Meters
-  private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
+  /** Creates a new DriveToPiece. */
+  private final CommandSwerveDrivetrain drivetrain;
 
+  private final Intake intake;
+  private final Shooter shooter;
   private final PIDController DISTANCE_CONTROLLER = new PIDController(0.60, 1, 0.1);
   private final LinearFilter DISTANCE_FILTER = LinearFilter.movingAverage(8);
-  private double distanceToTarget;
   private final double targetHeight = 0.03; // 1.23
-
-  private double previousForwardBackwardSpeed = 0.0;
-
   private final PIDController rotationController;
   private final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-
+  private Pose2d initialPose;
+  private double distanceToTarget;
+  private double previousForwardBackwardSpeed = 0.0;
   private Debouncer canSeePieceDebouncer;
-  private static final double DEBOUNCE_TIME = 0.3;
 
+  // Shuffleboard.getTab("DEBUG").addDouble("SWERVE ERROR", () ->
+  // drivetrain.getModule(0).getDriveMotor().getClosedLoopError().getValueAsDouble()
   // TODO find correct value and change name  public DriveToNoteAuto(final CommandSwerveDrivetrain
   // drivetrain) {
 
   public DriveToNoteAuto(
-      final Drivetrain drivetrain,
+      final CommandSwerveDrivetrain drivetrain,
       final Vision photonVision,
       final Shooter shooter,
       final Intake intake,
@@ -72,8 +65,8 @@ public class DriveToNoteAuto extends Command {
     DriveToNoteAuto.elevator = elevator;
 
     // Create the PID controller
-    rotationController = new PIDController(kP, kI, kD);
-    rotationController.setTolerance(kToleranceDegrees);
+    rotationController = new PIDController(P, I, D);
+    rotationController.setTolerance(TOLERANCE_DEGREES);
 
     addRequirements(drivetrain);
   }

@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.131833147505525,
+        "y": 4.426083808684817
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.975687661686516,
+        "y": 3.7116581411823977
+      },
+      "isLocked": false,
+      "linkedName": "overture_0_end"
+    },
+    {
+      "anchor": {
+        "x": 7.69,
+        "y": 3.8304899402120722
+      },
+      "prevControl": {
+        "x": 6.69,
+        "y": 3.8304899402120722
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "overture_1_end"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "amp_side",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

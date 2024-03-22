@@ -49,6 +49,7 @@ wpi.java.debugJni = false
 def includeDesktopSupport = true
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
+// Also defines JUnit 5.
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
@@ -111,6 +112,7 @@ spotless {
     }
 }
 
+
 // Simulation configuration (e.g. environment variables).
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
@@ -138,6 +140,5 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
-
 
 build.dependsOn(spotlessApply)

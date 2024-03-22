@@ -1,7 +1,7 @@
 Left trigger - Aim Intake (source)
 Left bumper - Intake
-Right trigger - Shoot Subwoofer 
-Right bumber - shooter Speaker - aim Speaker (Holding)
+Right trigger - Shoot Subwoofer TBI ***
+Right bumber - shooter Speaker - aim Speaker (Holding)  - combine  into bumper command from trigger ***
 Back - reset Pose
 Start - go home (all systems)
 Drive - left joystick
@@ -9,7 +9,7 @@ Rotate - right joystick
 X - poop
 A - Line up and shoot amp (Untested)
 Dpad - lock cardinal direction
-Y - Shoot amp 2 parts
+Y - Shoot amp 2 parts(untested)
 
 Co-driver
 A - 1 deploy shooter and wrist - 1 to shoot note amp (Untested)
@@ -17,4 +17,10 @@ Start - Kill all structure systems (Untested)
 Y - Climb (tested)
 X - reverse intake
 B - instaSuck
+
+
+    COMMANDS_TAB.add("Shoot Amp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    COMMANDS_TAB.add("Shoot Subwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
+    COMMANDS_TAB.add("Shoot Tall", new ShootTall(ELEVATOR, WRIST, SHOOTER));
+
 

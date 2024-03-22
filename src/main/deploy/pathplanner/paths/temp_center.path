@@ -1,0 +1,216 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.2741328594636359,
+        "y": 3.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.382024040089747,
+        "y": 1.9310338735694832
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.92373342602588,
+        "y": 1.2070524350828793
+      },
+      "prevControl": {
+        "x": 3.9986514840605474,
+        "y": 1.5868199964275065
+      },
+      "nextControl": {
+        "x": 5.90769731047564,
+        "y": 0.8031124726890663
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.033039147313827,
+        "y": 0.7923230735061011
+      },
+      "prevControl": {
+        "x": 7.375214260168069,
+        "y": 0.2724263864043641
+      },
+      "nextControl": {
+        "x": 8.287466875570326,
+        "y": 0.9934041447944016
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.0,
+        "y": 1.7874530767869414
+      },
+      "prevControl": {
+        "x": 8.004956739803525,
+        "y": 1.3668873443070964
+      },
+      "nextControl": {
+        "x": 7.994188390931209,
+        "y": 2.2805521140138785
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.284572815022367,
+        "y": 3.9494044547984934
+      },
+      "prevControl": {
+        "x": 8.403401040025166,
+        "y": 2.263375821578681
+      },
+      "nextControl": {
+        "x": 8.21219346489619,
+        "y": 4.97637979473731
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.54795045990555,
+        "y": 4.2402719220224325
+      },
+      "prevControl": {
+        "x": 6.237777952697109,
+        "y": 4.610072362216484
+      },
+      "nextControl": {
+        "x": 5.018293502905995,
+        "y": 3.9563351727669755
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.329806136464125,
+        "y": 3.245969588510358
+      },
+      "prevControl": {
+        "x": 4.89288370558078,
+        "y": 3.6176308938627724
+      },
+      "nextControl": {
+        "x": 3.770187458179079,
+        "y": 2.8765913360658475
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.614401156319674,
+        "y": 3.0378236319985374
+      },
+      "prevControl": {
+        "x": 3.4304199884803124,
+        "y": 2.9453686505752645
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 34.161442832466605,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4,
+      "rotationDegrees": 89.52173006790903,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Poop Prep",
+      "waypointRelativePos": 1.2000000000000002,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Start",
+      "waypointRelativePos": 1.6500000000000001,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStart"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake Note",
+      "waypointRelativePos": 3.9000000000000004,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -38.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "temp",
+  "previewStartingState": {
+    "rotation": -62.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
