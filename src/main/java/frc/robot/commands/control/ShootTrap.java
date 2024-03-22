@@ -28,12 +28,13 @@ public class ShootTrap extends SequentialCommandGroup {
     lineBreakDebouncer = new Debouncer(Constants.Trap.TRAP_DEBOUNCE_TIME, DebounceType.kFalling);
 
     addCommands(
-        new InstantCommand(() -> elevator.setLengthInches(Constants.Trap.TRAP_ELEVATOR_HEIGHT_MIDWAY)),
+        new InstantCommand(
+            () -> elevator.setLengthInches(Constants.Trap.TRAP_ELEVATOR_HEIGHT_MIDWAY)),
         new WaitUntilCommand(() -> elevator.isAtSetpoint()),
         new WaitCommand(0.5),
         new InstantCommand(() -> wrist.setDegrees(Constants.Trap.TRAP_WRIST_DEGREES_MIDWAY)),
         new WaitUntilCommand(() -> wrist.isAtSetpoint()),
-                new WaitCommand(0.5),
+        new WaitCommand(0.5),
         new InstantCommand(
             () -> {
               shooter.setRPMShoot(Constants.Trap.TRAP_RPM_SPEED);
@@ -45,7 +46,12 @@ public class ShootTrap extends SequentialCommandGroup {
             elevator),
         // new WaitUntilCommand(() -> (elevator.isAtSetpoint())),
         new InstantCommand(() -> wrist.setDegreesSlot1(Constants.Trap.TRAP_WRIST_DEGREES), wrist),
-        new WaitUntilCommand(() -> (shooter.isShooterAtSetpoint() && wrist.isAtSetpoint() && elevator.isAtSetpoint())).withTimeout(0.8),
+        new WaitUntilCommand(
+                () ->
+                    (shooter.isShooterAtSetpoint()
+                        && wrist.isAtSetpoint()
+                        && elevator.isAtSetpoint()))
+            .withTimeout(0.8),
         new WaitCommand(0.8), // Time for wrist to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),

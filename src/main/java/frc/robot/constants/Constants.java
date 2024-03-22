@@ -56,7 +56,6 @@ public class Constants {
     public static final double TRAP_WRIST_DEGREES = 118.0;
     public static final double TRAP_WRIST_DEGREES_MIDWAY = 80.0;
     public static final double TRAP_RPM_SPEED = 425;
-
   }
 
   public static class Wrist {

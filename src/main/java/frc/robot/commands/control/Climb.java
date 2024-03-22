@@ -23,13 +23,14 @@ public class Climb extends SequentialCommandGroup {
         new InstantCommand(Wrist::goHome, Wrist),
         new InstantCommand(Wrist::stop, Wrist),
         new InstantCommand(() -> Wrist.setDegrees(Constants.Wrist.INITIAL_ANGLE_DEGREES), Wrist),
-        new InstantCommand(() -> Elevator.setLengthInchesSlot1(6.75)),
+        new InstantCommand(
+            () -> Elevator.setLengthInchesSlot1(Constants.Climb.CLIMB_PULLDOWN_HEIGHT)),
         new WaitUntilCommand(Elevator::isAtSetpoint),
         new WaitCommand(0.9),
-        new InstantCommand(() -> Elevator.setLengthInches(12.0)),
+        new InstantCommand(() -> Elevator.setLengthInches(Constants.Climb.CLIMB_LEVEL_HEIGHT)),
         new WaitUntilCommand(Elevator::isAtSetpoint),
         new WaitCommand(2.0),
-                new InstantCommand(Wrist::goHome, Wrist),
+        new InstantCommand(Wrist::goHome, Wrist),
         new InstantCommand(Wrist::stop, Wrist),
         new InstantCommand(() -> Wrist.setDegrees(Constants.Wrist.INITIAL_ANGLE_DEGREES), Wrist),
         new ConditionalCommand(

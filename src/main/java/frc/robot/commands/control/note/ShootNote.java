@@ -19,6 +19,7 @@ public class ShootNote extends SequentialCommandGroup {
 
   /** Creates a new IntakeNoteSequence. */
   private final Debouncer lineBreakDebouncer;
+
   private final Debouncer shootNoteDebouncer;
 
   public ShootNote(Shooter shooter, Elevator elevator, double shootRPM) {

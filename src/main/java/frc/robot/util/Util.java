@@ -125,7 +125,6 @@ public class Util {
     if (dist > 2.25 && dist < 4.25) {
       return true;
     } else return false;
-
   }
 
   public static double squareValue(double value) {

@@ -93,17 +93,16 @@ public class Wrist extends SubsystemBase {
     }
   }
 
-
-
   public void setDegreesSlot1(double degrees) {
     if (degrees > Constants.Wrist.WRIST_MAX_DEG || degrees < Constants.Wrist.WRIST_MIN_DEG) {
       System.out.println("Out of Wrist Range! " + degrees);
     } else {
       double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
       WRIST_MOTOR.setControl(
-          new MotionMagicVoltage(degrees / 360.0, true, arbFF,1, false, false, false));
+          new MotionMagicVoltage(degrees / 360.0, true, arbFF, 1, false, false, false));
     }
   }
+
   public void stop() {
     WRIST_MOTOR.set(0);
   }

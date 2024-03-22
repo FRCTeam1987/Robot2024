@@ -16,12 +16,13 @@ import frc.robot.util.Util;
 public class IdleShooter extends Command {
   /** Creates a new IdleShooter. */
   private final Shooter shooter;
+
   private final Vision speakerPhoton;
   private final Debouncer validShotDebouncer;
 
   public IdleShooter(Shooter shooter, Vision speakerPhoton) {
     addRequirements(shooter);
-    this.speakerPhoton =  speakerPhoton;
+    this.speakerPhoton = speakerPhoton;
     this.shooter = shooter;
     this.validShotDebouncer = new Debouncer(3.0, DebounceType.kFalling);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -47,9 +48,9 @@ public class IdleShooter extends Command {
     }
     if (shooter.isCenterBroken()) {
       if (validShotDebouncer.calculate(Util.isValidShot(speakerPhoton))) {
-      shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
+        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
       } else {
-      shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM);
+        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM);
       }
 
     } else {
