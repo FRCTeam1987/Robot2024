@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.7,
-        "y": 0.9
+        "x": 8.15,
+        "y": 0.99
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.970185186903427,
-        "y": 1.347880291496217
+        "x": 7.845357364179338,
+        "y": 1.631062719070431
       },
       "isLocked": false,
       "linkedName": "heart_source_og_0_end"
     },
     {
       "anchor": {
-        "x": 7.55,
-        "y": 2.254111923495646
+        "x": 8.042359974457726,
+        "y": 2.2
       },
       "prevControl": {
-        "x": 7.5427278736921854,
-        "y": 1.5549283870862052
+        "x": 8.046677430660164,
+        "y": 1.6241961271407759
       },
       "nextControl": {
-        "x": 7.5679074946940705,
-        "y": 3.9758401964190475
+        "x": 8.02636483941062,
+        "y": 4.3332146234231645
       },
       "isLocked": false,
       "linkedName": "heart_source_og_1_end"
     },
     {
       "anchor": {
-        "x": 3.2773630684028463,
-        "y": 2.70191039448417
+        "x": 3.5676236555425596,
+        "y": 2.9111193310862573
       },
       "prevControl": {
-        "x": 4.618752156392958,
-        "y": 4.126208202918812
+        "x": 5.255415890115193,
+        "y": 4.971047399584265
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4,
+      "waypointRelativePos": 0.55,
       "rotationDegrees": 50.0,
       "rotateFast": false
     },

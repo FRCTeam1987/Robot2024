@@ -45,6 +45,8 @@ public class DriveToNoteAuto extends Command {
   private double previousForwardBackwardSpeed = 0.0;
   private Debouncer canSeePieceDebouncer;
 
+  // Shuffleboard.getTab("DEBUG").addDouble("SWERVE ERROR", () ->
+  // drivetrain.getModule(0).getDriveMotor().getClosedLoopError().getValueAsDouble()
   // TODO find correct value and change name  public DriveToNoteAuto(final CommandSwerveDrivetrain
   // drivetrain) {
 

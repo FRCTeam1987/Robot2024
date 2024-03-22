@@ -19,6 +19,7 @@ public class ShootNote extends SequentialCommandGroup {
 
   /** Creates a new IntakeNoteSequence. */
   private final Debouncer lineBreakDebouncer;
+  private final Debouncer shootNoteDebouncer;
 
   public ShootNote(Shooter shooter, Elevator elevator, double shootRPM) {
     addRequirements(shooter);
@@ -26,13 +27,12 @@ public class ShootNote extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
-
+    shootNoteDebouncer = new Debouncer(0.2, DebounceType.kRising);
     // elevator.goHome();
     addCommands(
         new InstantCommand(() -> shooter.setRPMShoot(shootRPM), shooter),
-        new WaitCommand(0.2), // reset for isAtSetpoint commands to level out
-        new WaitUntilCommand(shooter::isShooterAtSetpoint),
-        new WaitCommand(0.5), // Time for wrist to get to position
+        new WaitCommand(0.1),
+        new WaitUntilCommand(() -> shooter.isShooterAtSetpoint()),
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS

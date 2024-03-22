@@ -156,11 +156,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterAtSetpoint() {
-    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 1.7;
+    return SHOOTER_LEADER.getClosedLoopError().getValueAsDouble() < 0.8;
   }
 
   public void setupShuffleboard() {
     SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
+    SHOOTER_TAB.addDouble("ERROR", this::getError);
     SHOOTER_TAB.addBoolean("Center Beam Break", this::isCenterBroken);
     SHOOTER_TAB.addBoolean("Rear Beam Break", this::isRearBroken);
     SHOOTER_TAB.add("Stop Shoot", new InstantCommand(this::stopShooter));

@@ -32,9 +32,6 @@ public class Constants {
   public static final double REV_WRIST_AMP_DEGREES = 8.0;
   public static final double REV_FEEDER_VOLTAGE = -7.0;
 
-  public static final double ELEVATOR_TRAP_HEIGHT = 28.0;
-  public static final double ELEVATOR_TRAP_COLLAPSED_HEIGHT = 5.9;
-
   public static final int LEFT_CANDLE = 28;
   public static final int RIGHT_CANDLE = 29;
 
@@ -55,12 +52,15 @@ public class Constants {
   public static class Trap {
     public static final double TRAP_DEBOUNCE_TIME = 0.06;
     public static final double TRAP_ELEVATOR_HEIGHT = 29.5;
-    public static final double TRAP_WRIST_DEGREES = 112.5;
-    public static final double TRAP_RPM_SPEED = 525;
+    public static final double TRAP_ELEVATOR_HEIGHT_MIDWAY = 24.0;
+    public static final double TRAP_WRIST_DEGREES = 118.0;
+    public static final double TRAP_WRIST_DEGREES_MIDWAY = 80.0;
+    public static final double TRAP_RPM_SPEED = 425;
+
   }
 
   public static class Wrist {
-    public static final double WRIST_KP = 4.8;
+    public static final double WRIST_KP = 250.0;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.01;
     public static final double WRIST_KV = 0.03;
@@ -74,7 +74,7 @@ public class Constants {
     public static final double WRIST_MOTION_JERK = 0;
 
     public static final double WRIST_MIN_DEG = 7;
-    public static final double WRIST_MAX_DEG = 114; // temp 115;
+    public static final double WRIST_MAX_DEG = 120; // temp 115;
 
     public static final double WRIST_MAX_ROT = 3;
     public static final double WRIST_MIN_ROT = 0;
@@ -97,6 +97,7 @@ public class Constants {
     public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to be smaller
     public static final double SHOOTER_LOB_RPM = 3000; // NEEDS to be smaller
     public static final double SHOOTER_IDLE_RPM = 2500; // 2500
+    public static final double SHOOTER_IDLE_RPM_CLOSE = 3800; // 2500
     public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to be smaller
     public static final double SPIN_RATIO = 0.75; // 0.85
     public static final int SHOOTER_AMP_RPM = 550;
@@ -116,7 +117,7 @@ public class Constants {
 
     public static final double EXTENSION_MOTION_ACCELERATION = 45000;
     public static final double EXTENSION_CRUISE_VELOCITY = 65000;
-    public static final double EXTENSION_ALLOWABLE_ERROR = 5.0;
+    public static final double EXTENSION_ALLOWABLE_ERROR = 0.375;
 
     public static final double EXTENSION_CURRENT_LIMIT = 90.0;
 
@@ -132,6 +133,12 @@ public class Constants {
     public static final double CONVERSION_FACTOR_TICKS_TO_INCHES =
         (MAXIMUM_EXTENSION_LENGTH_INCHES - MINIMUM_EXTENSION_LENGTH_INCHES)
             / (MAXIMUM_EXTENSION_ROTATIONS - MINIMUM_EXTENSION_ROTATIONS);
+  }
+
+  public static class Climb {
+    public static final double CLIMB_PULLDOWN_HEIGHT = 6.75;
+    public static final double CLIMB_LEVEL_HEIGHT = 12.0;
+    public static final double CLIMB_START_HEIGHT = 28.0;
   }
 
   public static class Climber {

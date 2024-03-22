@@ -118,4 +118,17 @@ public class Util {
             new InterpolatingDouble(Util.getInterpolatedDistance(photonVision)))
         .value;
   }
+
+  public static boolean isValidShot(Vision photonVision) {
+    double dist = Util.getInterpolatedDistance(photonVision);
+
+    if (dist > 2.25 && dist < 4.25) {
+      return true;
+    } else return false;
+
+  }
+
+  public static double squareValue(double value) {
+    return Math.copySign(Math.pow(value, 2), value);
+  }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -105,8 +106,8 @@ public class RobotContainer {
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+          .withDeadband(MaxSpeed * 0.03)
+          .withRotationalDeadband(MaxAngularRate * 0.03) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
   // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -192,7 +193,7 @@ public class RobotContainer {
             new ConditionalCommand(
                 new Climb(ELEVATOR, WRIST, SHOOTER),
                 new InstantCommand(
-                        () -> ELEVATOR.setLengthInches(Constants.ELEVATOR_TRAP_HEIGHT), ELEVATOR)
+                        () -> ELEVATOR.setLengthInches(Constants.Climb.CLIMB_START_HEIGHT), ELEVATOR)
                     .andThen(() -> isClimbPrimed = true),
                 () -> isClimbPrimed));
 
@@ -233,15 +234,15 @@ public class RobotContainer {
                 () ->
                     drive
                         .withVelocityX(
-                            -DRIVER_CONTROLLER.getLeftY()
+                            Util.squareValue(-DRIVER_CONTROLLER.getLeftY())
                                 * DriveConstants.kSpeedAt12VoltsMps) // Drive forward with
                         // negative Y (forward)
                         .withVelocityY(
-                            -DRIVER_CONTROLLER.getLeftX()
+                            Util.squareValue(-DRIVER_CONTROLLER.getLeftX())
                                 * DriveConstants
                                     .kSpeedAt12VoltsMps) // Drive left with negative X (left)
                         .withRotationalRate(
-                            -DRIVER_CONTROLLER.getRightX()
+                            Util.squareValue(-DRIVER_CONTROLLER.getRightX())
                                 * Math.PI
                                 * 3.5) // Drive counterclockwise with negative X (left)
                 )
@@ -263,11 +264,36 @@ public class RobotContainer {
     DRIVETRAIN.registerTelemetry(logger::telemeterize);
   }
 
+  double highest = 0.0;
+
+  public double getAverageSpeeds() {
+    double[] speeds =
+        new double[] {
+          drivetrain.getModule(0).getDriveMotor().getRotorVelocity().getValueAsDouble(),
+          drivetrain.getModule(1).getDriveMotor().getRotorVelocity().getValueAsDouble(),
+          drivetrain.getModule(2).getDriveMotor().getRotorVelocity().getValueAsDouble(),
+          drivetrain.getModule(3).getDriveMotor().getRotorVelocity().getValueAsDouble()
+        };
+    double total = 0.0;
+    double avg = 0.0;
+
+    for (double d : speeds) {
+      total = total + Math.abs(d);
+    }
+    avg = total / 4.0;
+    if (avg > highest) {
+      highest = avg;
+    }
+    return highest;
+  }
+
   public void configureShuffleboard() {
     WRIST.setupShuffleboard();
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
     ELEVATOR.setupShuffleboard();
+    COMMANDS_TAB.addDouble("AVG SPEED 4 MODULES", () -> getAverageSpeeds());
+    COMMANDS_TAB.add("Stop Logger", new InstantCommand(() -> SignalLogger.stop()));
     COMMANDS_TAB.add(
         "Unjam Shooter",
         new InstantCommand(
@@ -294,7 +320,7 @@ public class RobotContainer {
         "Coast Swerve",
         new InstantCommand(
                 () -> {
-                  for (int i = 0; i < 3; i++) {
+                  for (int i = 0; i < 4; i++) {
                     drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
                     drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Coast);
                   }
@@ -364,13 +390,15 @@ public class RobotContainer {
     addAuto("heart_source_og");
     addAuto("Taxi-Amp");
     addAuto("Taxi-Source");
+    addAuto("temp_center");
+    addAuto("test_choreo");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
 
   public void configureDefaultCommands() {
     WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_PHOTON));
-    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
+    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER, SPEAKER_PHOTON));
     CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_PHOTON));
   }
 
@@ -398,7 +426,7 @@ public class RobotContainer {
         "PoopPrep",
         new InstantCommand(
             () -> {
-              SHOOTER.setRPMShootNoSpin(650);
+              SHOOTER.setRPMShootNoSpin(750);
               INTAKE.setVolts(-8.0);
               WRIST.setDegrees(15);
             },
@@ -416,7 +444,7 @@ public class RobotContainer {
             WRIST,
             INTAKE));
     NamedCommands.registerCommand(
-        "PoopStart", new InstantCommand(() -> SHOOTER.setFeederVoltage(7.0)));
+        "PoopStart", new InstantCommand(() -> SHOOTER.setFeederVoltage(8.0)));
     NamedCommands.registerCommand("PoopPause", new InstantCommand(SHOOTER::stopShooter, SHOOTER));
     NamedCommands.registerCommand(
         "PoopStop",

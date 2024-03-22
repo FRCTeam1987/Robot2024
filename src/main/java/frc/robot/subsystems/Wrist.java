@@ -20,10 +20,15 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
     final TalonFXConfiguration WRIST_CONFIG = new TalonFXConfiguration();
 
-    WRIST_CONFIG.Slot0.kP = 250.0;
+    WRIST_CONFIG.Slot0.kP = Constants.Wrist.WRIST_KP;
     WRIST_CONFIG.Slot0.kI = Constants.Wrist.WRIST_KI;
     WRIST_CONFIG.Slot0.kD = Constants.Wrist.WRIST_KD;
     WRIST_CONFIG.Slot0.kV = Constants.Wrist.WRIST_KV;
+
+    WRIST_CONFIG.Slot1.kP = 350.0;
+    WRIST_CONFIG.Slot1.kI = Constants.Wrist.WRIST_KI;
+    WRIST_CONFIG.Slot1.kD = Constants.Wrist.WRIST_KD;
+    WRIST_CONFIG.Slot1.kV = Constants.Wrist.WRIST_KV;
 
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimit = Constants.Wrist.WRIST_CURRENT_LIMIT;
     WRIST_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -88,6 +93,17 @@ public class Wrist extends SubsystemBase {
     }
   }
 
+
+
+  public void setDegreesSlot1(double degrees) {
+    if (degrees > Constants.Wrist.WRIST_MAX_DEG || degrees < Constants.Wrist.WRIST_MIN_DEG) {
+      System.out.println("Out of Wrist Range! " + degrees);
+    } else {
+      double arbFF = 0.4 * Math.sin(Math.toRadians(90.0 - degrees));
+      WRIST_MOTOR.setControl(
+          new MotionMagicVoltage(degrees / 360.0, true, arbFF,1, false, false, false));
+    }
+  }
   public void stop() {
     WRIST_MOTOR.set(0);
   }
@@ -109,5 +125,6 @@ public class Wrist extends SubsystemBase {
     WRIST_TAB.add("Set Brake", new InstantCommand(this::setBrake, this).ignoringDisable(true));
     WRIST_TAB.add("Re-Home", new ZeroWrist(this));
     WRIST_TAB.addDouble("Degrees", this::getDegrees);
+    WRIST_TAB.addDouble("Error", this::getError);
   }
 }
