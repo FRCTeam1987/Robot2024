@@ -12,25 +12,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command autoCommand;
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer robotContainer;
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
-    m_robotContainer.CANDLES.setAnimationBoth(
+    robotContainer = new RobotContainer();
+    robotContainer.CANDLES.setAnimationBoth(
         new LarsonAnimation(255, 255, 0, 0, 1.0, 8, BounceMode.Front, 1));
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    robotContainer.updatePoseVision();
   }
 
   @Override
   public void disabledInit() {
-    m_robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 0, 0, 0, 0.7, 8));
+    robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 0, 0, 0, 0.7, 8));
   }
 
   @Override
@@ -42,12 +43,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 255, 255, 0, 1.5, 8));
-    m_robotContainer.CANDLES.setAnimationRight(
+    robotContainer.CANDLES.setAnimationRight(
         new LarsonAnimation(255, 255, 255, 0, 0.1, 8, BounceMode.Front, 1));
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    autoCommand = robotContainer.getAutonomousCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autoCommand != null) {
+      autoCommand.schedule();
     }
   }
 
@@ -59,9 +60,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.CANDLES.stop();
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    robotContainer.CANDLES.stop();
+    if (autoCommand != null) {
+      autoCommand.cancel();
     }
   }
 

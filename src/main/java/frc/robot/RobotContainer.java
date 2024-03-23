@@ -11,9 +11,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -61,11 +63,11 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.Limelight;
 import frc.robot.util.Util;
 
 public class RobotContainer {
   private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
-  // public final PowerDistribution PDH = new PowerDistribution(1, ModuleType.kRev);
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
@@ -73,10 +75,6 @@ public class RobotContainer {
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
   public final String SPEAKER_LIMELIGHT = "limelight-speaker";
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
-  // public final Vision SPEAKER_PHOTON =
-  //     new Vision("Arducam_OV2311_USB_Camera_1", 0.3, 40, Arrays.asList(4, 7));
-  // public final Vision AMP_PHOTON =
-  //     new Vision("Arducam_OV2311_USB_Camera", 0.35, 40, Arrays.asList(5, 6));
   public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
@@ -91,13 +89,8 @@ public class RobotContainer {
   public static boolean isForwardAmpPrimed = false;
   public static boolean isReverseAmpPrimed = false;
   public static boolean isClimbPrimed = false;
-  private double MaxSpeed =
-      DriveConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate =
-      1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
-
-  /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandSwerveDrivetrain drivetrain = DriveConstants.DriveTrain; // My drivetrain
+  private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps;
+  private double MaxAngularRate = 1.5 * Math.PI;
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -108,15 +101,11 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
-
-  private void configureBindings() {
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
-    }
-    drivetrain.registerTelemetry(logger::telemeterize);
-  }
+  private static RobotContainer instance;
 
   public RobotContainer() {
+    instance = this;
+    new Util();
     configureNamedCommands();
     configureShuffleboard();
     configureDrivetrain();
@@ -127,16 +116,6 @@ public class RobotContainer {
 
   private void configureDriverController() {
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
-    // DRIVER_CONTROLLER
-    //     .y()
-    //     .onTrue(
-    //         new ConditionalCommand(
-    //             new FireFwdAmp(SHOOTER)
-    //                 .andThen(new InstantCommand(() -> isForwardAmpPrimed = false)
-    //                 .andThen(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE))),
-    //             new PrepFwdAmp(ELEVATOR, WRIST, SHOOTER)
-    //                 .andThen(new InstantCommand(() -> isForwardAmpPrimed = true)),
-    //             () -> isForwardAmpPrimed));
 
     DRIVER_CONTROLLER
         .y()
@@ -161,16 +140,16 @@ public class RobotContainer {
                 .andThen(
                     new AsyncRumble(
                         DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
-    // DRIVER_CONTROLLER.rightTrigger().onTrue(new FastPointTwice(DRIVETRAIN, SPEAKER_PHOTON));
+
     DRIVER_CONTROLLER
         .rightTrigger()
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
                 SPEAKER_LIMELIGHT,
-                () -> (-DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
-                () -> (-DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
-                () -> (-DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
+                () -> (DRIVER_CONTROLLER.getLeftY()),
+                () -> (DRIVER_CONTROLLER.getLeftX()),
+                () -> (DRIVER_CONTROLLER.getRightX())));
 
     DRIVER_CONTROLLER
         .rightBumper()
@@ -215,7 +194,6 @@ public class RobotContainer {
                           INTAKE.stopTop();
                           INTAKE.stopCollecting();
                         })));
-    // CO_DRIVER_CONTROLLER.leftBumper().onTrue(new FastPointTwice(DRIVETRAIN, SPEAKER_PHOTON));
 
     CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
     CO_DRIVER_CONTROLLER
@@ -278,10 +256,10 @@ public class RobotContainer {
   public double getAverageSpeeds() {
     double[] speeds =
         new double[] {
-          drivetrain.getModule(0).getDriveMotor().getRotorVelocity().getValueAsDouble(),
-          drivetrain.getModule(1).getDriveMotor().getRotorVelocity().getValueAsDouble(),
-          drivetrain.getModule(2).getDriveMotor().getRotorVelocity().getValueAsDouble(),
-          drivetrain.getModule(3).getDriveMotor().getRotorVelocity().getValueAsDouble()
+          DRIVETRAIN.getModule(0).getDriveMotor().getRotorVelocity().getValueAsDouble(),
+          DRIVETRAIN.getModule(1).getDriveMotor().getRotorVelocity().getValueAsDouble(),
+          DRIVETRAIN.getModule(2).getDriveMotor().getRotorVelocity().getValueAsDouble(),
+          DRIVETRAIN.getModule(3).getDriveMotor().getRotorVelocity().getValueAsDouble()
         };
     double total = 0.0;
     double avg = 0.0;
@@ -325,16 +303,15 @@ public class RobotContainer {
                       SHOOTER.stopFeeder();
                       SHOOTER.stopShooter();
                     })));
-    PHOTON_TAB.addDouble(
-        "DISTANCE_TO_SPEAKER", () -> Util.getInterpolatedDistance(SPEAKER_LIMELIGHT));
+    PHOTON_TAB.addDouble("DISTANCE_TO_SPEAKER", () -> Util.getDistance(SPEAKER_LIMELIGHT));
 
     COMMANDS_TAB.add(
         "Coast Swerve",
         new InstantCommand(
                 () -> {
                   for (int i = 0; i < 4; i++) {
-                    drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
-                    drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Coast);
+                    DRIVETRAIN.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
+                    DRIVETRAIN.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Coast);
                   }
                 })
             .ignoringDisable(true));
@@ -344,8 +321,8 @@ public class RobotContainer {
         new InstantCommand(
                 () -> {
                   for (int i = 0; i < 3; i++) {
-                    drivetrain.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
-                    drivetrain.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Brake);
+                    DRIVETRAIN.getModule(i).getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
+                    DRIVETRAIN.getModule(i).getSteerMotor().setNeutralMode(NeutralModeValue.Brake);
                   }
                 })
             .ignoringDisable(true));
@@ -478,5 +455,33 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return AUTO_CHOOSER.getSelected();
+  }
+
+  public Pose2d getPose() {
+    return DRIVETRAIN.getPose();
+  }
+
+  public void updatePoseVision() {
+    Limelight.PoseEstimate pose = Limelight.getBotPoseEstimate_wpiBlue(SPEAKER_LIMELIGHT);
+    if (pose.tagCount >= 2) {
+      DriverStation.reportWarning("ADDING POSE BASED ON 2 TAGS", false);
+      DRIVETRAIN.addVisionMeasurement(
+          pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
+    } else {
+      if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
+        DriverStation.reportWarning(
+            "ADDING POSE BASED ON AMBIGUITY OF "
+                + pose.rawFiducials[0].ambiguity
+                + " ON TAG "
+                + pose.rawFiducials[0].id,
+            false);
+        DRIVETRAIN.addVisionMeasurement(
+            pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
+      }
+    }
+  }
+
+  public static RobotContainer get() {
+    return instance;
   }
 }

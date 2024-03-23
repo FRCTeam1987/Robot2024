@@ -11,8 +11,10 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.Limelight;
+import frc.robot.util.Limelight.RawFiducial;
 import frc.robot.util.Util;
 import java.util.function.DoubleSupplier;
 
@@ -33,6 +35,7 @@ public class PointAtAprilTag extends Command {
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier2 = () -> 0.0;
+  private double kP = 0.09;
 
   double rotationRate = 0;
 
@@ -76,19 +79,22 @@ public class PointAtAprilTag extends Command {
   @Override
   public void execute() {
 
+    double xOffset = 0.0;
     // System.out.println("Starting Execute");
-
-    double xOffset = Limelight.getTX(speakerLimelight);
+    for (RawFiducial fiducial :
+        Limelight.getBotPoseEstimate_wpiBlue(speakerLimelight).rawFiducials) {
+      if (fiducial.id == 4 || fiducial.id == 13) {
+        xOffset = fiducial.txnc;
+      }
+    }
 
     // TODO: changeme please :)
 
-    // if (xOffset > 1) {
-    //   rotationRate = kP * xOffset;
-    // } else {
-
-    // }
-
-    rotationRate = xOffset * 0.09;
+    if (xOffset < 0.7) {
+      rotationRate = 0.12 * xOffset;
+    } else {
+      rotationRate = kP * xOffset;
+    }
 
     System.out.println("Attempted RotationRate: " + rotationRate);
     // rotationRate = Math.copySign(MathUtil.clamp(Math.abs(rotationRate), 0, 2.75), rotationRate);
@@ -97,7 +103,7 @@ public class PointAtAprilTag extends Command {
 
     // Degrees within acceptance
 
-    double acceptableError = 0.3;
+    double acceptableError = 0.05;
     if (Math.abs(rotationRate) < acceptableError) {
       rotationRate = 0;
     }
@@ -105,18 +111,19 @@ public class PointAtAprilTag extends Command {
     System.out.println(rotationRate);
 
     if (!Util.canSeeTarget(speakerLimelight)) {
-      rotationRate = rotationSupplier.getAsDouble();
+      rotationRate = Util.squareValue(rotationSupplier.getAsDouble()) * Math.PI * 3.5;
       DriverStation.reportWarning("No Tag found in PointAtAprilTag", false);
     }
+
     drivetrain.setControl(
         drive
             .withVelocityX(
-                translationYSlewRate.calculate(
-                    -velocityYSupplier.getAsDouble())) // Drive forward with
+                Util.squareValue(-velocityXSupplier.getAsDouble())
+                    * DriveConstants.kSpeedAt12VoltsMps) // Drive forward with
             // negative Y (forward)
             .withVelocityY(
-                translationXSlewRate.calculate(
-                    -velocityXSupplier.getAsDouble())) // Drive left with negative X (left)
+                Util.squareValue(-velocityYSupplier.getAsDouble())
+                    * DriveConstants.kSpeedAt12VoltsMps) // Drive left with negative X (left)
             .withRotationalRate(-rotationRate) // Drive counterclockwise with negative X (left)
         );
   }
