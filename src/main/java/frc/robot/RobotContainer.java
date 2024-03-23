@@ -193,8 +193,12 @@ public class RobotContainer {
             new ConditionalCommand(
                 new Climb(ELEVATOR, WRIST, SHOOTER),
                 new InstantCommand(
-                        () -> ELEVATOR.setLengthInches(Constants.Climb.CLIMB_START_HEIGHT),
-                        ELEVATOR)
+                        () -> {
+                          ELEVATOR.setLengthInches(Constants.Climb.CLIMB_START_HEIGHT);
+                          WRIST.goHome();
+                        },
+                        ELEVATOR,
+                        WRIST)
                     .andThen(() -> isClimbPrimed = true),
                 () -> isClimbPrimed));
 
