@@ -6,18 +6,17 @@ package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Util;
 
 public class AimLockWristAuto extends Command {
   private final Wrist wrist;
-  private final Vision speakerPhoton;
+  private final String SPEAKER_LIMELIGHT;
 
   /** Creates a new AimLockWrist. */
-  public AimLockWristAuto(Wrist wrist, Vision speakerPhoton) {
+  public AimLockWristAuto(Wrist wrist, String limelightName) {
     this.wrist = wrist;
-    this.speakerPhoton = speakerPhoton;
+    this.SPEAKER_LIMELIGHT = limelightName;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -29,8 +28,8 @@ public class AimLockWristAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (speakerPhoton.hasTargets()) {
-      double degrees = Util.getInterpolatedWristAngle(speakerPhoton);
+    if (Util.canSeeTarget(SPEAKER_LIMELIGHT)) {
+      double degrees = Util.getInterpolatedWristAngle(SPEAKER_LIMELIGHT);
       DriverStation.reportWarning("TRYING DEGREES " + degrees, false);
       wrist.setDegrees(degrees);
     }

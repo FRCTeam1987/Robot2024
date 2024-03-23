@@ -34,14 +34,14 @@ public class DriveConstants {
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot
-  public static final double kSpeedAt12VoltsMps = 5.5;
+  public static final double kSpeedAt12VoltsMps = Units.feetToMeters(17.1);
 
   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
   // This may need to be tuned to your individual robot
   private static final double kCoupleRatio = 3.121;
 
-  private static final double kDriveGearRatio = 5.357142857142857;
-  private static final double kSteerGearRatio = 21.428571428571427;
+  private static final double kDriveGearRatio = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
+  private static final double kSteerGearRatio = (150.0 / 7.0);
   private static final double kWheelRadiusInches = 1.93;
 
   private static final boolean kSteerMotorReversed = true;

@@ -12,11 +12,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Vision;
+import frc.robot.util.Limelight;
+import frc.robot.util.Util;
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
-  private final Vision photonvision;
+  private final String speakerLimelight;
   private final CommandSwerveDrivetrain drivetrain;
   private final SlewRateLimiter translationXSlewRate =
       new SlewRateLimiter(Constants.translationXSlewRate);
@@ -37,12 +38,12 @@ public class PointAtAprilTag extends Command {
 
   public PointAtAprilTag( // USE FAST POINT INSTEAD. DO NOT USE COMMAND IT IS UNRELIABLE
       CommandSwerveDrivetrain drivetrain,
-      Vision photonvision,
+      String limelightName,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier) {
     this.drivetrain = drivetrain;
-    this.photonvision = photonvision;
+    this.speakerLimelight = limelightName;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
@@ -77,16 +78,17 @@ public class PointAtAprilTag extends Command {
 
     // System.out.println("Starting Execute");
 
-    double xOffset = photonvision.getYawVal();
+    double xOffset = Limelight.getTX(speakerLimelight);
 
     // TODO: changeme please :)
-    double kP = 0.15;
 
-    if (xOffset > 1) {
-      rotationRate = kP * xOffset;
-    } else {
-      rotationRate = xOffset * 0.09;
-    }
+    // if (xOffset > 1) {
+    //   rotationRate = kP * xOffset;
+    // } else {
+
+    // }
+
+    rotationRate = xOffset * 0.09;
 
     System.out.println("Attempted RotationRate: " + rotationRate);
     // rotationRate = Math.copySign(MathUtil.clamp(Math.abs(rotationRate), 0, 2.75), rotationRate);
@@ -95,14 +97,14 @@ public class PointAtAprilTag extends Command {
 
     // Degrees within acceptance
 
-    double acceptableError = 0.15;
+    double acceptableError = 0.3;
     if (Math.abs(rotationRate) < acceptableError) {
       rotationRate = 0;
     }
 
     System.out.println(rotationRate);
 
-    if (!photonvision.hasTargets()) {
+    if (!Util.canSeeTarget(speakerLimelight)) {
       rotationRate = rotationSupplier.getAsDouble();
       DriverStation.reportWarning("No Tag found in PointAtAprilTag", false);
     }

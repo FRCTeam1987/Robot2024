@@ -48,10 +48,8 @@ import frc.robot.commands.control.note.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
-import frc.robot.commands.movement.FastPoint;
-import frc.robot.commands.movement.FastPointTwice;
 import frc.robot.commands.movement.PointAtAprilTag;
-import frc.robot.commands.movement.SquareUpToAprilTag;
+import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
@@ -64,7 +62,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Util;
-import java.util.Arrays;
 
 public class RobotContainer {
   private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
@@ -74,20 +71,18 @@ public class RobotContainer {
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
+  public final String SPEAKER_LIMELIGHT = "limelight-speaker";
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.65176, 60);
-  public final Vision SPEAKER_PHOTON =
-      new Vision("Arducam_OV2311_USB_Camera_1", 0.3, 40, Arrays.asList(4, 7));
-  public final Vision AMP_PHOTON =
-      new Vision("Arducam_OV2311_USB_Camera", 0.35, 40, Arrays.asList(5, 6));
+  // public final Vision SPEAKER_PHOTON =
+  //     new Vision("Arducam_OV2311_USB_Camera_1", 0.3, 40, Arrays.asList(4, 7));
+  // public final Vision AMP_PHOTON =
+  //     new Vision("Arducam_OV2311_USB_Camera", 0.35, 40, Arrays.asList(5, 6));
   public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
   public final Shooter SHOOTER =
       new Shooter(
-          Constants.SHOOTER_LEADER_ID,
-          Constants.SHOOTER_FOLLOWER_ID,
-          Constants.SHOOTER_FEEDER_ID,
-          SPEAKER_PHOTON);
+          Constants.SHOOTER_LEADER_ID, Constants.SHOOTER_FOLLOWER_ID, Constants.SHOOTER_FEEDER_ID);
   public final Wrist WRIST = new Wrist(Constants.WRIST_ID);
   public final Elevator ELEVATOR =
       new Elevator(Constants.ELEVATOR_LEADER_ID, Constants.ELEVATOR_FOLLOWER_ID);
@@ -172,7 +167,7 @@ public class RobotContainer {
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
-                SPEAKER_PHOTON,
+                SPEAKER_LIMELIGHT,
                 () -> (-DRIVER_CONTROLLER.getLeftY() * Constants.MaxSpeed),
                 () -> (-DRIVER_CONTROLLER.getLeftX() * Constants.MaxSpeed),
                 () -> (-DRIVER_CONTROLLER.getRightX() * Constants.MaxSpeed)));
@@ -220,7 +215,7 @@ public class RobotContainer {
                           INTAKE.stopTop();
                           INTAKE.stopCollecting();
                         })));
-    CO_DRIVER_CONTROLLER.leftBumper().onTrue(new FastPointTwice(DRIVETRAIN, SPEAKER_PHOTON));
+    // CO_DRIVER_CONTROLLER.leftBumper().onTrue(new FastPointTwice(DRIVETRAIN, SPEAKER_PHOTON));
 
     CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
     CO_DRIVER_CONTROLLER
@@ -228,30 +223,39 @@ public class RobotContainer {
         .onTrue(
             new ParallelDeadlineGroup(
                 new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
-                new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
+                new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
   }
 
   private void configureDrivetrain() {
 
     DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
-        DRIVETRAIN
-            .applyRequest(
-                () ->
-                    drive
-                        .withVelocityX(
-                            Util.squareValue(-DRIVER_CONTROLLER.getLeftY())
-                                * DriveConstants.kSpeedAt12VoltsMps) // Drive forward with
-                        // negative Y (forward)
-                        .withVelocityY(
-                            Util.squareValue(-DRIVER_CONTROLLER.getLeftX())
-                                * DriveConstants
-                                    .kSpeedAt12VoltsMps) // Drive left with negative X (left)
-                        .withRotationalRate(
-                            Util.squareValue(-DRIVER_CONTROLLER.getRightX())
-                                * Math.PI
-                                * 3.5) // Drive counterclockwise with negative X (left)
-                )
-            .ignoringDisable(true));
+        new SwerveCommand(
+            DRIVETRAIN,
+            drive,
+            () -> DRIVER_CONTROLLER.getLeftY(),
+            () -> DRIVER_CONTROLLER.getLeftX(),
+            () -> DRIVER_CONTROLLER.getRightX(),
+            () -> DRIVER_CONTROLLER.getHID().getPOV()));
+
+    // DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
+    //     DRIVETRAIN
+    //         .applyRequest(
+    //             () ->
+    //                 drive
+    //                     .withVelocityX(
+    //                         Util.squareValue(-DRIVER_CONTROLLER.getLeftY())
+    //                             * DriveConstants.kSpeedAt12VoltsMps) // Drive forward with
+    //                     // negative Y (forward)
+    //                     .withVelocityY(
+    //                         Util.squareValue(-DRIVER_CONTROLLER.getLeftX())
+    //                             * DriveConstants
+    //                                 .kSpeedAt12VoltsMps) // Drive left with negative X (left)
+    //                     .withRotationalRate(
+    //                         Util.squareValue(-DRIVER_CONTROLLER.getRightX())
+    //                             * Math.PI
+    //                             * 3.5) // Drive counterclockwise with negative X (left)
+    //             )
+    //         .ignoringDisable(true));
 
     // DRIVETRAIN.setDefaultCommand(
     //     new TeleopSwerve(
@@ -293,6 +297,8 @@ public class RobotContainer {
   }
 
   public void configureShuffleboard() {
+
+    COMMANDS_TAB.addBoolean("Can See Target", () -> Util.canSeeTarget(SPEAKER_LIMELIGHT));
     WRIST.setupShuffleboard();
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
@@ -319,7 +325,8 @@ public class RobotContainer {
                       SHOOTER.stopFeeder();
                       SHOOTER.stopShooter();
                     })));
-    PHOTON_TAB.addDouble("DISTANCE_TO_SPEAKER", () -> Util.getInterpolatedDistance(SPEAKER_PHOTON));
+    PHOTON_TAB.addDouble(
+        "DISTANCE_TO_SPEAKER", () -> Util.getInterpolatedDistance(SPEAKER_LIMELIGHT));
 
     COMMANDS_TAB.add(
         "Coast Swerve",
@@ -343,7 +350,7 @@ public class RobotContainer {
                 })
             .ignoringDisable(true));
     COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
-    COMMANDS_TAB.add("Fast Point", new FastPoint(DRIVETRAIN, SPEAKER_PHOTON));
+    // COMMANDS_TAB.add("Fast Point", new FastPoint(DRIVETRAIN, SPEAKER_LIMELIGHT));
     COMMANDS_TAB.add("NewShootAMpAuto", new NewShootAmpAuto(SHOOTER, ELEVATOR, WRIST));
     COMMANDS_TAB.add(
         "Force Zero All",
@@ -361,20 +368,13 @@ public class RobotContainer {
     AUTO_CHOOSER.addOption("SYSID-DYN-R", DRIVETRAIN.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     AUTO_CHOOSER.addOption("SYSID-DYN-F", DRIVETRAIN.sysIdDynamic(SysIdRoutine.Direction.kForward));
 
-    PHOTON_TAB.add(
-        "Square Up AprilTag",
-        new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_PHOTON, Constants.SPEAKER_APRILTAG_HEIGHT, 3));
+    // PHOTON_TAB.add(
+    //     "Square Up AprilTag",
+    //     new SquareUpToAprilTag(DRIVETRAIN, SPEAKER_LIMELIGHT, Constants.SPEAKER_APRILTAG_HEIGHT,
+    // 3));
     PHOTON_TAB.add(
         "Drive To Note",
         new DriveToNote(DRIVETRAIN, () -> -DRIVER_CONTROLLER.getLeftY(), INTAKE_PHOTON));
-    PHOTON_TAB.addNumber(
-        "Distance from Speaker",
-        () ->
-            Vision.calculateDistanceToTarget(
-                SPEAKER_PHOTON.getPitchVal(),
-                SPEAKER_PHOTON.getCameraHeight(),
-                Constants.SPEAKER_APRILTAG_HEIGHT,
-                SPEAKER_PHOTON.getCameraDegrees()));
     PHOTON_TAB.add(
         "Drive To Note Auto",
         new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR));
@@ -402,9 +402,9 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_PHOTON));
-    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER, SPEAKER_PHOTON));
-    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_PHOTON));
+    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT));
+    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER, SPEAKER_LIMELIGHT));
+    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_LIMELIGHT));
   }
 
   public void configureNamedCommands() {
@@ -413,13 +413,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "ShootNoteRegular",
         new ShootNoteAimbotFixed(
-                SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, SPEAKER_PHOTON, WRIST)
+                SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, SPEAKER_LIMELIGHT, WRIST)
             .withTimeout(3.0)
             .andThen(new PoopNote(SHOOTER, 1000).withTimeout(0.7)));
     NamedCommands.registerCommand(
         "ShootNoteAimbot",
         new ShootNoteSequence(
-            SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, DRIVETRAIN, SPEAKER_PHOTON));
+            SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, DRIVETRAIN, SPEAKER_LIMELIGHT));
     NamedCommands.registerCommand(
         "SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(5200)));
     NamedCommands.registerCommand(
@@ -469,7 +469,7 @@ public class RobotContainer {
         "DriveToNoteAuto",
         new ParallelDeadlineGroup(
             new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
-            new DriveToNoteAuto(DRIVETRAIN, AMP_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
+            new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
   }
 
   public void addAuto(String autoName) {
