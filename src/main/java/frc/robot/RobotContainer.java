@@ -374,9 +374,7 @@ public class RobotContainer {
 
     addAuto("ampa-full");
     addAuto("sourcea-fullshoot");
-    addAuto("sourcea");
     addAuto("amp_close");
-    addAuto("amp_subwoofer");
     addAuto("amp_subwoofer_reversal");
     addAuto("driven_source_score");
     addAuto("heart_source_shoot");
@@ -384,6 +382,10 @@ public class RobotContainer {
     addAuto("Taxi-Amp");
     addAuto("Taxi-Source");
     addAuto("temp_center");
+    addAuto("GKC-SOURCE-A");
+    addAuto("GKC-SOURCE-B");
+    addAuto("GKC-AMP-A");
+    addAuto("GKC-AMP-B");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
@@ -396,7 +398,7 @@ public class RobotContainer {
 
   public void configureNamedCommands() {
     NamedCommands.registerCommand(
-        "ShootNote", new ShootNoteSequence(SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, 40));
+        "ShootNote", new ShootNote(SHOOTER, ELEVATOR, 3500));
     NamedCommands.registerCommand(
         "ShootNoteRegular",
         new ShootNoteAimbotFixed(
@@ -463,6 +465,8 @@ public class RobotContainer {
         new ParallelDeadlineGroup(
             new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
             new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
+    NamedCommands.registerCommand("OverrideRotationSpeakerEnable", new InstantCommand(() -> aimAtTargetAuto = true));
+    NamedCommands.registerCommand("OverrideRotationSpeakerDisable", new InstantCommand(() -> aimAtTargetAuto = false));
   }
 
   public void addAuto(String autoName) {

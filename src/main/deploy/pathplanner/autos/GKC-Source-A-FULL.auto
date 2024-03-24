@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.49,
-      "y": 7.29
+      "x": 1.423,
+      "y": 3.646
     },
-    "rotation": 90.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "amp_to_mid1-3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteAimbot"
+            "pathName": "GKC-Source-A-FULL"
           }
         }
       ]

@@ -3,9 +3,12 @@
   "robotLength": 0.92,
   "holonomicMode": true,
   "pathFolders": [
-    "temp",
+    "GKC Amp",
+    "GKC Source",
+    "GKC",
     "amp_side",
-    "source_side"
+    "source_side",
+    "temp"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,

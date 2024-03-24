@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.423,
+        "y": 3.646
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.0878252234373162,
+        "y": 3.663726710370663
+      },
+      "isLocked": false,
+      "linkedName": "GKC-Source-Start"
+    },
+    {
+      "anchor": {
+        "x": 3.5210294279519947,
+        "y": 2.530883658289892
+      },
+      "prevControl": {
+        "x": 2.365202224304784,
+        "y": 3.370537609014394
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "GKC-Source-Shoot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "OverrideRotationSpeakerEnable"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -34.464928864695125,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "GKC Source",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.15885553888246,
+        "y": 5.837523626785966
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.213493923155531,
+        "y": 4.1881300935314805
+      },
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-ShootPosition"
+    },
+    {
+      "anchor": {
+        "x": 8.301777211056393,
+        "y": 4.0703993932632985
+      },
+      "prevControl": {
+        "x": 6.456272140536197,
+        "y": 2.634863778205475
+      },
+      "nextControl": {
+        "x": 8.908416293216538,
+        "y": 4.542276724752509
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.15885553888246,
+        "y": 5.837523626785966
+      },
+      "prevControl": {
+        "x": 6.9240471422213545,
+        "y": 7.837902126338435
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-ShootPosition"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "GKC Amp",
+  "previewStartingState": {
+    "rotation": -0.7084201781018453,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

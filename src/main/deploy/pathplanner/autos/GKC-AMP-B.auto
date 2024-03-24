@@ -1,0 +1,115 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.33,
+      "y": 5.548
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwoofer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC_AMP-1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteRegular"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC_AMP-2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteRegular"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC_AMP-3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteRegular"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC_AMP-4-alt"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteRegular"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC_AMP-5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteRegular"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

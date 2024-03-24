@@ -1,0 +1,126 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5210294279519947,
+        "y": 2.530883658289892
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.64144936235456,
+        "y": 0.6906728654742802
+      },
+      "isLocked": false,
+      "linkedName": "GKC-Source-Shoot"
+    },
+    {
+      "anchor": {
+        "x": 8.18866665520693,
+        "y": 4.137074178408264
+      },
+      "prevControl": {
+        "x": 8.496267430108794,
+        "y": 3.2880404493680637
+      },
+      "nextControl": {
+        "x": 7.897624345380649,
+        "y": 4.940403551356418
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.5210294279519947,
+        "y": 2.530883658289892
+      },
+      "prevControl": {
+        "x": 5.280330791216591,
+        "y": 5.014725379134069
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "GKC-Source-Shoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "EnableSpeakerPoint",
+      "waypointRelativePos": 1.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "OverrideRotationSpeakerEnable"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "DisableSpeakerPoint",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "OverrideRotationSpeakerDisable"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -39.16695167635081,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "GKC Source",
+  "previewStartingState": {
+    "rotation": -40.06698214865558,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
