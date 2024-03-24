@@ -95,8 +95,7 @@ public class SwerveCommand extends Command {
       THETA_CONTROLLER.setSetpoint(setPoint);
       rotationPercentage =
           THETA_CONTROLLER.calculate(
-              DRIVETRAIN.getPose().getRotation().getDegrees() - 45.0,
-              THETA_CONTROLLER.getSetpoint());
+              DRIVETRAIN.getPose().getRotation().getDegrees(), THETA_CONTROLLER.getSetpoint());
     }
 
     double rotationalVelocity = rotationPercentage;

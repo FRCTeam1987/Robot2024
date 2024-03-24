@@ -10,6 +10,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -23,7 +24,10 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
 import frc.robot.constants.DriveConstants;
+import frc.robot.util.Util;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -100,9 +104,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
     configurePathPlanner();
+    m_pigeon2.reset();
     if (Utils.isSimulation()) {
       startSimThread();
     }
+  }
+
+  public void setChassisSpeeds(final ChassisSpeeds speeds) {
+    this.setControl(AutoRequest.withSpeeds(speeds));
   }
 
   private void configurePathPlanner() {
@@ -130,6 +139,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                     .Red, // Assume the path needs to be flipped for Red vs Blue, this is normally
         // the case
         this); // Subsystem for requirements
+
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+  }
+
+  public Optional<Rotation2d> getRotationTargetOverride() {
+    // Some condition that should decide if we want to override rotation
+    if (RobotContainer.aimAtTargetAuto) {
+      return Optional.of(Util.getRotationToAllianceSpeaker(this.getPose()));
+    } else {
+      // return an empty optional when we don't want to override the path's rotation
+      return Optional.empty();
+    }
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {

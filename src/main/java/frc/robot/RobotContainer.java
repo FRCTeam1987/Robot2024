@@ -20,10 +20,12 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -89,6 +91,7 @@ public class RobotContainer {
   public static boolean isForwardAmpPrimed = false;
   public static boolean isReverseAmpPrimed = false;
   public static boolean isClimbPrimed = false;
+  public static boolean aimAtTargetAuto = false;
   private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps;
   private double MaxAngularRate = 1.5 * Math.PI;
 
@@ -105,6 +108,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     instance = this;
+
     new Util();
     configureNamedCommands();
     configureShuffleboard();
@@ -130,7 +134,14 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
                     .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
                 () -> isReverseAmpPrimed));
-    DRIVER_CONTROLLER.back().onTrue(DRIVETRAIN.runOnce(() -> DRIVETRAIN.seedFieldRelative()));
+    DRIVER_CONTROLLER
+        .back()
+        .onTrue(
+            DRIVETRAIN.runOnce(
+                () -> {
+                  DRIVETRAIN.seedFieldRelative();
+                  DRIVETRAIN.getPigeon2().reset();
+                }));
     DRIVER_CONTROLLER.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
     DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
     DRIVER_CONTROLLER
@@ -373,7 +384,6 @@ public class RobotContainer {
     addAuto("Taxi-Amp");
     addAuto("Taxi-Source");
     addAuto("temp_center");
-    addAuto("test_choreo");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
@@ -393,6 +403,12 @@ public class RobotContainer {
                 SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, SPEAKER_LIMELIGHT, WRIST)
             .withTimeout(3.0)
             .andThen(new PoopNote(SHOOTER, 1000).withTimeout(0.7)));
+    NamedCommands.registerCommand(
+        "PoopNote",
+        new SequentialCommandGroup(
+            new InstantCommand(() -> WRIST.setDegrees(25)),
+            new WaitCommand(0.1),
+            new PoopNote(SHOOTER, 1000).withTimeout(0.7)));
     NamedCommands.registerCommand(
         "ShootNoteAimbot",
         new ShootNoteSequence(
@@ -454,6 +470,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+
     return AUTO_CHOOSER.getSelected();
   }
 
@@ -465,19 +482,21 @@ public class RobotContainer {
     Limelight.PoseEstimate pose = Limelight.getBotPoseEstimate_wpiBlue(SPEAKER_LIMELIGHT);
     if (pose.tagCount >= 2) {
       DriverStation.reportWarning("ADDING POSE BASED ON 2 TAGS", false);
+      SmartDashboard.putString("botpose-fun", pose.pose.toString());
       DRIVETRAIN.addVisionMeasurement(
-          pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
-    } else {
-      if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
-        DriverStation.reportWarning(
-            "ADDING POSE BASED ON AMBIGUITY OF "
-                + pose.rawFiducials[0].ambiguity
-                + " ON TAG "
-                + pose.rawFiducials[0].id,
-            false);
-        DRIVETRAIN.addVisionMeasurement(
-            pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
-      }
+          pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, .7));
+
+      // } else {
+      //   if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
+      //     DriverStation.reportWarning(
+      //         "ADDING POSE BASED ON AMBIGUITY OF "
+      //             + pose.rawFiducials[0].ambiguity
+      //             + " ON TAG "
+      //             + pose.rawFiducials[0].id,
+      //         false);
+      //     DRIVETRAIN.addVisionMeasurement(
+      //         pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
+      //   }
     }
   }
 

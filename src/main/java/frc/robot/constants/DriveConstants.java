@@ -30,7 +30,7 @@ public class DriveConstants {
 
   // The stator current at which the wheels start to slip;
   // This needs to be tuned to your individual robot
-  private static final double kSlipCurrentA = 80.0;
+  private static final double kSlipCurrentA = 60.0;
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot
@@ -97,7 +97,7 @@ public class DriveConstants {
   private static final int kFrontLeftEncoderId = 31;
   private static final double kFrontLeftEncoderOffset = -0.316406;
 
-  private static final double kFrontLeftXPosInches = 8.375; // 10.375;
+  private static final double kFrontLeftXPosInches = 10.375; // 10.375;
   private static final double kFrontLeftYPosInches = 10.375;
 
   // Front Right
@@ -106,7 +106,7 @@ public class DriveConstants {
   private static final int kFrontRightEncoderId = 41;
   private static final double kFrontRightEncoderOffset = -0.462891;
 
-  private static final double kFrontRightXPosInches = 8.375; // 10.375;
+  private static final double kFrontRightXPosInches = 10.375; // 10.375;
   private static final double kFrontRightYPosInches = -10.375;
 
   // Back Left
@@ -115,7 +115,7 @@ public class DriveConstants {
   private static final int kBackLeftEncoderId = 11;
   private static final double kBackLeftEncoderOffset = 0.124268;
 
-  private static final double kBackLeftXPosInches = -12.375; // -10.375;
+  private static final double kBackLeftXPosInches = -10.375; // -10.375;
   private static final double kBackLeftYPosInches = 10.375;
 
   // Back Right
@@ -124,7 +124,7 @@ public class DriveConstants {
   private static final int kBackRightEncoderId = 21;
   private static final double kBackRightEncoderOffset = 0.215332;
 
-  private static final double kBackRightXPosInches = -12.375; // -10.375;
+  private static final double kBackRightXPosInches = -10.375; // -10.375;
   private static final double kBackRightYPosInches = -10.375;
 
   private static final SwerveModuleConstants FrontLeft =

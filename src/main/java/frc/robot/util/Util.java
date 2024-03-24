@@ -9,10 +9,14 @@ package frc.robot.util;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
@@ -20,6 +24,8 @@ public class Util {
   public static final AprilTagFieldLayout field =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   public static Pose3d TAG_4_POSE;
+  public static Pose3d TAG_7_POSE;
+  public static DriverStation.Alliance alliance;
   public static final double DEADBAND = 0.05;
 
   public Util() {
@@ -27,8 +33,21 @@ public class Util {
         .getTagPose(4)
         .ifPresent(
             pose -> {
-              Util.TAG_4_POSE = pose;
+              Util.TAG_4_POSE =
+                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
             });
+    field
+        .getTagPose(7)
+        .ifPresent(
+            pose -> {
+              Util.TAG_7_POSE =
+                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    DriverStation.getAlliance().ifPresent(ouralliance -> alliance = ouralliance);
+  }
+
+  public static Pose3d getAllianceSpeakerCenter() {
+    return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
   }
 
   public static boolean isWithinTolerance(
@@ -55,6 +74,13 @@ public class Util {
                   .getTranslation());
     }
     return 0.0;
+  }
+
+  public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
+    // return
+    // opose.getTranslation().minus(Util.getAllianceSpeakerCenter().getTranslation().toTranslation2d()).getAngle();
+    Transform2d pose = Util.getAllianceSpeakerCenter().toPose2d().minus(opose);
+    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
   }
 
   public static double getInterpolatedWristAngle(String limelight) {
