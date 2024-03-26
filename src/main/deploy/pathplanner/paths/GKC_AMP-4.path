@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4950799686570786,
-        "y": 6.837436367320241
+        "x": 2.618270516293842,
+        "y": 6.845532684374221
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.671178659040826,
-        "y": 7.109093706847582
+        "x": 3.2359516595142224,
+        "y": 7.173897436243093
       },
       "isLocked": false,
       "linkedName": "GKC_AMP_A-3_End"
     },
     {
       "anchor": {
-        "x": 8.285312710775102,
-        "y": 7.456259704133846
+        "x": 8.083944435460834,
+        "y": 7.343155865903732
       },
       "prevControl": {
-        "x": 8.217337472732256,
-        "y": 7.789387053557166
+        "x": 8.025715097003644,
+        "y": 7.770466330099236
       },
       "nextControl": {
-        "x": 8.572578787644847,
-        "y": 6.048450191108915
+        "x": 8.12340849833267,
+        "y": 7.053552592509119
       },
       "isLocked": false,
       "linkedName": null
@@ -36,17 +36,53 @@
         "y": 5.837523626785966
       },
       "prevControl": {
-        "x": 6.492081386195379,
-        "y": 6.631223993876357
+        "x": 4.404459365590163,
+        "y": 6.421361382315135
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "GKC_AMP_A-ShootPosition"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "eventMarkers": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.2,
+      "maxWaypointRelativePos": 1.8,
+      "constraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Intake Note",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 3.0,

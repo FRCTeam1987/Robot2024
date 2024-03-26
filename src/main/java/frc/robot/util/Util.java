@@ -62,8 +62,8 @@ public class Util {
   public static void setupUtil() {}
 
   public static double getDistance(String limelight) {
-    var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
-    if (result.tagCount > 0) {
+    // var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
+    // if (result.tagCount > 0) {
       return new Pose3d(RobotContainer.get().getPose())
           .getTranslation()
           .getDistance(
@@ -72,8 +72,8 @@ public class Util {
                       new Transform3d(
                           new Translation3d(0, 0, -TAG_4_POSE.getZ()), new Rotation3d()))
                   .getTranslation());
-    }
-    return 0.0;
+    // }
+    // return 0.0;
   }
 
   public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
@@ -91,7 +91,7 @@ public class Util {
 
   public static boolean isValidShot(String limelight) {
     double dist = Util.getDistance(limelight);
-    if (dist > 2.25 && dist < 4.25) {
+    if (dist > 2.25 && dist < 5.25) {
       return true;
     } else return false;
   }

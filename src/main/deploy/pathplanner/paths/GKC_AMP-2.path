@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4950799686570786,
-        "y": 4.129990246746069
+        "x": 2.618270516293842,
+        "y": 4.267261723754767
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.16205114059787,
-        "y": 4.276409151324809
+        "x": 1.2362996511962565,
+        "y": 4.719029813866755
       },
       "isLocked": false,
       "linkedName": "GKC_AMP_A-1_End"
     },
     {
       "anchor": {
-        "x": 2.4950799686570786,
-        "y": 5.553841148285116
+        "x": 2.7384349720764702,
+        "y": 5.553800842543523
       },
       "prevControl": {
-        "x": 1.4950799686570786,
-        "y": 5.553841148285116
+        "x": 1.7041556595189296,
+        "y": 5.480386700311551
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeNoteSlow",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNoteSlow"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 3.0,

@@ -38,14 +38,14 @@ public class AimLockWrist extends Command {
     if (RobotContainer.isForwardAmpPrimed || RobotContainer.isReverseAmpPrimed) {
       return;
     }
-    if (Util.canSeeTarget(speakerLimelight)) {
+    // if (Util.canSeeTarget(speakerLimelight)) {
       if (shooter.isCenterBroken()) {
         double degrees = Util.getInterpolatedWristAngle(speakerLimelight);
         wrist.setDegrees(degrees);
 
-      } else {
-        wrist.goHome();
-      }
+      // } else {
+      //   wrist.goHome();
+      // }
     }
   }
 

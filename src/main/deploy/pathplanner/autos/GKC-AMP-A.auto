@@ -18,12 +18,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "GKC_AMP-1"
@@ -32,13 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteRegular"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
+            "name": "ShootNote"
           }
         },
         {
@@ -50,13 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteRegular"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
+            "name": "ShootNote"
           }
         },
         {
@@ -68,13 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteRegular"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
+            "name": "ShootNote"
           }
         },
         {
@@ -86,13 +62,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteRegular"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
+            "name": "ShootNote"
           }
         },
         {
@@ -104,7 +74,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteRegular"
+            "name": "ShootNote"
           }
         }
       ]
