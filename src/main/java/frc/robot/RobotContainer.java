@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
-import frc.robot.commands.control.AimLockWristAuto;
 import frc.robot.commands.control.Climb;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
@@ -46,6 +45,9 @@ import frc.robot.commands.control.ShootTall;
 import frc.robot.commands.control.StopAll;
 import frc.robot.commands.control.amp.FireRevAmp;
 import frc.robot.commands.control.amp.PrepRevAmp;
+import frc.robot.commands.control.auto.AutoAimLockWrist;
+import frc.robot.commands.control.auto.AutoIdleShooter;
+import frc.robot.commands.control.auto.InstantShoot;
 import frc.robot.commands.control.note.IntakeNoteSequence;
 import frc.robot.commands.control.note.IntakeNoteSequenceAuto;
 import frc.robot.commands.control.note.LobNote;
@@ -467,10 +469,9 @@ public class RobotContainer {
             new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
     NamedCommands.registerCommand("OverrideRotationSpeakerEnable", new InstantCommand(() -> aimAtTargetAuto = true));
     NamedCommands.registerCommand("OverrideRotationSpeakerDisable", new InstantCommand(() -> aimAtTargetAuto = false));
-    NamedCommands.registerCommand("DefaultWrist", new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT));
-    NamedCommands.registerCommand("DefaultShooter", new IdleShooter(SHOOTER, SPEAKER_LIMELIGHT));
-    NamedCommands.registerCommand("InstantShoot", new InstantCommand(
-      () -> SHOOTER.setFeederVoltage(8.0)));
+    NamedCommands.registerCommand("DefaultWrist", new AutoAimLockWrist(WRIST));
+    NamedCommands.registerCommand("DefaultShooter", new AutoIdleShooter(SHOOTER));
+    NamedCommands.registerCommand("InstantShoot", new InstantShoot(SHOOTER));
     NamedCommands.registerCommand(
         "IntakeNoteAuto", new IntakeNoteSequenceAuto(SHOOTER, INTAKE, WRIST, ELEVATOR)); //new InstantCommand(() -> aimAtTargetAuto = true)).andThen()
   }

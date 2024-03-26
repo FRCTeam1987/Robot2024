@@ -76,6 +76,18 @@ public class Util {
     // return 0.0;
   }
 
+  // TODO flex on alliance tag pose
+  public static double getDistanceToSpeaker() {
+    return new Pose3d(RobotContainer.get().getPose())
+      .getTranslation()
+      .getDistance(
+        TAG_4_POSE
+          .transformBy(
+            new Transform3d(
+              new Translation3d(0, 0, -TAG_4_POSE.getZ()), new Rotation3d()))
+          .getTranslation());
+  }
+
   public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
     // return
     // opose.getTranslation().minus(Util.getAllianceSpeakerCenter().getTranslation().toTranslation2d()).getAngle();
@@ -89,11 +101,22 @@ public class Util {
         .value;
   }
 
+  public static double getInterpolatedWristAngle() {
+    return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
+            new InterpolatingDouble(Util.getDistanceToSpeaker()))
+        .value;
+  }
+
   public static boolean isValidShot(String limelight) {
     double dist = Util.getDistance(limelight);
     if (dist > 2.25 && dist < 5.25) {
       return true;
     } else return false;
+  }
+
+  public static boolean isValidShot() {
+    double dist = Util.getDistanceToSpeaker();
+    return dist > 2.25 && dist < 5.25;
   }
 
   public static double squareValue(double value) {
