@@ -65,17 +65,26 @@ public class PointAtAprilTag extends Command {
     // drivetrain.setChassisSpeeds(HOLO_CONTROLLER.calculate(current, new
     // Pose2d(current.getTranslation(), new Rotation2d(desiredRotation)), 0, new
     // Rotation2d(desiredRotation)));
-    double rotationRate =
-        THETA_CONTROLLER.calculate(
-            drivetrain.getPose().getRotation().getDegrees() + 90, desiredRotation);
+    double rotationRate = 0.0;
+    if (Util.alliance == DriverStation.Alliance.Blue) {
+      System.out.println("+90");
+      rotationRate =
+          THETA_CONTROLLER.calculate(
+              drivetrain.getPose().getRotation().getDegrees() + 90, desiredRotation);
+    } else {
+      System.out.println("-90");
+      rotationRate =
+          THETA_CONTROLLER.calculate(
+              drivetrain.getPose().getRotation().getDegrees() + 90, desiredRotation);
+    }
     drivetrain.setControl(
         drive
             .withVelocityX(
-                Util.squareValue(-velocityXSupplier.getAsDouble())
+                Util.squareValue(velocityXSupplier.getAsDouble())
                     * DriveConstants.kSpeedAt12VoltsMps) // Drive forward with
             // negative Y (forward)
             .withVelocityY(
-                Util.squareValue(-velocityYSupplier.getAsDouble())
+                Util.squareValue(velocityYSupplier.getAsDouble())
                     * DriveConstants.kSpeedAt12VoltsMps) // Drive left with negative X (left)
             .withRotationalRate(rotationRate) // Drive counterclockwise with negative X (left)
         );

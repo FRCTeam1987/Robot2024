@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Wrist;
@@ -24,8 +25,8 @@ public class ShootTall extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               elevator.setLengthInches(28);
-              wrist.setDegrees(22);
-              shooter.setRPMShoot(3250);
+              wrist.setDegrees(23);
+              shooter.setRPMShoot(Constants.Shooter.SHOOTER_RPM);
             },
             elevator,
             wrist,

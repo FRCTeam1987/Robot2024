@@ -4,13 +4,9 @@
 
 package frc.robot.commands.control.auto;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
-import frc.robot.util.Util;
 
 public class AutoIdleShooter extends Command {
 
@@ -30,14 +26,14 @@ public class AutoIdleShooter extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // if (shooter.isCenterBroken() && validShotDebouncer.calculate(Util.isValidShot(SPEAKER_LIMELIGHT))) {
-      shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
+    // if (shooter.isCenterBroken() &&
+    // validShotDebouncer.calculate(Util.isValidShot(SPEAKER_LIMELIGHT))) {
+    shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
     // } else {
     //   shooter.stopShooter();
     // }

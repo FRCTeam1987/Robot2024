@@ -62,7 +62,8 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new WaitCommand(0.1),
         new WaitUntilCommand(shooter::isRearBroken),
         // new InstantCommand(intake::stopTop, intake),
-        new ConditionalCommand(new WaitUntilCommand(() -> shooter.isCenterBroken()), new InstantCommand(), () -> val),
+        new ConditionalCommand(
+            new WaitUntilCommand(() -> shooter.isCenterBroken()), new InstantCommand(), () -> val),
         new WaitUntilCommand(() -> shooter.isCenterBroken()),
         new InstantCommand(
             () -> {

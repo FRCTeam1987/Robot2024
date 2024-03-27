@@ -42,7 +42,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
+  private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean hasAppliedOperatorPerspective = false;
 
@@ -146,7 +146,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public Optional<Rotation2d> getRotationTargetOverride() {
     // Some condition that should decide if we want to override rotation
     if (RobotContainer.aimAtTargetAuto) {
-      return Optional.of(new Rotation2d(this.getPose().getRotation().minus(Util.getRotationToAllianceSpeaker(this.getPose())).getDegrees()));
+      return Optional.of(
+          new Rotation2d(
+              this.getPose()
+                  .getRotation()
+                  .minus(Util.getRotationToAllianceSpeaker(this.getPose()))
+                  .getDegrees()));
     } else {
       // return an empty optional when we don't want to override the path's rotation
       return Optional.empty();

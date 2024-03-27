@@ -11,7 +11,7 @@ import frc.robot.subsystems.Shooter;
 
 public class InstantShoot extends Command {
 
-  static private final double SHOT_DEBOUNCE_TIME = 0.06;
+  private static final double SHOT_DEBOUNCE_TIME = 0.06;
 
   private final Shooter m_shooter;
   private Debouncer m_shotDebouncer;

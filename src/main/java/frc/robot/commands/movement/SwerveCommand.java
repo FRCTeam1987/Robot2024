@@ -63,9 +63,9 @@ public class SwerveCommand extends Command {
   @Override
   public void execute() {
     double xPercentage =
-        Util.squareValue(-TRANSLATION_X_SUPPLIER.getAsDouble()) * DriveConstants.kSpeedAt12VoltsMps;
+        Util.squareValue(TRANSLATION_X_SUPPLIER.getAsDouble()) * DriveConstants.kSpeedAt12VoltsMps;
     double yPercentage =
-        Util.squareValue(-TRANSLATION_Y_SUPPLIER.getAsDouble()) * DriveConstants.kSpeedAt12VoltsMps;
+        Util.squareValue(TRANSLATION_Y_SUPPLIER.getAsDouble()) * DriveConstants.kSpeedAt12VoltsMps;
     double rotationPercentage = Util.squareValue(-ROTATION_SUPPLIER.getAsDouble()) * Math.PI * 3.5;
 
     if (isCardinalLocking && !Util.isWithinTolerance(ROTATION_SUPPLIER.getAsDouble(), 0.0, 0.25)) {

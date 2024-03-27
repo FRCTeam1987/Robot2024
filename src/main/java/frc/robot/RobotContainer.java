@@ -9,7 +9,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.VecBuilder;
@@ -149,7 +148,11 @@ public class RobotContainer {
                   DRIVETRAIN.seedFieldRelative();
                   DRIVETRAIN.getPigeon2().reset();
                 }));
-    DRIVER_CONTROLLER.start().onTrue(new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE).andThen(new InstantCommand(() -> WRIST.goHome())));
+    DRIVER_CONTROLLER
+        .start()
+        .onTrue(
+            new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
+                .andThen(new InstantCommand(() -> WRIST.goHome())));
     DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
     DRIVER_CONTROLLER
         .leftBumper()
@@ -176,12 +179,16 @@ public class RobotContainer {
   }
 
   private void configureCoDriverController() {
+    CO_DRIVER_CONTROLLER
+        .leftBumper()
+        .onTrue(Util.pathfindToPose(Util.findNearestPoseToTrapClimbs(getPose())));
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
     CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
 
     CO_DRIVER_CONTROLLER
         .y()
         .onTrue(
+          new ConditionalCommand(
             new ConditionalCommand(
                 new Climb(ELEVATOR, WRIST, SHOOTER),
                 new InstantCommand(
@@ -192,7 +199,8 @@ public class RobotContainer {
                         ELEVATOR,
                         WRIST)
                     .andThen(() -> isClimbPrimed = true),
-                () -> isClimbPrimed));
+                () -> isClimbPrimed), new InstantCommand(), () -> DriverStation.getMatchTime() < 45.0)
+        );
 
     CO_DRIVER_CONTROLLER.x().onTrue(new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
     CO_DRIVER_CONTROLLER.leftTrigger().onTrue(new ShootTall(ELEVATOR, WRIST, SHOOTER));
@@ -406,7 +414,12 @@ public class RobotContainer {
 
   public void configureNamedCommands() {
     NamedCommands.registerCommand(
-        "ShootNote", new ParallelDeadlineGroup(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM), new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT), new InstantCommand(() -> aimAtTargetAuto = true)).andThen(new InstantCommand(() -> aimAtTargetAuto = false)));
+        "ShootNote",
+        new ParallelDeadlineGroup(
+                new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM),
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT),
+                new InstantCommand(() -> aimAtTargetAuto = true))
+            .andThen(new InstantCommand(() -> aimAtTargetAuto = false)));
     NamedCommands.registerCommand(
         "ShootNoteRegular",
         new ShootNoteAimbotFixed(
@@ -420,11 +433,25 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(5200)));
 
-    NamedCommands.registerCommand("SpeedUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE)));
     NamedCommands.registerCommand(
-        "IntakeNote", new SequentialCommandGroup(new ParallelCommandGroup(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT), new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -7)) , new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
+        "SpeedUpShooter",
+        new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE)));
     NamedCommands.registerCommand(
-        "IntakeNoteSlow", new SequentialCommandGroup(new ParallelCommandGroup(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT), new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -4)), new InstantCommand(() -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
+        "IntakeNote",
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT),
+                new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -7)),
+            new InstantCommand(
+                () -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
+    NamedCommands.registerCommand(
+        "IntakeNoteSlow",
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT),
+                new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -4)),
+            new InstantCommand(
+                () -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
     NamedCommands.registerCommand(
         "PoopPrep",
         new InstantCommand(
@@ -467,13 +494,18 @@ public class RobotContainer {
         new ParallelDeadlineGroup(
             new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
             new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
-    NamedCommands.registerCommand("OverrideRotationSpeakerEnable", new InstantCommand(() -> aimAtTargetAuto = true));
-    NamedCommands.registerCommand("OverrideRotationSpeakerDisable", new InstantCommand(() -> aimAtTargetAuto = false));
+    NamedCommands.registerCommand(
+        "OverrideRotationSpeakerEnable", new InstantCommand(() -> aimAtTargetAuto = true));
+    NamedCommands.registerCommand(
+        "OverrideRotationSpeakerDisable", new InstantCommand(() -> aimAtTargetAuto = false));
     NamedCommands.registerCommand("DefaultWrist", new AutoAimLockWrist(WRIST));
     NamedCommands.registerCommand("DefaultShooter", new AutoIdleShooter(SHOOTER));
     NamedCommands.registerCommand("InstantShoot", new InstantShoot(SHOOTER));
     NamedCommands.registerCommand(
-        "IntakeNoteAuto", new IntakeNoteSequenceAuto(SHOOTER, INTAKE, WRIST, ELEVATOR)); //new InstantCommand(() -> aimAtTargetAuto = true)).andThen()
+        "IntakeNoteAuto",
+        new IntakeNoteSequenceAuto(
+            SHOOTER, INTAKE, WRIST,
+            ELEVATOR)); // new InstantCommand(() -> aimAtTargetAuto = true)).andThen()
   }
 
   public void addAuto(String autoName) {
@@ -491,7 +523,8 @@ public class RobotContainer {
 
   public void updatePoseVision() {
     ChassisSpeeds currentSpeed = DRIVETRAIN.getCurrentRobotChassisSpeeds();
-    if (Math.abs(currentSpeed.vxMetersPerSecond) > 1.5 || Math.abs(currentSpeed.vyMetersPerSecond) > 1.5) {
+    if (Math.abs(currentSpeed.vxMetersPerSecond) > 1.5
+        || Math.abs(currentSpeed.vyMetersPerSecond) > 1.5) {
       return;
     }
     Limelight.PoseEstimate pose = Limelight.getBotPoseEstimate_wpiBlue(SPEAKER_LIMELIGHT);

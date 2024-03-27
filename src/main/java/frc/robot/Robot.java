@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.SingleFadeAnimation;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -21,6 +22,7 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
     robotContainer.CANDLES.setAnimationBoth(
         new LarsonAnimation(255, 255, 0, 0, 1.0, 8, BounceMode.Front, 1));
+    PathfindingCommand.warmupCommand().schedule();
   }
 
   @Override
