@@ -148,11 +148,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (RobotContainer.aimAtTargetAuto) {
       Pose2d current = getPose();
       double desiredRotation =
-      current.getRotation().minus(Util.getRotationToAllianceSpeaker(current)).getDegrees();
+          current.getRotation().minus(Util.getRotationToAllianceSpeaker(current)).getDegrees();
 
-  // drivetrain.setChassisSpeeds(HOLO_CONTROLLER.calculate(current, new
-  // Pose2d(current.getTranslation(), new Rotation2d(desiredRotation)), 0, new
-  // Rotation2d(desiredRotation)));
+      // drivetrain.setChassisSpeeds(HOLO_CONTROLLER.calculate(current, new
+      // Pose2d(current.getTranslation(), new Rotation2d(desiredRotation)), 0, new
+      // Rotation2d(desiredRotation)));
       return Optional.of(Rotation2d.fromDegrees(desiredRotation + 90.0));
     } else {
       // return an empty optional when we don't want to override the path's rotation
