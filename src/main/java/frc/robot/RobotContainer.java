@@ -405,6 +405,7 @@ public class RobotContainer {
     addAuto("GKC-AMP-A");
     addAuto("GKC-AMP-B");
     addAuto("GKC-Source-J");
+    addAuto("GKC-Amp-J");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
@@ -531,6 +532,9 @@ public class RobotContainer {
       return;
     }
     Limelight.PoseEstimate pose = Limelight.getBotPoseEstimate_wpiBlue(SPEAKER_LIMELIGHT);
+    // TODO throw away any botpose that is far away from previous pose
+    // Sometimes teleports when the ll gets confused
+    // Usually at a longer distance, could filter out long distance from tags
     if (pose.tagCount >= 2) {
       DRIVETRAIN.addVisionMeasurement(
           pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, .7));
