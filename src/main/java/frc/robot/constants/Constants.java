@@ -20,8 +20,8 @@ public class Constants {
   public static final double translationYSlewRate = 10.0;
   public static final double rotationSlewRate = 4.5;
 
-  public static final int SHOOTER_LEADER_ID = 56;
-  public static final int SHOOTER_FOLLOWER_ID = 53;
+  public static final int SHOOTER_LEADER_ID = 53;
+  public static final int SHOOTER_FOLLOWER_ID = 56;
   public static final int SHOOTER_FEEDER_ID = 55;
   public static final int SHOOTER_FEEDER_ID_TEMP = 10;
 

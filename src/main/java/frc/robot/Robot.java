@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     robotContainer.CANDLES.stop();
+    robotContainer.configureDefaultCommands();
     if (autoCommand != null) {
       autoCommand.cancel();
     }

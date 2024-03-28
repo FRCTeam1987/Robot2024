@@ -199,7 +199,7 @@ public class Util {
     return currentPose.nearest(List.of(otherPoses));
   }
 
-  //TODO: Find actual tag positions and ideal offsets
+  // TODO: Find actual tag positions and ideal offsets
   public static Pose2d findNearestPoseToTrapClimbs(Pose2d currentPose) {
     return currentPose.nearest(TRAP_TAGS);
   }

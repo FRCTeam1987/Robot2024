@@ -29,10 +29,10 @@ public class ShootSubwoofer extends SequentialCommandGroup {
             elevator,
             shooter),
         new WaitUntilCommand(elevator::isAtSetpoint),
-        new InstantCommand(() -> wrist.setDegrees(52), wrist),
+        new InstantCommand(() -> wrist.setDegrees(52)),
         new WaitCommand(0.44),
         new WaitUntilCommand(wrist::isAtSetpoint),
-        new InstantCommand(() -> shooter.setFeederVoltage(6.0), shooter),
+        new InstantCommand(() -> shooter.setFeederVoltage(7.5), shooter),
         new WaitUntilCommand(() -> !shooter.isCenterBroken()),
         new WaitCommand(0.04),
         new InstantCommand(
@@ -42,7 +42,6 @@ public class ShootSubwoofer extends SequentialCommandGroup {
               shooter.stopShooter();
               shooter.stopFeeder();
             },
-            wrist,
             shooter));
   }
 }

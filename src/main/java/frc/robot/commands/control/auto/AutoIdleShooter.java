@@ -5,6 +5,7 @@
 package frc.robot.commands.control.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
 
@@ -31,6 +32,11 @@ public class AutoIdleShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // if (shooter.isCenterBroken()) {
+    //   RobotContainer.aimAtTargetAuto = true;
+    // } else {
+    //   RobotContainer.aimAtTargetAuto = false;
+    // }
     // if (shooter.isCenterBroken() &&
     // validShotDebouncer.calculate(Util.isValidShot(SPEAKER_LIMELIGHT))) {
     shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);

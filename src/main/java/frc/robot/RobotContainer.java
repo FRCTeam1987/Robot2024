@@ -82,6 +82,8 @@ public class RobotContainer {
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
   public final String SPEAKER_LIMELIGHT = "limelight-speaker";
+  public final String AMP_LIMELIGHT = "limelight-amp";
+  public final String RIGHT_LIMEKIGHT = "limelight-right";
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
   public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
@@ -188,19 +190,20 @@ public class RobotContainer {
     CO_DRIVER_CONTROLLER
         .y()
         .onTrue(
-          new ConditionalCommand(
             new ConditionalCommand(
-                new Climb(ELEVATOR, WRIST, SHOOTER),
-                new InstantCommand(
-                        () -> {
-                          ELEVATOR.setLengthInches(Constants.Climb.CLIMB_START_HEIGHT);
-                          WRIST.goHome();
-                        },
-                        ELEVATOR,
-                        WRIST)
-                    .andThen(() -> isClimbPrimed = true),
-                () -> isClimbPrimed), new InstantCommand(), () -> DriverStation.getMatchTime() < 45.0)
-        );
+                new ConditionalCommand(
+                    new Climb(ELEVATOR, WRIST, SHOOTER),
+                    new InstantCommand(
+                            () -> {
+                              ELEVATOR.setLengthInches(Constants.Climb.CLIMB_START_HEIGHT);
+                              WRIST.goHome();
+                            },
+                            ELEVATOR,
+                            WRIST)
+                        .andThen(() -> isClimbPrimed = true),
+                    () -> isClimbPrimed),
+                new InstantCommand(),
+                () -> DriverStation.getMatchTime() < 45.0));
 
     CO_DRIVER_CONTROLLER.x().onTrue(new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
     CO_DRIVER_CONTROLLER.leftTrigger().onTrue(new ShootTall(ELEVATOR, WRIST, SHOOTER));
@@ -529,11 +532,18 @@ public class RobotContainer {
     }
     Limelight.PoseEstimate pose = Limelight.getBotPoseEstimate_wpiBlue(SPEAKER_LIMELIGHT);
     if (pose.tagCount >= 2) {
-      DriverStation.reportWarning("ADDING POSE BASED ON 2 TAGS", false);
-      SmartDashboard.putString("botpose-fun", pose.pose.toString());
       DRIVETRAIN.addVisionMeasurement(
           pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, .7));
-
+    }
+    // Limelight.PoseEstimate poseAmp = Limelight.getBotPoseEstimate_wpiBlue(AMP_LIMELIGHT);
+    // if (poseAmp.tagCount >= 2) {
+    //   DRIVETRAIN.addVisionMeasurement(
+    //       poseAmp.pose, poseAmp.timestampSeconds, VecBuilder.fill(.9, .9, .9));
+    // }
+    // Limelight.PoseEstimate poseRight = Limelight.getBotPoseEstimate_wpiBlue(RIGHT_LIMEKIGHT);
+    // if (poseRight.tagCount >= 2) {
+    //   DRIVETRAIN.addVisionMeasurement(
+    //       poseRight.pose, poseRight.timestampSeconds, VecBuilder.fill(1.5, 1.5,1.5));
       // } else {
       //   if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
       //     DriverStation.reportWarning(
@@ -545,7 +555,7 @@ public class RobotContainer {
       //     DRIVETRAIN.addVisionMeasurement(
       //         pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
       //   }
-    }
+      //}
   }
 
   public static RobotContainer get() {

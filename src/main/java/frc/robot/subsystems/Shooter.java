@@ -75,7 +75,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_FOLLOWER.getConfigurator().apply(SHOOTER_CONFIG);
 
     // SHOOTER_FOLLOWER.setControl(new Follower(SHOOTER_LEADER.getDeviceID(), true));
-    SHOOTER_FOLLOWER.setInverted(true);
+    SHOOTER_LEADER.setInverted(true);
     FEEDER.getConfigurator().apply(FEEDER_CFG);
     FEEDER.setInverted(true);
     FEEDER.setNeutralMode(NeutralModeValue.Brake);
@@ -109,11 +109,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isCenterBroken() {
-    return SHOOTER_LEADER.getForwardLimit().asSupplier().get().value == 0;
+    return SHOOTER_FOLLOWER.getForwardLimit().asSupplier().get().value == 0;
   }
 
   public boolean isRearBroken() {
-    return SHOOTER_LEADER.getReverseLimit().asSupplier().get().value == 0;
+    return SHOOTER_FOLLOWER.getReverseLimit().asSupplier().get().value == 0;
   }
 
   public void setFeederVoltage(double voltage) {

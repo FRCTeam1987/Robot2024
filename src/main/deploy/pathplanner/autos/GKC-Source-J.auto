@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4,
-      "y": 3.7
+      "x": 0.7,
+      "y": 4.398519742179469
     },
-    "rotation": 0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwoofer"
+          }
+        },
         {
           "type": "parallel",
           "data": {
@@ -19,12 +25,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "GKC Source J"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DefaultWrist"
                 }
               },
               {
