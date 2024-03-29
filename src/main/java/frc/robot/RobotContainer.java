@@ -542,9 +542,10 @@ public class RobotContainer {
     if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
       return;
     }
-    // Reject pose from long disance.
+    // Reject pose from long disance or high ambiguity.
     if ((botPose.tagCount == 1
-            && botPose.avgTagDist > Constants.Vision.maxSingleTagDistanceToAccept)
+            && (botPose.avgTagDist > Constants.Vision.maxSingleTagDistanceToAccept
+                || botPose.rawFiducials[0].ambiguity >= 0.9))
         || (botPose.tagCount >= 2
             && botPose.avgTagDist > Constants.Vision.maxMutiTagDistToAccept)) {
       return;
