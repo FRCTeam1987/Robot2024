@@ -28,7 +28,7 @@ public class AutoAimLockWrist extends Command {
   public void execute() {
     double degrees = Util.getInterpolatedWristAngle();
     // TODO find actual values, prevent wrist collision when the elevator is all the way down.
-          DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
+    DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
     if (degrees > 10.0 && degrees < 35.0) {
 
       return;

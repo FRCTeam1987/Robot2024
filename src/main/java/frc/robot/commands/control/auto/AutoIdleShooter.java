@@ -5,7 +5,6 @@
 package frc.robot.commands.control.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
 

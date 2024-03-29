@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -127,7 +126,7 @@ public class RobotContainer {
   }
 
   private void configureDriverController() {
-    DRIVER_CONTROLLER.b().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
+    DRIVER_CONTROLLER.b().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
 
     DRIVER_CONTROLLER
         .y()
@@ -548,18 +547,18 @@ public class RobotContainer {
     // if (poseRight.tagCount >= 2) {
     //   DRIVETRAIN.addVisionMeasurement(
     //       poseRight.pose, poseRight.timestampSeconds, VecBuilder.fill(1.5, 1.5,1.5));
-      // } else {
-      //   if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
-      //     DriverStation.reportWarning(
-      //         "ADDING POSE BASED ON AMBIGUITY OF "
-      //             + pose.rawFiducials[0].ambiguity
-      //             + " ON TAG "
-      //             + pose.rawFiducials[0].id,
-      //         false);
-      //     DRIVETRAIN.addVisionMeasurement(
-      //         pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
-      //   }
-      //}
+    // } else {
+    //   if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
+    //     DriverStation.reportWarning(
+    //         "ADDING POSE BASED ON AMBIGUITY OF "
+    //             + pose.rawFiducials[0].ambiguity
+    //             + " ON TAG "
+    //             + pose.rawFiducials[0].id,
+    //         false);
+    //     DRIVETRAIN.addVisionMeasurement(
+    //         pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
+    //   }
+    // }
   }
 
   public static RobotContainer get() {
