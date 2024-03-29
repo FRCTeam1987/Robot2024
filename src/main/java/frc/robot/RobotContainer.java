@@ -122,26 +122,26 @@ public class RobotContainer {
     configureShuffleboard();
     configureDrivetrain();
     configureDriverController();
-    //configureCoDriverController();
+    configureCoDriverController();
     configureDefaultCommands();
   }
 
   private void configureDriverController() {
-    // DRIVER_CONTROLLER.b().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
+    DRIVER_CONTROLLER.b().onTrue(new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
 
-    // DRIVER_CONTROLLER
-    //     .y()
-    //     .onTrue(
-    //         new ConditionalCommand(
-    //             new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
-    //                 .andThen(() -> isReverseAmpPrimed = false),
-    //             new PrepRevAmp(ELEVATOR, WRIST)
-    //                 .andThen(new WaitCommand(0.8))
-    //                 .andThen(new FireRevAmp(SHOOTER))
-    //                 .andThen(new WaitCommand(0.1))
-    //                 .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
-    //                 .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
-    //             () -> isReverseAmpPrimed));
+    DRIVER_CONTROLLER
+        .y()
+        .onTrue(
+            new ConditionalCommand(
+                new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
+                    .andThen(() -> isReverseAmpPrimed = false),
+                new PrepRevAmp(ELEVATOR, WRIST)
+                    .andThen(new WaitCommand(0.8))
+                    .andThen(new FireRevAmp(SHOOTER))
+                    .andThen(new WaitCommand(0.1))
+                    .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
+                    .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
+                () -> isReverseAmpPrimed));
     DRIVER_CONTROLLER
         .back()
         .onTrue(
@@ -164,20 +164,20 @@ public class RobotContainer {
                     new AsyncRumble(
                         DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
 
-    // DRIVER_CONTROLLER
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new PointAtAprilTag(
-    //             DRIVETRAIN,
-    //             SPEAKER_LIMELIGHT,
-    //             () -> (DRIVER_CONTROLLER.getLeftY()),
-    //             () -> (DRIVER_CONTROLLER.getLeftX()),
-    //             () -> (DRIVER_CONTROLLER.getRightX())));
+    DRIVER_CONTROLLER
+        .rightTrigger()
+        .whileTrue(
+            new PointAtAprilTag(
+                DRIVETRAIN,
+                SPEAKER_LIMELIGHT,
+                () -> (DRIVER_CONTROLLER.getLeftY()),
+                () -> (DRIVER_CONTROLLER.getLeftX()),
+                () -> (DRIVER_CONTROLLER.getRightX())));
 
-    // DRIVER_CONTROLLER
-    //     .rightBumper()
-    //     .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
-    // DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
+    DRIVER_CONTROLLER
+        .rightBumper()
+        .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
+    DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
   }
 
   private void configureCoDriverController() {
