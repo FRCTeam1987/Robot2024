@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -42,8 +41,6 @@ import frc.robot.commands.control.ShootSubwoofer;
 import frc.robot.commands.control.ShootSubwooferFlat;
 import frc.robot.commands.control.ShootTall;
 import frc.robot.commands.control.StopAll;
-import frc.robot.commands.control.amp.FireRevAmp;
-import frc.robot.commands.control.amp.PrepRevAmp;
 import frc.robot.commands.control.auto.AutoAimLockWrist;
 import frc.robot.commands.control.auto.AutoIdleShooter;
 import frc.robot.commands.control.auto.InstantShoot;
@@ -58,7 +55,6 @@ import frc.robot.commands.control.note.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
-import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
@@ -122,7 +118,7 @@ public class RobotContainer {
     configureShuffleboard();
     configureDrivetrain();
     configureDriverController();
-    //configureCoDriverController();
+    // configureCoDriverController();
     configureDefaultCommands();
   }
 
@@ -548,18 +544,18 @@ public class RobotContainer {
     // if (poseRight.tagCount >= 2) {
     //   DRIVETRAIN.addVisionMeasurement(
     //       poseRight.pose, poseRight.timestampSeconds, VecBuilder.fill(1.5, 1.5,1.5));
-      // } else {
-      //   if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
-      //     DriverStation.reportWarning(
-      //         "ADDING POSE BASED ON AMBIGUITY OF "
-      //             + pose.rawFiducials[0].ambiguity
-      //             + " ON TAG "
-      //             + pose.rawFiducials[0].id,
-      //         false);
-      //     DRIVETRAIN.addVisionMeasurement(
-      //         pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
-      //   }
-      //}
+    // } else {
+    //   if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
+    //     DriverStation.reportWarning(
+    //         "ADDING POSE BASED ON AMBIGUITY OF "
+    //             + pose.rawFiducials[0].ambiguity
+    //             + " ON TAG "
+    //             + pose.rawFiducials[0].id,
+    //         false);
+    //     DRIVETRAIN.addVisionMeasurement(
+    //         pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
+    //   }
+    // }
   }
 
   public static RobotContainer get() {
