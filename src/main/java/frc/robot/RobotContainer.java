@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -521,41 +522,55 @@ public class RobotContainer {
     return DRIVETRAIN.getPose();
   }
 
-  public void updatePoseVision() {
+  // Reference FRC 6391
+  // https://github.com/6391-Ursuline-Bearbotics/2024-6391-Crescendo/blob/4759dfd37c960cf3493b0eafd901519c5c36b239/src/main/java/frc/robot/Vision/Limelight.java#L44-L88
+  public void updatePoseVision(final String limelight) {
     ChassisSpeeds currentSpeed = DRIVETRAIN.getCurrentRobotChassisSpeeds();
-    if (Math.abs(currentSpeed.vxMetersPerSecond) > 1.5
-        || Math.abs(currentSpeed.vyMetersPerSecond) > 1.5) {
+    // Reject pose updates when moving fast.
+    if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.0
+        || Math.abs(currentSpeed.vyMetersPerSecond) > 2.0
+        || Math.abs(currentSpeed.omegaRadiansPerSecond) > Math.PI) {
       return;
     }
-    Limelight.PoseEstimate pose = Limelight.getBotPoseEstimate_wpiBlue(SPEAKER_LIMELIGHT);
-    // TODO throw away any botpose that is far away from previous pose
-    // Sometimes teleports when the ll gets confused
-    // Usually at a longer distance, could filter out long distance from tags
-    if (pose.tagCount >= 2) {
-      DRIVETRAIN.addVisionMeasurement(
-          pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, .7));
+    Limelight.PoseEstimate botPose = Limelight.getBotPoseEstimate_wpiBlue(limelight);
+
+    // Reject an empty pose.
+    if (botPose.tagCount < 1) {
+      return;
     }
-    // Limelight.PoseEstimate poseAmp = Limelight.getBotPoseEstimate_wpiBlue(AMP_LIMELIGHT);
-    // if (poseAmp.tagCount >= 2) {
-    //   DRIVETRAIN.addVisionMeasurement(
-    //       poseAmp.pose, poseAmp.timestampSeconds, VecBuilder.fill(.9, .9, .9));
-    // }
-    // Limelight.PoseEstimate poseRight = Limelight.getBotPoseEstimate_wpiBlue(RIGHT_LIMEKIGHT);
-    // if (poseRight.tagCount >= 2) {
-    //   DRIVETRAIN.addVisionMeasurement(
-    //       poseRight.pose, poseRight.timestampSeconds, VecBuilder.fill(1.5, 1.5,1.5));
-    // } else {
-    //   if (pose.rawFiducials.length > 0 && pose.rawFiducials[0].ambiguity < 0.07) {
-    //     DriverStation.reportWarning(
-    //         "ADDING POSE BASED ON AMBIGUITY OF "
-    //             + pose.rawFiducials[0].ambiguity
-    //             + " ON TAG "
-    //             + pose.rawFiducials[0].id,
-    //         false);
-    //     DRIVETRAIN.addVisionMeasurement(
-    //         pose.pose, pose.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
-    //   }
-    // }
+    // Reject a pose outside of the field.
+    if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
+      return;
+    }
+    // Reject pose from long disance.
+    if ((botPose.tagCount == 1
+            && botPose.avgTagDist > Constants.Vision.maxSingleTagDistanceToAccept)
+        || (botPose.tagCount >= 2
+            && botPose.avgTagDist > Constants.Vision.maxMutiTagDistToAccept)) {
+      return;
+    }
+    // Trust close multi tag pose when disabled with increased confidence.
+    if (DriverStation.isDisabled()
+        && botPose.tagCount >= 2
+        && botPose.avgTagDist < Constants.Vision.maxTagDistToTrust) {
+      DRIVETRAIN.addVisionMeasurement(
+          botPose.pose, botPose.timestampSeconds, Constants.Vision.absoluteTrustVector);
+      return;
+    }
+    final double botPoseToPoseDistance =
+        botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
+    // Reject a pose that is far away from the current robot pose.
+    if (botPoseToPoseDistance > 0.5) {
+      return;
+    }
+    double tagDistanceFeet = Units.metersToFeet(botPose.avgTagDist);
+    // Have a lower confidence with single tag pose proportionate to distance.
+    if (botPose.tagCount == 1) {
+      tagDistanceFeet *= 2;
+    }
+    double confidence = 0.7 + (tagDistanceFeet / 100);
+    DRIVETRAIN.addVisionMeasurement(
+        botPose.pose, botPose.timestampSeconds, VecBuilder.fill(confidence, confidence, 99));
   }
 
   public static RobotContainer get() {
