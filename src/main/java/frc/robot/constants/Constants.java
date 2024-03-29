@@ -1,7 +1,13 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import frc.robot.util.InterpolatingDouble;
 import frc.robot.util.InterpolatingTreeMap;
+import frc.robot.util.RectanglePoseArea;
 
 public class Constants {
 
@@ -296,5 +302,15 @@ public class Constants {
     //     new InterpolatingDouble(-12.5), new InterpolatingDouble(29.0)); // 12 ft away
     // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
     //     new InterpolatingDouble(-14.3), new InterpolatingDouble(28.5)); //
+  }
+
+  public static class Vision {
+    public static final String SPEAKER_LIMELIGHT = "limelight-speaker";
+    public static final RectanglePoseArea fieldBoundary =
+        new RectanglePoseArea(new Translation2d(0, 0), new Translation2d(16.541, 8.211));
+    public static final double maxMutiTagDistToAccept = Units.feetToMeters(15.0);
+    public static final double maxTagDistToTrust = Units.feetToMeters(10.0);
+    public static final double maxSingleTagDistanceToAccept = Units.feetToMeters(10.0);
+    public static final Vector<N3> absoluteTrustVector = VecBuilder.fill(.2, .2, 99);
   }
 }

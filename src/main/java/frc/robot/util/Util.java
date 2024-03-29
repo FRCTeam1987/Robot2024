@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.util.Limelight.RawFiducial;
 import java.util.List;
 
 public class Util {
@@ -202,5 +203,13 @@ public class Util {
   // TODO: Find actual tag positions and ideal offsets
   public static Pose2d findNearestPoseToTrapClimbs(Pose2d currentPose) {
     return currentPose.nearest(TRAP_TAGS);
+  }
+
+  public static double maxFiducialAmbiguity(final RawFiducial[] fiducials) {
+    double maxAmbiguity = 0.0;
+    for (RawFiducial fiducial : fiducials) {
+      maxAmbiguity = Math.max(maxAmbiguity, fiducial.ambiguity);
+    }
+    return maxAmbiguity;
   }
 }
