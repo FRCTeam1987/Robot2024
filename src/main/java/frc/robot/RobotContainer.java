@@ -82,8 +82,8 @@ public class RobotContainer {
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
   public final String SPEAKER_LIMELIGHT = "limelight-speaker";
+  public final String RIGHT_LIMELIGHT = "limelight-right";
   public final String AMP_LIMELIGHT = "limelight-amp";
-  public final String RIGHT_LIMEKIGHT = "limelight-right";
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
   public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
@@ -332,7 +332,7 @@ public class RobotContainer {
                       SHOOTER.stopFeeder();
                       SHOOTER.stopShooter();
                     })));
-    PHOTON_TAB.addDouble("DISTANCE_TO_SPEAKER", () -> Util.getDistance(SPEAKER_LIMELIGHT));
+    PHOTON_TAB.addDouble("DISTANCE_TO_SPEAKER", () -> Util.getDistanceToSpeaker());
 
     COMMANDS_TAB.add(
         "Coast Swerve",
@@ -510,6 +510,7 @@ public class RobotContainer {
         new IntakeNoteSequenceAuto(
             SHOOTER, INTAKE, WRIST,
             ELEVATOR)); // new InstantCommand(() -> aimAtTargetAuto = true)).andThen()
+    NamedCommands.registerCommand("c", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).asProxy());
   }
 
   public void addAuto(String autoName) {
@@ -533,6 +534,7 @@ public class RobotContainer {
     if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.0
         || Math.abs(currentSpeed.vyMetersPerSecond) > 2.0
         || Math.abs(currentSpeed.omegaRadiansPerSecond) > Math.PI) {
+          DriverStation.reportWarning("Ignoring Pose update due to speed", false);
       return;
     }
     Limelight.PoseEstimate botPose = Limelight.getBotPoseEstimate_wpiBlue(limelight);
@@ -549,13 +551,15 @@ public class RobotContainer {
     // Reject pose from long disance or high ambiguity.
     if ((botPose.tagCount == 1
             && (botPose.avgTagDist > Constants.Vision.maxSingleTagDistanceToAccept
-                || botPose.rawFiducials[0].ambiguity >= 0.9))
+                /*|| botPose.rawFiducials[0].ambiguity >= 0.9*/))
         || (botPose.tagCount >= 2
             && botPose.avgTagDist > Constants.Vision.maxMutiTagDistToAccept)) {
       return;
     }
     // Trust close multi tag pose when disabled with increased confidence.
-    if (DriverStation.isDisabled()
+    if (Math.abs(currentSpeed.vxMetersPerSecond) < 0.1
+        && Math.abs(currentSpeed.vyMetersPerSecond) < 0.1
+        && Math.abs(Math.toDegrees(currentSpeed.omegaRadiansPerSecond)) < 10
         && botPose.tagCount >= 2
         && botPose.avgTagDist < Constants.Vision.maxTagDistToTrust) {
       DRIVETRAIN.addVisionMeasurement(
@@ -566,6 +570,7 @@ public class RobotContainer {
         botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
     // Reject a pose that is far away from the current robot pose.
     if (botPoseToPoseDistance > 0.5) {
+      System.out.println("Rejecting, Bot pose and limelight pose to far");
       return;
     }
     double tagDistanceFeet = Units.metersToFeet(botPose.avgTagDist);
@@ -574,6 +579,7 @@ public class RobotContainer {
       tagDistanceFeet *= 2;
     }
     double confidence = 0.7 + (tagDistanceFeet / 100);
+    DriverStation.reportWarning("New pose from vision: " + botPose.pose.toString(), false);
     DRIVETRAIN.addVisionMeasurement(
         botPose.pose, botPose.timestampSeconds, VecBuilder.fill(confidence, confidence, 99));
   }

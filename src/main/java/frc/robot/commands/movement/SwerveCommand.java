@@ -76,16 +76,16 @@ public class SwerveCommand extends Command {
       isCardinalLocking = true;
       switch (POV_DEGREE.getAsInt()) {
         case 0:
-          setPoint = 0;
-          break;
-        case 90:
-          setPoint = -90;
-          break;
-        case 180:
           setPoint = 180;
           break;
-        case 270:
+        case 90:
           setPoint = 90;
+          break;
+        case 180:
+          setPoint = 0;
+          break;
+        case 270:
+          setPoint = -90;
           break;
         default:
           break;

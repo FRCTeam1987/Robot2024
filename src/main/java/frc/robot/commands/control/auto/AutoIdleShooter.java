@@ -38,7 +38,7 @@ public class AutoIdleShooter extends Command {
     // }
     // if (shooter.isCenterBroken() &&
     // validShotDebouncer.calculate(Util.isValidShot(SPEAKER_LIMELIGHT))) {
-    shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
+    shooter.setRPMShoot(Constants.Shooter.SHOOTER_RPM);
     // } else {
     //   shooter.stopShooter();
     // }

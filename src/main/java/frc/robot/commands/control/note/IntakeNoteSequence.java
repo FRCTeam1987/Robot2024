@@ -28,7 +28,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
-              intake.setVolts(Constants.INTAKE_COLLECT_VOLTS_MANUAL);
+              intake.setRPM(Constants.INTAKE_RPM);
               wrist.setDegrees(21); // testing
               elevator.goHome();
             },
@@ -54,7 +54,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE);
-              intake.setVolts(IntakeVoltage);
+              intake.setRPM(Constants.INTAKE_RPM);
               elevator.goHome();
             },
             shooter,

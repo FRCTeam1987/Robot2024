@@ -4,6 +4,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -125,5 +127,8 @@ public class Wrist extends SubsystemBase {
     WRIST_TAB.add("Re-Home", new ZeroWrist(this));
     WRIST_TAB.addDouble("Degrees", this::getDegrees);
     WRIST_TAB.addDouble("Error", this::getError);
+    GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 26.23).getEntry();
+    WRIST_TAB.add(
+        "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
   }
 }

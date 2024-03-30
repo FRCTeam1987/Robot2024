@@ -6,6 +6,7 @@ package frc.robot.commands.control.auto;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Util;
 
@@ -26,11 +27,10 @@ public class AutoAimLockWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double degrees = Util.getInterpolatedWristAngle();
+    double degrees = Util.getInterpolatedWristAngle(Constants.Vision.SPEAKER_LIMELIGHT);
     // TODO find actual values, prevent wrist collision when the elevator is all the way down.
     DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
-    if (degrees > 10.0 && degrees < 35.0) {
-
+    if (degrees > 10.0 && degrees < 35.5) {
       return;
     }
     wrist.setDegrees(degrees);

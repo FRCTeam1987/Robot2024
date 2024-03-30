@@ -125,9 +125,9 @@ public class Util {
   public static void setupUtil() {}
 
   public static double getDistance(String limelight) {
-    // var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
-    // if (result.tagCount > 0) {
-    return new Pose3d(RobotContainer.get().getPose())
+    var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
+    if (result.tagCount > 0) {
+    return new Pose3d(result.pose)
         .getTranslation()
         .getDistance(
             getAllianceSpeakerCenter()
@@ -136,8 +136,8 @@ public class Util {
                         new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
                         new Rotation3d()))
                 .getTranslation());
-    // }
-    // return 0.0;
+    }
+    return 0.0;
   }
 
   // TODO flex on alliance tag pose
@@ -174,7 +174,7 @@ public class Util {
 
   public static boolean isValidShot(String limelight) {
     double dist = Util.getDistance(limelight);
-    if (dist > 2.25 && dist < 5.25) {
+    if (dist > 2.0 && dist < 8.3) {
       return true;
     } else return false;
   }

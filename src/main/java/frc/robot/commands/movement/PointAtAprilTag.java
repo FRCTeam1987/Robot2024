@@ -43,8 +43,9 @@ public class PointAtAprilTag extends Command {
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
-    THETA_CONTROLLER = new PIDController(0.183, 0.1, 0.0013);
+    THETA_CONTROLLER = new PIDController(0.33, 0.0, 0.0); // (0.183, 0.1, 0.0013)
     THETA_CONTROLLER.enableContinuousInput(-180, 180);
+    THETA_CONTROLLER.setTolerance(0.01, 0.01);
     addRequirements(drivetrain);
   }
 

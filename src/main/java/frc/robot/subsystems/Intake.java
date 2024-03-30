@@ -21,14 +21,14 @@ public class Intake extends SubsystemBase {
     INTAKE_BOTTOM = new TalonFX(INTAKE_IN_ID, "canfd");
 
     final Slot0Configs TOP_SLOT0_CFG = new Slot0Configs();
-    TOP_SLOT0_CFG.kP = 0.1;
-    TOP_SLOT0_CFG.kI = 0;
+    TOP_SLOT0_CFG.kP = 0.4;
+    TOP_SLOT0_CFG.kI = 0.6;
     TOP_SLOT0_CFG.kD = 0;
     TOP_SLOT0_CFG.kV = 0.01;
 
     final Slot0Configs BOTTOM_SLOT0_CFG = new Slot0Configs();
-    BOTTOM_SLOT0_CFG.kP = 0.1;
-    BOTTOM_SLOT0_CFG.kI = 0;
+    BOTTOM_SLOT0_CFG.kP = 0.4;
+    BOTTOM_SLOT0_CFG.kI = 0.6;
     BOTTOM_SLOT0_CFG.kD = 0;
     BOTTOM_SLOT0_CFG.kV = 0.01;
 
@@ -39,15 +39,15 @@ public class Intake extends SubsystemBase {
     TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     final TalonFXConfiguration BOTTOM_CFG = new TalonFXConfiguration();
-    TOP_CFG.Slot0 = BOTTOM_SLOT0_CFG;
-    TOP_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
-    TOP_CFG.CurrentLimits.StatorCurrentLimit = 30;
-    TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
+    BOTTOM_CFG.Slot0 = BOTTOM_SLOT0_CFG;
+    BOTTOM_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
+    BOTTOM_CFG.CurrentLimits.StatorCurrentLimit = 30;
+    BOTTOM_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     INTAKE_TOP.getConfigurator().apply(TOP_CFG);
     INTAKE_BOTTOM.getConfigurator().apply(BOTTOM_CFG);
 
-    INTAKE_TOP.setInverted(false);
+    INTAKE_BOTTOM.setInverted(false);
     INTAKE_TOP.setNeutralMode(NeutralModeValue.Coast);
     INTAKE_BOTTOM.setNeutralMode(NeutralModeValue.Coast);
     // setupShuffleboard();
@@ -55,10 +55,9 @@ public class Intake extends SubsystemBase {
 
   public void setRPM(double RPM) {
     // CANNOT FOLLOW. DIFFERENT PID CTRL FOR EACH ROLLER.
-    VelocityVoltage bottomCtl = new VelocityVoltage(0);
-    INTAKE_BOTTOM.setControl(bottomCtl.withVelocity(((RPM / 100) * 2048) / 600));
-    VelocityVoltage topCtl = new VelocityVoltage(0);
-    INTAKE_TOP.setControl(topCtl.withVelocity(((RPM / 100) * 2048) / 600));
+    VelocityVoltage ctl = new VelocityVoltage(0);
+    INTAKE_BOTTOM.setControl(ctl.withVelocity(RPM / 60.0));
+    INTAKE_TOP.setControl(ctl.withVelocity(RPM / 60.0));
   }
 
   public void setVolts(double VOLTS) {

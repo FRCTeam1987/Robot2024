@@ -53,7 +53,8 @@ public class Constants {
   public static final int WRIST_ID = 54;
 
   public static final double INTAKE_COLLECT_VOLTS = -6; // 6
-  public static final double INTAKE_COLLECT_VOLTS_MANUAL = -7; // 6
+  public static final double INTAKE_COLLECT_VOLTS_MANUAL = -8; // 6 //-9
+  public static final double INTAKE_RPM = -4500; // 6 //-9
 
   public static class Trap {
     public static final double TRAP_DEBOUNCE_TIME = 0.06;
@@ -65,7 +66,7 @@ public class Constants {
   }
 
   public static class Wrist {
-    public static final double WRIST_KP = 250.0;
+    public static final double WRIST_KP = 200.0;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.01;
     public static final double WRIST_KV = 0.03;
@@ -95,7 +96,7 @@ public class Constants {
   public static class Shooter {
     public static final double FEEDER_FEEDFWD_VOLTS = 4; // 6 // 4
     public static final double FEEDER_FEEDFWD_VOLTS_AGRESSIVE = 6; // 6 // 4
-    public static final double FEEDER_SHOOT_VOLTS = 5; // 4
+    public static final double FEEDER_SHOOT_VOLTS = 8; // 4
     public static final double FEEDER_RETRACT_VOLTS = -2;
 
     public static final double SHOOTER_RPM = 4500;
@@ -270,24 +271,43 @@ public class Constants {
         new InterpolatingDouble(-20.97), new InterpolatingDouble(4.415));
 
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(2.334), new InterpolatingDouble(36.05));
+        new InterpolatingDouble(2.334), new InterpolatingDouble(35.50));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(2.571), new InterpolatingDouble(35.66));
+        new InterpolatingDouble(2.40), new InterpolatingDouble(35.10));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(2.798), new InterpolatingDouble(34.48));
+        new InterpolatingDouble(2.50), new InterpolatingDouble(34.23));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(2.982), new InterpolatingDouble(33.96));
+        new InterpolatingDouble(2.69), new InterpolatingDouble(32.87));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(3.087), new InterpolatingDouble(32.13));
+        new InterpolatingDouble(2.87), new InterpolatingDouble(31.69));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(3.203), new InterpolatingDouble(31.08));
+        new InterpolatingDouble(3.03), new InterpolatingDouble(30.24));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(3.383), new InterpolatingDouble(30.62));
+        new InterpolatingDouble(3.207), new InterpolatingDouble(28.86));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(3.695), new InterpolatingDouble(28.92));
+        new InterpolatingDouble(3.388), new InterpolatingDouble(28.21)); //Closer values may require a slower shooter RPM Speed
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(4.08), new InterpolatingDouble(27.6));
-
+        new InterpolatingDouble(3.70), new InterpolatingDouble(27.08));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(4.03), new InterpolatingDouble(25.63));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(4.23), new InterpolatingDouble(25.07));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(4.46), new InterpolatingDouble(24.65));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(4.69), new InterpolatingDouble(24.35));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(4.99), new InterpolatingDouble(23.21));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(5.21), new InterpolatingDouble(22.81));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(5.40), new InterpolatingDouble(22.92));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(5.69), new InterpolatingDouble(21.63));
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(5.89), new InterpolatingDouble(21.47));
+        DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+        new InterpolatingDouble(6.15), new InterpolatingDouble(21.45));
     // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(new InterpolatingDouble(0.9), new
 
     // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
@@ -308,9 +328,9 @@ public class Constants {
     public static final String SPEAKER_LIMELIGHT = "limelight-speaker";
     public static final RectanglePoseArea fieldBoundary =
         new RectanglePoseArea(new Translation2d(0, 0), new Translation2d(16.541, 8.211));
-    public static final double maxMutiTagDistToAccept = Units.feetToMeters(15.0);
-    public static final double maxTagDistToTrust = Units.feetToMeters(10.0);
+    public static final double maxMutiTagDistToAccept = Units.feetToMeters(25.0);   // 15.0
+    public static final double maxTagDistToTrust = Units.feetToMeters(15.0);    // 15.0
     public static final double maxSingleTagDistanceToAccept = Units.feetToMeters(10.0);
-    public static final Vector<N3> absoluteTrustVector = VecBuilder.fill(.2, .2, 99);
+    public static final Vector<N3> absoluteTrustVector = VecBuilder.fill(.2, .2, 1);
   }
 }
