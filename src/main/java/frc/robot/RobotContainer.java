@@ -81,9 +81,9 @@ public class RobotContainer {
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
-  public final String SPEAKER_LIMELIGHT = "limelight-speaker";
-  public final String RIGHT_LIMELIGHT = "limelight-right";
-  public final String AMP_LIMELIGHT = "limelight-amp";
+  public static final String SPEAKER_RIGHT_LIMELIGHT = Constants.Vision.SPEAKER_RIGHT_LIMELIGHT;
+  public static final String RIGHT_LIMELIGHT = Constants.Vision.RIGHT_LIMELIGHT;
+  public static final String AMP_LIMELIGHT = Constants.Vision.AMP_LIMELIGHT;
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
   public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
@@ -169,7 +169,7 @@ public class RobotContainer {
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
-                SPEAKER_LIMELIGHT,
+                SPEAKER_RIGHT_LIMELIGHT,
                 () -> (DRIVER_CONTROLLER.getLeftY()),
                 () -> (DRIVER_CONTROLLER.getLeftX()),
                 () -> (DRIVER_CONTROLLER.getRightX())));
@@ -305,7 +305,7 @@ public class RobotContainer {
 
   public void configureShuffleboard() {
 
-    COMMANDS_TAB.addBoolean("Can See Target", () -> Util.canSeeTarget(SPEAKER_LIMELIGHT));
+    COMMANDS_TAB.addBoolean("Can See Target", () -> Util.canSeeTarget(SPEAKER_RIGHT_LIMELIGHT));
     WRIST.setupShuffleboard();
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
@@ -411,9 +411,9 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT));
-    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER, SPEAKER_LIMELIGHT));
-    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_LIMELIGHT));
+    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT));
+    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER, SPEAKER_RIGHT_LIMELIGHT));
+    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_RIGHT_LIMELIGHT));
   }
 
   public void configureNamedCommands() {
@@ -421,19 +421,19 @@ public class RobotContainer {
         "ShootNote",
         new ParallelDeadlineGroup(
                 new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM),
-                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT),
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT),
                 new InstantCommand(() -> aimAtTargetAuto = true))
             .andThen(new InstantCommand(() -> aimAtTargetAuto = false)));
     NamedCommands.registerCommand(
         "ShootNoteRegular",
         new ShootNoteAimbotFixed(
-                SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, SPEAKER_LIMELIGHT, WRIST)
+                SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, SPEAKER_RIGHT_LIMELIGHT, WRIST)
             .withTimeout(3.0)
             .andThen(new PoopNote(SHOOTER, 1000).withTimeout(0.7)));
     NamedCommands.registerCommand(
         "ShootNoteAimbot",
         new ShootNoteSequence(
-            SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, DRIVETRAIN, SPEAKER_LIMELIGHT));
+            SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, DRIVETRAIN, SPEAKER_RIGHT_LIMELIGHT));
     NamedCommands.registerCommand(
         "SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(5200)));
 
@@ -444,7 +444,7 @@ public class RobotContainer {
         "IntakeNote",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT),
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT),
                 new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -7)),
             new InstantCommand(
                 () -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
@@ -452,7 +452,7 @@ public class RobotContainer {
         "IntakeNoteSlow",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_LIMELIGHT),
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT),
                 new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -4)),
             new InstantCommand(
                 () -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
@@ -528,60 +528,63 @@ public class RobotContainer {
 
   // Reference FRC 6391
   // https://github.com/6391-Ursuline-Bearbotics/2024-6391-Crescendo/blob/4759dfd37c960cf3493b0eafd901519c5c36b239/src/main/java/frc/robot/Vision/Limelight.java#L44-L88
-  public void updatePoseVision(final String limelight) {
+  public void updatePoseVision(final String... limelights) {
     ChassisSpeeds currentSpeed = DRIVETRAIN.getCurrentRobotChassisSpeeds();
     // Reject pose updates when moving fast.
     if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.0
         || Math.abs(currentSpeed.vyMetersPerSecond) > 2.0
         || Math.abs(currentSpeed.omegaRadiansPerSecond) > Math.PI) {
-          DriverStation.reportWarning("Ignoring Pose update due to speed", false);
-      return;
-    }
-    Limelight.PoseEstimate botPose = Limelight.getBotPoseEstimate_wpiBlue(limelight);
-
-    // Reject an empty pose.
-    if (botPose.tagCount < 1) {
+      DriverStation.reportWarning("Ignoring Pose update due to speed", false);
       return;
     }
 
-    // Reject a pose outside of the field.
-    if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
-      return;
+    Limelight.PoseEstimate bestPose = null;
+    double bestConfidence = 0.0;
+
+    for (String limelight : limelights) {
+      Limelight.PoseEstimate botPose = Limelight.getBotPoseEstimate_wpiBlue(limelight);
+
+      // Reject an empty pose or a pose with no AprilTags.
+      if (botPose.tagCount < 1) {
+        continue;
+      }
+
+      // Reject a pose outside of the field.
+      if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
+        continue;
+      }
+
+      double currentConfidence = calculateConfidence(botPose);
+      if (currentConfidence > bestConfidence) {
+        bestConfidence = currentConfidence;
+        bestPose = botPose;
+      }
     }
-    // Reject pose from long disance or high ambiguity.
-    if ((botPose.tagCount == 1
-            && (botPose.avgTagDist > Constants.Vision.maxSingleTagDistanceToAccept
-                /*|| botPose.rawFiducials[0].ambiguity >= 0.9*/))
-        || (botPose.tagCount >= 2
-            && botPose.avgTagDist > Constants.Vision.maxMutiTagDistToAccept)) {
-      return;
+
+    if (bestPose == null) {
+      return; // No valid pose found
     }
-    // Trust close multi tag pose when disabled with increased confidence.
-    if (Math.abs(currentSpeed.vxMetersPerSecond) < 0.1
-        && Math.abs(currentSpeed.vyMetersPerSecond) < 0.1
-        && Math.abs(Math.toDegrees(currentSpeed.omegaRadiansPerSecond)) < 10
-        && botPose.tagCount >= 2
-        && botPose.avgTagDist < Constants.Vision.maxTagDistToTrust) {
-      DRIVETRAIN.addVisionMeasurement(
-          botPose.pose, botPose.timestampSeconds, Constants.Vision.absoluteTrustVector);
-      return;
-    }
-    final double botPoseToPoseDistance =
-        botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
-    // Reject a pose that is far away from the current robot pose.
-    if (botPoseToPoseDistance > 0.5) {
-      System.out.println("Rejecting, Bot pose and limelight pose to far");
-      return;
-    }
-    double tagDistanceFeet = Units.metersToFeet(botPose.avgTagDist);
-    // Have a lower confidence with single tag pose proportionate to distance.
-    if (botPose.tagCount == 1) {
-      tagDistanceFeet *= 2;
-    }
-    double confidence = 0.7 + (tagDistanceFeet / 100);
-    DriverStation.reportWarning("New pose from vision: " + botPose.pose.toString(), false);
     DRIVETRAIN.addVisionMeasurement(
-        botPose.pose, botPose.timestampSeconds, VecBuilder.fill(confidence, confidence, 99));
+        bestPose.pose,
+        bestPose.timestampSeconds,
+        VecBuilder.fill(bestConfidence, bestConfidence, 99));
+  }
+
+  private double calculateConfidence(Limelight.PoseEstimate botPose) {
+    double confidence = 0.0;
+    double tagDistanceFeet = Units.metersToFeet(botPose.avgTagDist);
+
+    if (botPose.tagCount > 1) {
+      confidence = 1.0 / tagDistanceFeet;
+    } else if (botPose.tagCount == 1) {
+      tagDistanceFeet *= 2; // Assume less precision with single tag.
+      confidence = 0.5 / tagDistanceFeet;
+    }
+
+    // Ensure confidence stays within a reasonable range.
+    confidence = Math.max(0.1, Math.min(confidence, 1.5));
+
+    return confidence;
   }
 
   public static RobotContainer get() {

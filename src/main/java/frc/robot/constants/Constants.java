@@ -285,7 +285,8 @@ public class Constants {
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
         new InterpolatingDouble(3.207), new InterpolatingDouble(28.86));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
-        new InterpolatingDouble(3.388), new InterpolatingDouble(28.21)); //Closer values may require a slower shooter RPM Speed
+        new InterpolatingDouble(3.388),
+        new InterpolatingDouble(28.21)); // Closer values may require a slower shooter RPM Speed
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
         new InterpolatingDouble(3.70), new InterpolatingDouble(27.08));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
@@ -306,7 +307,7 @@ public class Constants {
         new InterpolatingDouble(5.69), new InterpolatingDouble(21.63));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
         new InterpolatingDouble(5.89), new InterpolatingDouble(21.47));
-        DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
+    DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
         new InterpolatingDouble(6.15), new InterpolatingDouble(21.45));
     // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(new InterpolatingDouble(0.9), new
 
@@ -325,11 +326,15 @@ public class Constants {
   }
 
   public static class Vision {
-    public static final String SPEAKER_LIMELIGHT = "limelight-speaker";
+    public static final String SPEAKER_RIGHT_LIMELIGHT = "limelight-right-speaker";
+    public static final String SPEAKER_LEFT_LIMELIGHT = "limelight-left-speaker";
+    public static final String RIGHT_LIMELIGHT = "limelight-right";
+    public static final String LEFT_LIMELIGHT = "limelight-left";
+    public static final String AMP_LIMELIGHT = "limelight-amp";
     public static final RectanglePoseArea fieldBoundary =
         new RectanglePoseArea(new Translation2d(0, 0), new Translation2d(16.541, 8.211));
-    public static final double maxMutiTagDistToAccept = Units.feetToMeters(25.0);   // 15.0
-    public static final double maxTagDistToTrust = Units.feetToMeters(15.0);    // 15.0
+    public static final double maxMutiTagDistToAccept = Units.feetToMeters(25.0); // 15.0
+    public static final double maxTagDistToTrust = Units.feetToMeters(15.0); // 15.0
     public static final double maxSingleTagDistanceToAccept = Units.feetToMeters(10.0);
     public static final Vector<N3> absoluteTrustVector = VecBuilder.fill(.2, .2, 1);
   }

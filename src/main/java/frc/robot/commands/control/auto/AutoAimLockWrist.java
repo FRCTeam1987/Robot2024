@@ -27,7 +27,7 @@ public class AutoAimLockWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double degrees = Util.getInterpolatedWristAngle(Constants.Vision.SPEAKER_LIMELIGHT);
+    double degrees = Util.getInterpolatedWristAngle(Constants.Vision.SPEAKER_RIGHT_LIMELIGHT);
     // TODO find actual values, prevent wrist collision when the elevator is all the way down.
     DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
     if (degrees > 10.0 && degrees < 35.5) {

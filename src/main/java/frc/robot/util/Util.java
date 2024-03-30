@@ -127,15 +127,15 @@ public class Util {
   public static double getDistance(String limelight) {
     var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
     if (result.tagCount > 0) {
-    return new Pose3d(result.pose)
-        .getTranslation()
-        .getDistance(
-            getAllianceSpeakerCenter()
-                .transformBy(
-                    new Transform3d(
-                        new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
-                        new Rotation3d()))
-                .getTranslation());
+      return new Pose3d(result.pose)
+          .getTranslation()
+          .getDistance(
+              getAllianceSpeakerCenter()
+                  .transformBy(
+                      new Transform3d(
+                          new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
+                          new Rotation3d()))
+                  .getTranslation());
     }
     return 0.0;
   }
