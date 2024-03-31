@@ -54,7 +54,7 @@ public class Constants {
 
   public static final double INTAKE_COLLECT_VOLTS = -6; // 6
   public static final double INTAKE_COLLECT_VOLTS_MANUAL = -8; // 6 //-9
-  public static final double INTAKE_RPM = -4500; // 6 //-9
+  public static final double INTAKE_RPM = -5000; // 6 //-9
 
   public static class Trap {
     public static final double TRAP_DEBOUNCE_TIME = 0.06;
@@ -62,7 +62,7 @@ public class Constants {
     public static final double TRAP_ELEVATOR_HEIGHT_MIDWAY = 24.0;
     public static final double TRAP_WRIST_DEGREES = 118.0;
     public static final double TRAP_WRIST_DEGREES_MIDWAY = 80.0;
-    public static final double TRAP_RPM_SPEED = 425;
+    public static final double TRAP_RPM_SPEED = 450;    // 425, 475 worked but touched the top
   }
 
   public static class Wrist {
@@ -98,6 +98,7 @@ public class Constants {
     public static final double FEEDER_FEEDFWD_VOLTS_AGRESSIVE = 6; // 6 // 4
     public static final double FEEDER_SHOOT_VOLTS = 8; // 4
     public static final double FEEDER_RETRACT_VOLTS = -2;
+    public static final double FEEDER_AUTO_VOLTS = 8.0;
 
     public static final double SHOOTER_RPM = 4500;
     public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to be smaller
@@ -143,7 +144,7 @@ public class Constants {
 
   public static class Climb {
     public static final double CLIMB_PULLDOWN_HEIGHT = 6.75;
-    public static final double CLIMB_LEVEL_HEIGHT = 12.0;
+    public static final double CLIMB_LEVEL_HEIGHT = 11.0;
     public static final double CLIMB_START_HEIGHT = 28.0;
   }
 
@@ -326,11 +327,12 @@ public class Constants {
   }
 
   public static class Vision {
-    public static final String SPEAKER_RIGHT_LIMELIGHT = "limelight-right-speaker";
-    public static final String SPEAKER_LEFT_LIMELIGHT = "limelight-left-speaker";
+    // public static final String SPEAKER_RIGHT_LOW_LIMELIGHT = "limelight-rightlo";
+    public static final String SPEAKER_LIMELIGHT = "limelight-speaker";
     public static final String RIGHT_LIMELIGHT = "limelight-right";
     public static final String LEFT_LIMELIGHT = "limelight-left";
     public static final String AMP_LIMELIGHT = "limelight-amp";
+    public static final String RIGHT_LO = "limelight-rightlo";
     public static final RectanglePoseArea fieldBoundary =
         new RectanglePoseArea(new Translation2d(0, 0), new Translation2d(16.541, 8.211));
     public static final double maxMutiTagDistToAccept = Units.feetToMeters(25.0); // 15.0

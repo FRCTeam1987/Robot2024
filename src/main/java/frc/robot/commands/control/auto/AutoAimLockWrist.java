@@ -4,9 +4,11 @@
 
 package frc.robot.commands.control.auto;
 
+import java.sql.Driver;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Util;
 
@@ -22,23 +24,22 @@ public class AutoAimLockWrist extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    DriverStation.reportWarning("DefaultWrist: initialize", false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double degrees = Util.getInterpolatedWristAngle(Constants.Vision.SPEAKER_RIGHT_LIMELIGHT);
-    // TODO find actual values, prevent wrist collision when the elevator is all the way down.
-    DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
-    if (degrees > 10.0 && degrees < 35.5) {
-      return;
-    }
-    wrist.setDegrees(degrees);
+    // double degrees = Util.getInterpolatedWristAngle();
+    // // TODO find actual values, prevent wrist collision when the elevator is all the way down.
+    // DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
+    wrist.setDegrees(MathUtil.clamp(Util.getInterpolatedWristAngle(), 10.0, 35.0));
   }
 
   @Override
   public void end(boolean interrupted) {
-    DriverStation.reportWarning("Ended! " + interrupted, false);
+    DriverStation.reportWarning("DefaultWrist: end, " + interrupted, false);
   }
 
   @Override

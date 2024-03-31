@@ -81,7 +81,7 @@ public class RobotContainer {
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
-  public static final String SPEAKER_RIGHT_LIMELIGHT = Constants.Vision.SPEAKER_RIGHT_LIMELIGHT;
+  public static final String SPEAKER_LIMELIGHT = Constants.Vision.SPEAKER_LIMELIGHT;
   public static final String RIGHT_LIMELIGHT = Constants.Vision.RIGHT_LIMELIGHT;
   public static final String AMP_LIMELIGHT = Constants.Vision.AMP_LIMELIGHT;
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
@@ -169,7 +169,6 @@ public class RobotContainer {
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
-                SPEAKER_RIGHT_LIMELIGHT,
                 () -> (DRIVER_CONTROLLER.getLeftY()),
                 () -> (DRIVER_CONTROLLER.getLeftX()),
                 () -> (DRIVER_CONTROLLER.getRightX())));
@@ -305,7 +304,7 @@ public class RobotContainer {
 
   public void configureShuffleboard() {
 
-    COMMANDS_TAB.addBoolean("Can See Target", () -> Util.canSeeTarget(SPEAKER_RIGHT_LIMELIGHT));
+    COMMANDS_TAB.addBoolean("Can See Target", () -> Util.canSeeTarget(SPEAKER_LIMELIGHT));
     WRIST.setupShuffleboard();
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
@@ -390,30 +389,31 @@ public class RobotContainer {
 
     SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
 
-    addAuto("ampa-full");
-    addAuto("sourcea-fullshoot");
-    addAuto("amp_close");
-    addAuto("amp_subwoofer_reversal");
-    addAuto("driven_source_score");
-    addAuto("heart_source_shoot");
-    addAuto("heart_source_og");
-    addAuto("Taxi-Amp");
-    addAuto("Taxi-Source");
-    addAuto("temp_center");
-    addAuto("GKC-SOURCE-A");
-    addAuto("GKC-SOURCE-B");
-    addAuto("GKC-AMP-A");
-    addAuto("GKC-AMP-B");
-    addAuto("GKC-Source-J");
-    addAuto("GKC-Amp-J");
+    // addAuto("ampa-full");
+    // addAuto("sourcea-fullshoot");
+    // addAuto("amp_close");
+    // addAuto("amp_subwoofer_reversal");
+    // addAuto("driven_source_score");
+    // addAuto("heart_source_shoot");
+    // addAuto("heart_source_og");
+    // addAuto("Taxi-Amp");
+    // addAuto("Taxi-Source");
+    // addAuto("temp_center");
+    // addAuto("GKC-SOURCE-A");
+    // addAuto("GKC-SOURCE-B");
+    // addAuto("GKC-AMP-A");
+    // addAuto("GKC-AMP-B");
+    // addAuto("GKC-Source-J");
+    // addAuto("GKC-Amp-J");
+    addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
   }
 
   public void configureDefaultCommands() {
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT));
-    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER, SPEAKER_RIGHT_LIMELIGHT));
-    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_RIGHT_LIMELIGHT));
+    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
+    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
+    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_LIMELIGHT));
   }
 
   public void configureNamedCommands() {
@@ -421,19 +421,17 @@ public class RobotContainer {
         "ShootNote",
         new ParallelDeadlineGroup(
                 new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM),
-                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT),
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR),
                 new InstantCommand(() -> aimAtTargetAuto = true))
             .andThen(new InstantCommand(() -> aimAtTargetAuto = false)));
     NamedCommands.registerCommand(
         "ShootNoteRegular",
-        new ShootNoteAimbotFixed(
-                SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, SPEAKER_RIGHT_LIMELIGHT, WRIST)
+        new ShootNoteAimbotFixed(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM, WRIST)
             .withTimeout(3.0)
             .andThen(new PoopNote(SHOOTER, 1000).withTimeout(0.7)));
     NamedCommands.registerCommand(
         "ShootNoteAimbot",
-        new ShootNoteSequence(
-            SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, DRIVETRAIN, SPEAKER_RIGHT_LIMELIGHT));
+        new ShootNoteSequence(SHOOTER, WRIST, Constants.Shooter.SHOOTER_RPM, DRIVETRAIN));
     NamedCommands.registerCommand(
         "SpinUpShooter", new InstantCommand(() -> SHOOTER.setRPMShoot(5200)));
 
@@ -444,7 +442,7 @@ public class RobotContainer {
         "IntakeNote",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT),
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR),
                 new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -7)),
             new InstantCommand(
                 () -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
@@ -452,7 +450,7 @@ public class RobotContainer {
         "IntakeNoteSlow",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new AimLockWrist(WRIST, SHOOTER, ELEVATOR, SPEAKER_RIGHT_LIMELIGHT),
+                new AimLockWrist(WRIST, SHOOTER, ELEVATOR),
                 new IntakeNoteSequence(SHOOTER, INTAKE, ELEVATOR, false, -4)),
             new InstantCommand(
                 () -> SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE))));
@@ -480,6 +478,21 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "PoopStart", new InstantCommand(() -> SHOOTER.setFeederVoltage(8.0)));
     NamedCommands.registerCommand(
+        "StartIntakeAndShoot",
+        new InstantCommand(
+            () -> {
+              SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_AUTO_VOLTS);
+              INTAKE.setRPM(Constants.INTAKE_RPM);
+            },
+            INTAKE));
+    NamedCommands.registerCommand(
+        "StopIntakeAndShoot",
+        new InstantCommand(
+            () -> {
+              SHOOTER.setFeederVoltage(0.0);
+              INTAKE.setRPM(0.0);
+            }));
+    NamedCommands.registerCommand(
         "PoopStop",
         new InstantCommand(
             () -> {
@@ -506,15 +519,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("DefaultShooter", new AutoIdleShooter(SHOOTER));
     NamedCommands.registerCommand("InstantShoot", new InstantShoot(SHOOTER));
     NamedCommands.registerCommand(
-        "IntakeNoteAuto",
-        new IntakeNoteSequenceAuto(
-            SHOOTER, INTAKE, WRIST,
-            ELEVATOR)); // new InstantCommand(() -> aimAtTargetAuto = true)).andThen()
-    NamedCommands.registerCommand("c", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).asProxy());
+      "IntakeNoteAuto",
+      new IntakeNoteSequenceAuto(
+        SHOOTER, INTAKE, ELEVATOR
+      )); // new InstantCommand(() -> aimAtTargetAuto = true)).andThen()
+    NamedCommands.registerCommand("TempLog", new InstantCommand(() -> DriverStation.reportWarning("InstantShoot: distance: " + Util.getDistanceToSpeaker() + ", angle: " + Util.getInterpolatedWristAngle(), false)));
   }
 
   public void addAuto(String autoName) {
-    AUTO_CHOOSER.addOption(autoName, new PathPlannerAuto(autoName));
+    final PathPlannerAuto auto = new PathPlannerAuto(autoName);
+    if (autoName == "GKC-Amp-J2") {
+      AUTO_CHOOSER.addOption(autoName,
+        new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
+      return;
+    }
+    AUTO_CHOOSER.addOption(autoName, auto);
   }
 
   public Command getAutonomousCommand() {
@@ -531,9 +550,9 @@ public class RobotContainer {
   public void updatePoseVision(final String... limelights) {
     ChassisSpeeds currentSpeed = DRIVETRAIN.getCurrentRobotChassisSpeeds();
     // Reject pose updates when moving fast.
-    if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.0
-        || Math.abs(currentSpeed.vyMetersPerSecond) > 2.0
-        || Math.abs(currentSpeed.omegaRadiansPerSecond) > Math.PI) {
+    if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.5
+        || Math.abs(currentSpeed.vyMetersPerSecond) > 2.5
+        || Math.abs(Math.toDegrees(currentSpeed.omegaRadiansPerSecond)) > 270.0) {
       DriverStation.reportWarning("Ignoring Pose update due to speed", false);
       return;
     }
@@ -548,26 +567,54 @@ public class RobotContainer {
       if (botPose.tagCount < 1) {
         continue;
       }
+      if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
+        continue;
+      }
+      if (botPose.tagCount == 2 && botPose.avgTagDist > 4.5) {
+        continue;
+      }
+      // if (botPose.tagCount == 3 && botPose.avgTagDist > 5.5) {
+      //   continue;
+      // }
 
       // Reject a pose outside of the field.
       if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
         continue;
       }
 
+      // final double botPoseToPoseDistance =
+      // botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
+      // if (botPoseToPoseDistance > 2 && !DriverStation.isDisabled()) {
+      //   System.out.println("Rejecting, Bot pose and limelight pose to far");
+      //   continue;
+      // }
+
       double currentConfidence = calculateConfidence(botPose);
       if (currentConfidence > bestConfidence) {
         bestConfidence = currentConfidence;
         bestPose = botPose;
+        // System.out.println("Updating pose with: " + limelight);
       }
     }
 
     if (bestPose == null) {
       return; // No valid pose found
     }
-    DRIVETRAIN.addVisionMeasurement(
-        bestPose.pose,
-        bestPose.timestampSeconds,
-        VecBuilder.fill(bestConfidence, bestConfidence, 99));
+    if (DriverStation.isDisabled() && (
+      (bestPose.tagCount == 1 && bestPose.rawFiducials[0].ambiguity < 0.9)
+      || (bestPose.tagCount == 2 && bestPose.avgTagDist < 4)
+      || (bestPose.tagCount > 2))
+    ) {
+      DRIVETRAIN.addVisionMeasurement(
+          bestPose.pose, bestPose.timestampSeconds, VecBuilder.fill(0.2, 0.2, 1));
+    } else {
+
+      // System.out.println("Best Confidence Value: " + (bestConfidence + 0.7));
+      DRIVETRAIN.addVisionMeasurement(
+          bestPose.pose,
+          bestPose.timestampSeconds,
+          VecBuilder.fill(bestConfidence + 0.7, bestConfidence + 0.7, 99999999));
+    }
   }
 
   private double calculateConfidence(Limelight.PoseEstimate botPose) {
@@ -581,8 +628,14 @@ public class RobotContainer {
       confidence = 0.5 / tagDistanceFeet;
     }
 
+    if (!DriverStation.isDisabled() && tagDistanceFeet < 15) {
+      final double botPoseToPoseDistance =
+          botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
+      confidence = confidence + Math.pow(botPoseToPoseDistance / 3, 2);
+    }
+
     // Ensure confidence stays within a reasonable range.
-    confidence = Math.max(0.1, Math.min(confidence, 1.5));
+    // confidence = Math.max(0.1, Math.min(0.7, 99));
 
     return confidence;
   }

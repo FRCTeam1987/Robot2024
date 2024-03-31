@@ -23,8 +23,7 @@ public class ShootNoteAimbotFixed extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   private final Debouncer lineBreakDebouncer;
 
-  public ShootNoteAimbotFixed(
-      Shooter shooter, Elevator elevator, double shootRPM, String SPEAKER_LIMELIGHT, Wrist wrist) {
+  public ShootNoteAimbotFixed(Shooter shooter, Elevator elevator, double shootRPM, Wrist wrist) {
     addRequirements(shooter);
 
     // Add your commands in the addCommands() call, e.g.
@@ -52,7 +51,7 @@ public class ShootNoteAimbotFixed extends SequentialCommandGroup {
                     new WaitUntilCommand(
                         () -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
                     new InstantCommand(shooter::stopShooter, shooter)),
-                new AimLockWristAuto(wrist, SPEAKER_LIMELIGHT)),
+                new AimLockWristAuto(wrist)),
             new InstantCommand(wrist::goHome)));
   }
 }

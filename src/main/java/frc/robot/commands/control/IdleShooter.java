@@ -16,12 +16,10 @@ public class IdleShooter extends Command {
   /** Creates a new IdleShooter. */
   private final Shooter shooter;
 
-  private final String SPEAKER_LIMELIGHT;
   private final Debouncer validShotDebouncer;
 
-  public IdleShooter(Shooter shooter, String LIMELIGHT_NAME) {
+  public IdleShooter(Shooter shooter) {
     addRequirements(shooter);
-    this.SPEAKER_LIMELIGHT = LIMELIGHT_NAME;
     this.shooter = shooter;
     this.validShotDebouncer = new Debouncer(3.0, DebounceType.kFalling);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -46,7 +44,7 @@ public class IdleShooter extends Command {
       return;
     }
     if (shooter.isCenterBroken()) {
-      if (validShotDebouncer.calculate(Util.isValidShot(SPEAKER_LIMELIGHT))) {
+      if (validShotDebouncer.calculate(Util.isValidShot())) {
         shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
       } else {
         shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM);

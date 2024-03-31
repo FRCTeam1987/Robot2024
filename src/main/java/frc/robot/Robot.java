@@ -29,7 +29,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    robotContainer.updatePoseVision(Constants.Vision.SPEAKER_RIGHT_LIMELIGHT, Constants.Vision.AMP_LIMELIGHT, Constants.Vision.RIGHT_LIMELIGHT);
+    robotContainer.updatePoseVision(
+      // Constants.Vision.SPEAKER_RIGHT_LIMELIGHT,
+      // Constants.Vision.AMP_LIMELIGHT,
+      Constants.Vision.SPEAKER_LIMELIGHT,
+      Constants.Vision.RIGHT_LO
+      // Constants.Vision.RIGHT_LIMELIGHT,
+      // Constants.Vision.LEFT_LIMELIGHT
+    );
   }
 
   @Override

@@ -18,7 +18,6 @@ import frc.robot.util.Util;
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
-  private final String speakerLimelight;
   private final CommandSwerveDrivetrain drivetrain;
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -34,12 +33,10 @@ public class PointAtAprilTag extends Command {
 
   public PointAtAprilTag( // USE FAST POINT INSTEAD. DO NOT USE COMMAND IT IS UNRELIABLE
       CommandSwerveDrivetrain drivetrain,
-      String limelightName,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier) {
     this.drivetrain = drivetrain;
-    this.speakerLimelight = limelightName;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;

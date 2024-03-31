@@ -21,13 +21,13 @@ public class Intake extends SubsystemBase {
     INTAKE_BOTTOM = new TalonFX(INTAKE_IN_ID, "canfd");
 
     final Slot0Configs TOP_SLOT0_CFG = new Slot0Configs();
-    TOP_SLOT0_CFG.kP = 0.4;
+    TOP_SLOT0_CFG.kP = 0.8;
     TOP_SLOT0_CFG.kI = 0.6;
     TOP_SLOT0_CFG.kD = 0;
     TOP_SLOT0_CFG.kV = 0.01;
 
     final Slot0Configs BOTTOM_SLOT0_CFG = new Slot0Configs();
-    BOTTOM_SLOT0_CFG.kP = 0.4;
+    BOTTOM_SLOT0_CFG.kP = 0.8;
     BOTTOM_SLOT0_CFG.kI = 0.6;
     BOTTOM_SLOT0_CFG.kD = 0;
     BOTTOM_SLOT0_CFG.kV = 0.01;
@@ -35,13 +35,13 @@ public class Intake extends SubsystemBase {
     final TalonFXConfiguration TOP_CFG = new TalonFXConfiguration();
     TOP_CFG.Slot0 = TOP_SLOT0_CFG;
     TOP_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
-    TOP_CFG.CurrentLimits.StatorCurrentLimit = 30;
+    TOP_CFG.CurrentLimits.StatorCurrentLimit = 40;
     TOP_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     final TalonFXConfiguration BOTTOM_CFG = new TalonFXConfiguration();
     BOTTOM_CFG.Slot0 = BOTTOM_SLOT0_CFG;
     BOTTOM_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
-    BOTTOM_CFG.CurrentLimits.StatorCurrentLimit = 30;
+    BOTTOM_CFG.CurrentLimits.StatorCurrentLimit = 40;
     BOTTOM_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     INTAKE_TOP.getConfigurator().apply(TOP_CFG);

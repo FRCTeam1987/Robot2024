@@ -12,7 +12,6 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -22,13 +21,12 @@ public class IntakeNoteSequenceAuto extends SequentialCommandGroup {
   // private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
 
   /** Creates a new IntakeNoteSequence. */
-  public IntakeNoteSequenceAuto(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator) {
+  public IntakeNoteSequenceAuto(Shooter shooter, Intake intake, Elevator elevator) {
     addCommands(
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
               intake.setRPM(Constants.INTAKE_RPM);
-              wrist.setDegrees(21); // testing
               elevator.goHome();
             },
             intake),
@@ -45,13 +43,12 @@ public class IntakeNoteSequenceAuto extends SequentialCommandGroup {
   }
 
   public IntakeNoteSequenceAuto(
-      Shooter shooter, Intake intake, Wrist wrist, Elevator elevator, boolean val) {
+      Shooter shooter, Intake intake, Elevator elevator, boolean val) {
     addCommands(
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE);
               intake.setRPM(Constants.INTAKE_RPM);
-              wrist.setDegrees(21); // testing
               elevator.goHome();
             },
             intake),

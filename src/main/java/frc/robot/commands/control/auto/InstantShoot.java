@@ -4,10 +4,15 @@
 
 package frc.robot.commands.control.auto;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.RobotCentric;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.Util;
 
 public class InstantShoot extends Command {
 
@@ -31,7 +36,7 @@ public class InstantShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setFeederVoltage(8.0);
+    m_shooter.setFeederVoltage(Constants.Shooter.FEEDER_AUTO_VOLTS);
   }
 
   // Called once the command ends or is interrupted.

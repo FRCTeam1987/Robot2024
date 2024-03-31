@@ -45,7 +45,7 @@ public class DefaultCANdle extends Command {
       return;
     }
 
-    if (!Util.isValidShot(SPEAKER_LIMELIGHT)) {
+    if (!Util.isValidShot()) {
       CANDLES.setColorRightRed();
       return;
     }

@@ -22,6 +22,7 @@ public class AutoIdleShooter extends Command {
     this.shooter = shooter;
     // this.validShotDebouncer = new Debouncer(VALID_SHOT_DEBOUNCE_TIME, DebounceType.kFalling);
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.

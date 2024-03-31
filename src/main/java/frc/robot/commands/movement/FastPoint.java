@@ -11,11 +11,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Vision;
+import frc.robot.util.Limelight;
 import frc.robot.util.Util;
 
 public class FastPoint extends Command {
-  private final Vision photonvision;
+  private final String limelightname;
   private final CommandSwerveDrivetrain drivetrain;
   private final PIDController thetaController;
 
@@ -27,9 +27,9 @@ public class FastPoint extends Command {
   private double initialYaw = 0.0;
   private double initalRotation = 0.0;
 
-  public FastPoint(CommandSwerveDrivetrain drivetrain, Vision photonvision) {
+  public FastPoint(CommandSwerveDrivetrain drivetrain, String limelightname) {
     this.drivetrain = drivetrain;
-    this.photonvision = photonvision;
+    this.limelightname = limelightname;
     thetaController = new PIDController(0.20, 0.0, 0.0);
     thetaController.setTolerance(0.5, 0.25);
 
@@ -39,7 +39,7 @@ public class FastPoint extends Command {
   @Override
   public void initialize() {
 
-    initialYaw = photonvision.getYawVal();
+    initialYaw = Limelight.getTX(limelightname); // TX or TY?
     initalRotation = drivetrain.getPose().getRotation().getDegrees();
 
     thetaController.setSetpoint(initalRotation - initialYaw);
@@ -66,7 +66,7 @@ public class FastPoint extends Command {
   @Override
   public boolean isFinished() {
     // return false;
-    return Util.isWithinTolerance(photonvision.getYawVal(), 0.0, 0.02);
+    return Util.isWithinTolerance(Limelight.getTX(limelightname), 0.0, 0.02); // TX or TY?
   }
 
   @Override

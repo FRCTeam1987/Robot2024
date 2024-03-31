@@ -11,12 +11,10 @@ import frc.robot.util.Util;
 
 public class AimLockWristAuto extends Command {
   private final Wrist wrist;
-  private final String SPEAKER_LIMELIGHT;
 
   /** Creates a new AimLockWrist. */
-  public AimLockWristAuto(Wrist wrist, String limelightName) {
+  public AimLockWristAuto(Wrist wrist) {
     this.wrist = wrist;
-    this.SPEAKER_LIMELIGHT = limelightName;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -28,8 +26,8 @@ public class AimLockWristAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Util.canSeeTarget(SPEAKER_LIMELIGHT)) {
-      double degrees = Util.getInterpolatedWristAngle(SPEAKER_LIMELIGHT);
+    if (Util.isValidShot()) {
+      double degrees = Util.getInterpolatedWristAngle();
       DriverStation.reportWarning("TRYING DEGREES " + degrees, false);
       wrist.setDegrees(degrees);
     }

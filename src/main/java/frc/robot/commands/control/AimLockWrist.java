@@ -13,14 +13,12 @@ import frc.robot.util.Util;
 
 public class AimLockWrist extends Command {
   private final Wrist wrist;
-  private final String speakerLimelight;
   private final Shooter shooter;
 
   /** Creates a new AimLockWrist. */
-  public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator, String limelightName) {
+  public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator) {
     this.shooter = shooter;
     this.wrist = wrist;
-    this.speakerLimelight = limelightName;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -40,7 +38,7 @@ public class AimLockWrist extends Command {
     }
     // if (Util.canSeeTarget(speakerLimelight)) {
     if (shooter.isCenterBroken()) {
-      double degrees = Util.getInterpolatedWristAngle(speakerLimelight);
+      double degrees = Util.getInterpolatedWristAngle();
       wrist.setDegrees(degrees);
 
       // } else {
