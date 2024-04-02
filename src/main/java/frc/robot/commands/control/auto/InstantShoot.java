@@ -4,15 +4,11 @@
 
 package frc.robot.commands.control.auto;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.RobotCentric;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
-import frc.robot.util.Util;
 
 public class InstantShoot extends Command {
 

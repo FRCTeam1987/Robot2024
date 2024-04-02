@@ -12,14 +12,13 @@ import frc.robot.util.Util;
 public class DefaultCANdle extends Command {
   private final Shooter SHOOTER;
   private final Candles CANDLES;
-  private final String SPEAKER_LIMELIGHT;
   private final double BLINK_CONSTANT = 0.002; // in seconds?
 
   /** Creates a new DefaultCANdle. */
-  public DefaultCANdle(Candles CANDLES, Shooter SHOOTER, String LIMELIGHT_NAME) {
+  public DefaultCANdle(Candles CANDLES, Shooter SHOOTER) {
     this.CANDLES = CANDLES;
     this.SHOOTER = SHOOTER;
-    this.SPEAKER_LIMELIGHT = LIMELIGHT_NAME;
+
     addRequirements(CANDLES);
   }
 
@@ -40,11 +39,6 @@ public class DefaultCANdle extends Command {
     }
 
     CANDLES.setColorLeft(0, 128, 128);
-    if (!Util.canSeeTarget(SPEAKER_LIMELIGHT)) {
-      CANDLES.setColorRightRed();
-      return;
-    }
-
     if (!Util.isValidShot()) {
       CANDLES.setColorRightRed();
       return;

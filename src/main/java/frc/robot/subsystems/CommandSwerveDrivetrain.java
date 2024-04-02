@@ -42,9 +42,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
+  private final Rotation2d RedAlliancePerspectiveRotation =
+      Rotation2d.fromDegrees(180); // 180 or 0???
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean hasAppliedOperatorPerspective = false;
+  private static Alliance alliance = Alliance.Red; // by Default be red
 
   private final SwerveRequest.ApplyChassisSpeeds AutoRequest =
       new SwerveRequest.ApplyChassisSpeeds();
@@ -206,6 +208,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
 
+  public static Alliance getAlliance() {
+    return alliance;
+  }
+
   @Override
   public void periodic() {
     /* Periodically try to apply the operator perspective */
@@ -222,6 +228,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                         ? RedAlliancePerspectiveRotation
                         : BlueAlliancePerspectiveRotation);
                 hasAppliedOperatorPerspective = true;
+                alliance = allianceColor == Alliance.Red ? Alliance.Red : Alliance.Blue;
               });
     }
   }

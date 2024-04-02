@@ -8,6 +8,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.util.InterpolatingDouble;
 import frc.robot.util.InterpolatingTreeMap;
 import frc.robot.util.RectanglePoseArea;
+import java.util.Arrays;
+import java.util.List;
 
 public class Constants {
 
@@ -22,9 +24,8 @@ public class Constants {
   public static final double TRAP_APRILTAG_HEIGHT = 1.315;
   public static final double AMP_APRILTAG_HEIGHT = 1.35; // 0.535
 
-  public static final double translationXSlewRate = 10.0;
-  public static final double translationYSlewRate = 10.0;
-  public static final double rotationSlewRate = 4.5;
+  public static final double translationSlewRate = 2.5;
+  //   public static final double rotationSlewRate = 10;
 
   public static final int SHOOTER_LEADER_ID = 53;
   public static final int SHOOTER_FOLLOWER_ID = 56;
@@ -62,7 +63,7 @@ public class Constants {
     public static final double TRAP_ELEVATOR_HEIGHT_MIDWAY = 24.0;
     public static final double TRAP_WRIST_DEGREES = 118.0;
     public static final double TRAP_WRIST_DEGREES_MIDWAY = 80.0;
-    public static final double TRAP_RPM_SPEED = 450;    // 425, 475 worked but touched the top
+    public static final double TRAP_RPM_SPEED = 450; // 425, 475 worked but touched the top
   }
 
   public static class Wrist {
@@ -328,11 +329,14 @@ public class Constants {
 
   public static class Vision {
     // public static final String SPEAKER_RIGHT_LOW_LIMELIGHT = "limelight-rightlo";
-    public static final String SPEAKER_LIMELIGHT = "limelight-speaker";
+    public static final String LEFT_LOW = "limelight-leftlo";
     public static final String RIGHT_LIMELIGHT = "limelight-right";
     public static final String LEFT_LIMELIGHT = "limelight-left";
-    public static final String AMP_LIMELIGHT = "limelight-amp";
-    public static final String RIGHT_LO = "limelight-rightlo";
+    public static final String RIGHT_LOW = "limelight-rightlo";
+    public static final List<String> LL3GS = Arrays.asList(LEFT_LOW, RIGHT_LOW);
+    public static final List<String> LL3S = Arrays.asList(RIGHT_LIMELIGHT, LEFT_LIMELIGHT);
+    public static final List<Integer> SPEAKER_TAG_IDS = Arrays.asList(3, 4, 7, 8);
+    public static final double MAX_DISTANCE_SCALING = 5.5;
     public static final RectanglePoseArea fieldBoundary =
         new RectanglePoseArea(new Translation2d(0, 0), new Translation2d(16.541, 8.211));
     public static final double maxMutiTagDistToAccept = Units.feetToMeters(25.0); // 15.0

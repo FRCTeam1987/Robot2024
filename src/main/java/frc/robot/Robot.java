@@ -11,7 +11,6 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.Constants;
 
 public class Robot extends TimedRobot {
   private Command autoCommand;
@@ -28,15 +27,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    robotContainer.updatePoseVision();
     CommandScheduler.getInstance().run();
-    robotContainer.updatePoseVision(
-      // Constants.Vision.SPEAKER_RIGHT_LIMELIGHT,
-      // Constants.Vision.AMP_LIMELIGHT,
-      Constants.Vision.SPEAKER_LIMELIGHT,
-      Constants.Vision.RIGHT_LO
-      // Constants.Vision.RIGHT_LIMELIGHT,
-      // Constants.Vision.LEFT_LIMELIGHT
-    );
   }
 
   @Override
@@ -56,7 +48,6 @@ public class Robot extends TimedRobot {
     robotContainer.CANDLES.setAnimationRight(
         new LarsonAnimation(255, 255, 255, 0, 0.1, 8, BounceMode.Front, 1));
     autoCommand = robotContainer.getAutonomousCommand();
-
     if (autoCommand != null) {
       autoCommand.schedule();
     }

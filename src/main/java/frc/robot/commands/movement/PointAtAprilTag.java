@@ -24,23 +24,34 @@ public class PointAtAprilTag extends Command {
           .withDeadband(Constants.MaxSpeed * 0.1)
           .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-  private DoubleSupplier velocityXSupplier = () -> 0.0;
+  private DoubleSupplier velocityXSupplier = () -> 0.0; // getAllianceLob
   private DoubleSupplier velocityYSupplier = () -> 0.0;
   private DoubleSupplier rotationSupplier = () -> 0.0;
   private double desiredRotation;
   private final PIDController THETA_CONTROLLER;
+  private boolean shouldLob = false;
   double rotationRate = 0;
 
-  public PointAtAprilTag( // USE FAST POINT INSTEAD. DO NOT USE COMMAND IT IS UNRELIABLE
+  public PointAtAprilTag(
       CommandSwerveDrivetrain drivetrain,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier) {
+    this(drivetrain, velocityXSupplier, velocityYSupplier, rotationSupplier, false);
+  }
+
+  public PointAtAprilTag(
+      CommandSwerveDrivetrain drivetrain,
+      DoubleSupplier velocityXSupplier,
+      DoubleSupplier velocityYSupplier,
+      DoubleSupplier rotationSupplier,
+      boolean shouldLob) {
     this.drivetrain = drivetrain;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
-    THETA_CONTROLLER = new PIDController(0.33, 0.0, 0.0); // (0.183, 0.1, 0.0013)
+    this.shouldLob = shouldLob;
+    THETA_CONTROLLER = new PIDController(0.15, 0.0, 0.0); // (0.183, 0.1, 0.0013)
     THETA_CONTROLLER.enableContinuousInput(-180, 180);
     THETA_CONTROLLER.setTolerance(0.01, 0.01);
     addRequirements(drivetrain);
@@ -57,7 +68,9 @@ public class PointAtAprilTag extends Command {
   public void execute() {
     Pose2d current = drivetrain.getPose();
     desiredRotation =
-        current.getRotation().minus(Util.getRotationToAllianceSpeaker(current)).getDegrees();
+        shouldLob
+            ? current.getRotation().minus(Util.getRotationToAllianceLob(current)).getDegrees()
+            : current.getRotation().minus(Util.getRotationToAllianceSpeaker(current)).getDegrees();
     DriverStation.reportWarning(desiredRotation + " degrees", false);
 
     // drivetrain.setChassisSpeeds(HOLO_CONTROLLER.calculate(current, new

@@ -98,6 +98,17 @@ public class SwerveCommand extends Command {
               DRIVETRAIN.getPose().getRotation().getDegrees(), THETA_CONTROLLER.getSetpoint());
     }
 
+    // WIP - trying to auto point to amp feed and then speaker depending on pose by default
+    // if (!isCardinalLocking && Util.isWithinTolerance(ROTATION_SUPPLIER.getAsDouble(), 0.0, 0.25)
+    // && RobotContainer.get().SHOOTER.isCenterBroken()) {
+    //
+    // THETA_CONTROLLER.setSetpoint(Util.getRotationToAllianceSpeaker(DRIVETRAIN.getPose()).getDegrees());
+    //   System.out.println(Util.getRotationToAllianceSpeaker(DRIVETRAIN.getPose()).getDegrees());
+    //   rotationPercentage =
+    //       THETA_CONTROLLER.calculate(
+    //           DRIVETRAIN.getPose().getRotation().getDegrees(), THETA_CONTROLLER.getSetpoint());
+    // }
+
     double rotationalVelocity = rotationPercentage;
 
     DRIVETRAIN.setControl(

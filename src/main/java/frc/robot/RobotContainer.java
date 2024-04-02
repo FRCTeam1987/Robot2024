@@ -12,11 +12,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
@@ -64,6 +65,7 @@ import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
+import frc.robot.subsystems.AmpSensors;
 import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
@@ -81,9 +83,6 @@ public class RobotContainer {
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
-  public static final String SPEAKER_LIMELIGHT = Constants.Vision.SPEAKER_LIMELIGHT;
-  public static final String RIGHT_LIMELIGHT = Constants.Vision.RIGHT_LIMELIGHT;
-  public static final String AMP_LIMELIGHT = Constants.Vision.AMP_LIMELIGHT;
   public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
   public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
@@ -94,8 +93,15 @@ public class RobotContainer {
   public final Wrist WRIST = new Wrist(Constants.WRIST_ID);
   public final Elevator ELEVATOR =
       new Elevator(Constants.ELEVATOR_LEADER_ID, Constants.ELEVATOR_FOLLOWER_ID);
+  public final AmpSensors AMP_SENSORS = new AmpSensors();
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
+  private final SlewRateLimiter TranslationXSlewRate =
+      new SlewRateLimiter(Constants.translationSlewRate);
+  private final SlewRateLimiter TranslationYSlewRate =
+      new SlewRateLimiter(Constants.translationSlewRate);
+  // private final SlewRateLimiter RotationalSlewRate =
+  //     new SlewRateLimiter(Constants.rotationSlewRate);
   public static boolean isForwardAmpPrimed = false;
   public static boolean isReverseAmpPrimed = false;
   public static boolean isClimbPrimed = false;
@@ -142,14 +148,15 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
                     .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
                 () -> isReverseAmpPrimed));
-    DRIVER_CONTROLLER
-        .back()
-        .onTrue(
-            DRIVETRAIN.runOnce(
-                () -> {
-                  DRIVETRAIN.seedFieldRelative();
-                  DRIVETRAIN.getPigeon2().reset();
-                }));
+    // DRIVER_CONTROLLER
+    //     .back()
+    //     .onTrue(
+    //         DRIVETRAIN.runOnce(
+    //             () -> {
+    //               DRIVETRAIN.seedFieldRelative();
+    //               DRIVETRAIN.getPigeon2().reset();
+    //             }));
+    DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> updatePoseVision(0.01, false)));
     DRIVER_CONTROLLER
         .start()
         .onTrue(
@@ -169,14 +176,37 @@ public class RobotContainer {
         .whileTrue(
             new PointAtAprilTag(
                 DRIVETRAIN,
-                () -> (DRIVER_CONTROLLER.getLeftY()),
-                () -> (DRIVER_CONTROLLER.getLeftX()),
-                () -> (DRIVER_CONTROLLER.getRightX())));
+                () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+                () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
+                () -> DRIVER_CONTROLLER.getRightX()));
 
     DRIVER_CONTROLLER
         .rightBumper()
         .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
     DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
+    // WIP
+    // DRIVER_CONTROLLER
+    //     .leftTrigger()
+    //     .onTrue(
+    //       new ParallelDeadlineGroup(
+    //         new WaitUntilCommand(() -> {
+    //           final Pose2d currentPose = DRIVETRAIN.getPose();
+    //           final Rotation2d currentRotation = currentPose.getRotation();
+    //           DriverStation.reportWarning("current: " + currentRotation.getDegrees() + ", target: " + Util.getRotationToAllianceLob(currentPose).getDegrees(), false);
+    //           return Util.isWithinTolerance(
+    //             currentRotation.getDegrees(),
+    //             Util.getRotationToAllianceLob(currentPose).getDegrees(),
+    //             30);
+    //         }),
+    //         new PointAtAprilTag(
+    //           DRIVETRAIN,
+    //           () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+    //           () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
+    //           () -> DRIVER_CONTROLLER.getRightX(),
+    //           true
+    //         )
+    //       ).andThen(new LobNote(SHOOTER, WRIST, ELEVATOR))
+    //     );
   }
 
   private void configureCoDriverController() {
@@ -238,8 +268,8 @@ public class RobotContainer {
         new SwerveCommand(
             DRIVETRAIN,
             drive,
-            () -> DRIVER_CONTROLLER.getLeftY(),
-            () -> DRIVER_CONTROLLER.getLeftX(),
+            () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+            () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
             () -> DRIVER_CONTROLLER.getRightX(),
             () -> DRIVER_CONTROLLER.getHID().getPOV()));
 
@@ -303,8 +333,6 @@ public class RobotContainer {
   }
 
   public void configureShuffleboard() {
-
-    COMMANDS_TAB.addBoolean("Can See Target", () -> Util.canSeeTarget(SPEAKER_LIMELIGHT));
     WRIST.setupShuffleboard();
     SHOOTER.setupShuffleboard();
     INTAKE.setupShuffleboard();
@@ -396,8 +424,8 @@ public class RobotContainer {
     // addAuto("driven_source_score");
     // addAuto("heart_source_shoot");
     // addAuto("heart_source_og");
-    // addAuto("Taxi-Amp");
-    // addAuto("Taxi-Source");
+    addAuto("Taxi-Amp");
+    addAuto("Taxi-Source");
     // addAuto("temp_center");
     // addAuto("GKC-SOURCE-A");
     // addAuto("GKC-SOURCE-B");
@@ -408,12 +436,14 @@ public class RobotContainer {
     addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
+    // MATCH_TAB.addBoolean("is Alliance red", () -> CommandSwerveDrivetrain.getAlliance() ==
+    // Alliance.Red ? true : false);
   }
 
   public void configureDefaultCommands() {
     WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
-    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER, SPEAKER_LIMELIGHT));
+    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
   }
 
   public void configureNamedCommands() {
@@ -519,18 +549,26 @@ public class RobotContainer {
     NamedCommands.registerCommand("DefaultShooter", new AutoIdleShooter(SHOOTER));
     NamedCommands.registerCommand("InstantShoot", new InstantShoot(SHOOTER));
     NamedCommands.registerCommand(
-      "IntakeNoteAuto",
-      new IntakeNoteSequenceAuto(
-        SHOOTER, INTAKE, ELEVATOR
-      )); // new InstantCommand(() -> aimAtTargetAuto = true)).andThen()
-    NamedCommands.registerCommand("TempLog", new InstantCommand(() -> DriverStation.reportWarning("InstantShoot: distance: " + Util.getDistanceToSpeaker() + ", angle: " + Util.getInterpolatedWristAngle(), false)));
+        "IntakeNoteAuto",
+        new IntakeNoteSequenceAuto(
+            SHOOTER, INTAKE,
+            ELEVATOR));
+    NamedCommands.registerCommand(
+        "TempLog",
+        new InstantCommand(
+            () ->
+                DriverStation.reportWarning(
+                    "InstantShoot: distance: "
+                        + Util.getDistanceToSpeaker()
+                        + ", angle: "
+                        + Util.getInterpolatedWristAngle(),
+                    false)));
   }
 
   public void addAuto(String autoName) {
     final PathPlannerAuto auto = new PathPlannerAuto(autoName);
     if (autoName == "GKC-Amp-J2") {
-      AUTO_CHOOSER.addOption(autoName,
-        new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
+      AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
     }
     AUTO_CHOOSER.addOption(autoName, auto);
@@ -545,9 +583,28 @@ public class RobotContainer {
     return DRIVETRAIN.getPose();
   }
 
-  // Reference FRC 6391
-  // https://github.com/6391-Ursuline-Bearbotics/2024-6391-Crescendo/blob/4759dfd37c960cf3493b0eafd901519c5c36b239/src/main/java/frc/robot/Vision/Limelight.java#L44-L88
-  public void updatePoseVision(final String... limelights) {
+  public boolean shouldRejectLL3G(final Limelight.PoseEstimate botPose) {
+    if (botPose.tagCount < 1) {
+      return true;
+    }
+    if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
+      return true;
+    }
+    if (botPose.tagCount == 2 && botPose.avgTagDist > 4.5) {
+      return true;
+    }
+    // Reject a pose outside of the field.
+    if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
+      return true;
+    }
+    return false;
+  }
+
+  public void updatePoseVision() {
+    updatePoseVision(!DriverStation.isDisabled() ? 0.2 : 999, true);
+  }
+
+  public void updatePoseVision(double rotationConfidence, boolean canTrustLL3) {
     ChassisSpeeds currentSpeed = DRIVETRAIN.getCurrentRobotChassisSpeeds();
     // Reject pose updates when moving fast.
     if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.5
@@ -556,89 +613,169 @@ public class RobotContainer {
       DriverStation.reportWarning("Ignoring Pose update due to speed", false);
       return;
     }
+    boolean isDisabled = DriverStation.isDisabled();
+    boolean hasUpdatedPose = false;
 
-    Limelight.PoseEstimate bestPose = null;
-    double bestConfidence = 0.0;
-
-    for (String limelight : limelights) {
-      Limelight.PoseEstimate botPose = Limelight.getBotPoseEstimate_wpiBlue(limelight);
-
-      // Reject an empty pose or a pose with no AprilTags.
-      if (botPose.tagCount < 1) {
-        continue;
+    for (String limelight3G : Constants.Vision.LL3GS) {
+      Limelight.PoseEstimate botPoseLL3G = Limelight.getBotPoseEstimate_wpiBlue(limelight3G);
+      if (!shouldRejectLL3G(botPoseLL3G)) {
+        hasUpdatedPose = true;
+        updatePose(botPoseLL3G, isDisabled, rotationConfidence);
+        // DriverStation.reportWarning("UPDATING POSE LL3G", false);
+      } else {
+        // DriverStation.reportWarning("REJECTED POSE LL3G " + limelight3G, false);
       }
-      if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
-        continue;
-      }
-      if (botPose.tagCount == 2 && botPose.avgTagDist > 4.5) {
-        continue;
-      }
-      // if (botPose.tagCount == 3 && botPose.avgTagDist > 5.5) {
-      //   continue;
-      // }
-
-      // Reject a pose outside of the field.
-      if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
-        continue;
-      }
-
-      // final double botPoseToPoseDistance =
-      // botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
-      // if (botPoseToPoseDistance > 2 && !DriverStation.isDisabled()) {
-      //   System.out.println("Rejecting, Bot pose and limelight pose to far");
-      //   continue;
-      // }
-
-      double currentConfidence = calculateConfidence(botPose);
-      if (currentConfidence > bestConfidence) {
-        bestConfidence = currentConfidence;
-        bestPose = botPose;
-        // System.out.println("Updating pose with: " + limelight);
+    }
+    if (canTrustLL3) {
+      if (!hasUpdatedPose) {
+        for (String limelight3 : Constants.Vision.LL3S) {
+          Limelight.PoseEstimate botPoseLL3 = Limelight.getBotPoseEstimate_wpiBlue(limelight3);
+          if (!shouldRejectLL3G(botPoseLL3)) {
+            hasUpdatedPose = true;
+            updatePose(botPoseLL3, isDisabled, rotationConfidence);
+            DriverStation.reportWarning("UPDATING POSE LL3", false);
+          } else {
+            // DriverStation.reportWarning("REJECTED POSE LL3 " + limelight3, false);
+          }
+        }
       }
     }
 
-    if (bestPose == null) {
-      return; // No valid pose found
-    }
-    if (DriverStation.isDisabled() && (
-      (bestPose.tagCount == 1 && bestPose.rawFiducials[0].ambiguity < 0.9)
-      || (bestPose.tagCount == 2 && bestPose.avgTagDist < 4)
-      || (bestPose.tagCount > 2))
-    ) {
-      DRIVETRAIN.addVisionMeasurement(
-          bestPose.pose, bestPose.timestampSeconds, VecBuilder.fill(0.2, 0.2, 1));
-    } else {
-
-      // System.out.println("Best Confidence Value: " + (bestConfidence + 0.7));
-      DRIVETRAIN.addVisionMeasurement(
-          bestPose.pose,
-          bestPose.timestampSeconds,
-          VecBuilder.fill(bestConfidence + 0.7, bestConfidence + 0.7, 99999999));
+    if (!hasUpdatedPose) {
+      DriverStation.reportWarning("FAILED TO UPDATE POSE!", false);
     }
   }
+
+  public void updatePose(
+      Limelight.PoseEstimate botPose, boolean isDisabled, double rotationConfidence) {
+    double currentConfidence = calculateConfidence(botPose);
+    DRIVETRAIN.addVisionMeasurement(
+        botPose.pose,
+        botPose.timestampSeconds,
+        VecBuilder.fill(
+            currentConfidence, currentConfidence, rotationConfidence * botPose.tagCount));
+  }
+
+  // Reference FRC 6391
+  // https://github.com/6391-Ursuline-Bearbotics/2024-6391-Crescendo/blob/4759dfd37c960cf3493b0eafd901519c5c36b239/src/main/java/frc/robot/Vision/Limelight.java#L44-L88
+  // public void updatePoseVision(final String... limelights) {
+  //   ChassisSpeeds currentSpeed = DRIVETRAIN.getCurrentRobotChassisSpeeds();
+  //   // Reject pose updates when moving fast.
+  //   if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.5
+  //       || Math.abs(currentSpeed.vyMetersPerSecond) > 2.5
+  //       || Math.abs(Math.toDegrees(currentSpeed.omegaRadiansPerSecond)) > 270.0) {
+  //     DriverStation.reportWarning("Ignoring Pose update due to speed", false);
+  //     return;
+  //   }
+
+  //   double rotationConfidence = DriverStation.isDisabled() ? 0.2 : 999;
+
+  //   for (String limelight : limelights) {
+  //     Limelight.PoseEstimate botPose = Limelight.getBotPoseEstimate_wpiBlue(limelight);
+
+  //     // Reject an empty pose or a pose with no AprilTags.
+  //     if (botPose.tagCount < 1) {
+  //       continue;
+  //     }
+  //     if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
+  //       continue;
+  //     }
+  //     if (botPose.tagCount == 2 && botPose.avgTagDist > 4.5) {
+  //       continue;
+  //     }
+  //     // if (botPose.tagCount == 3 && botPose.avgTagDist > 5.5) {
+  //     //   continue;
+  //     // }
+
+  //     // Reject a pose outside of the field.
+  //     if (!Constants.Vision.fieldBoundary.isPoseWithinArea(botPose.pose)) {
+  //       continue;
+  //     }
+
+  //     // final double botPoseToPoseDistance =
+  //     // botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
+  //     // if (botPoseToPoseDistance > 2 && !DriverStation.isDisabled()) {
+  //     //   System.out.println("Rejecting, Bot pose and limelight pose to far");
+  //     //   continue;
+  //     // }
+
+  //     final double botPoseToPoseDistance =
+  //         botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
+  //     if (botPose.tagCount < 2 && botPoseToPoseDistance > 1.5) {
+  //       continue;
+  //     }
+  //     double currentConfidence = calculateConfidence(botPose);
+  //     DRIVETRAIN.addVisionMeasurement(
+  //         botPose.pose,
+  //         botPose.timestampSeconds,
+  //         VecBuilder.fill(
+  //             currentConfidence, currentConfidence, rotationConfidence * botPose.tagCount));
+  //     // if (currentConfidence > bestConfidence) {
+  //     //   bestConfidence = currentConfidence;
+  //     //   bestPose = botPose;
+  //     //   // System.out.println("Updating pose with: " + limelight);
+  //     // }
+  //   }
+
+  //   // if (bestPose == null) {
+  //   //   return; // No valid pose found
+  //   // }
+  //   // if (DriverStation.isDisabled() && (
+  //   //   (bestPose.tagCount == 1 && bestPose.rawFiducials[0].ambiguity < 0.9)
+  //   //   || (bestPose.tagCount == 2 && bestPose.avgTagDist < 4)
+  //   //   || (bestPose.tagCount > 2))
+  //   // ) {
+  //   //   DRIVETRAIN.addVisionMeasurement(
+  //   //       bestPose.pose, bestPose.timestampSeconds, VecBuilder.fill(0.2, 0.2, 1));
+  //   // } else {
+
+  //   //   // System.out.println("Best Confidence Value: " + (bestConfidence + 0.7));
+  //   //   DRIVETRAIN.addVisionMeasurement(
+  //   //       bestPose.pose,
+  //   //       bestPose.timestampSeconds,
+  //   //       VecBuilder.fill(bestConfidence + 0.7, bestConfidence + 0.7, 99999999));
+  //   // }
+  // }
 
   private double calculateConfidence(Limelight.PoseEstimate botPose) {
-    double confidence = 0.0;
-    double tagDistanceFeet = Units.metersToFeet(botPose.avgTagDist);
-
-    if (botPose.tagCount > 1) {
-      confidence = 1.0 / tagDistanceFeet;
-    } else if (botPose.tagCount == 1) {
-      tagDistanceFeet *= 2; // Assume less precision with single tag.
-      confidence = 0.5 / tagDistanceFeet;
+    // final double botPoseToPoseDistance =
+    //       botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
+    final double speakerReference = Util.speakerTagCount(botPose.rawFiducials);
+    final double distanceWeight = botPose.avgTagDist / Constants.Vision.MAX_DISTANCE_SCALING;
+    if (botPose.tagCount > 2) {
+      return (0.7 / speakerReference) + distanceWeight;
     }
-
-    if (!DriverStation.isDisabled() && tagDistanceFeet < 15) {
-      final double botPoseToPoseDistance =
-          botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
-      confidence = confidence + Math.pow(botPoseToPoseDistance / 3, 2);
+    if (botPose.tagCount == 2) {
+      return (0.9 / speakerReference) + distanceWeight;
     }
-
-    // Ensure confidence stays within a reasonable range.
-    // confidence = Math.max(0.1, Math.min(0.7, 99));
-
-    return confidence;
+    if (botPose.tagCount == 1) {
+      return (2.2 / speakerReference) + distanceWeight;
+    }
+    return 99999;
   }
+
+  // private double calculateConfidence(Limelight.PoseEstimate botPose) {
+  //   double confidence = 0.0;
+  //   double tagDistanceFeet = Units.metersToFeet(botPose.avgTagDist);
+
+  //   if (botPose.tagCount > 1) {
+  //     confidence = 1.0 / tagDistanceFeet;
+  //   } else if (botPose.tagCount == 1) {
+  //     tagDistanceFeet *= 2; // Assume less precision with single tag.
+  //     confidence = 0.5 / tagDistanceFeet;
+  //   }
+
+  //   if (!DriverStation.isDisabled() && tagDistanceFeet < 15) {
+  //     final double botPoseToPoseDistance =
+  //         botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
+  //     confidence = confidence + Math.pow(botPoseToPoseDistance / 3, 2);
+  //   }
+
+  //   // Ensure confidence stays within a reasonable range.
+  //   // confidence = Math.max(0.1, Math.min(0.7, 99));
+
+  //   return confidence;
+  // }
 
   public static RobotContainer get() {
     return instance;

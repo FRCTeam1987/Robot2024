@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.Limelight.RawFiducial;
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class Util {
   public static Pose2d TAG_14_POSE_2D; // FAR SIDE BLUE ALLIANCE TRAP
   public static Pose2d TAG_15_POSE_2D; // LEFT SIDE BLUE ALLIANCE TRAP
   public static Pose2d TAG_16_POSE_2D; // RIGHT SIDE BLUE ALLIANCE TRAP
+  public static Pose2d TAG_LOB_BLUE;
+  public static Pose2d TAG_LOB_RED;
   public static List<Pose2d> TRAP_TAGS;
   public static DriverStation.Alliance alliance;
   public static final double DEADBAND = 0.05;
@@ -98,6 +101,21 @@ public class Util {
               Util.TAG_16_POSE_2D =
                   pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
             });
+    field
+        .getTagPose(5)
+        .ifPresent(
+            pose -> {
+              Util.TAG_LOB_RED =
+                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d(0.0)));
+              ;
+            });
+    field
+        .getTagPose(6)
+        .ifPresent(
+            pose -> {
+              Util.TAG_LOB_BLUE =
+                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d()));
+            });
     TRAP_TAGS =
         List.of(
             TAG_11_POSE_2D,
@@ -110,7 +128,23 @@ public class Util {
   }
 
   public static Pose3d getAllianceSpeakerCenter() {
-    return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
+        ? TAG_7_POSE
+        : TAG_4_POSE;
+  }
+
+  public static Pose2d getAllianceLob() {
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
+        ? TAG_LOB_BLUE
+        : TAG_LOB_RED;
+  }
+
+  public static Rotation2d getRotationToAllianceLob(Pose2d opose) {
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    Transform2d pose = Util.getAllianceLob().minus(opose);
+    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
   }
 
   public static boolean isWithinTolerance(
@@ -211,5 +245,15 @@ public class Util {
       maxAmbiguity = Math.max(maxAmbiguity, fiducial.ambiguity);
     }
     return maxAmbiguity;
+  }
+
+  public static double speakerTagCount(final RawFiducial[] fiducials) {
+    int tagCount = 0;
+    for (RawFiducial fiducial : fiducials) {
+      if (Constants.Vision.SPEAKER_TAG_IDS.contains(fiducial.id)) {
+        tagCount++;
+      }
+    }
+    return tagCount;
   }
 }
