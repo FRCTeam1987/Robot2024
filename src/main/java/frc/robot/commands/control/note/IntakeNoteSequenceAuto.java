@@ -42,8 +42,7 @@ public class IntakeNoteSequenceAuto extends SequentialCommandGroup {
             intake));
   }
 
-  public IntakeNoteSequenceAuto(
-      Shooter shooter, Intake intake, Elevator elevator, boolean val) {
+  public IntakeNoteSequenceAuto(Shooter shooter, Intake intake, Elevator elevator, boolean val) {
     addCommands(
         new InstantCommand(
             () -> {

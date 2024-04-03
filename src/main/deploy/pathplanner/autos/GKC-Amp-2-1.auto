@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7,
-      "y": 4.360569515543359
+      "x": 1.372426958844331,
+      "y": 5.52863543907909
     },
     "rotation": 0
   },
@@ -18,7 +18,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "GKC Amp J2"
+                  "pathName": "GKC Amp 2-1"
                 }
               },
               {

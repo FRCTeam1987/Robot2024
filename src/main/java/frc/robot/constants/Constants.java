@@ -67,6 +67,9 @@ public class Constants {
   }
 
   public static class Wrist {
+    public static final int PROXIMITY_SENSOR_LEFT_ID = 9;
+    public static final int PROXIMITY_SENSOR_RIGHT_ID = 8; // TODO: Update left and right
+
     public static final double WRIST_KP = 200.0;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.01;
@@ -334,7 +337,7 @@ public class Constants {
     public static final String LEFT_LIMELIGHT = "limelight-left";
     public static final String RIGHT_LOW = "limelight-rightlo";
     public static final List<String> LL3GS = Arrays.asList(LEFT_LOW, RIGHT_LOW);
-    public static final List<String> LL3S = Arrays.asList(RIGHT_LIMELIGHT, LEFT_LIMELIGHT);
+    public static final List<String> LL3S = Arrays.asList(); // RIGHT_LIMELIGHT, LEFT_LIMELIGHT
     public static final List<Integer> SPEAKER_TAG_IDS = Arrays.asList(3, 4, 7, 8);
     public static final double MAX_DISTANCE_SCALING = 5.5;
     public static final RectanglePoseArea fieldBoundary =

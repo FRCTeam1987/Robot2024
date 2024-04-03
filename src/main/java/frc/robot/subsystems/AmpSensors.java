@@ -7,15 +7,38 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class AmpSensors extends SubsystemBase {
 
-  private DigitalInput m_sensor;
+  private DigitalInput m_sensor_left;
+  private DigitalInput m_sensor_right;
 
   /** Creates a new AmpSensors. */
   public AmpSensors() {
-    m_sensor = new DigitalInput(9);
-    Shuffleboard.getTab("MAIN").addBoolean("Amp Sensor", m_sensor::get);
+    m_sensor_left = new DigitalInput(Constants.Wrist.PROXIMITY_SENSOR_LEFT_ID);
+    m_sensor_right = new DigitalInput(Constants.Wrist.PROXIMITY_SENSOR_RIGHT_ID);
+    Shuffleboard.getTab("MAIN").addBoolean("Amp Sensor", () -> getBothSensors());
+  }
+
+  public boolean getSensorLeft() {
+    return m_sensor_left.get();
+  }
+
+  public boolean getSensorRight() {
+    return m_sensor_right.get();
+  }
+
+  public boolean getBothSensors() {
+    return this.getBothSensors(true);
+  }
+
+  public boolean getBothSensors(boolean shouldReturnAsAND) {
+    if (shouldReturnAsAND) {
+      return this.getSensorLeft() && this.getSensorRight();
+    } else {
+      return this.getSensorLeft() || this.getSensorRight();
+    }
   }
 
   @Override

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -40,6 +41,7 @@ import frc.robot.commands.control.NewShootAmpAuto;
 import frc.robot.commands.control.ReverseIntake;
 import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootSubwoofer;
+import frc.robot.commands.control.ShootSubwooferFirstHalf;
 import frc.robot.commands.control.ShootSubwooferFlat;
 import frc.robot.commands.control.ShootTall;
 import frc.robot.commands.control.StopAll;
@@ -108,6 +110,7 @@ public class RobotContainer {
   public static boolean aimAtTargetAuto = false;
   private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps;
   private double MaxAngularRate = 1.5 * Math.PI;
+  // private boolean VisionUpdate = false;
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -185,28 +188,35 @@ public class RobotContainer {
         .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
     DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
     // WIP
-    // DRIVER_CONTROLLER
-    //     .leftTrigger()
-    //     .onTrue(
-    //       new ParallelDeadlineGroup(
-    //         new WaitUntilCommand(() -> {
-    //           final Pose2d currentPose = DRIVETRAIN.getPose();
-    //           final Rotation2d currentRotation = currentPose.getRotation();
-    //           DriverStation.reportWarning("current: " + currentRotation.getDegrees() + ", target: " + Util.getRotationToAllianceLob(currentPose).getDegrees(), false);
-    //           return Util.isWithinTolerance(
-    //             currentRotation.getDegrees(),
-    //             Util.getRotationToAllianceLob(currentPose).getDegrees(),
-    //             30);
-    //         }),
-    //         new PointAtAprilTag(
-    //           DRIVETRAIN,
-    //           () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
-    //           () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
-    //           () -> DRIVER_CONTROLLER.getRightX(),
-    //           true
-    //         )
-    //       ).andThen(new LobNote(SHOOTER, WRIST, ELEVATOR))
-    //     );
+    DRIVER_CONTROLLER
+        .leftTrigger()
+        .onTrue(
+            new ParallelDeadlineGroup(
+                    new ParallelCommandGroup(
+                        new WaitUntilCommand(
+                            () -> {
+                              Pose2d currentPose = DRIVETRAIN.getPose();
+                              Rotation2d currentRotation = currentPose.getRotation();
+                              DriverStation.reportWarning(
+                                  "current: "
+                                      + currentRotation.getDegrees()
+                                      + ", target: "
+                                      + Util.getRotationToAllianceLob(currentPose).getDegrees(),
+                                  false);
+                              return Util.isWithinTolerance(
+                                  currentRotation.getDegrees(),
+                                  Util.getRotationToAllianceLob(currentPose).getDegrees(),
+                                  30);
+                            }),
+                        new PrintCommand("STARTING LOB SEQUENCE")),
+                    new PointAtAprilTag(
+                        DRIVETRAIN,
+                        () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+                        () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
+                        () -> DRIVER_CONTROLLER.getRightX(),
+                        true))
+                .andThen(new LobNote(SHOOTER, WRIST, ELEVATOR)))
+        .onFalse(new InstantCommand());
   }
 
   private void configureCoDriverController() {
@@ -432,10 +442,14 @@ public class RobotContainer {
     // addAuto("GKC-AMP-A");
     // addAuto("GKC-AMP-B");
     // addAuto("GKC-Source-J");
+    addAuto("GKC-Source-J2");
     // addAuto("GKC-Amp-J");
+    addAuto("GKC-Amp-2-1");
     addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
+    // MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
+
     // MATCH_TAB.addBoolean("is Alliance red", () -> CommandSwerveDrivetrain.getAlliance() ==
     // Alliance.Red ? true : false);
   }
@@ -447,6 +461,17 @@ public class RobotContainer {
   }
 
   public void configureNamedCommands() {
+    NamedCommands.registerCommand(
+        "SubwooferSecondHalf",
+        new SequentialCommandGroup(
+            new WaitCommand(0.04),
+            new InstantCommand(
+                () -> {
+                  ELEVATOR.setLengthInches(0.5);
+                  WRIST.setDegrees(12);
+                  SHOOTER.stopShooter();
+                  SHOOTER.stopFeeder();
+                })));
     NamedCommands.registerCommand(
         "ShootNote",
         new ParallelDeadlineGroup(
@@ -549,10 +574,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("DefaultShooter", new AutoIdleShooter(SHOOTER));
     NamedCommands.registerCommand("InstantShoot", new InstantShoot(SHOOTER));
     NamedCommands.registerCommand(
-        "IntakeNoteAuto",
-        new IntakeNoteSequenceAuto(
-            SHOOTER, INTAKE,
-            ELEVATOR));
+        "IntakeNoteAuto", new IntakeNoteSequenceAuto(SHOOTER, INTAKE, ELEVATOR));
     NamedCommands.registerCommand(
         "TempLog",
         new InstantCommand(
@@ -567,8 +589,12 @@ public class RobotContainer {
 
   public void addAuto(String autoName) {
     final PathPlannerAuto auto = new PathPlannerAuto(autoName);
-    if (autoName == "GKC-Amp-J2") {
+    if (autoName == "GKC-Amp-J2" || autoName == "GKC-Amp-2-1") {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
+      return;
+    } else if (autoName == "GKC-Source-J2") {
+      AUTO_CHOOSER.addOption(
+          autoName, new ShootSubwooferFirstHalf(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
     }
     AUTO_CHOOSER.addOption(autoName, auto);
@@ -584,13 +610,13 @@ public class RobotContainer {
   }
 
   public boolean shouldRejectLL3G(final Limelight.PoseEstimate botPose) {
-    if (botPose.tagCount < 1) {
+    if (botPose.tagCount < 2) {
       return true;
     }
-    if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
-      return true;
-    }
-    if (botPose.tagCount == 2 && botPose.avgTagDist > 4.5) {
+    // if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
+    //   return true;
+    // }
+    if (botPose.tagCount == 2 && botPose.avgTagDist > 4.0) {
       return true;
     }
     // Reject a pose outside of the field.
@@ -601,30 +627,41 @@ public class RobotContainer {
   }
 
   public void updatePoseVision() {
-    updatePoseVision(!DriverStation.isDisabled() ? 0.2 : 999, true);
+    updatePoseVision(!DriverStation.isDisabled() ? 0.2 : 99999, true);
   }
 
   public void updatePoseVision(double rotationConfidence, boolean canTrustLL3) {
     ChassisSpeeds currentSpeed = DRIVETRAIN.getCurrentRobotChassisSpeeds();
     // Reject pose updates when moving fast.
-    if (Math.abs(currentSpeed.vxMetersPerSecond) > 2.5
-        || Math.abs(currentSpeed.vyMetersPerSecond) > 2.5
-        || Math.abs(Math.toDegrees(currentSpeed.omegaRadiansPerSecond)) > 270.0) {
-      DriverStation.reportWarning("Ignoring Pose update due to speed", false);
+    if (Math.abs(currentSpeed.vxMetersPerSecond) > 1.5
+        || Math.abs(currentSpeed.vyMetersPerSecond) > 1.5
+        || Math.abs(Math.toDegrees(currentSpeed.omegaRadiansPerSecond)) > 180.0) {
+      // DriverStation.reportWarning("Ignoring Pose update due to speed", false);
       return;
     }
     boolean isDisabled = DriverStation.isDisabled();
     boolean hasUpdatedPose = false;
 
+    Limelight.PoseEstimate bestPose = null;
+    double bestConfidence = 0.0;
+
     for (String limelight3G : Constants.Vision.LL3GS) {
       Limelight.PoseEstimate botPoseLL3G = Limelight.getBotPoseEstimate_wpiBlue(limelight3G);
       if (!shouldRejectLL3G(botPoseLL3G)) {
-        hasUpdatedPose = true;
-        updatePose(botPoseLL3G, isDisabled, rotationConfidence);
-        // DriverStation.reportWarning("UPDATING POSE LL3G", false);
+        double currentConfidence = calculateConfidence(botPoseLL3G);
+        if (currentConfidence > bestConfidence) {
+          bestConfidence = currentConfidence;
+          bestPose = botPoseLL3G;
+          // System.out.println("UPDATING POSE LL3G");
+          // System.out.println(botPoseLL3G);
+        }
       } else {
-        // DriverStation.reportWarning("REJECTED POSE LL3G " + limelight3G, false);
+        // System.out.println("REJECTED POSE LL3G " + limelight3G);
       }
+    }
+    if (bestConfidence > 0.0) {
+      updatePose(bestPose, isDisabled, rotationConfidence);
+      hasUpdatedPose = true;
     }
     if (canTrustLL3) {
       if (!hasUpdatedPose) {
@@ -633,7 +670,7 @@ public class RobotContainer {
           if (!shouldRejectLL3G(botPoseLL3)) {
             hasUpdatedPose = true;
             updatePose(botPoseLL3, isDisabled, rotationConfidence);
-            DriverStation.reportWarning("UPDATING POSE LL3", false);
+            // DriverStation.reportWarning("UPDATING POSE LL3", false);
           } else {
             // DriverStation.reportWarning("REJECTED POSE LL3 " + limelight3, false);
           }
@@ -642,13 +679,21 @@ public class RobotContainer {
     }
 
     if (!hasUpdatedPose) {
-      DriverStation.reportWarning("FAILED TO UPDATE POSE!", false);
+      // System.out.println("FAILED TO UPDATE POSE!");
     }
   }
 
   public void updatePose(
       Limelight.PoseEstimate botPose, boolean isDisabled, double rotationConfidence) {
     double currentConfidence = calculateConfidence(botPose);
+    if (DriverStation.isAutonomous()) {
+      currentConfidence = currentConfidence * 6;
+    }
+    // if (VisionUpdate) {
+    //   VisionUpdate = false;
+    // } else {
+    //   VisionUpdate = true;
+    // }
     DRIVETRAIN.addVisionMeasurement(
         botPose.pose,
         botPose.timestampSeconds,
