@@ -5,20 +5,20 @@
       "x": 0.7,
       "y": 4.360569515543359
     },
-    "rotation": 0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "GKC Amp J2"
+                  "pathName": "GKC Source 4-3-2"
                 }
               },
               {
@@ -34,6 +34,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKCSource432ToCenter"
           }
         }
       ]

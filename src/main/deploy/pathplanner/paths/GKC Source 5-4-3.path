@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 8.273930948903564,
-        "y": 0.6974723035817604
+        "y": 0.7641154939427943
       },
       "prevControl": {
         "x": 8.371555675876294,
-        "y": 0.9045817644335677
+        "y": 0.9712249547946017
       },
       "nextControl": {
         "x": 8.167337388416541,
-        "y": 0.47133559081114607
+        "y": 0.53797878117218
       },
       "isLocked": false,
       "linkedName": null
@@ -133,11 +133,6 @@
       "waypointRelativePos": 5,
       "rotationDegrees": -11.820200073792531,
       "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": -34.363612422492956,
-      "rotateFast": true
     }
   ],
   "constraintZones": [
@@ -186,20 +181,9 @@
       }
     },
     {
-      "name": "Slow First Shot",
-      "minWaypointRelativePos": 0.25,
-      "maxWaypointRelativePos": 0.35,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 1.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 360.0
-      }
-    },
-    {
       "name": "Super Speedy",
-      "minWaypointRelativePos": 0.35,
-      "maxWaypointRelativePos": 0.75,
+      "minWaypointRelativePos": 0.1,
+      "maxWaypointRelativePos": 0.8,
       "constraints": {
         "maxVelocity": 5.0,
         "maxAcceleration": 5.0,
@@ -312,8 +296,8 @@
       }
     },
     {
-      "name": "Shoot First Note",
-      "waypointRelativePos": 0.25,
+      "name": "SubwooferSecondHalf",
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -321,7 +305,7 @@
             {
               "type": "named",
               "data": {
-                "name": "InstantShoot"
+                "name": "SubwooferSecondHalf"
               }
             }
           ]
@@ -331,13 +315,13 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.75,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 4.35,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -6.467195110010091,
+    "rotation": -16.87164049178365,
     "rotateFast": false
   },
   "reversed": false,

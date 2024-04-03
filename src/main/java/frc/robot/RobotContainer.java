@@ -110,7 +110,7 @@ public class RobotContainer {
   public static boolean aimAtTargetAuto = false;
   private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps;
   private double MaxAngularRate = 1.5 * Math.PI;
-  // private boolean VisionUpdate = false;
+  private boolean VisionUpdate = false;
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -442,13 +442,15 @@ public class RobotContainer {
     // addAuto("GKC-AMP-A");
     // addAuto("GKC-AMP-B");
     // addAuto("GKC-Source-J");
-    addAuto("GKC-Source-J2");
+    addAuto("GKC Source 5-4-3");
+    addAuto("GKC Source 4-3-2");
     // addAuto("GKC-Amp-J");
     addAuto("GKC-Amp-2-1");
-    addAuto("GKC-Amp-J2");
+    addAuto("GKC-Amp-1-2");
+    // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
-    // MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
+    MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
 
     // MATCH_TAB.addBoolean("is Alliance red", () -> CommandSwerveDrivetrain.getAlliance() ==
     // Alliance.Red ? true : false);
@@ -589,10 +591,10 @@ public class RobotContainer {
 
   public void addAuto(String autoName) {
     final PathPlannerAuto auto = new PathPlannerAuto(autoName);
-    if (autoName == "GKC-Amp-J2" || autoName == "GKC-Amp-2-1") {
+    if (autoName == "GKC-Amp-2-1" || autoName == "GKC-Amp-1-2") {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
-    } else if (autoName == "GKC-Source-J2") {
+    } else if (autoName == "GKC Source 5-4-3" || autoName == "GKC Source 4-3-2") {
       AUTO_CHOOSER.addOption(
           autoName, new ShootSubwooferFirstHalf(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
@@ -616,7 +618,7 @@ public class RobotContainer {
     // if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
     //   return true;
     // }
-    if (botPose.tagCount == 2 && botPose.avgTagDist > 4.0) {
+    if (botPose.tagCount == 2 && botPose.avgTagDist > 4.0) { //4.0
       return true;
     }
     // Reject a pose outside of the field.
@@ -689,11 +691,11 @@ public class RobotContainer {
     if (DriverStation.isAutonomous()) {
       currentConfidence = currentConfidence * 6;
     }
-    // if (VisionUpdate) {
-    //   VisionUpdate = false;
-    // } else {
-    //   VisionUpdate = true;
-    // }
+    if (VisionUpdate) {
+      VisionUpdate = false;
+    } else {
+      VisionUpdate = true;
+    }
     DRIVETRAIN.addVisionMeasurement(
         botPose.pose,
         botPose.timestampSeconds,
@@ -786,7 +788,8 @@ public class RobotContainer {
     // final double botPoseToPoseDistance =
     //       botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
     final double speakerReference = Util.speakerTagCount(botPose.rawFiducials);
-    final double distanceWeight = botPose.avgTagDist / Constants.Vision.MAX_DISTANCE_SCALING;
+    final double distanceWeight = Math.pow(botPose.avgTagDist / Constants.Vision.MAX_DISTANCE_SCALING, 2);
+    // System.out.println(distanceWeight);
     if (botPose.tagCount > 2) {
       return (0.7 / speakerReference) + distanceWeight;
     }

@@ -18,7 +18,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "GKC Source J2"
+                  "pathName": "GKC Source 5-4-3"
                 }
               },
               {
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "GKCSourceJ2ToCenter"
+            "pathName": "GKCSourc543ToCenter"
           }
         }
       ]
