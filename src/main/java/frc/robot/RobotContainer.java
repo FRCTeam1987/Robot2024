@@ -613,15 +613,16 @@ public class RobotContainer {
 
   public boolean shouldRejectLL3G(final Limelight.PoseEstimate botPose) {
     if (botPose.tagCount < 2) {
-      return true;}
+      return true;
+    }
 
-      if (SHOOTER.isFeeding()) {
-        return true;
-      }
+    if (SHOOTER.isFeeding()) {
+      return true;
+    }
     // if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
     //   return true;
     // }
-    if (botPose.tagCount == 2 && botPose.avgTagDist > 4.0) { //4.0
+    if (botPose.tagCount == 2 && botPose.avgTagDist > 4.0) { // 4.0
       return true;
     }
     // Reject a pose outside of the field.
@@ -791,7 +792,8 @@ public class RobotContainer {
     // final double botPoseToPoseDistance =
     //       botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
     final double speakerReference = Util.speakerTagCount(botPose.rawFiducials);
-    final double distanceWeight = Math.pow(botPose.avgTagDist / Constants.Vision.MAX_DISTANCE_SCALING, 2);
+    final double distanceWeight =
+        Math.pow(botPose.avgTagDist / Constants.Vision.MAX_DISTANCE_SCALING, 2);
     // System.out.println(distanceWeight);
     if (botPose.tagCount > 2) {
       return (0.7 / speakerReference) + distanceWeight;
