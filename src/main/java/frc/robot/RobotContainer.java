@@ -450,7 +450,7 @@ public class RobotContainer {
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
-    MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
+    // MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
 
     // MATCH_TAB.addBoolean("is Alliance red", () -> CommandSwerveDrivetrain.getAlliance() ==
     // Alliance.Red ? true : false);
@@ -694,11 +694,11 @@ public class RobotContainer {
     if (DriverStation.isAutonomous()) {
       currentConfidence = currentConfidence * 6;
     }
-    if (VisionUpdate) {
-      VisionUpdate = false;
-    } else {
-      VisionUpdate = true;
-    }
+    // if (VisionUpdate) {
+    //   VisionUpdate = false;
+    // } else {
+    //   VisionUpdate = true;
+    // }
     DRIVETRAIN.addVisionMeasurement(
         botPose.pose,
         botPose.timestampSeconds,
