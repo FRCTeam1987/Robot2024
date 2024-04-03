@@ -138,8 +138,8 @@
   "constraintZones": [
     {
       "name": "Slow Second Shot",
-      "minWaypointRelativePos": 1.9,
-      "maxWaypointRelativePos": 1.9500000000000002,
+      "minWaypointRelativePos": 1.7999999999999998,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 0.25,
         "maxAcceleration": 1.5,
@@ -149,8 +149,8 @@
     },
     {
       "name": "Slow Third Shot",
-      "minWaypointRelativePos": 3.9000000000000004,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 3.8,
+      "maxWaypointRelativePos": 4.1,
       "constraints": {
         "maxVelocity": 0.25,
         "maxAcceleration": 1.5,
@@ -171,8 +171,8 @@
     },
     {
       "name": "Slow Intake Fourth Note",
-      "minWaypointRelativePos": 4.9,
-      "maxWaypointRelativePos": 5.1,
+      "minWaypointRelativePos": 4.85,
+      "maxWaypointRelativePos": 5.1499999999999995,
       "constraints": {
         "maxVelocity": 2.75,
         "maxAcceleration": 2.0,
@@ -187,6 +187,17 @@
       "constraints": {
         "maxVelocity": 5.0,
         "maxAcceleration": 5.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "Slow third intake",
+      "minWaypointRelativePos": 2.9499999999999997,
+      "maxWaypointRelativePos": 3.1500000000000004,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 360.0
       }

@@ -244,6 +244,17 @@
       "minWaypointRelativePos": 7.85,
       "maxWaypointRelativePos": 8.0,
       "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "Slow fifth Shot",
+      "minWaypointRelativePos": 5.65,
+      "maxWaypointRelativePos": 6.2,
+      "constraints": {
         "maxVelocity": 1.25,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
