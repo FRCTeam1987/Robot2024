@@ -238,6 +238,17 @@
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 360.0
       }
+    },
+    {
+      "name": "Slowmo end",
+      "minWaypointRelativePos": 7.85,
+      "maxWaypointRelativePos": 8.0,
+      "constraints": {
+        "maxVelocity": 1.25,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
     }
   ],
   "eventMarkers": [

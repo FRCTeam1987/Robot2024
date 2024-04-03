@@ -121,6 +121,10 @@ public class Shooter extends SubsystemBase {
     // FEEDER_TEMP.setVoltage(voltage);
   }
 
+  public boolean isFeeding() {
+    return Math.abs(FEEDER.getVelocity().getValueAsDouble()) > 4;
+  }
+
   public void stopShooter() {
     SHOOTER_LEADER.set(0.0);
     SHOOTER_FOLLOWER.set(0.0);

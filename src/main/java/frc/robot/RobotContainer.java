@@ -613,8 +613,11 @@ public class RobotContainer {
 
   public boolean shouldRejectLL3G(final Limelight.PoseEstimate botPose) {
     if (botPose.tagCount < 2) {
-      return true;
-    }
+      return true;}
+
+      if (SHOOTER.isFeeding()) {
+        return true;
+      }
     // if (botPose.tagCount == 1 && botPose.rawFiducials[0].ambiguity > 0.9) {
     //   return true;
     // }
