@@ -1,0 +1,104 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.618270516293842,
+        "y": 6.845532684374221
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.2359516595142224,
+        "y": 7.173897436243093
+      },
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-3_End"
+    },
+    {
+      "anchor": {
+        "x": 8.083944435460834,
+        "y": 7.343155865903732
+      },
+      "prevControl": {
+        "x": 8.025715097003644,
+        "y": 7.770466330099236
+      },
+      "nextControl": {
+        "x": 8.12340849833267,
+        "y": 7.053552592509119
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.15885553888246,
+        "y": 5.837523626785966
+      },
+      "prevControl": {
+        "x": 4.404459365590163,
+        "y": 6.421361382315135
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-ShootPosition"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.2,
+      "maxWaypointRelativePos": 1.8,
+      "constraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Intake Note",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 2.762993108470359,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "GKC Amp",
+  "previewStartingState": {
+    "rotation": 27.933082138670695,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

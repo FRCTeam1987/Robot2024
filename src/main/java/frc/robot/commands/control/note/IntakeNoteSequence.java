@@ -4,6 +4,7 @@
 
 package frc.robot.commands.control.note;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,7 +20,7 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeNoteSequence extends SequentialCommandGroup {
 
-  // private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising);
+  // private final Debouncer hasNote = new Debouncer(0.02, DebounceType.kRising)s
 
   /** Creates a new IntakeNoteSequence. */
   public IntakeNoteSequence(Shooter shooter, Intake intake, Wrist wrist, Elevator elevator) {
@@ -27,7 +28,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
-              intake.setVolts(Constants.INTAKE_COLLECT_VOLTS_MANUAL);
+              intake.setRPM(Constants.INTAKE_RPM);
               wrist.setDegrees(21); // testing
               elevator.goHome();
             },
@@ -48,21 +49,21 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
   }
 
   public IntakeNoteSequence(
-      Shooter shooter, Intake intake, Wrist wrist, Elevator elevator, boolean val) {
+      Shooter shooter, Intake intake, Elevator elevator, boolean val, double IntakeVoltage) {
     addCommands(
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE);
-              intake.setVolts(Constants.INTAKE_COLLECT_VOLTS_MANUAL);
-              wrist.setDegrees(21); // testing
+              intake.setRPM(Constants.INTAKE_RPM);
               elevator.goHome();
             },
             shooter,
-            intake,
-            wrist),
+            intake),
         new WaitCommand(0.1),
         new WaitUntilCommand(shooter::isRearBroken),
         // new InstantCommand(intake::stopTop, intake),
+        new ConditionalCommand(
+            new WaitUntilCommand(() -> shooter.isCenterBroken()), new InstantCommand(), () -> val),
         new WaitUntilCommand(() -> shooter.isCenterBroken()),
         new InstantCommand(
             () -> {

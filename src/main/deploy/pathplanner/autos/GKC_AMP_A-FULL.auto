@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.27,
-      "y": 3.0
+      "x": 1.33,
+      "y": 5.548
     },
-    "rotation": -58.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteRegular"
+            "name": "ShootSubwoofer"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "temp_center"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteRegular"
+            "pathName": "GKC_AMP_A-FULL"
           }
         }
       ]

@@ -49,11 +49,7 @@ public class ShootNoteSequence extends SequentialCommandGroup {
   }
 
   public ShootNoteSequence(
-      Shooter shooter,
-      Wrist wrist,
-      double shootRPM,
-      CommandSwerveDrivetrain drivetrain,
-      Vision photonVision) {
+      Shooter shooter, Wrist wrist, double shootRPM, CommandSwerveDrivetrain drivetrain) {
     addRequirements(shooter);
 
     // Add your commands in the addCommands() call, e.g.
@@ -63,13 +59,12 @@ public class ShootNoteSequence extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
                 // new FastPoint(drivetrain, photonVision),
-                new PointAtAprilTag(drivetrain, photonVision, () -> 0.0, () -> 0.0, () -> 0.0),
+                new PointAtAprilTag(drivetrain, () -> 0.0, () -> 0.0, () -> 0.0),
                 new InstantCommand(
                     () -> {
                       DriverStation.reportWarning(
-                          "Wrist Angle Attempted" + Util.getInterpolatedWristAngle(photonVision),
-                          false);
-                      wrist.setDegrees(Util.getInterpolatedWristAngle(photonVision));
+                          "Wrist Angle Attempted" + Util.getInterpolatedWristAngle(), false);
+                      wrist.setDegrees(Util.getInterpolatedWristAngle());
                       shooter.setRPMShoot(shootRPM);
                     },
                     shooter,

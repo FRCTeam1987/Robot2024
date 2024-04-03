@@ -10,6 +10,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -23,7 +24,10 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
 import frc.robot.constants.DriveConstants;
+import frc.robot.util.Util;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -38,9 +42,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
+  private final Rotation2d RedAlliancePerspectiveRotation =
+      Rotation2d.fromDegrees(180); // 180 or 0???
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean hasAppliedOperatorPerspective = false;
+  private static Alliance alliance = Alliance.Red; // by Default be red
 
   private final SwerveRequest.ApplyChassisSpeeds AutoRequest =
       new SwerveRequest.ApplyChassisSpeeds();
@@ -100,9 +106,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
     configurePathPlanner();
+    m_pigeon2.reset();
     if (Utils.isSimulation()) {
       startSimThread();
     }
+  }
+
+  public void setChassisSpeeds(final ChassisSpeeds speeds) {
+    this.setControl(AutoRequest.withSpeeds(speeds));
   }
 
   private void configurePathPlanner() {
@@ -130,6 +141,27 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                     .Red, // Assume the path needs to be flipped for Red vs Blue, this is normally
         // the case
         this); // Subsystem for requirements
+
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+  }
+
+  public Optional<Rotation2d> getRotationTargetOverride() {
+    // Some condition that should decide if we want to override rotation
+    if (RobotContainer.aimAtTargetAuto) {
+      Pose2d pose = getPose();
+      double currentDegrees = pose.getRotation().getDegrees() + 90.0;
+      double desiredRotation =
+          currentDegrees - Util.getRotationToAllianceSpeaker(pose).getDegrees();
+
+      // drivetrain.setChassisSpeeds(HOLO_CONTROLLER.calculate(current, new
+      // Pose2d(current.getTranslation(), new Rotation2d(desiredRotation)), 0, new
+      // Rotation2d(desiredRotation)));
+      // return Optional.of(new Rotation2d(desiredRotation + 90));
+      return Optional.of(Rotation2d.fromDegrees(desiredRotation));
+    } else {
+      // return an empty optional when we don't want to override the path's rotation
+      return Optional.empty();
+    }
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -177,6 +209,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
 
+  public static Alliance getAlliance() {
+    return alliance;
+  }
+
   @Override
   public void periodic() {
     /* Periodically try to apply the operator perspective */
@@ -193,6 +229,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                         ? RedAlliancePerspectiveRotation
                         : BlueAlliancePerspectiveRotation);
                 hasAppliedOperatorPerspective = true;
+                alliance = allianceColor == Alliance.Red ? Alliance.Red : Alliance.Blue;
               });
     }
   }

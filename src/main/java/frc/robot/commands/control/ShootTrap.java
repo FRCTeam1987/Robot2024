@@ -52,7 +52,7 @@ public class ShootTrap extends SequentialCommandGroup {
                         && wrist.isAtSetpoint()
                         && elevator.isAtSetpoint()))
             .withTimeout(0.8),
-        new WaitCommand(0.8), // Time for wrist to get to position
+        new WaitCommand(1.0), // Time for wrist to get to position
         new InstantCommand(
             () -> shooter.setFeederVoltage(Constants.Shooter.FEEDER_SHOOT_VOLTS),
             shooter), // Constants.FEEDER_FEEDFWD_VOLTS

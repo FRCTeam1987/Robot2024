@@ -21,7 +21,6 @@ public class Shooter extends SubsystemBase {
   private final TalonFX SHOOTER_LEADER;
   private final TalonFX SHOOTER_FOLLOWER;
   private final TalonFX FEEDER;
-  private final Vision speakerPhoton;
 
   private final VelocityVoltage VOLTAGE_VELOCITY_LEADER;
   private final VelocityVoltage VOLTAGE_VELOCITY_FOLLOWER;
@@ -30,16 +29,11 @@ public class Shooter extends SubsystemBase {
   // private final CANSparkMax FEEDER_TEMP;
   private final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
 
-  public Shooter(
-      final int SHOOTER_LEAEDER_ID,
-      final int SHOOTER_FOLLOWER_ID,
-      final int FEEDER_ID,
-      final Vision speakerPhoton) {
+  public Shooter(final int SHOOTER_LEAEDER_ID, final int SHOOTER_FOLLOWER_ID, final int FEEDER_ID) {
 
     SHOOTER_LEADER = new TalonFX(SHOOTER_LEAEDER_ID, "rio");
     SHOOTER_FOLLOWER = new TalonFX(SHOOTER_FOLLOWER_ID, "rio");
     FEEDER = new TalonFX(FEEDER_ID, "rio");
-    this.speakerPhoton = speakerPhoton;
     // FEEDER_TEMP = new CANSparkMax(Constants.SHOOTER_FEEDER_ID_TEMP, MotorType.kBrushless);
     final TalonFXConfiguration SHOOTER_CONFIG = new TalonFXConfiguration();
     SHOOTER_CONFIG.HardwareLimitSwitch.ForwardLimitEnable = false;
@@ -81,7 +75,7 @@ public class Shooter extends SubsystemBase {
     SHOOTER_FOLLOWER.getConfigurator().apply(SHOOTER_CONFIG);
 
     // SHOOTER_FOLLOWER.setControl(new Follower(SHOOTER_LEADER.getDeviceID(), true));
-    SHOOTER_FOLLOWER.setInverted(true);
+    SHOOTER_LEADER.setInverted(true);
     FEEDER.getConfigurator().apply(FEEDER_CFG);
     FEEDER.setInverted(true);
     FEEDER.setNeutralMode(NeutralModeValue.Brake);
@@ -115,16 +109,20 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isCenterBroken() {
-    return SHOOTER_LEADER.getForwardLimit().asSupplier().get().value == 0;
+    return SHOOTER_FOLLOWER.getForwardLimit().asSupplier().get().value == 0;
   }
 
   public boolean isRearBroken() {
-    return SHOOTER_LEADER.getReverseLimit().asSupplier().get().value == 0;
+    return SHOOTER_FOLLOWER.getReverseLimit().asSupplier().get().value == 0;
   }
 
   public void setFeederVoltage(double voltage) {
     FEEDER.setVoltage(voltage);
     // FEEDER_TEMP.setVoltage(voltage);
+  }
+
+  public boolean isFeeding() {
+    return Math.abs(FEEDER.getVelocity().getValueAsDouble()) > 4;
   }
 
   public void stopShooter() {
@@ -171,13 +169,5 @@ public class Shooter extends SubsystemBase {
         new InstantCommand(() -> setFeederVoltage(-10.0), this)
             .andThen(new WaitCommand(2.0))
             .andThen(this::stopFeeder, this));
-  }
-
-  public double ShooterCameraDistanceToTarget(double targetHeight) {
-    return Vision.calculateDistanceToTarget(
-        speakerPhoton.getPitchVal(),
-        speakerPhoton.getCameraHeight(),
-        targetHeight,
-        speakerPhoton.getCameraDegrees());
   }
 }

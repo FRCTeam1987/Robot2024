@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2931568622589111,
-      "y": 3.4620771408081055
+      "x": 1.33,
+      "y": 5.548
     },
-    "rotation": -58.240524511001986
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,24 +14,18 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteRegular"
+            "name": "ShootSubwoofer"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "test_path.1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteRegular"
+            "pathName": "GKC_AMP_B-FULL"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": true
+  "choreoAuto": false
 }

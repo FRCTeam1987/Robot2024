@@ -4,25 +4,21 @@
 
 package frc.robot.commands.control;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Util;
 
 public class AimLockWrist extends Command {
   private final Wrist wrist;
-  private final Vision speakerPhoton;
   private final Shooter shooter;
 
   /** Creates a new AimLockWrist. */
-  public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator, Vision speakerPhoton) {
+  public AimLockWrist(Wrist wrist, Shooter shooter, Elevator elevator) {
     this.shooter = shooter;
     this.wrist = wrist;
-    this.speakerPhoton = speakerPhoton;
     addRequirements(wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -40,16 +36,14 @@ public class AimLockWrist extends Command {
     if (RobotContainer.isForwardAmpPrimed || RobotContainer.isReverseAmpPrimed) {
       return;
     }
-    if (speakerPhoton.hasTargets()) {
-      final double ty = speakerPhoton.getPitchVal();
-      SmartDashboard.putNumber("ty", ty);
-      if (shooter.isCenterBroken()) {
-        double degrees = Util.getInterpolatedWristAngle(speakerPhoton);
-        wrist.setDegrees(degrees);
+    // if (Util.canSeeTarget(speakerLimelight)) {
+    if (shooter.isCenterBroken()) {
+      double degrees = Util.getInterpolatedWristAngle();
+      wrist.setDegrees(degrees);
 
-      } else {
-        wrist.goHome();
-      }
+      // } else {
+      //   wrist.goHome();
+      // }
     }
   }
 

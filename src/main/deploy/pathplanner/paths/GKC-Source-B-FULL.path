@@ -1,0 +1,318 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.423,
+        "y": 3.646
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.423,
+        "y": 3.646
+      },
+      "isLocked": false,
+      "linkedName": "GKC-Source-Start"
+    },
+    {
+      "anchor": {
+        "x": 3.5210294279519947,
+        "y": 2.530883658289892
+      },
+      "prevControl": {
+        "x": 3.341451946640644,
+        "y": 3.12268483858751
+      },
+      "nextControl": {
+        "x": 3.869011814078439,
+        "y": 1.3841007469327644
+      },
+      "isLocked": false,
+      "linkedName": "GKC-Source-Shoot"
+    },
+    {
+      "anchor": {
+        "x": 8.253783346831284,
+        "y": 2.530883658289892
+      },
+      "prevControl": {
+        "x": 8.286876898356796,
+        "y": 2.080898099101335
+      },
+      "nextControl": {
+        "x": 8.229963443858276,
+        "y": 2.854771904338762
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.5210294279519947,
+        "y": 2.530883658289892
+      },
+      "prevControl": {
+        "x": 3.5939780783839956,
+        "y": 0.7276901327388028
+      },
+      "nextControl": {
+        "x": 3.437746317850845,
+        "y": 4.589531269079318
+      },
+      "isLocked": false,
+      "linkedName": "GKC-Source-Shoot"
+    },
+    {
+      "anchor": {
+        "x": 8.253783346831284,
+        "y": 4.110178789289953
+      },
+      "prevControl": {
+        "x": 8.126132584490195,
+        "y": 4.5890680890626765
+      },
+      "nextControl": {
+        "x": 8.364331722009265,
+        "y": 3.6954500950849307
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.5210294279519947,
+        "y": 2.530883658289892
+      },
+      "prevControl": {
+        "x": 3.4569135449956456,
+        "y": 4.6068999080048165
+      },
+      "nextControl": {
+        "x": 3.5685447602842664,
+        "y": 0.9923787280909538
+      },
+      "isLocked": false,
+      "linkedName": "GKC-Source-Shoot"
+    },
+    {
+      "anchor": {
+        "x": 7.996957532324469,
+        "y": 0.8307337368938343
+      },
+      "prevControl": {
+        "x": 7.46141040192175,
+        "y": 0.5264364521853059
+      },
+      "nextControl": {
+        "x": 8.32374267707237,
+        "y": 1.0164126932073398
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.5210294279519947,
+        "y": 2.530883658289892
+      },
+      "prevControl": {
+        "x": 3.8230324466243375,
+        "y": 0.5031729265080177
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "GKC-Source-Shoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 6.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "1st Note",
+      "minWaypointRelativePos": 0.6,
+      "maxWaypointRelativePos": 1.25,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "2nd Note",
+      "minWaypointRelativePos": 2.65,
+      "maxWaypointRelativePos": 3.0999999999999996,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "3rd Note",
+      "minWaypointRelativePos": 6.8,
+      "maxWaypointRelativePos": 7.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 1.4500000000000002,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 2.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 3.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 4.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 5.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 6.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -52.89168600310487,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "GKC Source",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

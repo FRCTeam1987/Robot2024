@@ -2,61 +2,61 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2,
-      "y": 1.57
+      "x": 1.423,
+      "y": 3.646
     },
-    "rotation": -72.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "ShootNote"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "quick_source_score_0"
+            "pathName": "GKC-Source-1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteAimbot"
+            "name": "ShootNoteRegular"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "quick_source_score_1"
+            "pathName": "GKC-Source-3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "DriveToNoteAuto"
+            "name": "ShootNoteRegular"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "driven_source_score_2"
+            "pathName": "GKC-Source-4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteAimbot"
+            "name": "ShootNoteRegular"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "quick_source_score_3"
+            "pathName": "GKC-Source-2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteRegular"
           }
         }
       ]

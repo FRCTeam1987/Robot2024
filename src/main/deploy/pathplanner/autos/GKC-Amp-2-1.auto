@@ -1,0 +1,44 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.372426958844331,
+      "y": 5.52863543907909
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "GKC Amp 2-1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultWrist"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultShooter"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

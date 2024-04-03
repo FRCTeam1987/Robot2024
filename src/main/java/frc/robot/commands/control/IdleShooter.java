@@ -10,19 +10,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
 import frc.robot.util.Util;
 
 public class IdleShooter extends Command {
   /** Creates a new IdleShooter. */
   private final Shooter shooter;
 
-  private final Vision speakerPhoton;
   private final Debouncer validShotDebouncer;
 
-  public IdleShooter(Shooter shooter, Vision speakerPhoton) {
+  public IdleShooter(Shooter shooter) {
     addRequirements(shooter);
-    this.speakerPhoton = speakerPhoton;
     this.shooter = shooter;
     this.validShotDebouncer = new Debouncer(3.0, DebounceType.kFalling);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -47,7 +44,7 @@ public class IdleShooter extends Command {
       return;
     }
     if (shooter.isCenterBroken()) {
-      if (validShotDebouncer.calculate(Util.isValidShot(speakerPhoton))) {
+      if (validShotDebouncer.calculate(Util.isValidShot())) {
         shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
       } else {
         shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM);

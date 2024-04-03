@@ -15,7 +15,6 @@ import frc.robot.commands.control.AimLockWristAuto;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
 public class ShootNoteAimbotFixed extends SequentialCommandGroup {
@@ -24,8 +23,7 @@ public class ShootNoteAimbotFixed extends SequentialCommandGroup {
   /** Creates a new IntakeNoteSequence. */
   private final Debouncer lineBreakDebouncer;
 
-  public ShootNoteAimbotFixed(
-      Shooter shooter, Elevator elevator, double shootRPM, Vision speakerPhoton, Wrist wrist) {
+  public ShootNoteAimbotFixed(Shooter shooter, Elevator elevator, double shootRPM, Wrist wrist) {
     addRequirements(shooter);
 
     // Add your commands in the addCommands() call, e.g.
@@ -53,7 +51,7 @@ public class ShootNoteAimbotFixed extends SequentialCommandGroup {
                     new WaitUntilCommand(
                         () -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
                     new InstantCommand(shooter::stopShooter, shooter)),
-                new AimLockWristAuto(wrist, speakerPhoton)),
+                new AimLockWristAuto(wrist)),
             new InstantCommand(wrist::goHome)));
   }
 }

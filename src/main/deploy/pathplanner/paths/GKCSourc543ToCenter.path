@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.331261372776344,
+        "y": 4.578461169133991
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.994342379382097,
+        "y": 4.311355950402874
+      },
+      "isLocked": false,
+      "linkedName": "GKCSOURCEJ2End"
+    },
+    {
+      "anchor": {
+        "x": 7.804048346233266,
+        "y": 4.128724863063153
+      },
+      "prevControl": {
+        "x": 7.240989798675199,
+        "y": 4.097338363513533
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.75,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "GKC",
+  "previewStartingState": {
+    "rotation": -7.909564640171442,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

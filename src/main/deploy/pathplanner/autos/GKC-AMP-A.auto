@@ -2,22 +2,16 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.46,
-      "y": 7.292
+      "x": 1.33,
+      "y": 5.55
     },
-    "rotation": 90.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "amp_close_sub-4_a"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ShootSubwoofer"
@@ -26,37 +20,61 @@
         {
           "type": "path",
           "data": {
-            "pathName": "amp_close_sub-4_b"
+            "pathName": "GKC_AMP-1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwoofer"
+            "name": "ShootNote"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "amp_close_sub-4_c"
+            "pathName": "GKC_AMP-2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwoofer"
+            "name": "ShootNote"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "amp_close_sub-4_d"
+            "pathName": "GKC_AMP-3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwoofer"
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC_AMP-4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC_AMP-5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
           }
         }
       ]

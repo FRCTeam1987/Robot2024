@@ -1,0 +1,50 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7,
+      "y": 4.360569515543359
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "GKC Source 4-3-2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultWrist"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultShooter"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKCSource432ToCenter"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

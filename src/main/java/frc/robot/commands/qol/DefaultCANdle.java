@@ -4,24 +4,21 @@
 
 package frc.robot.commands.qol;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
 import frc.robot.util.Util;
 
 public class DefaultCANdle extends Command {
   private final Shooter SHOOTER;
   private final Candles CANDLES;
-  private final Vision PHOTON_SPEAKER;
   private final double BLINK_CONSTANT = 0.002; // in seconds?
 
   /** Creates a new DefaultCANdle. */
-  public DefaultCANdle(Candles CANDLES, Shooter SHOOTER, Vision PHOTON_SPEAKER) {
+  public DefaultCANdle(Candles CANDLES, Shooter SHOOTER) {
     this.CANDLES = CANDLES;
     this.SHOOTER = SHOOTER;
-    this.PHOTON_SPEAKER = PHOTON_SPEAKER;
+
     addRequirements(CANDLES);
   }
 
@@ -42,23 +39,16 @@ public class DefaultCANdle extends Command {
     }
 
     CANDLES.setColorLeft(0, 128, 128);
-    if (!PHOTON_SPEAKER.hasTargets()) {
+    if (!Util.isValidShot()) {
       CANDLES.setColorRightRed();
       return;
     }
 
-    double dist = Util.getInterpolatedDistance(PHOTON_SPEAKER);
-
-    if (dist < 2.25 && dist > 4.25) {
-      CANDLES.setColorRightRed();
-      return;
-    }
-
-    if (Util.isWithinTolerance(PHOTON_SPEAKER.getYawVal(), 0.0, 1)
-        && ((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
-      CANDLES.setColorRightOff();
-      return;
-    }
+    // if (Util.isWithinTolerance(Limelight.getTY(SPEAKER_LIMELIGHT), 0.0, 1)
+    //     && ((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
+    //   CANDLES.setColorRightOff();
+    //   return;
+    // }
 
     CANDLES.setColorRightGreen();
   }

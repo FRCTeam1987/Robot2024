@@ -7,21 +7,144 @@
 
 package frc.robot.util;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Vision;
-import org.photonvision.targeting.PhotonTrackedTarget;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.Limelight.RawFiducial;
+import java.util.List;
 
 public class Util {
+  public static final AprilTagFieldLayout field =
+      AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+  public static Pose3d TAG_4_POSE; // RED ALLIANCE SPEAKER CENTER
+  public static Pose3d TAG_7_POSE; // BLUE ALLIANCE SPEAKER CENTER
+  public static Pose2d TAG_11_POSE_2D; // LEFT SIDE RED ALLIANCE TRAP
+  public static Pose2d TAG_12_POSE_2D; // RIGHT SIDE RED ALLIANCE TRAP
+  public static Pose2d TAG_13_POSE_2D; // FAR SIDE RED ALLIANCE TRAP
+  public static Pose2d TAG_14_POSE_2D; // FAR SIDE BLUE ALLIANCE TRAP
+  public static Pose2d TAG_15_POSE_2D; // LEFT SIDE BLUE ALLIANCE TRAP
+  public static Pose2d TAG_16_POSE_2D; // RIGHT SIDE BLUE ALLIANCE TRAP
+  public static Pose2d TAG_LOB_BLUE;
+  public static Pose2d TAG_LOB_RED;
+  public static List<Pose2d> TRAP_TAGS;
+  public static DriverStation.Alliance alliance;
   public static final double DEADBAND = 0.05;
 
-  public static double ctreVelocityToLinearVelocity(
-      final double ctreVelocity, final double ticksPerRevolution, final double circumference) {
-    return ctreVelocityToRps(ctreVelocity, ticksPerRevolution) * circumference;
+  public Util() {
+    field
+        .getTagPose(4)
+        .ifPresent(
+            pose -> {
+              Util.TAG_4_POSE =
+                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(7)
+        .ifPresent(
+            pose -> {
+              Util.TAG_7_POSE =
+                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(12)
+        .ifPresent(
+            pose -> {
+              Util.TAG_12_POSE_2D =
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(11)
+        .ifPresent(
+            pose -> {
+              Util.TAG_11_POSE_2D =
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(13)
+        .ifPresent(
+            pose -> {
+              Util.TAG_13_POSE_2D =
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(14)
+        .ifPresent(
+            pose -> {
+              Util.TAG_14_POSE_2D =
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(15)
+        .ifPresent(
+            pose -> {
+              Util.TAG_15_POSE_2D =
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(16)
+        .ifPresent(
+            pose -> {
+              Util.TAG_16_POSE_2D =
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+            });
+    field
+        .getTagPose(5)
+        .ifPresent(
+            pose -> {
+              Util.TAG_LOB_RED =
+                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d(0.0)));
+              ;
+            });
+    field
+        .getTagPose(6)
+        .ifPresent(
+            pose -> {
+              Util.TAG_LOB_BLUE =
+                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d()));
+            });
+    TRAP_TAGS =
+        List.of(
+            TAG_11_POSE_2D,
+            TAG_12_POSE_2D,
+            TAG_13_POSE_2D,
+            TAG_14_POSE_2D,
+            TAG_15_POSE_2D,
+            TAG_16_POSE_2D);
+    DriverStation.getAlliance().ifPresent(ouralliance -> alliance = ouralliance);
   }
 
-  public static double ctreVelocityToRps(
-      final double ctreVelocity, final double ticksPerRevolution) {
-    return ctreVelocity * 10.0 / ticksPerRevolution;
+  public static Pose3d getAllianceSpeakerCenter() {
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
+        ? TAG_7_POSE
+        : TAG_4_POSE;
+  }
+
+  public static Pose2d getAllianceLob() {
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
+        ? TAG_LOB_BLUE
+        : TAG_LOB_RED;
+  }
+
+  public static Rotation2d getRotationToAllianceLob(Pose2d opose) {
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    Transform2d pose = Util.getAllianceLob().minus(opose);
+    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
   }
 
   public static boolean isWithinTolerance(
@@ -29,105 +152,108 @@ public class Util {
     return Math.abs(currentValue - targetValue) <= tolerance;
   }
 
-  public static double ticksToDistance(
-      final double ticks, final double ticksPerRevolution, final double circumference) {
-    return ticksToDistance(ticks, ticksPerRevolution, circumference, 1.0);
+  public static boolean canSeeTarget(String limelight) {
+    return Limelight.getBotPoseEstimate_wpiBlue(limelight).tagCount > 0;
   }
 
-  public static double ticksToDistance(
-      final double ticks,
-      final double ticksPerRevolution,
-      final double circumference,
-      final double postEncoderGearing) {
-    return ticks / (ticksPerRevolution * postEncoderGearing) * circumference;
-  }
+  public static void setupUtil() {}
 
-  public static int distanceToTicks(
-      final double distance,
-      final double ticksPerRevolution,
-      final double circumference,
-      final double postEncoderGearing) {
-    return rotationsToTicks(
-        distanceToRotations(distance, ticksPerRevolution, circumference, postEncoderGearing));
-  }
-
-  public static double distanceToRotations(
-      final double distance,
-      final double ticksPerRevolution,
-      final double circumference,
-      final double postEncoderGearing) {
-    return (distance / circumference) / (ticksPerRevolution * postEncoderGearing);
-  }
-
-  public static int rotationsToTicks(final double rotations) {
-    return (int) (rotations * 2048.0); // FALCON_ENCODER_RESOLUTION
-  }
-
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
-
-  /**
-   * Squares the specified value, while preserving the sign. This method is used on all joystick
-   * inputs. This is useful as a non-linear range is more natural for the driver.
-   *
-   * @param value input value
-   * @return square of the value
-   */
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, DEADBAND);
-
-    // Square the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
-  }
-
-  public static double getInterpolatedDistance(Vision photonVision) {
-    var result = photonVision.getCamera().getLatestResult();
-    if (result.hasTargets()) {
-      for (PhotonTrackedTarget target : result.getTargets()) {
-        if (target.getFiducialId() == 4) {
-          // DriverStation.reportWarning("Getting value from REDSIDE", false);
-          return Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.getInterpolated(
-                  new InterpolatingDouble(target.getPitch()))
-              .value;
-        } else if (target.getFiducialId() == 7) {
-          // DriverStation.reportWarning("Getting value from BLUESIDE", false);
-          return Constants.PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.getInterpolated(
-                  new InterpolatingDouble(target.getPitch()))
-              .value;
-        }
-      }
-      return 0.0;
+  public static double getDistance(String limelight) {
+    var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
+    if (result.tagCount > 0) {
+      return new Pose3d(result.pose)
+          .getTranslation()
+          .getDistance(
+              getAllianceSpeakerCenter()
+                  .transformBy(
+                      new Transform3d(
+                          new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
+                          new Rotation3d()))
+                  .getTranslation());
     }
     return 0.0;
   }
 
-  public static double getInterpolatedWristAngle(Vision photonVision) {
+  // TODO flex on alliance tag pose
+  public static double getDistanceToSpeaker() {
+    return new Pose3d(RobotContainer.get().getPose())
+        .getTranslation()
+        .getDistance(
+            getAllianceSpeakerCenter()
+                .transformBy(
+                    new Transform3d(
+                        new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
+                        new Rotation3d()))
+                .getTranslation());
+  }
+
+  public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
+    // return
+    // opose.getTranslation().minus(Util.getAllianceSpeakerCenter().getTranslation().toTranslation2d()).getAngle();
+    Transform2d pose = Util.getAllianceSpeakerCenter().toPose2d().minus(opose);
+    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
+  }
+
+  public static double getInterpolatedWristAngle(String limelight) {
     return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
-            new InterpolatingDouble(Util.getInterpolatedDistance(photonVision)))
+            new InterpolatingDouble(Util.getDistance(limelight)))
         .value;
   }
 
-  public static boolean isValidShot(Vision photonVision) {
-    double dist = Util.getInterpolatedDistance(photonVision);
+  public static double getInterpolatedWristAngle() {
+    return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
+            new InterpolatingDouble(Util.getDistanceToSpeaker()))
+        .value;
+  }
 
-    if (dist > 2.25 && dist < 4.25) {
+  public static boolean isValidShot(String limelight) {
+    double dist = Util.getDistance(limelight);
+    if (dist > 2.0 && dist < 8.3) {
       return true;
     } else return false;
   }
 
+  public static boolean isValidShot() {
+    double dist = Util.getDistanceToSpeaker();
+    return dist > 2.25 && dist < 5.25;
+  }
+
   public static double squareValue(double value) {
     return Math.copySign(Math.pow(value, 2), value);
+  }
+
+  public static Command pathfindToPose(Pose2d pose) {
+    return AutoBuilder.pathfindToPose(
+        pose,
+        new PathConstraints(5.0, 4.0, Units.degreesToRadians(540.0), Units.degreesToRadians(360.0)),
+        0.0,
+        0.0);
+  }
+
+  public static Pose2d findNearestPose(Pose2d currentPose, Pose2d... otherPoses) {
+    return currentPose.nearest(List.of(otherPoses));
+  }
+
+  // TODO: Find actual tag positions and ideal offsets
+  public static Pose2d findNearestPoseToTrapClimbs(Pose2d currentPose) {
+    return currentPose.nearest(TRAP_TAGS);
+  }
+
+  public static double maxFiducialAmbiguity(final RawFiducial[] fiducials) {
+    double maxAmbiguity = 0.0;
+    for (RawFiducial fiducial : fiducials) {
+      maxAmbiguity = Math.max(maxAmbiguity, fiducial.ambiguity);
+    }
+    return maxAmbiguity;
+  }
+
+  public static double speakerTagCount(final RawFiducial[] fiducials) {
+    int tagCount = 0;
+    for (RawFiducial fiducial : fiducials) {
+      if (Constants.Vision.SPEAKER_TAG_IDS.contains(fiducial.id)) {
+        tagCount++;
+      }
+    }
+    return tagCount;
   }
 }

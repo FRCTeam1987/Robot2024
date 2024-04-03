@@ -42,6 +42,7 @@ public class ShootNote extends SequentialCommandGroup {
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
         new InstantCommand(shooter::stopFeeder, shooter),
         new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
+        new WaitCommand(0.1),
         new InstantCommand(shooter::stopShooter, shooter));
   }
 }

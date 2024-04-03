@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3,
-      "y": 6.71
+      "x": 1.423,
+      "y": 3.646
     },
-    "rotation": 90.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,37 +14,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "quick_amp_0"
+            "pathName": "GKC-Source-1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteAimbot"
+            "name": "ShootNoteRegular"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "overture_amp_1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "quick_amp_2"
+            "pathName": "GKC-Source-2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteAimbot"
+            "name": "ShootNoteRegular"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "quick_amp_3"
+            "pathName": "GKC-Source-3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteRegular"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GKC-Source-4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
           }
         }
       ]

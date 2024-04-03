@@ -1,0 +1,379 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.33,
+        "y": 5.548
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.33,
+        "y": 5.548
+      },
+      "isLocked": false,
+      "linkedName": "GKC_AMP-Start"
+    },
+    {
+      "anchor": {
+        "x": 2.618270516293842,
+        "y": 4.267261723754767
+      },
+      "prevControl": {
+        "x": 2.3211731916206744,
+        "y": 3.9202997840201745
+      },
+      "nextControl": {
+        "x": 2.854488242216577,
+        "y": 4.543126073849496
+      },
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-1_End"
+    },
+    {
+      "anchor": {
+        "x": 2.7384349720764702,
+        "y": 5.553800842543523
+      },
+      "prevControl": {
+        "x": 2.2768937275139187,
+        "y": 5.295597124890278
+      },
+      "nextControl": {
+        "x": 3.2030101489468747,
+        "y": 5.813701857264419
+      },
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-2_End"
+    },
+    {
+      "anchor": {
+        "x": 2.618270516293842,
+        "y": 6.845532684374221
+      },
+      "prevControl": {
+        "x": 2.412580578074368,
+        "y": 6.353375035752892
+      },
+      "nextControl": {
+        "x": 2.9985820587170204,
+        "y": 7.755510275319022
+      },
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-3_End"
+    },
+    {
+      "anchor": {
+        "x": 8.275663042042778,
+        "y": 5.735819990961749
+      },
+      "prevControl": {
+        "x": 8.27580924914906,
+        "y": 6.054634850576139
+      },
+      "nextControl": {
+        "x": 8.275408456161474,
+        "y": 5.180677603754495
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.15885553888246,
+        "y": 5.837523626785966
+      },
+      "prevControl": {
+        "x": 4.1533387217466124,
+        "y": 7.639967645172493
+      },
+      "nextControl": {
+        "x": 4.166904437416919,
+        "y": 3.207802782176937
+      },
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-ShootPosition"
+    },
+    {
+      "anchor": {
+        "x": 8.275663042042778,
+        "y": 4.129990246746069
+      },
+      "prevControl": {
+        "x": 7.663650387681296,
+        "y": 3.610630218290701
+      },
+      "nextControl": {
+        "x": 8.7090252608921,
+        "y": 4.49774573792604
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.15885553888246,
+        "y": 5.837523626785966
+      },
+      "prevControl": {
+        "x": 8.330383223262023,
+        "y": 6.917034279650303
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "GKC_AMP_A-ShootPosition"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 4.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 6.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "5th Note",
+      "minWaypointRelativePos": 4.6499999999999995,
+      "maxWaypointRelativePos": 5.3,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "6th Note",
+      "minWaypointRelativePos": 6.85,
+      "maxWaypointRelativePos": 7.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "2nd to 4th Note",
+      "minWaypointRelativePos": 0.65,
+      "maxWaypointRelativePos": 3.1999999999999997,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 0.09999999999999999,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 1.65,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 1.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 2.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 2.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 3.05,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 3.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 4.699999999999999,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 5.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootNoteRegular",
+      "waypointRelativePos": 6.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootNoteRegular"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "GKC Amp",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

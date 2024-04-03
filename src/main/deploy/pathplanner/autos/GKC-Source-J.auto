@@ -1,0 +1,50 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7,
+      "y": 4.398519742179469
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwoofer"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "GKC Source J"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultShooter"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InstantShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
