@@ -27,10 +27,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
@@ -188,35 +186,35 @@ public class RobotContainer {
         .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
     DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
     // WIP
-    DRIVER_CONTROLLER
-        .leftTrigger()
-        .onTrue(
-            new ParallelDeadlineGroup(
-                    new ParallelCommandGroup(
-                        new WaitUntilCommand(
-                            () -> {
-                              Pose2d currentPose = DRIVETRAIN.getPose();
-                              Rotation2d currentRotation = currentPose.getRotation();
-                              DriverStation.reportWarning(
-                                  "current: "
-                                      + currentRotation.getDegrees()
-                                      + ", target: "
-                                      + Util.getRotationToAllianceLob(currentPose).getDegrees(),
-                                  false);
-                              return Util.isWithinTolerance(
-                                  currentRotation.getDegrees(),
-                                  Util.getRotationToAllianceLob(currentPose).getDegrees(),
-                                  30);
-                            }),
-                        new PrintCommand("STARTING LOB SEQUENCE")),
-                    new PointAtAprilTag(
-                        DRIVETRAIN,
-                        () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
-                        () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
-                        () -> DRIVER_CONTROLLER.getRightX(),
-                        true))
-                .andThen(new LobNote(SHOOTER, WRIST, ELEVATOR)))
-        .onFalse(new InstantCommand());
+    // DRIVER_CONTROLLER
+    //     .leftTrigger()
+    //     .onTrue(
+    //         new ParallelDeadlineGroup(
+    //                 new ParallelCommandGroup(
+    //                     new WaitUntilCommand(
+    //                         () -> {
+    //                           Pose2d currentPose = DRIVETRAIN.getPose();
+    //                           Rotation2d currentRotation = currentPose.getRotation();
+    //                           DriverStation.reportWarning(
+    //                               "current: "
+    //                                   + currentRotation.getDegrees()
+    //                                   + ", target: "
+    //                                   + Util.getRotationToAllianceLob(currentPose).getDegrees(),
+    //                               false);
+    //                           return Util.isWithinTolerance(
+    //                               currentRotation.getDegrees(),
+    //                               Util.getRotationToAllianceLob(currentPose).getDegrees(),
+    //                               30);
+    //                         }),
+    //                     new PrintCommand("STARTING LOB SEQUENCE")),
+    //                 new PointAtAprilTag(
+    //                     DRIVETRAIN,
+    //                     () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+    //                     () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
+    //                     () -> DRIVER_CONTROLLER.getRightX(),
+    //                     true))
+    //             .andThen(new LobNote(SHOOTER, WRIST, ELEVATOR)))
+    //     .onFalse(new InstantCommand());
   }
 
   private void configureCoDriverController() {
