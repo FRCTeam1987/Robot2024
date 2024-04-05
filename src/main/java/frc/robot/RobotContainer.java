@@ -449,7 +449,8 @@ public class RobotContainer {
     addAuto("GKC Source 5-4-3");
     addAuto("GKC Source 4-3-2");
     // addAuto("GKC-Amp-J");
-    addAuto("GKC-Amp-2-1");
+    addAuto("GKC-Amp-2-1Blue");
+    addAuto("GKC-Amp-2-1Red");
     addAuto("GKC-Amp-1-2");
     addAuto("lame");
     // addAuto("GKC-Amp-J2");
@@ -596,7 +597,7 @@ public class RobotContainer {
 
   public void addAuto(String autoName) {
     final PathPlannerAuto auto = new PathPlannerAuto(autoName);
-    if (autoName == "GKC-Amp-2-1" || autoName == "GKC-Amp-1-2") {
+    if (autoName == "GKC-Amp-2-1Blue" || autoName == "GKC-Amp-1-2" || autoName == "GKC-Amp-2-1Red") {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
     } else if (autoName == "GKC Source 5-4-3" || autoName == "GKC Source 4-3-2") {
