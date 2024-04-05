@@ -424,6 +424,12 @@ public class RobotContainer {
         new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR, INTAKE_PHOTON));
 
     SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
+    // MATCH_TAB.add(
+    //     "Test InstantShoot",
+    //     new ParallelCommandGroup(
+    //         new InstantCommand(() -> WRIST.setDegrees(20.0)),
+    //         new AutoIdleShooter(SHOOTER),
+    //         new WaitCommand(1.0).andThen(new InstantShoot(SHOOTER))));
 
     // addAuto("ampa-full");
     // addAuto("sourcea-fullshoot");
@@ -445,6 +451,7 @@ public class RobotContainer {
     // addAuto("GKC-Amp-J");
     addAuto("GKC-Amp-2-1");
     addAuto("GKC-Amp-1-2");
+    addAuto("lame");
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);

@@ -61,9 +61,9 @@ public class Constants {
     public static final double TRAP_DEBOUNCE_TIME = 0.06;
     public static final double TRAP_ELEVATOR_HEIGHT = 29.5;
     public static final double TRAP_ELEVATOR_HEIGHT_MIDWAY = 24.0;
-    public static final double TRAP_WRIST_DEGREES = 118.0;
-    public static final double TRAP_WRIST_DEGREES_MIDWAY = 80.0;
-    public static final double TRAP_RPM_SPEED = 450; // 425, 475 worked but touched the top
+    public static final double TRAP_WRIST_DEGREES = 119.0;
+    public static final double TRAP_WRIST_DEGREES_MIDWAY = 85.0;
+    public static final double TRAP_RPM_SPEED = 375; // 425, 475 worked but touched the top
   }
 
   public static class Wrist {
@@ -111,6 +111,7 @@ public class Constants {
     public static final double SHOOTER_IDLE_RPM_CLOSE = 4200; // 2500
     public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to be smaller
     public static final double SPIN_RATIO = 0.66; // 0.85
+    public static final double ANTI_SPIN_RATIO = 1.34; // 0.85
     public static final int SHOOTER_AMP_RPM = 550;
   }
 

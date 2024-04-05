@@ -37,7 +37,7 @@ public class ShootTrap extends SequentialCommandGroup {
         new WaitCommand(0.5),
         new InstantCommand(
             () -> {
-              shooter.setRPMShoot(Constants.Trap.TRAP_RPM_SPEED);
+              shooter.setRPMShootAntiSpin(Constants.Trap.TRAP_RPM_SPEED);
               elevator.setLengthInches(Constants.Trap.TRAP_ELEVATOR_HEIGHT);
               shooter.setFeederVoltage(-0.2);
               // wrist.setDegrees(110.0);  // 25.0 + 90.0
