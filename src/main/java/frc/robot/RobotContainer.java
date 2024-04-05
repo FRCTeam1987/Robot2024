@@ -451,7 +451,8 @@ public class RobotContainer {
     // addAuto("GKC-Amp-J");
     addAuto("GKC-Amp-2-1Blue");
     addAuto("GKC-Amp-2-1Red");
-    addAuto("GKC-Amp-1-2");
+    addAuto("GKC-Amp-1-2Blue");
+    addAuto("GKC-Amp-1-2Red");
     addAuto("lame");
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
