@@ -30,6 +30,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
               intake.setRPM(Constants.INTAKE_RPM);
               wrist.setDegrees(21); // testing
+
               elevator.goHome();
             },
             shooter,
