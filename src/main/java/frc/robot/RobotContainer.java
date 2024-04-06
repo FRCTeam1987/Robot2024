@@ -453,6 +453,8 @@ public class RobotContainer {
     addAuto("GKC-Amp-2-1Red");
     addAuto("GKC-Amp-1-2Blue");
     addAuto("GKC-Amp-1-2Red");
+    addAuto("AGKC-Amp-1-2Red");
+    addAuto("GKC-Amp-Skip-1-2");
     addAuto("lame");
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
@@ -601,6 +603,8 @@ public class RobotContainer {
     if (autoName == "GKC-Amp-2-1Blue"
         || autoName == "GKC-Amp-1-2Blue"
         || autoName == "GKC-Amp-1-2Red"
+        || autoName == "AGKC-Amp-1-2Red"
+        || autoName == "GKC-Amp-Skip-1-2"
         || autoName == "GKC-Amp-2-1Red") {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;

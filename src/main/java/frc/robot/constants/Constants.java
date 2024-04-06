@@ -63,7 +63,7 @@ public class Constants {
     public static final double TRAP_ELEVATOR_HEIGHT_MIDWAY = 24.0;
     public static final double TRAP_WRIST_DEGREES = 119.0;
     public static final double TRAP_WRIST_DEGREES_MIDWAY = 85.0;
-    public static final double TRAP_RPM_SPEED = 375; // 425, 475 worked but touched the top
+    public static final double TRAP_RPM_SPEED = 375; //suggesting but not doing 350 at GKC // 425, 475 worked but touched the top
   }
 
   public static class Wrist {
