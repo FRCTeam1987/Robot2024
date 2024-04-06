@@ -240,8 +240,8 @@
     },
     {
       "name": "Slow Fifth Intake",
-      "minWaypointRelativePos": 6.8,
-      "maxWaypointRelativePos": 7.05,
+      "minWaypointRelativePos": 6.75,
+      "maxWaypointRelativePos": 7.15,
       "constraints": {
         "maxVelocity": 2.5,
         "maxAcceleration": 2.5,

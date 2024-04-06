@@ -599,7 +599,8 @@ public class RobotContainer {
   public void addAuto(String autoName) {
     final PathPlannerAuto auto = new PathPlannerAuto(autoName);
     if (autoName == "GKC-Amp-2-1Blue"
-        || autoName == "GKC-Amp-1-2"
+        || autoName == "GKC-Amp-1-2Blue"
+        || autoName == "GKC-Amp-1-2Red"
         || autoName == "GKC-Amp-2-1Red") {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
