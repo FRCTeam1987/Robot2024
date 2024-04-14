@@ -11,7 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.util.Limelight;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
 
 public class FastPoint extends Command {
@@ -39,7 +39,7 @@ public class FastPoint extends Command {
   @Override
   public void initialize() {
 
-    initialYaw = Limelight.getTX(limelightname); // TX or TY?
+    initialYaw = LimelightHelpers.getTX(limelightname); // TX or TY?
     initalRotation = drivetrain.getPose().getRotation().getDegrees();
 
     thetaController.setSetpoint(initalRotation - initialYaw);
@@ -66,7 +66,7 @@ public class FastPoint extends Command {
   @Override
   public boolean isFinished() {
     // return false;
-    return Util.isWithinTolerance(Limelight.getTX(limelightname), 0.0, 0.02); // TX or TY?
+    return Util.isWithinTolerance(LimelightHelpers.getTX(limelightname), 0.0, 0.02); // TX or TY?
   }
 
   @Override

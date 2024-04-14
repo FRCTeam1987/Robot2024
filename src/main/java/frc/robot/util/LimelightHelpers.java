@@ -1,4 +1,4 @@
-// LimelightHelpers v1.4.0 (March 21, 2024)
+// LimelightHelpers v1.5.0 (March 27, 2024)
 
 package frc.robot.util;
 
@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
-public class Limelight {
+public class LimelightHelpers {
 
   public static class LimelightTarget_Retro {
 
@@ -472,7 +472,7 @@ public class Limelight {
   }
 
   private static PoseEstimate getBotPoseEstimate(String limelightName, String entryName) {
-    var poseEntry = Limelight.getLimelightNTTableEntry(limelightName, entryName);
+    var poseEntry = LimelightHelpers.getLimelightNTTableEntry(limelightName, entryName);
     var poseArray = poseEntry.getDoubleArray(new double[0]);
     var pose = toPose2D(poseArray);
     double latency = extractBotPoseEntry(poseArray, 6);
@@ -753,6 +753,17 @@ public class Limelight {
   }
 
   /**
+   * Gets the Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) when
+   * you are on the BLUE alliance
+   *
+   * @param limelightName
+   * @return
+   */
+  public static PoseEstimate getBotPoseEstimate_wpiBlue_MegaTag2(String limelightName) {
+    return getBotPoseEstimate(limelightName, "botpose_orb_wpiblue");
+  }
+
+  /**
    * Gets the Pose2d for easy use with Odometry vision pose estimator (addVisionMeasurement)
    *
    * @param limelightName
@@ -773,6 +784,17 @@ public class Limelight {
    */
   public static PoseEstimate getBotPoseEstimate_wpiRed(String limelightName) {
     return getBotPoseEstimate(limelightName, "botpose_wpired");
+  }
+
+  /**
+   * Gets the Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) when
+   * you are on the RED alliance
+   *
+   * @param limelightName
+   * @return
+   */
+  public static PoseEstimate getBotPoseEstimate_wpiRed_MegaTag2(String limelightName) {
+    return getBotPoseEstimate(limelightName, "botpose_orb_wpired");
   }
 
   /**
@@ -853,6 +875,33 @@ public class Limelight {
     setLimelightNTDoubleArray(limelightName, "crop", entries);
   }
 
+  public static void SetRobotOrientation(
+      String limelightName,
+      double yaw,
+      double yawRate,
+      double pitch,
+      double pitchRate,
+      double roll,
+      double rollRate) {
+
+    double[] entries = new double[6];
+    entries[0] = yaw;
+    entries[1] = yawRate;
+    entries[2] = pitch;
+    entries[3] = pitchRate;
+    entries[4] = roll;
+    entries[5] = rollRate;
+    setLimelightNTDoubleArray(limelightName, "robot_orientation_set", entries);
+  }
+
+  public static void SetFiducialIDFiltersOverride(String limelightName, int[] validIDs) {
+    double[] validIDsDouble = new double[validIDs.length];
+    for (int i = 0; i < validIDs.length; i++) {
+      validIDsDouble[i] = validIDs[i];
+    }
+    setLimelightNTDoubleArray(limelightName, "fiducial_id_filters_set", validIDsDouble);
+  }
+
   public static void setCameraPose_RobotSpace(
       String limelightName,
       double forward,
@@ -918,7 +967,7 @@ public class Limelight {
   public static LimelightResults getLatestResults(String limelightName) {
 
     long start = System.nanoTime();
-    Limelight.LimelightResults results = new Limelight.LimelightResults();
+    LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
     if (mapper == null) {
       mapper =
           new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

@@ -73,7 +73,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
-import frc.robot.util.Limelight;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
 
 public class RobotContainer {
@@ -149,15 +149,15 @@ public class RobotContainer {
                     .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
                     .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
                 () -> isReverseAmpPrimed));
-    // DRIVER_CONTROLLER
-    //     .back()
-    //     .onTrue(
-    //         DRIVETRAIN.runOnce(
-    //             () -> {
-    //               DRIVETRAIN.seedFieldRelative();
-    //               DRIVETRAIN.getPigeon2().reset();
-    //             }));
-    DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> updatePoseVision(0.01, false)));
+    DRIVER_CONTROLLER
+        .back()
+        .onTrue(
+            DRIVETRAIN.runOnce(
+                () -> {
+                  DRIVETRAIN.seedFieldRelative();
+                  DRIVETRAIN.getPigeon2().reset();
+                }).andThen(new InstantCommand(() -> updatePoseVision(0.01, false))));
+    // DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> updatePoseVision(0.01, false)));
     DRIVER_CONTROLLER
         .start()
         .onTrue(
@@ -459,6 +459,11 @@ public class RobotContainer {
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
+    MATCH_TAB.add("Full confidence", new InstantCommand(() -> DRIVETRAIN.addVisionMeasurement(
+        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo").pose,
+        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo").timestampSeconds,
+        VecBuilder.fill(
+            0.1, 0.1, 0.1))));
     // MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
 
     // MATCH_TAB.addBoolean("is Alliance red", () -> CommandSwerveDrivetrain.getAlliance() ==
@@ -625,7 +630,7 @@ public class RobotContainer {
     return DRIVETRAIN.getPose();
   }
 
-  public boolean shouldRejectLL3G(final Limelight.PoseEstimate botPose) {
+  public boolean shouldRejectLL3G(final LimelightHelpers.PoseEstimate botPose) {
     if (botPose.tagCount < 2) {
       return true;
     }
@@ -662,11 +667,12 @@ public class RobotContainer {
     boolean isDisabled = DriverStation.isDisabled();
     boolean hasUpdatedPose = false;
 
-    Limelight.PoseEstimate bestPose = null;
+    LimelightHelpers.PoseEstimate bestPose = null;
     double bestConfidence = 0.0;
 
     for (String limelight3G : Constants.Vision.LL3GS) {
-      Limelight.PoseEstimate botPoseLL3G = Limelight.getBotPoseEstimate_wpiBlue(limelight3G);
+      LimelightHelpers.PoseEstimate botPoseLL3G =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight3G);
       if (!shouldRejectLL3G(botPoseLL3G)) {
         double currentConfidence = calculateConfidence(botPoseLL3G);
         if (currentConfidence > bestConfidence) {
@@ -686,7 +692,8 @@ public class RobotContainer {
     if (canTrustLL3) {
       if (!hasUpdatedPose) {
         for (String limelight3 : Constants.Vision.LL3S) {
-          Limelight.PoseEstimate botPoseLL3 = Limelight.getBotPoseEstimate_wpiBlue(limelight3);
+          LimelightHelpers.PoseEstimate botPoseLL3 =
+              LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight3);
           if (!shouldRejectLL3G(botPoseLL3)) {
             hasUpdatedPose = true;
             updatePose(botPoseLL3, isDisabled, rotationConfidence);
@@ -704,7 +711,7 @@ public class RobotContainer {
   }
 
   public void updatePose(
-      Limelight.PoseEstimate botPose, boolean isDisabled, double rotationConfidence) {
+      LimelightHelpers.PoseEstimate botPose, boolean isDisabled, double rotationConfidence) {
     double currentConfidence = calculateConfidence(botPose);
     if (DriverStation.isAutonomous()) {
       currentConfidence = currentConfidence * 6;
@@ -802,7 +809,7 @@ public class RobotContainer {
   //   // }
   // }
 
-  private double calculateConfidence(Limelight.PoseEstimate botPose) {
+  private double calculateConfidence(LimelightHelpers.PoseEstimate botPose) {
     // final double botPoseToPoseDistance =
     //       botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
     final double speakerReference = Util.speakerTagCount(botPose.rawFiducials);

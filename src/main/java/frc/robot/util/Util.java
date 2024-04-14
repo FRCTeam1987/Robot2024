@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.util.Limelight.RawFiducial;
+import frc.robot.util.LimelightHelpers.RawFiducial;
 import java.util.List;
 
 public class Util {
@@ -153,13 +153,13 @@ public class Util {
   }
 
   public static boolean canSeeTarget(String limelight) {
-    return Limelight.getBotPoseEstimate_wpiBlue(limelight).tagCount > 0;
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight).tagCount > 0;
   }
 
   public static void setupUtil() {}
 
   public static double getDistance(String limelight) {
-    var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
+    var result = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight);
     if (result.tagCount > 0) {
       return new Pose3d(result.pose)
           .getTranslation()
