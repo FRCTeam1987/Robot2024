@@ -3,9 +3,10 @@
   "robotLength": 0.92,
   "holonomicMode": true,
   "pathFolders": [
+    "GKC",
     "GKC Amp",
     "GKC Source",
-    "GKC",
+    "lame",
     "amp_side",
     "source_side",
     "temp"

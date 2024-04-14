@@ -64,32 +64,16 @@
     },
     {
       "anchor": {
-        "x": 8.261466724684029,
-        "y": 5.675995039273065
+        "x": 8.26,
+        "y": 7.3
       },
       "prevControl": {
-        "x": 8.392741459600398,
-        "y": 6.491060473802083
+        "x": 8.175002096204153,
+        "y": 7.481039654082502
       },
       "nextControl": {
-        "x": 8.213763377375548,
-        "y": 5.379812003540823
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.230688942570015,
-        "y": 6.260296492308842
-      },
-      "prevControl": {
-        "x": 6.808741834026397,
-        "y": 6.0995020437762015
-      },
-      "nextControl": {
-        "x": 5.508122828249537,
-        "y": 6.461289552974643
+        "x": 8.36624737974481,
+        "y": 7.073700432396873
       },
       "isLocked": false,
       "linkedName": null
@@ -100,28 +84,44 @@
         "y": 6.394344199314846
       },
       "prevControl": {
-        "x": 4.450838348065625,
-        "y": 6.149807299131399
+        "x": 4.333728474926479,
+        "y": 6.635710785719361
       },
       "nextControl": {
-        "x": 4.346882502656746,
-        "y": 6.638881099498297
+        "x": 4.459288762197316,
+        "y": 6.1704083078377385
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.261466724684029,
-        "y": 7.33303259886323
+        "x": 6.417877230908704,
+        "y": 6.260296492308842
       },
       "prevControl": {
-        "x": 8.176469552419965,
-        "y": 7.514072596397237
+        "x": 5.928985102276721,
+        "y": 6.297649374929494
       },
       "nextControl": {
-        "x": 8.346463896948093,
-        "y": 7.1519926013292245
+        "x": 7.445370015240249,
+        "y": 6.18179284064626
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.26,
+        "y": 5.848672590124089
+      },
+      "prevControl": {
+        "x": 8.163244915996643,
+        "y": 5.673634155146216
+      },
+      "nextControl": {
+        "x": 8.356755084003357,
+        "y": 6.023711025101963
       },
       "isLocked": false,
       "linkedName": null
@@ -132,8 +132,8 @@
         "y": 6.260296492308842
       },
       "prevControl": {
-        "x": 5.6626113891255345,
-        "y": 6.803807167913208
+        "x": 6.971109141798724,
+        "y": 7.031267634330698
       },
       "nextControl": null,
       "isLocked": false,
@@ -157,18 +157,23 @@
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 4,
-      "rotationDegrees": -37.83684461016718,
+      "waypointRelativePos": 7.0,
+      "rotationDegrees": -23.0,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 6.0,
+      "waypointRelativePos": 5.0,
       "rotationDegrees": 10.944663095317718,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 7.0,
-      "rotationDegrees": 19.604346985049617,
+      "waypointRelativePos": 4.0,
+      "rotationDegrees": -0.6723104396161154,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.5,
+      "rotationDegrees": 10.0,
       "rotateFast": false
     }
   ],
@@ -208,8 +213,8 @@
     },
     {
       "name": "Slow Fourth Shot",
-      "minWaypointRelativePos": 5.9,
-      "maxWaypointRelativePos": 6.05,
+      "minWaypointRelativePos": 4.95,
+      "maxWaypointRelativePos": 5.1,
       "constraints": {
         "maxVelocity": 1.25,
         "maxAcceleration": 1.25,
@@ -220,7 +225,7 @@
     {
       "name": "Slow Fourth Intake",
       "minWaypointRelativePos": 3.9,
-      "maxWaypointRelativePos": 4.1,
+      "maxWaypointRelativePos": 4.05,
       "constraints": {
         "maxVelocity": 2.5,
         "maxAcceleration": 2.5,
@@ -230,8 +235,8 @@
     },
     {
       "name": "Slow Fifth Intake",
-      "minWaypointRelativePos": 6.9,
-      "maxWaypointRelativePos": 7.05,
+      "minWaypointRelativePos": 6.75,
+      "maxWaypointRelativePos": 7.15,
       "constraints": {
         "maxVelocity": 2.5,
         "maxAcceleration": 2.5,
@@ -240,22 +245,22 @@
       }
     },
     {
-      "name": "Slowmo end",
-      "minWaypointRelativePos": 7.85,
+      "name": "Slowmo final shot",
+      "minWaypointRelativePos": 7.9,
       "maxWaypointRelativePos": 8.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 1.25,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 360.0
       }
     },
     {
-      "name": "Slow fifth Shot",
-      "minWaypointRelativePos": 5.65,
-      "maxWaypointRelativePos": 6.2,
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 4.8,
+      "maxWaypointRelativePos": 5.35,
       "constraints": {
-        "maxVelocity": 1.25,
+        "maxVelocity": 1.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 360.0
@@ -282,7 +287,7 @@
     },
     {
       "name": "Shoot Fourth Note",
-      "waypointRelativePos": 5.9,
+      "waypointRelativePos": 4.95,
       "command": {
         "type": "parallel",
         "data": {
@@ -299,7 +304,7 @@
     },
     {
       "name": "Intake Fifth Note",
-      "waypointRelativePos": 6.6000000000000005,
+      "waypointRelativePos": 6.2,
       "command": {
         "type": "parallel",
         "data": {

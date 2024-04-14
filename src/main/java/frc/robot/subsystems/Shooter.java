@@ -61,7 +61,7 @@ public class Shooter extends SubsystemBase {
     FEEDER_CFG.Slot0.kD = 0;
     FEEDER_CFG.Slot0.kV = 0;
     // FEEDER_CFG.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.6;
-    FEEDER_CFG.CurrentLimits.StatorCurrentLimit = 35;
+    FEEDER_CFG.CurrentLimits.StatorCurrentLimit = 45;
     FEEDER_CFG.CurrentLimits.StatorCurrentLimitEnable = true;
 
     VOLTAGE_VELOCITY_LEADER =
@@ -96,6 +96,12 @@ public class Shooter extends SubsystemBase {
     SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity((RPM) / 60.0));
     SHOOTER_FOLLOWER.setControl(
         VOLTAGE_VELOCITY_FOLLOWER.withVelocity((RPM * Constants.Shooter.SPIN_RATIO) / 60.0));
+  }
+
+  public void setRPMShootAntiSpin(double RPM) {
+    SHOOTER_LEADER.setControl(VOLTAGE_VELOCITY_LEADER.withVelocity((RPM) / 60.0));
+    SHOOTER_FOLLOWER.setControl(
+        VOLTAGE_VELOCITY_FOLLOWER.withVelocity((RPM * Constants.Shooter.ANTI_SPIN_RATIO) / 60.0));
   }
 
   public void setRPMShootNoSpin(double RPM) {

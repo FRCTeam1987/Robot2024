@@ -27,10 +27,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
@@ -188,35 +186,35 @@ public class RobotContainer {
         .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
     DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
     // WIP
-    DRIVER_CONTROLLER
-        .leftTrigger()
-        .onTrue(
-            new ParallelDeadlineGroup(
-                    new ParallelCommandGroup(
-                        new WaitUntilCommand(
-                            () -> {
-                              Pose2d currentPose = DRIVETRAIN.getPose();
-                              Rotation2d currentRotation = currentPose.getRotation();
-                              DriverStation.reportWarning(
-                                  "current: "
-                                      + currentRotation.getDegrees()
-                                      + ", target: "
-                                      + Util.getRotationToAllianceLob(currentPose).getDegrees(),
-                                  false);
-                              return Util.isWithinTolerance(
-                                  currentRotation.getDegrees(),
-                                  Util.getRotationToAllianceLob(currentPose).getDegrees(),
-                                  30);
-                            }),
-                        new PrintCommand("STARTING LOB SEQUENCE")),
-                    new PointAtAprilTag(
-                        DRIVETRAIN,
-                        () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
-                        () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
-                        () -> DRIVER_CONTROLLER.getRightX(),
-                        true))
-                .andThen(new LobNote(SHOOTER, WRIST, ELEVATOR)))
-        .onFalse(new InstantCommand());
+    // DRIVER_CONTROLLER
+    //     .leftTrigger()
+    //     .onTrue(
+    //         new ParallelDeadlineGroup(
+    //                 new ParallelCommandGroup(
+    //                     new WaitUntilCommand(
+    //                         () -> {
+    //                           Pose2d currentPose = DRIVETRAIN.getPose();
+    //                           Rotation2d currentRotation = currentPose.getRotation();
+    //                           DriverStation.reportWarning(
+    //                               "current: "
+    //                                   + currentRotation.getDegrees()
+    //                                   + ", target: "
+    //                                   + Util.getRotationToAllianceLob(currentPose).getDegrees(),
+    //                               false);
+    //                           return Util.isWithinTolerance(
+    //                               currentRotation.getDegrees(),
+    //                               Util.getRotationToAllianceLob(currentPose).getDegrees(),
+    //                               30);
+    //                         }),
+    //                     new PrintCommand("STARTING LOB SEQUENCE")),
+    //                 new PointAtAprilTag(
+    //                     DRIVETRAIN,
+    //                     () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+    //                     () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
+    //                     () -> DRIVER_CONTROLLER.getRightX(),
+    //                     true))
+    //             .andThen(new LobNote(SHOOTER, WRIST, ELEVATOR)))
+    //     .onFalse(new InstantCommand());
   }
 
   private void configureCoDriverController() {
@@ -426,6 +424,12 @@ public class RobotContainer {
         new CollectNoteAuto(DRIVETRAIN, SHOOTER, INTAKE, WRIST, ELEVATOR, INTAKE_PHOTON));
 
     SHOOTER_TAB.add("Spit Note", new SpitNote(SHOOTER));
+    // MATCH_TAB.add(
+    //     "Test InstantShoot",
+    //     new ParallelCommandGroup(
+    //         new InstantCommand(() -> WRIST.setDegrees(20.0)),
+    //         new AutoIdleShooter(SHOOTER),
+    //         new WaitCommand(1.0).andThen(new InstantShoot(SHOOTER))));
 
     // addAuto("ampa-full");
     // addAuto("sourcea-fullshoot");
@@ -445,8 +449,13 @@ public class RobotContainer {
     addAuto("GKC Source 5-4-3");
     addAuto("GKC Source 4-3-2");
     // addAuto("GKC-Amp-J");
-    addAuto("GKC-Amp-2-1");
-    addAuto("GKC-Amp-1-2");
+    addAuto("GKC-Amp-2-1Blue");
+    addAuto("GKC-Amp-2-1Red");
+    addAuto("GKC-Amp-1-2Blue");
+    addAuto("GKC-Amp-1-2Red");
+    addAuto("AGKC-Amp-1-2Red");
+    addAuto("GKC-Amp-Skip-1-2");
+    addAuto("lame");
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
@@ -591,7 +600,12 @@ public class RobotContainer {
 
   public void addAuto(String autoName) {
     final PathPlannerAuto auto = new PathPlannerAuto(autoName);
-    if (autoName == "GKC-Amp-2-1" || autoName == "GKC-Amp-1-2") {
+    if (autoName == "GKC-Amp-2-1Blue"
+        || autoName == "GKC-Amp-1-2Blue"
+        || autoName == "GKC-Amp-1-2Red"
+        || autoName == "AGKC-Amp-1-2Red"
+        || autoName == "GKC-Amp-Skip-1-2"
+        || autoName == "GKC-Amp-2-1Red") {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
     } else if (autoName == "GKC Source 5-4-3" || autoName == "GKC Source 4-3-2") {
