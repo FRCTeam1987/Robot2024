@@ -235,7 +235,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     boolean useMegaTag2 = true; // set to false to use MegaTag1
     boolean doRejectUpdate = false;
     if (useMegaTag2 == false) {
-      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo");
+      LimelightHelpers.PoseEstimate mt1 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo");
 
       if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
         if (mt1.rawFiducials[0].ambiguity > .7) {
@@ -255,13 +256,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       }
     } else if (useMegaTag2 == true) {
       LimelightHelpers.SetRobotOrientation(
-          "limelight-leftlo",
-          this.getPose().getRotation().getDegrees(),
-          0,
-          0,
-          0,
-          0,
-          0);
+          "limelight-leftlo", this.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2 =
           LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-leftlo");
       if (Math.abs(

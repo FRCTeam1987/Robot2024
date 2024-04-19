@@ -152,11 +152,13 @@ public class RobotContainer {
     DRIVER_CONTROLLER
         .back()
         .onTrue(
-            DRIVETRAIN.runOnce(
-                () -> {
-                  DRIVETRAIN.seedFieldRelative();
-                  DRIVETRAIN.getPigeon2().reset();
-                }).andThen(new InstantCommand(() -> updatePoseVision(0.01, false))));
+            DRIVETRAIN
+                .runOnce(
+                    () -> {
+                      DRIVETRAIN.seedFieldRelative();
+                      DRIVETRAIN.getPigeon2().reset();
+                    })
+                .andThen(new InstantCommand(() -> updatePoseVision(0.01, false))));
     // DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> updatePoseVision(0.01, false)));
     DRIVER_CONTROLLER
         .start()
@@ -459,11 +461,15 @@ public class RobotContainer {
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
-    MATCH_TAB.add("Full confidence", new InstantCommand(() -> DRIVETRAIN.addVisionMeasurement(
-        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo").pose,
-        LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo").timestampSeconds,
-        VecBuilder.fill(
-            0.1, 0.1, 0.1))));
+    MATCH_TAB.add(
+        "Full confidence",
+        new InstantCommand(
+            () ->
+                DRIVETRAIN.addVisionMeasurement(
+                    LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo").pose,
+                    LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo")
+                        .timestampSeconds,
+                    VecBuilder.fill(0.1, 0.1, 0.1))));
     // MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
 
     // MATCH_TAB.addBoolean("is Alliance red", () -> CommandSwerveDrivetrain.getAlliance() ==
