@@ -134,36 +134,13 @@ public class RobotContainer {
   }
 
   private void configureDriverController() {
-    DRIVER_CONTROLLER.b().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
-
-    DRIVER_CONTROLLER
-        .y()
-        .onTrue(
-            new ConditionalCommand(
-                new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
-                    .andThen(() -> isReverseAmpPrimed = false),
-                new PrepRevAmp(ELEVATOR, WRIST)
-                    .andThen(new WaitCommand(0.8))
-                    .andThen(new FireRevAmp(SHOOTER))
-                    .andThen(new WaitCommand(0.1))
-                    .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
-                    .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
-                () -> isReverseAmpPrimed));
-    // DRIVER_CONTROLLER
-    //     .back()
-    //     .onTrue(
-    //         DRIVETRAIN.runOnce(
-    //             () -> {
-    //               DRIVETRAIN.seedFieldRelative();
-    //               DRIVETRAIN.getPigeon2().reset();
-    //             }));
-    DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> updatePoseVision(0.01, false)));
+    DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> DRIVETRAIN.seedFieldRelative()));
     DRIVER_CONTROLLER
         .start()
         .onTrue(
             new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
                 .andThen(new InstantCommand(() -> WRIST.goHome())));
-    DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 500));
+    DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 1500).andThen(() -> SHOOTER.stopShooter(), SHOOTER));
     DRIVER_CONTROLLER
         .leftBumper()
         .onTrue(
@@ -171,79 +148,13 @@ public class RobotContainer {
                 .andThen(
                     new AsyncRumble(
                         DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
-
-    DRIVER_CONTROLLER
-        .rightTrigger()
-        .whileTrue(
-            new PointAtAprilTag(
-                DRIVETRAIN,
-                () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
-                () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
-                () -> DRIVER_CONTROLLER.getRightX()));
-
-    DRIVER_CONTROLLER
-        .rightBumper()
-        .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
-    DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
-    // WIP
-    // DRIVER_CONTROLLER
-    //     .leftTrigger()
-    //     .onTrue(
-    //         new ParallelDeadlineGroup(
-    //                 new ParallelCommandGroup(
-    //                     new WaitUntilCommand(
-    //                         () -> {
-    //                           Pose2d currentPose = DRIVETRAIN.getPose();
-    //                           Rotation2d currentRotation = currentPose.getRotation();
-    //                           DriverStation.reportWarning(
-    //                               "current: "
-    //                                   + currentRotation.getDegrees()
-    //                                   + ", target: "
-    //                                   + Util.getRotationToAllianceLob(currentPose).getDegrees(),
-    //                               false);
-    //                           return Util.isWithinTolerance(
-    //                               currentRotation.getDegrees(),
-    //                               Util.getRotationToAllianceLob(currentPose).getDegrees(),
-    //                               30);
-    //                         }),
-    //                     new PrintCommand("STARTING LOB SEQUENCE")),
-    //                 new PointAtAprilTag(
-    //                     DRIVETRAIN,
-    //                     () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
-    //                     () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
-    //                     () -> DRIVER_CONTROLLER.getRightX(),
-    //                     true))
-    //             .andThen(new LobNote(SHOOTER, WRIST, ELEVATOR)))
-    //     .onFalse(new InstantCommand());
   }
 
   private void configureCoDriverController() {
-    CO_DRIVER_CONTROLLER
-        .leftBumper()
-        .onTrue(Util.pathfindToPose(Util.findNearestPoseToTrapClimbs(getPose())));
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
     CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
 
-    CO_DRIVER_CONTROLLER
-        .y()
-        .onTrue(
-            new ConditionalCommand(
-                new ConditionalCommand(
-                    new Climb(ELEVATOR, WRIST, SHOOTER),
-                    new InstantCommand(
-                            () -> {
-                              ELEVATOR.setLengthInches(Constants.Climb.CLIMB_START_HEIGHT);
-                              WRIST.goHome();
-                            },
-                            ELEVATOR,
-                            WRIST)
-                        .andThen(() -> isClimbPrimed = true),
-                    () -> isClimbPrimed),
-                new InstantCommand(),
-                () -> DriverStation.getMatchTime() < 45.0));
-
     CO_DRIVER_CONTROLLER.x().onTrue(new ReverseIntake(SHOOTER, INTAKE, WRIST, ELEVATOR));
-    CO_DRIVER_CONTROLLER.leftTrigger().onTrue(new ShootTall(ELEVATOR, WRIST, SHOOTER));
     CO_DRIVER_CONTROLLER
         .b()
         .onTrue(
@@ -260,8 +171,6 @@ public class RobotContainer {
                           INTAKE.stopTop();
                           INTAKE.stopCollecting();
                         })));
-
-    CO_DRIVER_CONTROLLER.rightTrigger().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
     CO_DRIVER_CONTROLLER
         .a()
         .onTrue(
@@ -466,8 +375,8 @@ public class RobotContainer {
   }
 
   public void configureDefaultCommands() {
-    WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
-    SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
+    // WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
+    // SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
     CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
   }
 
