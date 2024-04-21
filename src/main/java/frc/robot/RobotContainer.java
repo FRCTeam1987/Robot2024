@@ -171,12 +171,6 @@ public class RobotContainer {
                           INTAKE.stopTop();
                           INTAKE.stopCollecting();
                         })));
-    CO_DRIVER_CONTROLLER
-        .a()
-        .onTrue(
-            new ParallelDeadlineGroup(
-                new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
-                new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
   }
 
   private void configureDrivetrain() {
