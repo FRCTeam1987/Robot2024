@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -32,19 +31,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
-import frc.robot.commands.control.Climb;
 import frc.robot.commands.control.GoHome;
-import frc.robot.commands.control.IdleShooter;
 import frc.robot.commands.control.NewShootAmpAuto;
 import frc.robot.commands.control.ReverseIntake;
 import frc.robot.commands.control.ShootAmp;
 import frc.robot.commands.control.ShootSubwoofer;
 import frc.robot.commands.control.ShootSubwooferFirstHalf;
-import frc.robot.commands.control.ShootSubwooferFlat;
-import frc.robot.commands.control.ShootTall;
 import frc.robot.commands.control.StopAll;
-import frc.robot.commands.control.amp.FireRevAmp;
-import frc.robot.commands.control.amp.PrepRevAmp;
 import frc.robot.commands.control.auto.AutoAimLockWrist;
 import frc.robot.commands.control.auto.AutoIdleShooter;
 import frc.robot.commands.control.auto.InstantShoot;
@@ -59,7 +52,6 @@ import frc.robot.commands.control.note.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
-import frc.robot.commands.movement.PointAtAprilTag;
 import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
@@ -140,7 +132,9 @@ public class RobotContainer {
         .onTrue(
             new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
                 .andThen(new InstantCommand(() -> WRIST.goHome())));
-    DRIVER_CONTROLLER.x().onTrue(new PoopNote(SHOOTER, 1500).andThen(() -> SHOOTER.stopShooter(), SHOOTER));
+    DRIVER_CONTROLLER
+        .x()
+        .onTrue(new PoopNote(SHOOTER, 1500).andThen(() -> SHOOTER.stopShooter(), SHOOTER));
     DRIVER_CONTROLLER
         .leftBumper()
         .onTrue(

@@ -1,7 +1,6 @@
 package frc.robot.commands.movement;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,7 +24,7 @@ import java.util.function.IntSupplier;
  */
 public class SwerveCommand extends Command {
 
-  static private final double MAX_SPEED_TRANSLATION = 2.0;
+  private static final double MAX_SPEED_TRANSLATION = 2.0;
 
   private final PIDController THETA_CONTROLLER;
   private final IntSupplier POV_DEGREE;
@@ -117,9 +116,17 @@ public class SwerveCommand extends Command {
 
     DRIVETRAIN.setControl(
         DRIVE_REQUEST
-            .withVelocityX(MathUtil.clamp(xPercentage, -MAX_SPEED_TRANSLATION, MAX_SPEED_TRANSLATION)) // Drive forward with
+            .withVelocityX(
+                MathUtil.clamp(
+                    xPercentage,
+                    -MAX_SPEED_TRANSLATION,
+                    MAX_SPEED_TRANSLATION)) // Drive forward with
             // negative Y (forward)
-            .withVelocityY(MathUtil.clamp(yPercentage, -MAX_SPEED_TRANSLATION, MAX_SPEED_TRANSLATION)) // Drive left with negative X (left)
+            .withVelocityY(
+                MathUtil.clamp(
+                    yPercentage,
+                    -MAX_SPEED_TRANSLATION,
+                    MAX_SPEED_TRANSLATION)) // Drive left with negative X (left)
             .withRotationalRate(rotationalVelocity));
   }
 
