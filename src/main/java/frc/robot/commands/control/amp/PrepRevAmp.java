@@ -22,7 +22,7 @@ public class PrepRevAmp extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              elevator.setLengthInches(Constants.REV_ELEVATOR_AMP_HEIGHT);
+              elevator.setLengthInches(Constants.REV_ELEVATOR_AMP_HEIGHT + 2.0);
               wrist.setDegrees(Constants.REV_WRIST_AMP_DEGREES);
             },
             elevator,
