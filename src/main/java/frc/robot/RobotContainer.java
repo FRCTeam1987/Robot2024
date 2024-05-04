@@ -102,8 +102,8 @@ public class RobotContainer {
       new SlewRateLimiter(Constants.translationSlewRate);
   // private final SlewRateLimiter RotationalSlewRate =
   //     new SlewRateLimiter(Constants.rotationSlewRate);
-  public static boolean isForwardAmpPrimed = false;
-  public static boolean isReverseAmpPrimed = false;
+  public static boolean isAmpPrepped = false;
+  public static boolean isAmpShot = false;
   public static boolean isClimbPrimed = false;
   public static boolean aimAtTargetAuto = false;
   private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps;
@@ -136,19 +136,46 @@ public class RobotContainer {
   private void configureDriverController() {
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
 
+    // DRIVER_CONTROLLER
+    //     .y()
+    //     .onTrue(
+    //         new ConditionalCommand(
+    //             new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
+    //                 .andThen(() -> isReverseAmpPrimed = false),
+    //             new PrepRevAmp(ELEVATOR, WRIST)
+    //                 .andThen(new WaitCommand(0.8))
+    //                 .andThen(new FireRevAmp(SHOOTER))
+    //                 .andThen(new WaitCommand(0.1))
+    //                 .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
+    //                 .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
+    //             () -> isReverseAmpPrimed));
+
     DRIVER_CONTROLLER
         .y()
         .onTrue(
             new ConditionalCommand(
-                new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
-                    .andThen(() -> isReverseAmpPrimed = false),
+                // Compare prepped to not prepped (If prepped, try shoot. Else, prep)
+                new ConditionalCommand(
+                    // Compare shot to not shot (If shot, go home. If not, try shot)
+                    new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
+                        .andThen(
+                            () -> {
+                              isAmpPrepped = false;
+                              isAmpShot = false;
+                            }),
+                    new ConditionalCommand(
+                        // Compare working shot (If working, shoot. Else rumble.)
+                        new FireRevAmp(SHOOTER)
+                            .andThen(new WaitCommand(0.1))
+                            .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
+                            .andThen(new InstantCommand(() -> isAmpShot = true)),
+                        new AsyncRumble(
+                            DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 400L),
+                        () -> AMP_SENSORS.getBothSensors()),
+                    () -> isAmpShot),
                 new PrepRevAmp(ELEVATOR, WRIST)
-                    .andThen(new WaitCommand(0.8))
-                    .andThen(new FireRevAmp(SHOOTER))
-                    .andThen(new WaitCommand(0.1))
-                    .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
-                    .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
-                () -> isReverseAmpPrimed));
+                    .andThen(new InstantCommand(() -> isAmpPrepped = true)),
+                () -> isAmpPrepped));
     DRIVER_CONTROLLER
         .back()
         .onTrue(

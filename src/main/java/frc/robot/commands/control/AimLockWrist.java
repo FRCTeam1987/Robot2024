@@ -33,7 +33,7 @@ public class AimLockWrist extends Command {
     if (RobotContainer.isClimbPrimed) {
       return;
     }
-    if (RobotContainer.isForwardAmpPrimed || RobotContainer.isReverseAmpPrimed) {
+    if (RobotContainer.isAmpPrepped) {
       return;
     }
     // if (Util.canSeeTarget(speakerLimelight)) {

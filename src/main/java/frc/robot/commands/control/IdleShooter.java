@@ -39,7 +39,7 @@ public class IdleShooter extends Command {
       shooter.stopShooter();
       return;
     }
-    if (RobotContainer.isForwardAmpPrimed) {
+    if (RobotContainer.isAmpPrepped) {
       shooter.setRPMShoot(Constants.Shooter.SHOOTER_AMP_RPM);
       return;
     }

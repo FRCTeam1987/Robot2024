@@ -18,15 +18,19 @@ public class AmpSensors extends SubsystemBase {
   public AmpSensors() {
     m_sensor_left = new DigitalInput(Constants.Wrist.PROXIMITY_SENSOR_LEFT_ID);
     m_sensor_right = new DigitalInput(Constants.Wrist.PROXIMITY_SENSOR_RIGHT_ID);
+    Shuffleboard.getTab("MAIN").addBoolean("Amp Left", () -> getSensorLeft());
+    Shuffleboard.getTab("MAIN").addBoolean("Amp Rights", () -> getSensorRight());
     Shuffleboard.getTab("MAIN").addBoolean("Amp Sensor", () -> getBothSensors());
   }
 
   public boolean getSensorLeft() {
-    return m_sensor_left.get();
+    //6.2 inches from wall
+    return !m_sensor_left.get();
   }
 
   public boolean getSensorRight() {
-    return m_sensor_right.get();
+    //6.2 inches from wall
+    return !m_sensor_right.get();
   }
 
   public boolean getBothSensors() {
