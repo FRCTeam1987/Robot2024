@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -28,9 +29,10 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
+              //TODO PUT THIS SOMEWHERE ELSE 
+              shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
               intake.setRPM(Constants.INTAKE_RPM);
-              wrist.setDegrees(21); // testing
-
+              wrist.setDegrees(12); // testing
               elevator.goHome();
             },
             shooter,
@@ -38,6 +40,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
             wrist),
         new WaitCommand(0.1),
         new WaitUntilCommand(shooter::isRearBroken),
+        new InstantCommand(() -> RobotContainer.disableTeleopPointToNote()),
         // new InstantCommand(intake::stopTop, intake),
         new WaitUntilCommand(() -> shooter.isCenterBroken()),
         new InstantCommand(

@@ -15,6 +15,8 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.Util;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class PointAtAprilTag extends Command {
@@ -29,7 +31,7 @@ public class PointAtAprilTag extends Command {
   private DoubleSupplier rotationSupplier = () -> 0.0;
   private double desiredRotation;
   private final PIDController THETA_CONTROLLER;
-  private boolean shouldLob = false;
+  private BooleanSupplier shouldLob = () -> false;
   double rotationRate = 0;
 
   public PointAtAprilTag(
@@ -37,7 +39,7 @@ public class PointAtAprilTag extends Command {
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier) {
-    this(drivetrain, velocityXSupplier, velocityYSupplier, rotationSupplier, false);
+    this(drivetrain, velocityXSupplier, velocityYSupplier, rotationSupplier, () -> false);
   }
 
   public PointAtAprilTag(
@@ -45,7 +47,7 @@ public class PointAtAprilTag extends Command {
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier,
-      boolean shouldLob) {
+      BooleanSupplier shouldLob) {
     this.drivetrain = drivetrain;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
@@ -68,26 +70,15 @@ public class PointAtAprilTag extends Command {
   public void execute() {
     Pose2d current = drivetrain.getPose();
     desiredRotation =
-        shouldLob
+        shouldLob.getAsBoolean()
             ? current.getRotation().minus(Util.getRotationToAllianceLob(current)).getDegrees()
             : current.getRotation().minus(Util.getRotationToAllianceSpeaker(current)).getDegrees();
     DriverStation.reportWarning(desiredRotation + " degrees", false);
 
-    // drivetrain.setChassisSpeeds(HOLO_CONTROLLER.calculate(current, new
-    // Pose2d(current.getTranslation(), new Rotation2d(desiredRotation)), 0, new
-    // Rotation2d(desiredRotation)));
     double rotationRate = 0.0;
-    if (Util.alliance == DriverStation.Alliance.Blue) {
-      System.out.println("+90");
-      rotationRate =
-          THETA_CONTROLLER.calculate(
-              drivetrain.getPose().getRotation().getDegrees() + 90, desiredRotation);
-    } else {
-      System.out.println("-90");
-      rotationRate =
-          THETA_CONTROLLER.calculate(
-              drivetrain.getPose().getRotation().getDegrees() + 90, desiredRotation);
-    }
+    rotationRate =
+        THETA_CONTROLLER.calculate(
+            drivetrain.getPose().getRotation().getDegrees() + 90, desiredRotation);
     drivetrain.setControl(
         drive
             .withVelocityX(

@@ -24,12 +24,12 @@ public class AmpSensors extends SubsystemBase {
   }
 
   public boolean getSensorLeft() {
-    //6.2 inches from wall
+    // 6.2 inches from wall
     return !m_sensor_left.get();
   }
 
   public boolean getSensorRight() {
-    //6.2 inches from wall
+    // 6.2 inches from wall
     return !m_sensor_right.get();
   }
 

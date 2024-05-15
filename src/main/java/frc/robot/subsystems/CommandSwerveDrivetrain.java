@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
@@ -134,11 +135,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this.setControl(
                 AutoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
         new HolonomicPathFollowerConfig(
-            new PIDConstants(12.5, 0, 0),
-            new PIDConstants(11.0, 0, 0),
+            new PIDConstants(13.5, 0, 0),
+            new PIDConstants(11.3, 0, 0),
             DriveConstants.kSpeedAt12VoltsMps,
             driveBaseRadius,
-            new ReplanningConfig()),
+            new ReplanningConfig(true, true)),
         () ->
             DriverStation.getAlliance().orElse(Alliance.Blue)
                 == Alliance
@@ -274,6 +275,39 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
       }
     }
+  }
+
+  public void megatag2Update() {
+    final double yaw = getPose().getRotation().getDegrees();
+    for (String limelightName : Constants.Vision.LL3GS) {
+      LimelightHelpers.SetRobotOrientation(limelightName, yaw, 0, 0, 0, 0, 0);
+    }
+    final ChassisSpeeds chassisSpeeds = getCurrentRobotChassisSpeeds();
+    if (Math.abs(getPigeon2().getRate()) > 540
+        || (Math.abs(chassisSpeeds.vxMetersPerSecond) > 2.0
+            || Math.abs(chassisSpeeds.vyMetersPerSecond) > 2.0)) {
+      return;
+    }
+    for (String limelightName : Constants.Vision.LL3GS) {
+      LimelightHelpers.PoseEstimate mt2 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+      if (mt2.tagCount == 0) {
+        break;
+      }
+      addVisionMeasurement(
+          mt2.pose,
+          mt2.timestampSeconds,
+          VecBuilder.fill(Math.pow(0.9, mt2.tagCount), Math.pow(0.9, mt2.tagCount), 9999999));
+    }
+  }
+
+  // FIXME make it make sense
+  public boolean isPointedAtSpeaker() {
+    Pose2d current = getPose();
+    return Util.isWithinTolerance(
+        current.getRotation().getDegrees() + 90.0,
+        Util.getRotationToAllianceSpeaker(current).getDegrees(),
+        3.0);
   }
 
   @Override

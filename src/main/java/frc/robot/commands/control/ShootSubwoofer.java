@@ -24,7 +24,7 @@ public class ShootSubwoofer extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               elevator.setLengthInches(6.5);
-              shooter.setRPMShoot(2750);
+              shooter.setRPMShoot(2250);
             },
             elevator,
             shooter),

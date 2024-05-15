@@ -43,15 +43,14 @@ public class IdleShooter extends Command {
       shooter.setRPMShoot(Constants.Shooter.SHOOTER_AMP_RPM);
       return;
     }
-    if (shooter.isCenterBroken()) {
-      if (validShotDebouncer.calculate(Util.isValidShot())) {
+    if (shooter.isCenterBroken() || shooter.isRearBroken()) {
         shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
-      } else {
-        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM);
-      }
-
     } else {
-      shooter.stopShooter();
+      if (validShotDebouncer.calculate(Util.isValidShotAmpInclusive())) {
+        shooter.setRPMShoot(Constants.Shooter.SHOOTER_LOB_RPM);
+      } else {
+        shooter.stopShooter();
+      }
     }
   }
 

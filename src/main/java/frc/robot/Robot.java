@@ -28,7 +28,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     robotContainer.DRIVETRAIN.updateOdometry();
-    robotContainer.updatePoseVision();
+    // robotContainer.updatePoseVision();
+    robotContainer.DRIVETRAIN.megatag2Update();
     CommandScheduler.getInstance().run();
   }
 

@@ -6,12 +6,15 @@
     "GKC",
     "GKC Amp",
     "GKC Source",
-    "lame",
+    "Middle Race",
     "amp_side",
+    "lame",
     "source_side",
     "temp"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "IRI"
+  ],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

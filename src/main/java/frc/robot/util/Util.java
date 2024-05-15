@@ -32,15 +32,16 @@ public class Util {
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   public static Pose3d TAG_4_POSE; // RED ALLIANCE SPEAKER CENTER
   public static Pose3d TAG_7_POSE; // BLUE ALLIANCE SPEAKER CENTER
-  public static Pose2d TAG_11_POSE_2D; // LEFT SIDE RED ALLIANCE TRAP
-  public static Pose2d TAG_12_POSE_2D; // RIGHT SIDE RED ALLIANCE TRAP
-  public static Pose2d TAG_13_POSE_2D; // FAR SIDE RED ALLIANCE TRAP
-  public static Pose2d TAG_14_POSE_2D; // FAR SIDE BLUE ALLIANCE TRAP
-  public static Pose2d TAG_15_POSE_2D; // LEFT SIDE BLUE ALLIANCE TRAP
-  public static Pose2d TAG_16_POSE_2D; // RIGHT SIDE BLUE ALLIANCE TRAP
+  public static Pose3d TAG_5_POSE; // RED AMP
+  public static Pose3d TAG_6_POSE; // BLUE AMP
+  public static Pose2d MANUAL_RED_AMP; // RED AMP
+  public static Pose2d MANUAL_BLUE_AMP; // BLUE AMP
+  public static Pose2d MANUAL_RED_LOB; // RED AMP
+  public static Pose2d MANUAL_BLUE_LOB; // BLUE AMP
   public static Pose2d TAG_LOB_BLUE;
   public static Pose2d TAG_LOB_RED;
   public static List<Pose2d> TRAP_TAGS;
+  public static List<Pose2d> AMP_TAGS;
   public static DriverStation.Alliance alliance;
   public static final double DEADBAND = 0.05;
 
@@ -59,71 +60,11 @@ public class Util {
               Util.TAG_7_POSE =
                   pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
             });
-    field
-        .getTagPose(12)
-        .ifPresent(
-            pose -> {
-              Util.TAG_12_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(11)
-        .ifPresent(
-            pose -> {
-              Util.TAG_11_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(13)
-        .ifPresent(
-            pose -> {
-              Util.TAG_13_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(14)
-        .ifPresent(
-            pose -> {
-              Util.TAG_14_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(15)
-        .ifPresent(
-            pose -> {
-              Util.TAG_15_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(16)
-        .ifPresent(
-            pose -> {
-              Util.TAG_16_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(5)
-        .ifPresent(
-            pose -> {
-              Util.TAG_LOB_RED =
-                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d(0.0)));
-              ;
-            });
-    field
-        .getTagPose(6)
-        .ifPresent(
-            pose -> {
-              Util.TAG_LOB_BLUE =
-                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d()));
-            });
-    TRAP_TAGS =
-        List.of(
-            TAG_11_POSE_2D,
-            TAG_12_POSE_2D,
-            TAG_13_POSE_2D,
-            TAG_14_POSE_2D,
-            TAG_15_POSE_2D,
-            TAG_16_POSE_2D);
+    MANUAL_RED_AMP = new Pose2d(14.7, 7.42, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_BLUE_AMP = new Pose2d(1.84, 7.42, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_RED_LOB = new Pose2d(14.7, 6.5, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_BLUE_LOB = new Pose2d(1.84, 6.5, new Rotation2d(Math.toRadians(90.0)));
+    TRAP_TAGS = List.of();
     DriverStation.getAlliance().ifPresent(ouralliance -> alliance = ouralliance);
   }
 
@@ -134,17 +75,27 @@ public class Util {
         : TAG_4_POSE;
   }
 
+  public static Pose2d getAllianceAmp() {
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
+        ? MANUAL_BLUE_AMP
+        : MANUAL_RED_AMP;
+  }
+
   public static Pose2d getAllianceLob() {
     // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
     return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
-        ? TAG_LOB_BLUE
-        : TAG_LOB_RED;
+        ? MANUAL_BLUE_LOB
+        : MANUAL_RED_LOB;
   }
 
   public static Rotation2d getRotationToAllianceLob(Pose2d opose) {
     // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
     Transform2d pose = Util.getAllianceLob().minus(opose);
-    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
+        return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
+    // return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
+    //     ? new Rotation2d(Math.atan2(pose.getX(), pose.getY()) + 90.0)
+    //     : new Rotation2d(Math.atan2(pose.getY(), pose.getX()) - 90.0);
   }
 
   public static boolean isWithinTolerance(
@@ -187,6 +138,13 @@ public class Util {
                 .getTranslation());
   }
 
+    public static double getDistanceToAmp() {
+    return RobotContainer.get().getPose()
+        .getTranslation()
+        .getDistance(
+            getAllianceAmp().getTranslation());
+  }
+
   public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
     // return
     // opose.getTranslation().minus(Util.getAllianceSpeakerCenter().getTranslation().toTranslation2d()).getAngle();
@@ -215,7 +173,13 @@ public class Util {
 
   public static boolean isValidShot() {
     double dist = Util.getDistanceToSpeaker();
-    return dist > 2.25 && dist < 5.25;
+    return (dist > 2.25 && dist < 5.25);
+  }
+
+  public static boolean isValidShotAmpInclusive() {
+    double dist = Util.getDistanceToSpeaker();
+    double ampDist = Util.getDistanceToAmp();
+    return (dist > 2.25 && dist < 5.25) || ampDist < 4.00;
   }
 
   public static double squareValue(double value) {

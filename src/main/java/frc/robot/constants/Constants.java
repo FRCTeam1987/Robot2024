@@ -71,7 +71,7 @@ public class Constants {
     public static final int PROXIMITY_SENSOR_LEFT_ID = 9;
     public static final int PROXIMITY_SENSOR_RIGHT_ID = 8; // TODO: Update left and right
 
-    public static final double WRIST_KP = 200.0;
+    public static final double WRIST_KP = 250.0;    // 200
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.01;
     public static final double WRIST_KV = 0.03;

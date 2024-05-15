@@ -16,6 +16,9 @@ public class Wrist extends SubsystemBase {
   private final TalonFX WRIST_MOTOR;
   private final ShuffleboardTab WRIST_TAB = Shuffleboard.getTab("WRIST");
 
+
+  private boolean shouldLockWristDown = false;
+
   // Constructor
   public Wrist(final int wristMotorID) {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
@@ -41,6 +44,7 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
     setZero();
     WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
+    disableWristLockdown();
   }
 
   public void goHome() {
@@ -118,6 +122,18 @@ public class Wrist extends SubsystemBase {
 
   public void setZero() {
     WRIST_MOTOR.setPosition(Constants.Wrist.INITIAL_ANGLE_DEGREES / 360.0);
+  }
+
+  public void enableWristLockdown() {
+    shouldLockWristDown = true;
+  }
+
+  public void disableWristLockdown() {
+    shouldLockWristDown = false;
+  }
+
+  public boolean shouldLockDownWrist() {
+    return shouldLockWristDown;
   }
 
   public void setupShuffleboard() {

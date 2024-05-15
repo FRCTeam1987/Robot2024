@@ -1,0 +1,121 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 4.25
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.534074173710932,
+        "y": 4.508819045102521
+      },
+      "isLocked": false,
+      "linkedName": "middle_race_1_end"
+    },
+    {
+      "anchor": {
+        "x": 2.894494070455155,
+        "y": 5.545689939904186
+      },
+      "prevControl": {
+        "x": 3.7794417368188835,
+        "y": 5.079999454927962
+      },
+      "nextControl": {
+        "x": 2.2307833206823586,
+        "y": 5.894957803636354
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7067267121368734,
+        "y": 4.6
+      },
+      "prevControl": {
+        "x": 1.232086993593837,
+        "y": 5.347007440759673
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "middle_race_2_end"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Shoot Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.1,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Shoot Middle Note",
+      "waypointRelativePos": 0.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "InstantShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lock Down Wrist",
+      "waypointRelativePos": 1.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableWristLockDown"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 1.5,
+    "rotation": -23.799169144518192,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Middle Race",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 2.5
+  },
+  "useDefaultConstraints": false
+}

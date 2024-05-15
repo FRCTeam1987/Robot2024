@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
+import frc.robot.commands.control.AimLockWristAuto;
 import frc.robot.commands.control.Climb;
 import frc.robot.commands.control.GoHome;
 import frc.robot.commands.control.IdleShooter;
@@ -45,7 +47,9 @@ import frc.robot.commands.control.ShootTall;
 import frc.robot.commands.control.StopAll;
 import frc.robot.commands.control.amp.FireRevAmp;
 import frc.robot.commands.control.amp.PrepRevAmp;
+import frc.robot.commands.control.auto.AutoAimAndShoot;
 import frc.robot.commands.control.auto.AutoAimLockWrist;
+import frc.robot.commands.control.auto.AutoCollectNote;
 import frc.robot.commands.control.auto.AutoIdleShooter;
 import frc.robot.commands.control.auto.InstantShoot;
 import frc.robot.commands.control.note.IntakeNoteSequence;
@@ -83,7 +87,7 @@ public class RobotContainer {
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
-  public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
+  public static final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
   public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
@@ -106,6 +110,7 @@ public class RobotContainer {
   public static boolean isAmpShot = false;
   public static boolean isClimbPrimed = false;
   public static boolean aimAtTargetAuto = false;
+  public static boolean teleopShouldPointToNote = false;
   private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps;
   private double MaxAngularRate = 1.5 * Math.PI;
   private boolean VisionUpdate = false;
@@ -120,6 +125,18 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
   private static RobotContainer instance;
+
+  public static void enableTeleopPointToNote() {
+    teleopShouldPointToNote = true;
+  }
+
+  public static void disableTeleopPointToNote() {
+    teleopShouldPointToNote = false;
+  }
+
+  public static boolean shouldTelopPointToNote() {
+    return teleopShouldPointToNote;
+  }
 
   public RobotContainer() {
     instance = this;
@@ -196,10 +213,12 @@ public class RobotContainer {
     DRIVER_CONTROLLER
         .leftBumper()
         .onTrue(
-            new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
+                new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
                 .andThen(
-                    new AsyncRumble(
-                        DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
+                    new AsyncRumble(DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L))
+            // No instantcommand wrapper?
+            ).whileTrue(new InstantCommand(() -> enableTeleopPointToNote()))
+            .onFalse(new InstantCommand(() -> disableTeleopPointToNote()));
 
     DRIVER_CONTROLLER
         .rightTrigger()
@@ -213,7 +232,19 @@ public class RobotContainer {
     DRIVER_CONTROLLER
         .rightBumper()
         .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
-    DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
+    //DRIVER_CONTROLLER.leftTrigger(0.1).onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
+    DRIVER_CONTROLLER.leftTrigger(0.2).whileTrue(
+      new ConditionalCommand(
+        new LobNote(SHOOTER, WRIST, ELEVATOR),
+        new PointAtAprilTag(
+                DRIVETRAIN,
+                () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+                () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
+                () -> DRIVER_CONTROLLER.getRightX(),
+                () -> true), 
+                () -> DRIVER_CONTROLLER.getLeftTriggerAxis() > 0.95)
+    );
+    
     // WIP
     // DRIVER_CONTROLLER
     //     .leftTrigger()
@@ -248,8 +279,12 @@ public class RobotContainer {
 
   private void configureCoDriverController() {
     CO_DRIVER_CONTROLLER
-        .leftBumper()
-        .onTrue(Util.pathfindToPose(Util.findNearestPoseToTrapClimbs(getPose())));
+        .back()
+        .onTrue(
+            Util.pathfindToPose(Util.getAllianceAmp())
+                .andThen(
+                    new PrepRevAmp(ELEVATOR, WRIST)
+                        .andThen(new InstantCommand(() -> isAmpPrepped = true))));
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
     CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
 
@@ -430,6 +465,13 @@ public class RobotContainer {
                   WRIST.setZero();
                 })
             .ignoringDisable(true));
+    COMMANDS_TAB.add(
+        "SetPoseRedSubStart",
+        new InstantCommand(
+                () ->
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(15.2, 5.5, Rotation2d.fromDegrees(-180))))
+            .ignoringDisable(true));
 
     AUTO_CHOOSER.addOption(
         "SYSID-QUAS-F", DRIVETRAIN.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -467,24 +509,28 @@ public class RobotContainer {
     // addAuto("driven_source_score");
     // addAuto("heart_source_shoot");
     // addAuto("heart_source_og");
-    addAuto("Taxi-Amp");
-    addAuto("Taxi-Source");
+    // addAuto("Taxi-Amp");
+    // addAuto("Taxi-Source");
     // addAuto("temp_center");
     // addAuto("GKC-SOURCE-A");
     // addAuto("GKC-SOURCE-B");
     // addAuto("GKC-AMP-A");
     // addAuto("GKC-AMP-B");
     // addAuto("GKC-Source-J");
-    addAuto("GKC Source 5-4-3");
-    addAuto("GKC Source 4-3-2");
+    // addAuto("GKC Source 5-4-3");
+    // addAuto("GKC Source 4-3-2");
     // addAuto("GKC-Amp-J");
-    addAuto("GKC-Amp-2-1Blue");
-    addAuto("GKC-Amp-2-1Red");
-    addAuto("GKC-Amp-1-2Blue");
-    addAuto("GKC-Amp-1-2Red");
-    addAuto("AGKC-Amp-1-2Red");
-    addAuto("GKC-Amp-Skip-1-2");
+    // addAuto("GKC-Amp-2-1Blue");
+    // addAuto("GKC-Amp-2-1Red");
+    // addAuto("GKC-Amp-1-2Blue");
+    // addAuto("GKC-Amp-1-2Red");
+    // addAuto("AGKC-Amp-1-2Red");
+    // addAuto("GKC-Amp-Skip-1-2");
+    addAuto("Middle Race Cleanup");
     addAuto("lame");
+    // AUTO_CHOOSER.addOption(
+    //     "Middle Race Cleanup",
+    //     new MiddleRaceCleanup(DRIVETRAIN, INTAKE, ELEVATOR, WRIST, SHOOTER, INTAKE_PHOTON));
     // addAuto("GKC-Amp-J2");
     AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
@@ -634,6 +680,12 @@ public class RobotContainer {
                         + ", angle: "
                         + Util.getInterpolatedWristAngle(),
                     false)));
+    NamedCommands.registerCommand(
+        "AutoCollectNote",
+        new AutoCollectNote(DRIVETRAIN, INTAKE_PHOTON, 2.0, SHOOTER, INTAKE, ELEVATOR));
+    NamedCommands.registerCommand("AutoAimAndShoot", new AutoAimAndShoot(DRIVETRAIN, SHOOTER));
+    NamedCommands.registerCommand("EnableWristLockDown", new InstantCommand(() -> WRIST.enableWristLockdown()));
+    NamedCommands.registerCommand("DisableWristLockDown", new InstantCommand(() -> WRIST.disableWristLockdown()));
   }
 
   public void addAuto(String autoName) {
@@ -646,7 +698,9 @@ public class RobotContainer {
         || autoName == "GKC-Amp-2-1Red") {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
-    } else if (autoName == "GKC Source 5-4-3" || autoName == "GKC Source 4-3-2") {
+    } else if (autoName == "GKC Source 5-4-3"
+        || autoName == "GKC Source 4-3-2"
+        || autoName == "Middle Race Cleanup") {
       AUTO_CHOOSER.addOption(
           autoName, new ShootSubwooferFirstHalf(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
