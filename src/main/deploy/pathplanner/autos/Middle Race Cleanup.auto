@@ -6,6 +6,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwooferFirstHalf"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [

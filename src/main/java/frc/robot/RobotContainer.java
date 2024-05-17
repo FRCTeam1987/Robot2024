@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -88,13 +89,13 @@ public class RobotContainer {
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
   public static final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
-  public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
+  public static final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
   public final Shooter SHOOTER =
       new Shooter(
           Constants.SHOOTER_LEADER_ID, Constants.SHOOTER_FOLLOWER_ID, Constants.SHOOTER_FEEDER_ID);
-  public final Wrist WRIST = new Wrist(Constants.WRIST_ID);
+  public static final Wrist WRIST = new Wrist(Constants.WRIST_ID);
   public final Elevator ELEVATOR =
       new Elevator(Constants.ELEVATOR_LEADER_ID, Constants.ELEVATOR_FOLLOWER_ID);
   public final AmpSensors AMP_SENSORS = new AmpSensors();
@@ -527,6 +528,7 @@ public class RobotContainer {
     // addAuto("AGKC-Amp-1-2Red");
     // addAuto("GKC-Amp-Skip-1-2");
     addAuto("Middle Race Cleanup");
+    addAuto("Source Race 5-4");
     addAuto("lame");
     // AUTO_CHOOSER.addOption(
     //     "Middle Race Cleanup",
@@ -686,6 +688,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutoAimAndShoot", new AutoAimAndShoot(DRIVETRAIN, SHOOTER));
     NamedCommands.registerCommand("EnableWristLockDown", new InstantCommand(() -> WRIST.enableWristLockdown()));
     NamedCommands.registerCommand("DisableWristLockDown", new InstantCommand(() -> WRIST.disableWristLockdown()));
+    NamedCommands.registerCommand("PathFindToSourceShot", Util.PathFindToAutoSourceShot());
+    NamedCommands.registerCommand("ShootSubwooferFirstHalf", new ShootSubwooferFirstHalf(ELEVATOR, WRIST, SHOOTER));
   }
 
   public void addAuto(String autoName) {
@@ -699,8 +703,7 @@ public class RobotContainer {
       AUTO_CHOOSER.addOption(autoName, new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;
     } else if (autoName == "GKC Source 5-4-3"
-        || autoName == "GKC Source 4-3-2"
-        || autoName == "Middle Race Cleanup") {
+        || autoName == "GKC Source 4-3-2") {
       AUTO_CHOOSER.addOption(
           autoName, new ShootSubwooferFirstHalf(ELEVATOR, WRIST, SHOOTER).andThen(auto));
       return;

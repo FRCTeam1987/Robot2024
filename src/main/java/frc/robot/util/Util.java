@@ -9,6 +9,8 @@ package frc.robot.util;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,7 +22,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -96,6 +100,16 @@ public class Util {
     // return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
     //     ? new Rotation2d(Math.atan2(pose.getX(), pose.getY()) + 90.0)
     //     : new Rotation2d(Math.atan2(pose.getY(), pose.getX()) - 90.0);
+  }
+
+  public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE = new Pose2d(3.57, 2.99, Rotation2d.fromDegrees(-35.0));
+  public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE = new Pose2d(13.02, 2.99, Rotation2d.fromDegrees(-145.0));
+  public static Command PathFindToAutoSourceShot() {
+    return new ConditionalCommand(
+      Util.pathfindToPose(BLUE_AUTO_SOURCE_SHOOTING_POSE),
+      Util.pathfindToPose(RED_AUTO_SOURCE_SHOOTING_POSE),
+      () -> RobotContainer.DRIVETRAIN.getAlliance().equals(Alliance.Blue)
+    );
   }
 
   public static boolean isWithinTolerance(

@@ -4,7 +4,10 @@
 
 package frc.robot.commands.control.auto;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.RobotContainer;
 import frc.robot.commands.control.note.IntakeNoteSequenceAuto;
 import frc.robot.commands.movement.DriveToNote2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -29,6 +32,11 @@ public class AutoCollectNote extends ParallelDeadlineGroup {
     // addCommands().
     super(new IntakeNoteSequenceAuto(shooter, intake, elevator));
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new DriveToNote2(drivetrain, vision, initialVelocity));
+    addCommands(
+      new InstantCommand(() -> RobotContainer.WRIST.enableWristLockdown())
+        .andThen(new DriveToNote2(drivetrain, vision, initialVelocity))
+        .finallyDo(() -> RobotContainer.WRIST.disableWristLockdown())
+    );
+    // addCommands(new DriveToNote2(drivetrain, vision, initialVelocity));
   }
 }

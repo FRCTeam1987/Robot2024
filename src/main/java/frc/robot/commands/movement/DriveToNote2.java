@@ -20,7 +20,7 @@ public class DriveToNote2 extends PIDCommand {
 
   private static final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-  private static final Debouncer canSeeNoteDebouncer = new Debouncer(0.8);
+  private static final Debouncer canSeeNoteDebouncer = new Debouncer(0.6, DebounceType.kFalling);
 
   /** Creates a new DriveToNote2. */
   public DriveToNote2(
