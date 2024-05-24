@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -31,7 +32,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
 import frc.robot.commands.control.AimLockWristAuto;
@@ -64,7 +67,7 @@ import frc.robot.commands.control.note.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
-import frc.robot.commands.movement.PointAtAprilTag;
+import frc.robot.commands.movement.PointAtSpeaker;
 import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
 import frc.robot.commands.qol.DefaultCANdle;
@@ -83,6 +86,7 @@ import frc.robot.util.Util;
 
 public class RobotContainer {
   private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
+  public GenericEntry lobRPM = Shuffleboard.getTab("MAIN").add("LobRPM", 3000.0).getEntry();
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
@@ -224,7 +228,7 @@ public class RobotContainer {
     DRIVER_CONTROLLER
         .rightTrigger()
         .whileTrue(
-            new PointAtAprilTag(
+            new PointAtSpeaker(
                 DRIVETRAIN,
                 () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
                 () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
@@ -234,18 +238,28 @@ public class RobotContainer {
         .rightBumper()
         .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
     //DRIVER_CONTROLLER.leftTrigger(0.1).onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
+
     DRIVER_CONTROLLER.leftTrigger(0.2).whileTrue(
-      new ConditionalCommand(
-        new LobNote(SHOOTER, WRIST, ELEVATOR),
-        new PointAtAprilTag(
+      new ParallelDeadlineGroup(
+        new SequentialCommandGroup(
+          new WaitUntilCommand(() -> 
+            DRIVER_CONTROLLER.getHID().getLeftTriggerAxis() > 0.95 && Util.isPointedAtLob(DRIVETRAIN)
+            ),
+          new LobNote(SHOOTER, WRIST, ELEVATOR, lobRPM)
+        ),
+        new PointAtSpeaker(
                 DRIVETRAIN,
                 () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
                 () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
                 () -> DRIVER_CONTROLLER.getRightX(),
-                () -> true), 
-                () -> DRIVER_CONTROLLER.getLeftTriggerAxis() > 0.95)
+                () -> true
+        )
+        //Other logic for aiming etc
+      )
     );
     
+
+
     // WIP
     // DRIVER_CONTROLLER
     //     .leftTrigger()
@@ -455,7 +469,7 @@ public class RobotContainer {
                   }
                 })
             .ignoringDisable(true));
-    COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
+    //COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
     // COMMANDS_TAB.add("Fast Point", new FastPoint(DRIVETRAIN, SPEAKER_LIMELIGHT));
     COMMANDS_TAB.add("NewShootAMpAuto", new NewShootAmpAuto(SHOOTER, ELEVATOR, WRIST));
     COMMANDS_TAB.add(
@@ -680,7 +694,7 @@ public class RobotContainer {
                     "InstantShoot: distance: "
                         + Util.getDistanceToSpeaker()
                         + ", angle: "
-                        + Util.getInterpolatedWristAngle(),
+                        + Util.getInterpolatedWristAngleSpeaker(),
                     false)));
     NamedCommands.registerCommand(
         "AutoCollectNote",

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.506672272169776,
-        "y": 2.770348970313103
+        "x": 8.0,
+        "y": 2.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.268424917383689,
-        "y": 2.049506130334599
+        "x": 7.500472258155109,
+        "y": 2.471726369400895
       },
       "isLocked": false,
-      "linkedName": "source_5-4_a_end"
+      "linkedName": "Source 5-4 B End"
     },
     {
       "anchor": {
-        "x": 5.1371265490650195,
-        "y": 1.8184062559531378
+        "x": 6.506672272169776,
+        "y": 2.770348970313103
       },
       "prevControl": {
-        "x": 4.294084321457229,
-        "y": 2.3051369130007173
+        "x": 6.992428215395393,
+        "y": 2.6518535542794406
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "source_5-4_a_end"
     }
   ],
   "rotationTargets": [],
@@ -38,14 +38,14 @@
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": -30.0,
+    "velocity": 0,
+    "rotation": -90.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Source_5-4",
+  "folder": "Source 5-4",
   "previewStartingState": {
-    "rotation": -35.0,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

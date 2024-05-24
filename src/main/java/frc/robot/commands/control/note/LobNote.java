@@ -4,16 +4,22 @@
 
 package frc.robot.commands.control.note;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -27,22 +33,31 @@ public class LobNote extends SequentialCommandGroup {
   // addCommands(new FooCommand(), new BarCommand());
 
   /** Creates a new LobNote. */
-  public LobNote(Shooter SHOOTER, Wrist WRIST, Elevator ELEVATOR) {
+  public LobNote(Shooter SHOOTER, Wrist WRIST, Elevator ELEVATOR, GenericEntry LOB_RPM) {
 
     lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     addRequirements(SHOOTER, WRIST, ELEVATOR);
     addCommands(
         new InstantCommand(
             () -> {
-              WRIST.setDegrees(33);
-              SHOOTER.setRPMShoot(Constants.Shooter.SHOOTER_LOB_RPM);
+              double dist = Util.getDistanceToAllianceLob(RobotContainer.get().getPose());
+              WRIST.setDegrees(35.0);
+              if (dist > 7.5) {
+              SHOOTER.setRPMShoot(Util.getShooterSpeedFromDistanceForLob(dist));
+              } else {
+              SHOOTER.setRPMShoot(1800.0);
+              }
               ELEVATOR.setLengthInches(0);
             },
             SHOOTER,
             WRIST),
         new WaitCommand(0.1),
         new WaitUntilCommand(
-            () -> WRIST.isAtSetpoint() && SHOOTER.isShooterAtSetpoint() && ELEVATOR.isAtSetpoint()),
+            () -> {
+              boolean good = WRIST.isAtSetpoint() && SHOOTER.isShooterAtSetpoint();
+              System.out.println("WRIST: " + WRIST.isAtSetpoint());
+              System.out.println("SHOOTER: " + SHOOTER.isShooterAtSetpoint());
+              return good;}),
         new WaitCommand(0.4),
         new InstantCommand(
             () -> SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),

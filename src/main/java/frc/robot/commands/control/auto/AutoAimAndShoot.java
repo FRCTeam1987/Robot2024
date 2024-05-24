@@ -7,9 +7,10 @@ package frc.robot.commands.control.auto;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.commands.movement.PointAtAprilTag;
+import frc.robot.commands.movement.PointAtSpeaker;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -21,8 +22,8 @@ public class AutoAimAndShoot extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new ParallelDeadlineGroup(
-            new WaitUntilCommand(() -> drivetrain.isPointedAtSpeaker()).withTimeout(1.0),
-            new PointAtAprilTag(drivetrain, () -> 0.0, () -> 0.0, () -> 0.0)),
+            new WaitUntilCommand(() -> Util.isPointedAtSpeaker(drivetrain)).withTimeout(1.0),
+            new PointAtSpeaker(drivetrain, () -> 0.0, () -> 0.0, () -> 0.0)),
         new InstantShoot(shooter));
   }
 }

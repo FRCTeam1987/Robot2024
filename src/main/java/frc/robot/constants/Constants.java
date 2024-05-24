@@ -166,17 +166,10 @@ public class Constants {
   //           InterpolatingDouble> // TODO Update Limelight Constants with new position
   //       DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR = // (Meters, Wrist Degrees)
   //       new InterpolatingTreeMap<>();
-
   public static final InterpolatingTreeMap<
           InterpolatingDouble,
           InterpolatingDouble> // TODO Update Limelight Constants with new position
-      PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE = // (Meters, Wrist Degrees)
-      new InterpolatingTreeMap<>();
-
-  public static final InterpolatingTreeMap<
-          InterpolatingDouble,
-          InterpolatingDouble> // TODO Update Limelight Constants with new position
-      PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE = // (Meters, Wrist Degrees)
+      DISTANCE_TO_LOB_RPM = // (Meters, Wrist Degrees)
       new InterpolatingTreeMap<>();
   public static final InterpolatingTreeMap<
           InterpolatingDouble,
@@ -185,98 +178,6 @@ public class Constants {
       new InterpolatingTreeMap<>();
 
   static {
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-8.10), new InterpolatingDouble(2.292));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-9.19), new InterpolatingDouble(2.395));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-10.15), new InterpolatingDouble(2.496));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-11.75), new InterpolatingDouble(2.702));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-12.63), new InterpolatingDouble(2.785));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-13.40), new InterpolatingDouble(2.877));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-13.93), new InterpolatingDouble(2.946));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-14.45), new InterpolatingDouble(3.019));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-14.91), new InterpolatingDouble(3.091));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-15.36), new InterpolatingDouble(3.171));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-15.97), new InterpolatingDouble(3.267));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-16.70), new InterpolatingDouble(3.397));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-17.15), new InterpolatingDouble(3.491));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-17.70), new InterpolatingDouble(3.599));
-
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-17.94), new InterpolatingDouble(3.671));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-18.42), new InterpolatingDouble(3.761));
-
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-18.84), new InterpolatingDouble(3.883));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-19.18), new InterpolatingDouble(3.975));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-19.45), new InterpolatingDouble(4.053));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-19.70), new InterpolatingDouble(4.114));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-20.01), new InterpolatingDouble(4.181));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-20.29), new InterpolatingDouble(4.256));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_BLUESIDE.put(
-        new InterpolatingDouble(-20.60), new InterpolatingDouble(4.434));
-
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-7.56), new InterpolatingDouble(2.267));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-10.06), new InterpolatingDouble(2.525));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-11.15), new InterpolatingDouble(2.627));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-12.67), new InterpolatingDouble(2.817));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-13.98), new InterpolatingDouble(2.992));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-14.93), new InterpolatingDouble(3.127));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-15.61), new InterpolatingDouble(3.231));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-16.19), new InterpolatingDouble(3.332));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-16.75), new InterpolatingDouble(3.426));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-17.05), new InterpolatingDouble(3.485));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-17.73), new InterpolatingDouble(3.622));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-17.95), new InterpolatingDouble(3.668));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-18.40), new InterpolatingDouble(3.758));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-18.87), new InterpolatingDouble(3.867));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-19.15), new InterpolatingDouble(3.933));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-19.59), new InterpolatingDouble(4.04));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-19.89), new InterpolatingDouble(4.124));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-20.30), new InterpolatingDouble(4.194));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-20.46), new InterpolatingDouble(4.251));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-20.68), new InterpolatingDouble(4.318));
-    PITCH_TO_DISTANCE_RELATIVE_SPEAKER_REDSIDE.put(
-        new InterpolatingDouble(-20.97), new InterpolatingDouble(4.415));
-
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
         new InterpolatingDouble(2.334), new InterpolatingDouble(35.50));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
@@ -316,20 +217,13 @@ public class Constants {
         new InterpolatingDouble(5.89), new InterpolatingDouble(21.47));
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
         new InterpolatingDouble(6.15), new InterpolatingDouble(21.45));
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(new InterpolatingDouble(0.9), new
 
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-8.3), new InterpolatingDouble(33.0)); // 10 ft away
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-9.7), new InterpolatingDouble(32.0)); // 10 ft away
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-10.5), new InterpolatingDouble(31.0)); // 10 ft away
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-11.2), new InterpolatingDouble(30.5)); // 11 ft away
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-12.5), new InterpolatingDouble(29.0)); // 12 ft away
-    // DISTANCE_WRIST_ANGLE_MAP_NONELEVATOR.put(
-    //     new InterpolatingDouble(-14.3), new InterpolatingDouble(28.5)); //
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(10.28), new InterpolatingDouble(3000.0));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(9.5), new InterpolatingDouble(2750.0));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.6), new InterpolatingDouble(2700.0));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.3), new InterpolatingDouble(2620.0));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.0), new InterpolatingDouble(2580.0));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(7.88), new InterpolatingDouble(2440.0));
   }
 
   public static class Vision {

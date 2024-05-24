@@ -32,7 +32,7 @@ public class AutoAimLockWrist extends Command {
     // double degrees = Util.getInterpolatedWristAngle();
     // // TODO find actual values, prevent wrist collision when the elevator is all the way down.
     // DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
-    wrist.setDegrees(MathUtil.clamp(Util.getInterpolatedWristAngle(), 10.0, 35.0));
+    wrist.setDegrees(MathUtil.clamp(Util.getInterpolatedWristAngleSpeaker(), 10.0, 35.0));
   }
 
   @Override

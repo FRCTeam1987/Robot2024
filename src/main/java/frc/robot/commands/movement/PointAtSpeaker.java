@@ -9,7 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
@@ -19,12 +18,12 @@ import frc.robot.util.Util;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-public class PointAtAprilTag extends Command {
+public class PointAtSpeaker extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(Constants.MaxSpeed * 0.1)
-          .withRotationalDeadband(Constants.MaxAngularRate * 0.1) // Add a 10% deadband
+          .withRotationalDeadband(Constants.MaxAngularRate * 0.05) // Add a 5% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
   private DoubleSupplier velocityXSupplier = () -> 0.0; // getAllianceLob
   private DoubleSupplier velocityYSupplier = () -> 0.0;
@@ -34,7 +33,7 @@ public class PointAtAprilTag extends Command {
   private BooleanSupplier shouldLob = () -> false;
   double rotationRate = 0;
 
-  public PointAtAprilTag(
+  public PointAtSpeaker(
       CommandSwerveDrivetrain drivetrain,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
@@ -42,7 +41,7 @@ public class PointAtAprilTag extends Command {
     this(drivetrain, velocityXSupplier, velocityYSupplier, rotationSupplier, () -> false);
   }
 
-  public PointAtAprilTag(
+  public PointAtSpeaker(
       CommandSwerveDrivetrain drivetrain,
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
@@ -54,7 +53,7 @@ public class PointAtAprilTag extends Command {
     this.rotationSupplier = rotationSupplier;
     this.shouldLob = shouldLob;
     THETA_CONTROLLER = new PIDController(0.15, 0.0, 0.0); // (0.183, 0.1, 0.0013)
-    THETA_CONTROLLER.enableContinuousInput(-180, 180);
+    THETA_CONTROLLER.enableContinuousInput(-180.0, 180.0);
     THETA_CONTROLLER.setTolerance(0.01, 0.01);
     addRequirements(drivetrain);
   }
@@ -68,17 +67,17 @@ public class PointAtAprilTag extends Command {
 
   @Override
   public void execute() {
-    Pose2d current = drivetrain.getPose();
-    desiredRotation =
-        shouldLob.getAsBoolean()
-            ? current.getRotation().minus(Util.getRotationToAllianceLob(current)).getDegrees()
-            : current.getRotation().minus(Util.getRotationToAllianceSpeaker(current)).getDegrees();
-    DriverStation.reportWarning(desiredRotation + " degrees", false);
-
-    double rotationRate = 0.0;
-    rotationRate =
-        THETA_CONTROLLER.calculate(
-            drivetrain.getPose().getRotation().getDegrees() + 90, desiredRotation);
+    //Pose2d current = drivetrain.getPose();
+    Pose2d pose = drivetrain.getPose();
+    desiredRotation = shouldLob.getAsBoolean()
+      ? Util.getRotationToAllianceLob(pose).getDegrees()
+      : Util.getRotationToAllianceSpeaker(pose).getDegrees();
+    double rotationRate = THETA_CONTROLLER.calculate(
+      pose.getRotation().getDegrees(),
+      desiredRotation
+    );
+    System.out.println("Current Angle: " + drivetrain.getPose().getRotation().getDegrees() + " | Desired Angle: " + desiredRotation);
+    System.out.println("Rotation Rate: " + rotationRate);
     drivetrain.setControl(
         drive
             .withVelocityX(

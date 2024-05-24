@@ -4,6 +4,8 @@
 
 package frc.robot.commands.qol;
 
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.Shooter;
@@ -12,7 +14,6 @@ import frc.robot.util.Util;
 public class DefaultCANdle extends Command {
   private final Shooter SHOOTER;
   private final Candles CANDLES;
-  private final double BLINK_CONSTANT = 0.002; // in seconds?
 
   /** Creates a new DefaultCANdle. */
   public DefaultCANdle(Candles CANDLES, Shooter SHOOTER) {
@@ -28,19 +29,18 @@ public class DefaultCANdle extends Command {
   @Override
   public void execute() {
     if (!SHOOTER.isRearBroken()) {
-      CANDLES.setColorLeftRed();
+      CANDLES.setColor(Candles.CandleSide.LEFT, new Color8Bit(Color.kRed));
       return;
     }
 
     if (!SHOOTER.isCenterBroken()) {
-      CANDLES.setColorLeftBrown();
-
+      CANDLES.setColor(Candles.CandleSide.LEFT, new Color8Bit(Color.kBrown));
       return;
     }
 
-    CANDLES.setColorLeft(0, 128, 128);
+      CANDLES.setColor(Candles.CandleSide.LEFT, new Color8Bit(Color.kAqua));
     if (!Util.isValidShot()) {
-      CANDLES.setColorRightRed();
+      CANDLES.setColor(Candles.CandleSide.RIGHT, new Color8Bit(Color.kRed));
       return;
     }
 
@@ -50,7 +50,7 @@ public class DefaultCANdle extends Command {
     //   return;
     // }
 
-    CANDLES.setColorRightGreen();
+    CANDLES.setColor(Candles.CandleSide.RIGHT, new Color8Bit(Color.kGreen));
   }
 
   @Override

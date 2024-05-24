@@ -154,7 +154,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // Some condition that should decide if we want to override rotation
     if (RobotContainer.aimAtTargetAuto) {
       Pose2d pose = getPose();
-      double currentDegrees = pose.getRotation().getDegrees() + 90.0;
+      double currentDegrees = pose.getRotation().getDegrees();
       double desiredRotation =
           currentDegrees - Util.getRotationToAllianceSpeaker(pose).getDegrees();
 
@@ -301,14 +301,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
-  // FIXME make it make sense
-  public boolean isPointedAtSpeaker() {
-    Pose2d current = getPose();
-    return Util.isWithinTolerance(
-        current.getRotation().getDegrees() + 90.0,
-        Util.getRotationToAllianceSpeaker(current).getDegrees(),
-        3.0);
-  }
+  // FIXME make it make sens
 
   @Override
   public void periodic() {

@@ -1,0 +1,50 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.39,
+      "y": 1.57
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source 5-4 A"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source 5-4 B"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultWrist"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultShooter"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Source 5-4",
+  "choreoAuto": false
+}

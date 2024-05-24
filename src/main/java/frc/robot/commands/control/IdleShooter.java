@@ -44,10 +44,10 @@ public class IdleShooter extends Command {
       return;
     }
     if (shooter.isCenterBroken() || shooter.isRearBroken()) {
-        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
+        shooter.setRPMShoot(Util.getShooterSpeedFromDistanceForLob(Util.getDistanceToAllianceLob(RobotContainer.get().getPose())));
     } else {
       if (validShotDebouncer.calculate(Util.isValidShotAmpInclusive())) {
-        shooter.setRPMShoot(Constants.Shooter.SHOOTER_LOB_RPM);
+        shooter.setRPMShoot(Util.getShooterSpeedFromDistanceForLob(Util.getDistanceToAllianceLob(RobotContainer.get().getPose())));
       } else {
         shooter.stopShooter();
       }

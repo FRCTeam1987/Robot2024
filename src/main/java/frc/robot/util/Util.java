@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -34,8 +35,8 @@ import java.util.List;
 public class Util {
   public static final AprilTagFieldLayout field =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  public static Pose3d TAG_4_POSE; // RED ALLIANCE SPEAKER CENTER
-  public static Pose3d TAG_7_POSE; // BLUE ALLIANCE SPEAKER CENTER
+  public static Pose2d TAG_4_POSE; // RED ALLIANCE SPEAKER CENTER
+  public static Pose2d TAG_7_POSE; // BLUE ALLIANCE SPEAKER CENTER
   public static Pose3d TAG_5_POSE; // RED AMP
   public static Pose3d TAG_6_POSE; // BLUE AMP
   public static Pose2d MANUAL_RED_AMP; // RED AMP
@@ -55,14 +56,14 @@ public class Util {
         .ifPresent(
             pose -> {
               Util.TAG_4_POSE =
-                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
             });
     field
         .getTagPose(7)
         .ifPresent(
             pose -> {
               Util.TAG_7_POSE =
-                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
             });
     MANUAL_RED_AMP = new Pose2d(14.7, 7.42, new Rotation2d(Math.toRadians(90.0)));
     MANUAL_BLUE_AMP = new Pose2d(1.84, 7.42, new Rotation2d(Math.toRadians(90.0)));
@@ -72,7 +73,7 @@ public class Util {
     DriverStation.getAlliance().ifPresent(ouralliance -> alliance = ouralliance);
   }
 
-  public static Pose3d getAllianceSpeakerCenter() {
+  public static Pose2d getAllianceSpeaker() {
     // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
     return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
         ? TAG_7_POSE
@@ -94,14 +95,20 @@ public class Util {
   }
 
   public static Rotation2d getRotationToAllianceLob(Pose2d opose) {
-    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
-    Transform2d pose = Util.getAllianceLob().minus(opose);
-        return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
-    // return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
-    //     ? new Rotation2d(Math.atan2(pose.getX(), pose.getY()) + 90.0)
-    //     : new Rotation2d(Math.atan2(pose.getY(), pose.getX()) - 90.0);
+    Transform2d delta = new Transform2d(Util.getAllianceLob().getTranslation().minus(opose.getTranslation()), new Rotation2d());
+    return new Rotation2d(Math.atan2(delta.getY(), delta.getX())).plus(Rotation2d.fromDegrees(180.0));
   }
 
+  public static double getShooterSpeedFromDistanceForLob(double distance) {
+    return Constants.DISTANCE_TO_LOB_RPM.getInterpolated(new InterpolatingDouble(distance)).value;
+  }
+
+  public static double getDistanceToAllianceLob(Pose2d opose) {
+    return RobotContainer.get().getPose()
+        .getTranslation()
+        .getDistance(
+            getAllianceLob().getTranslation());
+  }
   public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE = new Pose2d(3.57, 2.99, Rotation2d.fromDegrees(-35.0));
   public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE = new Pose2d(13.02, 2.99, Rotation2d.fromDegrees(-145.0));
   public static Command PathFindToAutoSourceShot() {
@@ -123,66 +130,35 @@ public class Util {
 
   public static void setupUtil() {}
 
-  public static double getDistance(String limelight) {
-    var result = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight);
-    if (result.tagCount > 0) {
-      return new Pose3d(result.pose)
-          .getTranslation()
-          .getDistance(
-              getAllianceSpeakerCenter()
-                  .transformBy(
-                      new Transform3d(
-                          new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
-                          new Rotation3d()))
-                  .getTranslation());
-    }
-    return 0.0;
-  }
-
   // TODO flex on alliance tag pose
   public static double getDistanceToSpeaker() {
-    return new Pose3d(RobotContainer.get().getPose())
+    return RobotContainer.get().getPose()
         .getTranslation()
         .getDistance(
-            getAllianceSpeakerCenter()
-                .transformBy(
-                    new Transform3d(
-                        new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
-                        new Rotation3d()))
-                .getTranslation());
+            getAllianceSpeaker().getTranslation());
   }
 
-    public static double getDistanceToAmp() {
+  public static double getDistanceToAmp() {
     return RobotContainer.get().getPose()
         .getTranslation()
         .getDistance(
             getAllianceAmp().getTranslation());
   }
 
+      // System.out.println("SPEAKER: " + Util.getAllianceSpeaker());
+    // System.out.println("SUBTRACT: " + delta);
+    // System.out.println(delta.getAngle());
+
   public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
-    // return
-    // opose.getTranslation().minus(Util.getAllianceSpeakerCenter().getTranslation().toTranslation2d()).getAngle();
-    Transform2d pose = Util.getAllianceSpeakerCenter().toPose2d().minus(opose);
-    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
+    //Pose2d newpose = new Pose2d(opose.getTranslation(), new Rotation2d(90.0));
+    Transform2d delta = new Transform2d(Util.getAllianceSpeaker().getTranslation().minus(opose.getTranslation()), new Rotation2d());
+    return new Rotation2d(Math.atan2(delta.getY(), delta.getX())).plus(Rotation2d.fromDegrees(180.0));
   }
 
-  public static double getInterpolatedWristAngle(String limelight) {
-    return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
-            new InterpolatingDouble(Util.getDistance(limelight)))
-        .value;
-  }
-
-  public static double getInterpolatedWristAngle() {
+  public static double getInterpolatedWristAngleSpeaker() {
     return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
             new InterpolatingDouble(Util.getDistanceToSpeaker()))
         .value;
-  }
-
-  public static boolean isValidShot(String limelight) {
-    double dist = Util.getDistance(limelight);
-    if (dist > 2.0 && dist < 8.3) {
-      return true;
-    } else return false;
   }
 
   public static boolean isValidShot() {
@@ -233,5 +209,21 @@ public class Util {
       }
     }
     return tagCount;
+  }
+
+  public static boolean isPointedAtSpeaker(CommandSwerveDrivetrain drivetrain) {
+    Pose2d current = drivetrain.getPose();
+    return Util.isWithinTolerance(
+        current.getRotation().getDegrees(),
+        Util.getRotationToAllianceSpeaker(current).getDegrees(),
+        3.0);
+  }
+
+  public static boolean isPointedAtLob(CommandSwerveDrivetrain drivetrain) {
+    Pose2d current = drivetrain.getPose();
+    return Util.isWithinTolerance(
+        current.getRotation().getDegrees(),
+        Util.getRotationToAllianceLob(current).getDegrees(),
+        3.0);
   }
 }
