@@ -157,7 +157,8 @@ public class Elevator extends SubsystemBase {
       ELEVATOR_TAB.addDouble("ActualLen In.", this::getLengthInches);
       ELEVATOR_TAB.add("Coast", new InstantCommand(this::coastElevator).ignoringDisable(true));
       ELEVATOR_TAB.add("Brake", new InstantCommand(this::brakeElevator).ignoringDisable(true));
-      ELEVATOR_TAB.addDouble("ERROR", () -> ELEVATOR_LEADER.getClosedLoopError().getValueAsDouble());
+      ELEVATOR_TAB.addDouble(
+          "ERROR", () -> ELEVATOR_LEADER.getClosedLoopError().getValueAsDouble());
     }
     // ELEVATOR_TAB.addnumber("Elevator voltage", );
   }

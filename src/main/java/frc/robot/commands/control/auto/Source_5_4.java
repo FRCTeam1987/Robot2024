@@ -42,7 +42,7 @@ public class Source_5_4 extends ParallelCommandGroup {
                           : BLUE_STARTING_POSE);
                   RobotContainer.setAutoState(AutoState.DEFAULT);
                 }),
-            AutoBuilder.buildAuto("Source 5-4 AB"),    // Source 5-4 Initial
+            AutoBuilder.buildAuto("Source 5-4 AB"), // Source 5-4 Initial
             new ConditionalCommand(
                 AutoBuilder.buildAuto("Source 5-4 B 5Y4Y"),
                 new ConditionalCommand(

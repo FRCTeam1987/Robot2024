@@ -6,7 +6,6 @@ package frc.robot.commands.control.note;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.movement.PointAtSpeaker;
 import frc.robot.constants.Constants;
@@ -62,8 +61,9 @@ public class ShootNoteSequence extends SequentialCommandGroup {
                 new PointAtSpeaker(drivetrain, () -> 0.0, () -> 0.0, () -> 0.0),
                 new InstantCommand(
                     () -> {
-                    //   DriverStation.reportWarning(
-                    //       "Wrist Angle Attempted" + Util.getInterpolatedWristAngleSpeaker(), false);
+                      //   DriverStation.reportWarning(
+                      //       "Wrist Angle Attempted" + Util.getInterpolatedWristAngleSpeaker(),
+                      // false);
                       wrist.setDegrees(Util.getInterpolatedWristAngleSpeaker());
                       shooter.setRPMShoot(shootRPM);
                     },

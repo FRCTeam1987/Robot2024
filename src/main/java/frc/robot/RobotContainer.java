@@ -68,7 +68,6 @@ import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtSpeaker;
 import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
-import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.AmpSensors;
@@ -554,7 +553,7 @@ public class RobotContainer {
     // addAuto("AGKC-Amp-1-2Red");
     // addAuto("GKC-Amp-Skip-1-2");
     addAuto("Middle Race Cleanup");
-    addAuto("Middle Split");  // TODO make this fast enough, maybe high rpm collect
+    addAuto("Middle Split"); // TODO make this fast enough, maybe high rpm collect
     // addAuto("Source Race 5-4");
     // addAuto("lame");
     // AUTO_CHOOSER.addOption(
@@ -690,8 +689,10 @@ public class RobotContainer {
         "OverrideRotationSpeakerEnable", new InstantCommand(() -> aimAtTargetAuto = true));
     NamedCommands.registerCommand(
         "OverrideRotationSpeakerDisable", new InstantCommand(() -> aimAtTargetAuto = false));
-    NamedCommands.registerCommand("DefaultWrist", new AutoAimLockWrist(WRIST, () -> getAutoState()));
-    NamedCommands.registerCommand("DefaultShooter", new AutoIdleShooter(SHOOTER, () -> getAutoState()));
+    NamedCommands.registerCommand(
+        "DefaultWrist", new AutoAimLockWrist(WRIST, () -> getAutoState()));
+    NamedCommands.registerCommand(
+        "DefaultShooter", new AutoIdleShooter(SHOOTER, () -> getAutoState()));
     NamedCommands.registerCommand("InstantShoot", new InstantShoot(SHOOTER));
     NamedCommands.registerCommand(
         "ShootPrep", new InstantCommand(() -> setAutoState(AutoState.SHOOT_PREP)));
@@ -711,7 +712,8 @@ public class RobotContainer {
                     false)));
     NamedCommands.registerCommand(
         "AutoCollectNote",
-        new AutoCollectNote(DRIVETRAIN, INTAKE_PHOTON, 3.0, SHOOTER, INTAKE, ELEVATOR)); // 2.5 worked
+        new AutoCollectNote(
+            DRIVETRAIN, INTAKE_PHOTON, 3.0, SHOOTER, INTAKE, ELEVATOR)); // 2.5 worked
     NamedCommands.registerCommand("AutoAimAndShoot", new AutoAimAndShoot(DRIVETRAIN, SHOOTER));
     NamedCommands.registerCommand(
         "EnableWristLockDown", new InstantCommand(() -> WRIST.enableWristLockdown()));

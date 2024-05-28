@@ -114,6 +114,7 @@ public class Util {
       new Pose2d(3.55, 3.22, Rotation2d.fromDegrees(-30.0));
   public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
       new Pose2d(13.04, 3.22, Rotation2d.fromDegrees(-150));
+
   // public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE =
   //     new Pose2d(3.57, 2.99, Rotation2d.fromDegrees(-30.0));
   // public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
@@ -165,9 +166,7 @@ public class Util {
     Translation2d speakerTranslation = Util.getAllianceSpeaker().getTranslation();
     Translation2d robotTranslation = opose.getTranslation();
     Transform2d delta =
-        new Transform2d(
-            speakerTranslation.minus(robotTranslation),
-            new Rotation2d());
+        new Transform2d(speakerTranslation.minus(robotTranslation), new Rotation2d());
     return new Rotation2d(Math.atan2(delta.getY(), delta.getX()))
         .plus(Rotation2d.fromDegrees(180.0));
   }

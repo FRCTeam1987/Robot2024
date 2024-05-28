@@ -4,7 +4,6 @@
 
 package frc.robot.commands.control;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
