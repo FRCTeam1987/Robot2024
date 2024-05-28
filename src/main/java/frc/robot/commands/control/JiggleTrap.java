@@ -12,6 +12,7 @@ import frc.robot.util.Util;
 public class JiggleTrap extends Command {
   private boolean doTheJiggle;
   private final Wrist WRIST;
+
   /** Creates a new JiggleTrap. */
   public JiggleTrap(Wrist wrist) {
     this.WRIST = wrist;
@@ -21,15 +22,13 @@ public class JiggleTrap extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    doTheJiggle = Util.isWithinTolerance(WRIST.getDegrees(), Constants.Trap.TRAP_WRIST_DEGREES, 3.0);
+    doTheJiggle =
+        Util.isWithinTolerance(WRIST.getDegrees(), Constants.Trap.TRAP_WRIST_DEGREES, 3.0);
     if (doTheJiggle) {
       WRIST.setDegreesSlot1(Constants.Trap.TRAP_WRIST_DEGREES - 7.0);
     } else {

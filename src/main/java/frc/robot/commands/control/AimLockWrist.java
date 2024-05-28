@@ -39,11 +39,10 @@ public class AimLockWrist extends Command {
     // if (Util.canSeeTarget(speakerLimelight)) {
     if (shooter.isCenterBroken()) {
       if (!Util.isValidShot()) {
-      wrist.setDegrees(35.0);
+        wrist.setDegrees(35.0);
       } else {
-              wrist.setDegrees(Util.getInterpolatedWristAngleSpeaker());
+        wrist.setDegrees(Util.getInterpolatedWristAngleSpeaker());
       }
-
 
       // } else {
       //   wrist.goHome();

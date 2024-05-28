@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.5629101850610545,
+        "y": 6.878943773229128
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4138435203825879,
+        "y": 5.914762358699319
+      },
+      "isLocked": false,
+      "linkedName": "Middle Split B End"
+    },
+    {
+      "anchor": {
+        "x": 2.5629101850610545,
+        "y": 5.53
+      },
+      "prevControl": {
+        "x": 1.3129101850610545,
+        "y": 5.53
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Middle Split C End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Collect Note",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNoteAuto"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Middle Split",
+  "previewStartingState": {
+    "rotation": 24.0,
+    "velocity": 0.0
+  },
+  "useDefaultConstraints": true
+}

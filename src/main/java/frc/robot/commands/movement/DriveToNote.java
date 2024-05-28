@@ -55,7 +55,7 @@ public class DriveToNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("DriveToNote - init");
+    // System.out.println("DriveToNote - init");
     // Apply the output to the swerve
     this.initialPose = drivetrain.getPose();
     rotationController.reset();
@@ -67,8 +67,8 @@ public class DriveToNote extends Command {
   @Override
   public void execute() {
     if (!canSeePieceDebouncer.calculate(photonVision.hasTargets())) {
-      DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
-      System.out.println("DriveToNote Can't see gamePice");
+      // DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
+      // System.out.println("DriveToNote Can't see gamePice");
       drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
       return;
     }
@@ -92,12 +92,12 @@ public class DriveToNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DriverStation.reportWarning("DriveToNote Command Finished", false);
-    System.out.println("DriveToNote Command Finished");
+    // DriverStation.reportWarning("DriveToNote Command Finished", false);
+    // System.out.println("DriveToNote Command Finished");
     drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
     if (isDistanceTraveledTooFar()) {
-      DriverStation.reportWarning("DriveToNote Drove Too Far", false);
-      System.out.println("DriveToNote Drove Too Far");
+      // DriverStation.reportWarning("DriveToNote Drove Too Far", false);
+      // System.out.println("DriveToNote Drove Too Far");
     }
   }
 

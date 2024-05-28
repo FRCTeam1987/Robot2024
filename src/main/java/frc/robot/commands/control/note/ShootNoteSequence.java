@@ -62,8 +62,8 @@ public class ShootNoteSequence extends SequentialCommandGroup {
                 new PointAtSpeaker(drivetrain, () -> 0.0, () -> 0.0, () -> 0.0),
                 new InstantCommand(
                     () -> {
-                      DriverStation.reportWarning(
-                          "Wrist Angle Attempted" + Util.getInterpolatedWristAngleSpeaker(), false);
+                    //   DriverStation.reportWarning(
+                    //       "Wrist Angle Attempted" + Util.getInterpolatedWristAngleSpeaker(), false);
                       wrist.setDegrees(Util.getInterpolatedWristAngleSpeaker());
                       shooter.setRPMShoot(shootRPM);
                     },

@@ -10,6 +10,8 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
 
@@ -18,9 +20,13 @@ import frc.robot.subsystems.Vision;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveToNote2 extends PIDCommand {
 
+  private static Debouncer createNoteDebouncer() {
+    return new Debouncer(0.4, DebounceType.kFalling); // 0.6
+  }
+
   private static final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
-  private static final Debouncer canSeeNoteDebouncer = new Debouncer(0.6, DebounceType.kFalling);
+  private static Debouncer canSeeNoteDebouncer = createNoteDebouncer();
 
   /** Creates a new DriveToNote2. */
   public DriveToNote2(
@@ -28,21 +34,36 @@ public class DriveToNote2 extends PIDCommand {
     // FIXME probably mixing degrees and radians
     super(
         // The controller that the command will use
-        new PIDController(0.2, 0.0, 0.0),
+        new PIDController(0.1, 0.0, 0.0),
         // This should return the measurement
         () -> vision.getYawVal(),
         // This should return the setpoint (can also be a constant)
         () -> 0.0,
         // This uses the output
         output -> {
+          if (RobotContainer.SHOOTER.isRearBroken()) {
+            drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds()));
+            return;
+          }
           drivetrain.setControl(
-              swerveRequest.withSpeeds(new ChassisSpeeds(canSeeNoteDebouncer.calculate(vision.hasTargets()) ? initialVelocity : 0.0, 0, output)));
+              swerveRequest.withSpeeds(
+                  new ChassisSpeeds(
+                      canSeeNoteDebouncer.calculate(vision.hasTargets()) ? initialVelocity : 0.0,
+                      0,
+                      output * 0.75)));
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     addRequirements(drivetrain);
     getController().enableContinuousInput(-180, 180);
     getController().setTolerance(0.25, 0.1);
+  }
+
+  @Override
+  public void initialize() {
+    canSeeNoteDebouncer = createNoteDebouncer();
+    canSeeNoteDebouncer.calculate(true);
+    super.initialize();
   }
 
   // Returns true when the command should end.

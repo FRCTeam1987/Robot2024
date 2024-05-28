@@ -6,7 +6,6 @@ package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
@@ -26,11 +25,12 @@ public class ShootSubwooferFirstHalf extends SequentialCommandGroup {
             () -> {
               wrist.setDegrees(52);
               elevator.setLengthInches(6.5);
-              shooter.setRPMShoot(2000);  // 2750
+              shooter.setRPMShoot(2000); // 2750
             },
             elevator,
             shooter),
-        new WaitUntilCommand(() -> elevator.isAtSetpoint() && wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
+        new WaitUntilCommand(
+            () -> elevator.isAtSetpoint() && wrist.isAtSetpoint() && shooter.isShooterAtSetpoint()),
         new InstantCommand(() -> shooter.setFeederVoltage(7.5), shooter),
         new WaitUntilCommand(() -> !shooter.isCenterBroken())
 

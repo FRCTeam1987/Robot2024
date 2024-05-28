@@ -64,14 +64,14 @@ public class Constants {
     public static final double TRAP_WRIST_DEGREES = 119.0;
     public static final double TRAP_WRIST_DEGREES_MIDWAY = 85.0;
     public static final double TRAP_RPM_SPEED =
-        225; //375; // suggesting but not doing 350 at GKC // 425, 475 worked but touched the top
+        225; // 375; // suggesting but not doing 350 at GKC // 425, 475 worked but touched the top
   }
 
   public static class Wrist {
     public static final int PROXIMITY_SENSOR_LEFT_ID = 9;
     public static final int PROXIMITY_SENSOR_RIGHT_ID = 8; // TODO: Update left and right
 
-    public static final double WRIST_KP = 250.0;    // 200
+    public static final double WRIST_KP = 250.0; // 200
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.01;
     public static final double WRIST_KV = 0.03;

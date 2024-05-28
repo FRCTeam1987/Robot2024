@@ -73,7 +73,7 @@ public class SwerveCommand extends Command {
     if (isCardinalLocking && !Util.isWithinTolerance(ROTATION_SUPPLIER.getAsDouble(), 0.0, 0.25)) {
       isCardinalLocking = false;
       setPoint = 0.0;
-      DriverStation.reportWarning("Stop using DPad.", false);
+      // DriverStation.reportWarning("Stop using DPad.", false);
     } else if (POV_DEGREE.getAsInt() >= 0) {
       isCardinalLocking = true;
       switch (POV_DEGREE.getAsInt()) {

@@ -50,24 +50,26 @@ public class Vision extends SubsystemBase {
     this.CAMERA_PITCH_RADIANS = Units.degreesToRadians(cameraAngleDegrees);
     this.validFiducials = validIDs;
     tab = Shuffleboard.getTab("CAM_" + photonCameraName);
-    tab.addDouble("pitch", this::getPitchVal);
-    tab.addDouble("yaw", this::getYawVal);
-    tab.addDouble(
-        "distance to speaker",
-        () ->
-            PhotonUtils.calculateDistanceToTargetMeters(
-                this.getCameraHeight(),
-                Constants.SPEAKER_APRILTAG_HEIGHT,
-                Units.degreesToRadians(this.getCameraDegrees()),
-                0.0));
-    tab.addDouble(
-        "Our distance to speaker",
-        () ->
-            calculateDistanceToTarget(
-                this.getPitchVal(),
-                this.getCameraHeight(),
-                Constants.SPEAKER_APRILTAG_HEIGHT,
-                this.getCameraDegrees()));
+    if (Constants.shouldShuffleboard) {
+      tab.addDouble("pitch", this::getPitchVal);
+      tab.addDouble("yaw", this::getYawVal);
+      tab.addDouble(
+          "distance to speaker",
+          () ->
+              PhotonUtils.calculateDistanceToTargetMeters(
+                  this.getCameraHeight(),
+                  Constants.SPEAKER_APRILTAG_HEIGHT,
+                  Units.degreesToRadians(this.getCameraDegrees()),
+                  0.0));
+      tab.addDouble(
+          "Our distance to speaker",
+          () ->
+              calculateDistanceToTarget(
+                  this.getPitchVal(),
+                  this.getCameraHeight(),
+                  Constants.SPEAKER_APRILTAG_HEIGHT,
+                  this.getCameraDegrees()));
+    }
     // this.camera.setPipelineIndex(Constants.Tape01);
   }
 

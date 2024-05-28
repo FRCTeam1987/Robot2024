@@ -4,8 +4,6 @@
 
 package frc.robot.commands.control.note;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.networktables.GenericEntry;
@@ -18,7 +16,6 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Wrist;
-import frc.robot.util.InterpolatingDouble;
 import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -43,9 +40,9 @@ public class LobNote extends SequentialCommandGroup {
               double dist = Util.getDistanceToAllianceLob(RobotContainer.get().getPose());
               WRIST.setDegrees(35.0);
               if (dist > 7.5) {
-              SHOOTER.setRPMShoot(Util.getShooterSpeedFromDistanceForLob(dist));
+                SHOOTER.setRPMShoot(Util.getShooterSpeedFromDistanceForLob(dist));
               } else {
-              SHOOTER.setRPMShoot(1800.0);
+                SHOOTER.setRPMShoot(1800.0);
               }
               ELEVATOR.setLengthInches(0);
             },
@@ -55,9 +52,10 @@ public class LobNote extends SequentialCommandGroup {
         new WaitUntilCommand(
             () -> {
               boolean good = WRIST.isAtSetpoint() && SHOOTER.isShooterAtSetpoint();
-              System.out.println("WRIST: " + WRIST.isAtSetpoint());
-              System.out.println("SHOOTER: " + SHOOTER.isShooterAtSetpoint());
-              return good;}),
+              // System.out.println("WRIST: " + WRIST.isAtSetpoint());
+              // System.out.println("SHOOTER: " + SHOOTER.isShooterAtSetpoint());
+              return good;
+            }),
         new WaitCommand(0.4),
         new InstantCommand(
             () -> SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),

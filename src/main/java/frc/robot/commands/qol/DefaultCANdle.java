@@ -12,6 +12,12 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.util.Util;
 
 public class DefaultCANdle extends Command {
+
+  private static final Color8Bit AQUA = new Color8Bit(Color.kAqua);
+  private static final Color8Bit BROWN = new Color8Bit(Color.kBrown);
+  private static final Color8Bit GREEN = new Color8Bit(Color.kGreen);
+  private static final Color8Bit RED = new Color8Bit(Color.kRed);
+
   private final Shooter SHOOTER;
   private final Candles CANDLES;
 
@@ -29,28 +35,21 @@ public class DefaultCANdle extends Command {
   @Override
   public void execute() {
     if (!SHOOTER.isRearBroken()) {
-      CANDLES.setColor(Candles.CandleSide.LEFT, new Color8Bit(Color.kRed));
+      CANDLES.setColor(Candles.CandleSide.LEFT, RED);
       return;
     }
 
     if (!SHOOTER.isCenterBroken()) {
-      CANDLES.setColor(Candles.CandleSide.LEFT, new Color8Bit(Color.kBrown));
+      CANDLES.setColor(Candles.CandleSide.LEFT, BROWN);
       return;
     }
 
-      CANDLES.setColor(Candles.CandleSide.LEFT, new Color8Bit(Color.kAqua));
+    CANDLES.setColor(Candles.CandleSide.LEFT, AQUA);
     if (!Util.isValidShot()) {
-      CANDLES.setColor(Candles.CandleSide.RIGHT, new Color8Bit(Color.kRed));
-      return;
+      CANDLES.setColor(Candles.CandleSide.RIGHT, RED);
+    } else {
+      CANDLES.setColor(Candles.CandleSide.RIGHT, GREEN);
     }
-
-    // if (Util.isWithinTolerance(Limelight.getTY(SPEAKER_LIMELIGHT), 0.0, 1)
-    //     && ((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
-    //   CANDLES.setColorRightOff();
-    //   return;
-    // }
-
-    CANDLES.setColor(Candles.CandleSide.RIGHT, new Color8Bit(Color.kGreen));
   }
 
   @Override

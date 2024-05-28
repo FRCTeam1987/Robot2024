@@ -74,7 +74,7 @@ public class DriveToNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DriverStation.reportWarning("DriveToNote - init", false);
+    // DriverStation.reportWarning("DriveToNote - init", false);
 
     // Apply the output to the swerve
     this.initialPose = drivetrain.getPose();
@@ -88,7 +88,7 @@ public class DriveToNoteAuto extends Command {
   @Override
   public void execute() {
     if (!canSeePieceDebouncer.calculate(photonVision.hasTargets())) {
-      DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
+      // DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
       // System.out.println("DriveToNote Can't see gamePice");
       drivetrain.setControl(
           swerveRequest.withSpeeds(new ChassisSpeeds(previousForwardBackwardSpeed, 0, 0)));
@@ -118,7 +118,7 @@ public class DriveToNoteAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DriverStation.reportWarning("DriveToNote Command Finished", false);
+    // DriverStation.reportWarning("DriveToNote Command Finished", false);
     drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
     new InstantCommand(
         () -> {
@@ -128,9 +128,9 @@ public class DriveToNoteAuto extends Command {
         },
         shooter,
         intake);
-    if (isDistanceTraveledTooFar()) {
-      DriverStation.reportWarning("DriveToNote Drove Too Far", false);
-    }
+    // if (isDistanceTraveledTooFar()) {
+    //   DriverStation.reportWarning("DriveToNote Drove Too Far", false);
+    // }
   }
 
   // Returns true when the command should end.

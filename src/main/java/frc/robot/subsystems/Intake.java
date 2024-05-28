@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class Intake extends SubsystemBase {
   private final TalonFX INTAKE_TOP;
@@ -88,10 +89,12 @@ public class Intake extends SubsystemBase {
   }
 
   public void setupShuffleboard() {
-    INTAKE_TAB.addDouble("Current Top", this::getAmps);
-    INTAKE_TAB.addDouble("RL-RPM Bot", this::getRPMBottom);
-    GenericEntry customRPMIn = INTAKE_TAB.add("Desired RPM", 900).getEntry();
-    INTAKE_TAB.add("Start", new InstantCommand(() -> setRPM(customRPMIn.getDouble(900))));
-    INTAKE_TAB.add("Stop", new InstantCommand(this::stopCollecting));
+    if (Constants.shouldShuffleboard) {
+      INTAKE_TAB.addDouble("Current Top", this::getAmps);
+      INTAKE_TAB.addDouble("RL-RPM Bot", this::getRPMBottom);
+      GenericEntry customRPMIn = INTAKE_TAB.add("Desired RPM", 900).getEntry();
+      INTAKE_TAB.add("Start", new InstantCommand(() -> setRPM(customRPMIn.getDouble(900))));
+      INTAKE_TAB.add("Stop", new InstantCommand(this::stopCollecting));
+    }
   }
 }

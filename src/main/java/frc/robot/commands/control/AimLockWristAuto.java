@@ -33,7 +33,7 @@ public class AimLockWristAuto extends Command {
     }
     if (Util.isValidShot()) {
       double degrees = Util.getInterpolatedWristAngleSpeaker();
-      DriverStation.reportWarning("TRYING DEGREES " + degrees, false);
+      // DriverStation.reportWarning("TRYING DEGREES " + degrees, false);
       wrist.setDegrees(degrees);
     }
   }

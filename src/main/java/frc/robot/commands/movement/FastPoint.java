@@ -59,7 +59,7 @@ public class FastPoint extends Command {
             .withVelocityY(0.0) // Drive left with negative X (left)
             .withRotationalRate(
                 rotationalVelocity); // Drive counterclockwise with negative X (left)
-    System.out.println(rotationalVelocity);
+    // System.out.println(rotationalVelocity);
     drivetrain.setControl(driveRequest);
   }
 

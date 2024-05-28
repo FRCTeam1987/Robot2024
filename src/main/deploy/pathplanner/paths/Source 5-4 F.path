@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.0,
-        "y": 2.45
+        "x": 3.5474545834183844,
+        "y": 3.2151471205421713
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.500472258155109,
-        "y": 2.471726369400895
+        "x": 2.7319694569397024,
+        "y": 2.4108310311824686
       },
       "isLocked": false,
-      "linkedName": "Source 5-4 B End"
+      "linkedName": "SourceShootPose"
     },
     {
       "anchor": {
-        "x": 6.506672272169776,
-        "y": 2.770348970313103
+        "x": 2.8,
+        "y": 1.57
       },
       "prevControl": {
-        "x": 6.992428215395393,
-        "y": 2.6518535542794406
+        "x": 2.1700240809305216,
+        "y": 1.57
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "source_5-4_a_end"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -90.0,
+    "velocity": 2.25,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Source 5-4",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -35.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

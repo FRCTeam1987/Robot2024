@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.986573655149625,
-        "y": 0.7648884187380652
+        "x": 8.0,
+        "y": 0.7792380150020553
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.578671641284255,
-        "y": 1.410564554346702
+        "x": 7.283029454561192,
+        "y": 1.8031780703632951
       },
       "isLocked": false,
       "linkedName": "Source 5-4 A End"
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 2.45
+        "x": 8.1,
+        "y": 2.4324831175046824
       },
       "prevControl": {
-        "x": 6.75,
-        "y": 2.45
+        "x": 6.356659278339444,
+        "y": 2.585005667313084
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Stop Poop",
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "parallel",
         "data": {
@@ -50,7 +50,7 @@
     },
     {
       "name": "Collect Note",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -59,6 +59,23 @@
               "type": "named",
               "data": {
                 "name": "IntakeNoteAuto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "StopPoopMonitor",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopPoopMonitor"
               }
             }
           ]

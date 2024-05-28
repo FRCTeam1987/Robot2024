@@ -9,24 +9,21 @@ package frc.robot.util;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
+import frc.robot.commands.control.auto.AutoState;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.LimelightHelpers.RawFiducial;
@@ -95,8 +92,11 @@ public class Util {
   }
 
   public static Rotation2d getRotationToAllianceLob(Pose2d opose) {
-    Transform2d delta = new Transform2d(Util.getAllianceLob().getTranslation().minus(opose.getTranslation()), new Rotation2d());
-    return new Rotation2d(Math.atan2(delta.getY(), delta.getX())).plus(Rotation2d.fromDegrees(180.0));
+    Transform2d delta =
+        new Transform2d(
+            Util.getAllianceLob().getTranslation().minus(opose.getTranslation()), new Rotation2d());
+    return new Rotation2d(Math.atan2(delta.getY(), delta.getX()))
+        .plus(Rotation2d.fromDegrees(180.0));
   }
 
   public static double getShooterSpeedFromDistanceForLob(double distance) {
@@ -104,19 +104,28 @@ public class Util {
   }
 
   public static double getDistanceToAllianceLob(Pose2d opose) {
-    return RobotContainer.get().getPose()
+    return RobotContainer.get()
+        .getPose()
         .getTranslation()
-        .getDistance(
-            getAllianceLob().getTranslation());
+        .getDistance(getAllianceLob().getTranslation());
   }
-  public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE = new Pose2d(3.57, 2.99, Rotation2d.fromDegrees(-35.0));
-  public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE = new Pose2d(13.02, 2.99, Rotation2d.fromDegrees(-145.0));
+
+  public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE =
+      new Pose2d(3.55, 3.22, Rotation2d.fromDegrees(-30.0));
+  public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
+      new Pose2d(13.04, 3.22, Rotation2d.fromDegrees(-150));
+  // public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE =
+  //     new Pose2d(3.57, 2.99, Rotation2d.fromDegrees(-30.0));
+  // public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
+  //     new Pose2d(13.02, 2.99, Rotation2d.fromDegrees(-144.5));
+
   public static Command PathFindToAutoSourceShot() {
-    return new ConditionalCommand(
-      Util.pathfindToPose(BLUE_AUTO_SOURCE_SHOOTING_POSE),
-      Util.pathfindToPose(RED_AUTO_SOURCE_SHOOTING_POSE),
-      () -> RobotContainer.DRIVETRAIN.getAlliance().equals(Alliance.Blue)
-    );
+    return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))
+        .andThen(
+            new ConditionalCommand(
+                Util.pathfindToPose(BLUE_AUTO_SOURCE_SHOOTING_POSE),
+                Util.pathfindToPose(RED_AUTO_SOURCE_SHOOTING_POSE),
+                () -> CommandSwerveDrivetrain.getAlliance().equals(Alliance.Blue)));
   }
 
   public static boolean isWithinTolerance(
@@ -132,27 +141,35 @@ public class Util {
 
   // TODO flex on alliance tag pose
   public static double getDistanceToSpeaker() {
-    return RobotContainer.get().getPose()
+    return RobotContainer.get()
+        .getPose()
         .getTranslation()
-        .getDistance(
-            getAllianceSpeaker().getTranslation());
+        .getDistance(getAllianceSpeaker().getTranslation());
   }
 
   public static double getDistanceToAmp() {
-    return RobotContainer.get().getPose()
+    return RobotContainer.get()
+        .getPose()
         .getTranslation()
-        .getDistance(
-            getAllianceAmp().getTranslation());
+        .getDistance(getAllianceAmp().getTranslation());
   }
 
-      // System.out.println("SPEAKER: " + Util.getAllianceSpeaker());
-    // System.out.println("SUBTRACT: " + delta);
-    // System.out.println(delta.getAngle());
+  // System.out.println("SPEAKER: " + Util.getAllianceSpeaker());
+  // System.out.println("SUBTRACT: " + delta);
+  // System.out.println(delta.getAngle());
 
+  // TODO rotate to bias angle depending on robot pose for increased accuracy
+  // This should be equivalent to aiming a bit in front of the speaker
   public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
-    //Pose2d newpose = new Pose2d(opose.getTranslation(), new Rotation2d(90.0));
-    Transform2d delta = new Transform2d(Util.getAllianceSpeaker().getTranslation().minus(opose.getTranslation()), new Rotation2d());
-    return new Rotation2d(Math.atan2(delta.getY(), delta.getX())).plus(Rotation2d.fromDegrees(180.0));
+    // Pose2d newpose = new Pose2d(opose.getTranslation(), new Rotation2d(90.0));
+    Translation2d speakerTranslation = Util.getAllianceSpeaker().getTranslation();
+    Translation2d robotTranslation = opose.getTranslation();
+    Transform2d delta =
+        new Transform2d(
+            speakerTranslation.minus(robotTranslation),
+            new Rotation2d());
+    return new Rotation2d(Math.atan2(delta.getY(), delta.getX()))
+        .plus(Rotation2d.fromDegrees(180.0));
   }
 
   public static double getInterpolatedWristAngleSpeaker() {

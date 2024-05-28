@@ -22,7 +22,7 @@ public class AutoAimAndShoot extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new ParallelDeadlineGroup(
-            new WaitUntilCommand(() -> Util.isPointedAtSpeaker(drivetrain)).withTimeout(1.0),
+            new WaitUntilCommand(() -> Util.isPointedAtSpeaker(drivetrain) && shooter.isShooterAtSetpoint()).withTimeout(0.5),
             new PointAtSpeaker(drivetrain, () -> 0.0, () -> 0.0, () -> 0.0)),
         new InstantShoot(shooter));
   }

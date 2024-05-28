@@ -29,7 +29,7 @@ public class IntakeNoteSequence extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
-              //TODO PUT THIS SOMEWHERE ELSE 
+              // TODO PUT THIS SOMEWHERE ELSE
               shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
               intake.setRPM(Constants.INTAKE_RPM);
               wrist.setDegrees(12); // testing

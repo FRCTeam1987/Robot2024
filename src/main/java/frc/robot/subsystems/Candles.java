@@ -6,11 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
-
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-
 
 public class Candles extends SubsystemBase {
 
@@ -23,8 +20,8 @@ public class Candles extends SubsystemBase {
 
     CandleSide(int i) {
       this.candle = i;
-    } 
-  
+    }
+
     public int side() {
       return candle;
     }
@@ -40,7 +37,7 @@ public class Candles extends SubsystemBase {
   }
 
   public void setAnimation(CandleSide side, Animation animation) {
-    switch(side) {
+    switch (side) {
       case LEFT:
         LEFT_CANDLE.clearAnimation(0);
         LEFT_CANDLE.animate(animation);
@@ -66,7 +63,7 @@ public class Candles extends SubsystemBase {
   }
 
   public void setColor(CandleSide side, Color8Bit color) {
-    switch(side) {
+    switch (side) {
       case LEFT:
         LEFT_CANDLE.setLEDs(color.red, color.green, color.blue);
         break;

@@ -18,6 +18,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -62,6 +63,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       new SwerveRequest.SysIdSwerveRotation();
   private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization =
       new SwerveRequest.SysIdSwerveSteerGains();
+
+  private boolean shouldMt2Update = true;
 
   /* Use one of these sysidroutines for your particular test */
   private SysIdRoutine SysIdRoutineTranslation =
@@ -277,10 +280,21 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
+  public boolean shouldMegatag2Update() {
+    return shouldMt2Update;
+  }
+
+  public void setShouldMegatag2Update(final boolean shouldUpdate) {
+    shouldMt2Update = shouldUpdate;
+  }
+
   public void megatag2Update() {
     final double yaw = getPose().getRotation().getDegrees();
     for (String limelightName : Constants.Vision.LL3GS) {
       LimelightHelpers.SetRobotOrientation(limelightName, yaw, 0, 0, 0, 0, 0);
+    }
+    if (!shouldMegatag2Update()) {
+      return;
     }
     final ChassisSpeeds chassisSpeeds = getCurrentRobotChassisSpeeds();
     if (Math.abs(getPigeon2().getRate()) > 540
@@ -297,7 +311,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       addVisionMeasurement(
           mt2.pose,
           mt2.timestampSeconds,
-          VecBuilder.fill(Math.pow(0.9, mt2.tagCount), Math.pow(0.9, mt2.tagCount), 9999999));
+          VecBuilder.fill(
+              Math.pow(0.8, mt2.tagCount) * mt2.avgTagDist,
+              Math.pow(0.8, mt2.tagCount) * mt2.avgTagDist,
+              9999999));
     }
   }
 
@@ -322,5 +339,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 alliance = allianceColor == Alliance.Red ? Alliance.Red : Alliance.Blue;
               });
     }
+  }
+
+  public Translation2d[] getModuleLocations() {
+    return m_moduleLocations;
   }
 }

@@ -14,7 +14,6 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.Util;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -31,6 +30,7 @@ public class PointAtSpeaker extends Command {
   private double desiredRotation;
   private final PIDController THETA_CONTROLLER;
   private BooleanSupplier shouldLob = () -> false;
+  private BooleanSupplier shouldStop = () -> false;
   double rotationRate = 0;
 
   public PointAtSpeaker(
@@ -38,7 +38,13 @@ public class PointAtSpeaker extends Command {
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier) {
-    this(drivetrain, velocityXSupplier, velocityYSupplier, rotationSupplier, () -> false);
+    this(
+        drivetrain,
+        velocityXSupplier,
+        velocityYSupplier,
+        rotationSupplier,
+        () -> false,
+        () -> false);
   }
 
   public PointAtSpeaker(
@@ -46,13 +52,15 @@ public class PointAtSpeaker extends Command {
       DoubleSupplier velocityXSupplier,
       DoubleSupplier velocityYSupplier,
       DoubleSupplier rotationSupplier,
-      BooleanSupplier shouldLob) {
+      BooleanSupplier shouldLob,
+      BooleanSupplier shouldStop) {
     this.drivetrain = drivetrain;
     this.velocityXSupplier = velocityXSupplier;
     this.velocityYSupplier = velocityYSupplier;
     this.rotationSupplier = rotationSupplier;
     this.shouldLob = shouldLob;
-    THETA_CONTROLLER = new PIDController(0.15, 0.0, 0.0); // (0.183, 0.1, 0.0013)
+    this.shouldStop = shouldStop;
+    THETA_CONTROLLER = new PIDController(0.13, 0.01, 0.0); // (0.183, 0.1, 0.0013)
     THETA_CONTROLLER.enableContinuousInput(-180.0, 180.0);
     THETA_CONTROLLER.setTolerance(0.01, 0.01);
     addRequirements(drivetrain);
@@ -67,17 +75,20 @@ public class PointAtSpeaker extends Command {
 
   @Override
   public void execute() {
-    //Pose2d current = drivetrain.getPose();
+    // Pose2d current = drivetrain.getPose();
     Pose2d pose = drivetrain.getPose();
-    desiredRotation = shouldLob.getAsBoolean()
-      ? Util.getRotationToAllianceLob(pose).getDegrees()
-      : Util.getRotationToAllianceSpeaker(pose).getDegrees();
-    double rotationRate = THETA_CONTROLLER.calculate(
-      pose.getRotation().getDegrees(),
-      desiredRotation
-    );
-    System.out.println("Current Angle: " + drivetrain.getPose().getRotation().getDegrees() + " | Desired Angle: " + desiredRotation);
-    System.out.println("Rotation Rate: " + rotationRate);
+    desiredRotation =
+        shouldLob.getAsBoolean()
+            ? Util.getRotationToAllianceLob(pose).getDegrees()
+            : Util.getRotationToAllianceSpeaker(pose).getDegrees();
+    double rotationRate =
+        THETA_CONTROLLER.calculate(pose.getRotation().getDegrees(), desiredRotation);
+    // System.out.println(
+    //     "Current Angle: "
+    //         + drivetrain.getPose().getRotation().getDegrees()
+    //         + " | Desired Angle: "
+    //         + desiredRotation);
+    // System.out.println("Rotation Rate: " + rotationRate);
     drivetrain.setControl(
         drive
             .withVelocityX(
@@ -93,7 +104,7 @@ public class PointAtSpeaker extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return shouldStop.getAsBoolean();
   }
 
   @Override
