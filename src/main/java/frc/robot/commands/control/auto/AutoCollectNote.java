@@ -9,31 +9,24 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.RobotContainer;
 import frc.robot.commands.control.note.IntakeNoteSequenceAuto;
 import frc.robot.commands.movement.DriveToNote2;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoCollectNote extends ParallelDeadlineGroup {
   /** Creates a new AutoCollectNote. */
-  public AutoCollectNote(
-      final CommandSwerveDrivetrain drivetrain,
-      final Vision vision,
-      final double initialVelocity,
-      final Shooter shooter,
-      final Intake intake,
-      final Elevator elevator) {
+  public AutoCollectNote(final double initialVelocity) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new IntakeNoteSequenceAuto(shooter, intake, elevator));
+    super(
+        new IntakeNoteSequenceAuto(
+            RobotContainer.SHOOTER, RobotContainer.get().INTAKE, RobotContainer.get().ELEVATOR));
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(() -> RobotContainer.WRIST.enableWristLockdown())
-            .andThen(new DriveToNote2(drivetrain, vision, initialVelocity))
+            .andThen(
+                new DriveToNote2(
+                    RobotContainer.DRIVETRAIN, RobotContainer.INTAKE_PHOTON, initialVelocity))
             .finallyDo(() -> RobotContainer.WRIST.disableWristLockdown()));
     // addCommands(new DriveToNote2(drivetrain, vision, initialVelocity));
   }

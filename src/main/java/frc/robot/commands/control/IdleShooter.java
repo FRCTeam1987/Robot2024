@@ -43,13 +43,17 @@ public class IdleShooter extends Command {
       shooter.setRPMShoot(Constants.Shooter.SHOOTER_AMP_RPM);
       return;
     }
+    if (Util.isLobShot()) {
+      shooter.setRPMShoot(
+          Util.getShooterSpeedFromDistanceForLob(
+              Util.getDistanceToAllianceLob(RobotContainer.get().getPose())));
+      return;
+    }
     if (shooter.isCenterBroken() || shooter.isRearBroken()) {
-      shooter.setRPMShoot(Constants.Shooter.SHOOTER_LOB_RPM);
+      shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_SHOOTING_RPM);
     } else {
       if (validShotDebouncer.calculate(Util.isValidShotAmpInclusive())) {
-        shooter.setRPMShoot(
-            Util.getShooterSpeedFromDistanceForLob(
-                Util.getDistanceToAllianceLob(RobotContainer.get().getPose())));
+        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_SHOOTING_RPM);
       } else {
         shooter.stopShooter();
       }

@@ -110,15 +110,40 @@ public class Util {
         .getDistance(getAllianceLob().getTranslation());
   }
 
-  public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE =
-      new Pose2d(3.55, 3.22, Rotation2d.fromDegrees(-30.0));
-  public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
-      new Pose2d(13.04, 3.22, Rotation2d.fromDegrees(-150));
-
-  // public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE =
-  //     new Pose2d(3.57, 2.99, Rotation2d.fromDegrees(-30.0));
+  // private static final Pose2d SOURCE_SHOOT_POSE =
+  // PathPlannerAuto.getStaringPoseFromAutoFile("Source 5-4 Shoot Pose");
+  // public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE = SOURCE_SHOOT_POSE;
+  //     // new Pose2d(SOURCE_SHOOT_POSE.getX(), SOURCE_SHOOT_POSE.getY(),
+  // Rotation2d.fromDegrees(-30.0));
   // public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
-  //     new Pose2d(13.02, 2.99, Rotation2d.fromDegrees(-144.5));
+  //     new Pose2d(16.56 - BLUE_AUTO_SOURCE_SHOOTING_POSE.getX(),
+  //     BLUE_AUTO_SOURCE_SHOOTING_POSE.getY(),
+  //     BLUE_AUTO_SOURCE_SHOOTING_POSE.getRotation().plus(Rotation2d.fromDegrees(180.0)));
+  //     // new Pose2d(13.04, 3.22, Rotation2d.fromDegrees(-150));
+
+
+  public static final Pose2d BLUE_AUTO_SOURCE_CLOSE_SHOT = new Pose2d(3.7, 3.15, Rotation2d.fromDegrees(-30));
+  public static final Pose2d RED_AUTO_SOURCE_CLOSE_SHOT = new Pose2d(
+      16.56 - BLUE_AUTO_SOURCE_CLOSE_SHOT.getX(),
+      BLUE_AUTO_SOURCE_CLOSE_SHOT.getY(),
+      Rotation2d.fromDegrees(-150));
+
+  public static Command PathFindToAutoSourceCloseShot() {
+    return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))
+        .andThen(
+            new ConditionalCommand(
+                Util.pathfindToPose(BLUE_AUTO_SOURCE_CLOSE_SHOT),
+                Util.pathfindToPose(RED_AUTO_SOURCE_CLOSE_SHOT),
+                () -> CommandSwerveDrivetrain.getAlliance().equals(Alliance.Blue)));
+  }
+
+  public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE =
+      new Pose2d(4, 3, Rotation2d.fromDegrees(-30.0));
+  public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
+      new Pose2d(
+          16.56 - BLUE_AUTO_SOURCE_SHOOTING_POSE.getX(),
+          BLUE_AUTO_SOURCE_SHOOTING_POSE.getY(),
+          Rotation2d.fromDegrees(-144.5));
 
   public static Command PathFindToAutoSourceShot() {
     return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))
@@ -126,6 +151,23 @@ public class Util {
             new ConditionalCommand(
                 Util.pathfindToPose(BLUE_AUTO_SOURCE_SHOOTING_POSE),
                 Util.pathfindToPose(RED_AUTO_SOURCE_SHOOTING_POSE),
+                () -> CommandSwerveDrivetrain.getAlliance().equals(Alliance.Blue)));
+  }
+
+  public static final Pose2d BLUE_AUTO_MADTOWN_SHOOTING_POSE =
+      new Pose2d(4.35, 5.15, Rotation2d.fromDegrees(-88));
+  public static final Pose2d RED_AUTO_MADTOWN_SHOOTING_POSE =
+      new Pose2d(
+          16.56 - BLUE_AUTO_MADTOWN_SHOOTING_POSE.getX(),
+          BLUE_AUTO_MADTOWN_SHOOTING_POSE.getY(),
+          Rotation2d.fromDegrees(-178.0));
+
+  public static Command PathFindToAutoMadtownShot() {
+    return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))
+        .andThen(
+            new ConditionalCommand(
+                Util.pathfindToPose(BLUE_AUTO_MADTOWN_SHOOTING_POSE),
+                Util.pathfindToPose(RED_AUTO_MADTOWN_SHOOTING_POSE),
                 () -> CommandSwerveDrivetrain.getAlliance().equals(Alliance.Blue)));
   }
 
@@ -153,6 +195,13 @@ public class Util {
         .getPose()
         .getTranslation()
         .getDistance(getAllianceAmp().getTranslation());
+  }
+
+  public static double getDistanceToLob() {
+    return RobotContainer.get()
+        .getPose()
+        .getTranslation()
+        .getDistance(getAllianceLob().getTranslation());
   }
 
   // System.out.println("SPEAKER: " + Util.getAllianceSpeaker());
@@ -186,6 +235,10 @@ public class Util {
     double dist = Util.getDistanceToSpeaker();
     double ampDist = Util.getDistanceToAmp();
     return (dist > 2.25 && dist < 5.25) || ampDist < 4.00;
+  }
+
+  public static boolean isLobShot() {
+    return Util.getDistanceToLob() > 5.5;
   }
 
   public static double squareValue(double value) {
@@ -232,7 +285,7 @@ public class Util {
     return Util.isWithinTolerance(
         current.getRotation().getDegrees(),
         Util.getRotationToAllianceSpeaker(current).getDegrees(),
-        3.0);
+        1.5);
   }
 
   public static boolean isPointedAtLob(CommandSwerveDrivetrain drivetrain) {
@@ -240,6 +293,6 @@ public class Util {
     return Util.isWithinTolerance(
         current.getRotation().getDegrees(),
         Util.getRotationToAllianceLob(current).getDegrees(),
-        3.0);
+        1.5);
   }
 }

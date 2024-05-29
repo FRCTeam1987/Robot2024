@@ -108,6 +108,7 @@ public class Constants {
     public static final double SHOOTER_RPM = 4500;
     public static final double SHOOTER_RPM_CLOSERANGE = 3500; // NEEDS to be smaller
     public static final double SHOOTER_LOB_RPM = 3000; // NEEDS to be smaller
+    public static final double SHOOTER_IDLE_SHOOTING_RPM = 3000; // NEEDS to be smaller
     public static final double SHOOTER_IDLE_RPM = 2500; // 2500
     public static final double SHOOTER_IDLE_RPM_CLOSE = 4200; // 2500
     public static final double SHOOTER_IDLE_CLOSERANGE_RPM = 2500; // NEEDS to be smaller

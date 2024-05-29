@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.0,
-        "y": 3.0
+        "x": 7.981061263963517,
+        "y": 0.8990330014867446
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6547349626516095,
-        "y": 2.2992726415386784
+        "x": 6.532172524529916,
+        "y": 1.287261569140526
       },
       "isLocked": false,
-      "linkedName": "SourceShootPose"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.254990264743197,
-        "y": 1.57
+        "x": 3.7,
+        "y": 3.1
       },
       "prevControl": {
-        "x": 2.2551828575245247,
-        "y": 1.5422451079387747
+        "x": 4.263944461846189,
+        "y": 2.206212216360257
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Madtown B End"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
-    "velocity": 2.25,
-    "rotation": 0.0,
+    "velocity": 0,
+    "rotation": -30.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Source 5-4",
+  "folder": "Madtown",
   "previewStartingState": {
-    "rotation": -35.0,
+    "rotation": -22.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

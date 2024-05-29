@@ -9,7 +9,6 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -48,15 +47,7 @@ public class LobNote extends SequentialCommandGroup {
             },
             SHOOTER,
             WRIST),
-        new WaitCommand(0.1),
-        new WaitUntilCommand(
-            () -> {
-              boolean good = WRIST.isAtSetpoint() && SHOOTER.isShooterAtSetpoint();
-              // System.out.println("WRIST: " + WRIST.isAtSetpoint());
-              // System.out.println("SHOOTER: " + SHOOTER.isShooterAtSetpoint());
-              return good;
-            }),
-        new WaitCommand(0.4),
+        new WaitUntilCommand(() -> WRIST.isAtSetpoint()),
         new InstantCommand(
             () -> SHOOTER.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS_AGRESSIVE),
             SHOOTER),
@@ -68,7 +59,6 @@ public class LobNote extends SequentialCommandGroup {
               SHOOTER.stopShooter();
               ELEVATOR.goHome();
             },
-            SHOOTER),
-        new WaitCommand(0.1));
+            SHOOTER));
   }
 }

@@ -1,0 +1,335 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3966528828907423,
+        "y": 3.3
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3966528828907414,
+        "y": 3.3
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.6869626339311825,
+        "y": 3.2903536828120585
+      },
+      "prevControl": {
+        "x": 2.6869626339311887,
+        "y": 3.2903536828120585
+      },
+      "nextControl": {
+        "x": 4.543967076658733,
+        "y": 3.2903536828120585
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.764753644797117,
+        "y": 4.04
+      },
+      "prevControl": {
+        "x": 4.956238267788856,
+        "y": 3.7822759207030145
+      },
+      "nextControl": {
+        "x": 6.573269021805378,
+        "y": 4.2977240792969855
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.1,
+        "y": 3.95
+      },
+      "prevControl": {
+        "x": 8.1,
+        "y": 4.325000000000001
+      },
+      "nextControl": {
+        "x": 8.1,
+        "y": 3.575
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.3,
+        "y": 3.1
+      },
+      "prevControl": {
+        "x": 7.3,
+        "y": 3.6
+      },
+      "nextControl": {
+        "x": 7.3,
+        "y": 2.2325143713187727
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.3,
+        "y": 1.2
+      },
+      "prevControl": {
+        "x": 7.3,
+        "y": 1.6681604100559801
+      },
+      "nextControl": {
+        "x": 7.3,
+        "y": 0.44999999999999996
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.7,
+        "y": 3.1
+      },
+      "prevControl": {
+        "x": 3.0257402108653095,
+        "y": 2.361505763897888
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 4,
+      "rotationDegrees": -22.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 12.825184337094994,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 25.255901555655427,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 5,
+      "rotationDegrees": -22.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Slow Poop",
+      "minWaypointRelativePos": 2.8,
+      "maxWaypointRelativePos": 3.4499999999999997,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "Conditional Collect",
+      "minWaypointRelativePos": 3.8500000000000005,
+      "maxWaypointRelativePos": 5.1499999999999995,
+      "constraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Disable LL",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableLLPoseUpdate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable LL",
+      "waypointRelativePos": 2.4000000000000004,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableLLPoseUpdate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Prep",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Start",
+      "waypointRelativePos": 1.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStart"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Stop",
+      "waypointRelativePos": 3.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStop"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Start Poop Monitor",
+      "waypointRelativePos": 2.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartPoopMonitor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop Poop Monitor",
+      "waypointRelativePos": 3.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopPoopMonitor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Start Watching For Note",
+      "waypointRelativePos": 3.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableWatchForNote"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop Watching For Note",
+      "waypointRelativePos": 5.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableWatchForNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": 36.38469900375056,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Madtown",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

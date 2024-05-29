@@ -32,15 +32,15 @@
     },
     {
       "anchor": {
-        "x": 3.5474545834183844,
-        "y": 3.2151471205421713
+        "x": 4.0,
+        "y": 3.0
       },
       "prevControl": {
-        "x": 4.366606627707375,
-        "y": 2.6415706841911253
+        "x": 4.819152044288993,
+        "y": 2.426423563648954
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "SourceShootPose"
     }
   ],
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Shoot Prep",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "parallel",
         "data": {

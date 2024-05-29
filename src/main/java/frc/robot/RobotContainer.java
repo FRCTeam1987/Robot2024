@@ -53,6 +53,7 @@ import frc.robot.commands.control.auto.AutoCollectNote;
 import frc.robot.commands.control.auto.AutoIdleShooter;
 import frc.robot.commands.control.auto.AutoState;
 import frc.robot.commands.control.auto.InstantShoot;
+import frc.robot.commands.control.auto.Madtown;
 import frc.robot.commands.control.auto.Source_5_4;
 import frc.robot.commands.control.note.IntakeNoteSequence;
 import frc.robot.commands.control.note.IntakeNoteSequenceAuto;
@@ -562,6 +563,7 @@ public class RobotContainer {
     // addAuto("GKC-Amp-J2");
     // AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
     AUTO_CHOOSER.addOption("Source 5-4", new Source_5_4());
+    AUTO_CHOOSER.addOption("Madtown", new Madtown());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
     MATCH_TAB.add(
         "Full confidence",
@@ -710,10 +712,7 @@ public class RobotContainer {
                         + ", angle: "
                         + Util.getInterpolatedWristAngleSpeaker(),
                     false)));
-    NamedCommands.registerCommand(
-        "AutoCollectNote",
-        new AutoCollectNote(
-            DRIVETRAIN, INTAKE_PHOTON, 3.0, SHOOTER, INTAKE, ELEVATOR)); // 2.5 worked
+    NamedCommands.registerCommand("AutoCollectNote", new AutoCollectNote(3.0)); // 2.5 worked
     NamedCommands.registerCommand("AutoAimAndShoot", new AutoAimAndShoot(DRIVETRAIN, SHOOTER));
     NamedCommands.registerCommand(
         "EnableWristLockDown", new InstantCommand(() -> WRIST.enableWristLockdown()));
@@ -729,6 +728,10 @@ public class RobotContainer {
         "EnableLLPoseUpdate", new InstantCommand(() -> DRIVETRAIN.setShouldMegatag2Update(true)));
     NamedCommands.registerCommand(
         "DisableLLPoseUpdate", new InstantCommand(() -> DRIVETRAIN.setShouldMegatag2Update(false)));
+    NamedCommands.registerCommand(
+        "EnableWatchForNote", new InstantCommand(() -> Madtown.SHOULD_WATCH_FOR_NOTE = true));
+    NamedCommands.registerCommand(
+        "DisableWatchForNote", new InstantCommand(() -> Madtown.SHOULD_WATCH_FOR_NOTE = false));
   }
 
   public void addAuto(String autoName) {

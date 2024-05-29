@@ -54,7 +54,12 @@ public class AutoIdleShooter extends Command {
         } else {
           shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
         }
-        shooter.setRPMShootNoSpin(POOP_RPM);
+        final double poseX = RobotContainer.DRIVETRAIN.getPose().getX();
+        if (poseX < 6.0 || poseX > 16.56 - 6.0) {
+          shooter.setRPMShoot(Constants.Shooter.SHOOTER_RPM);
+        } else {
+          shooter.setRPMShootNoSpin(POOP_RPM);
+        }
         break;
       case POOP_PREP:
         shooter.stopFeeder();
@@ -65,7 +70,11 @@ public class AutoIdleShooter extends Command {
         shooter.setRPMShootNoSpin(POOP_RPM);
         break;
       case SHOOT_PREP:
-        shooter.stopFeeder();
+        if (shooter.isRearBroken() && !shooter.isCenterBroken()) {
+          shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
+        } else {
+          shooter.stopFeeder();
+        }
         shooter.setRPMShoot(Constants.Shooter.SHOOTER_RPM);
         break;
       case SHOOTING:

@@ -6,6 +6,7 @@ package frc.robot.commands.control.auto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Util;
 import java.util.function.Supplier;
@@ -34,7 +35,13 @@ public class AutoAimLockWrist extends Command {
   public void execute() {
     switch (autoStateSupplier.get()) {
       case COLLECTING:
-        wrist.setDegrees(26);
+        double poseX = RobotContainer.DRIVETRAIN.getPose().getX();
+        if (poseX < 6.0 || poseX > 16.56 - 6.0) {
+          wrist.setDegrees(MathUtil.clamp(Util.getInterpolatedWristAngleSpeaker(), 10.0, 35.0));
+        } else {
+          wrist.setDegrees(26);
+        }
+
         break;
       case POOPING:
         wrist.setDegrees(22);

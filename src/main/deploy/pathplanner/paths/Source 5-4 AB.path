@@ -52,7 +52,7 @@
         "y": 2.4324831175046824
       },
       "prevControl": {
-        "x": 6.1,
+        "x": 6.6,
         "y": 2.4324831175046824
       },
       "nextControl": null,
@@ -64,7 +64,7 @@
   "constraintZones": [
     {
       "name": "Poop Zone",
-      "minWaypointRelativePos": 1.75,
+      "minWaypointRelativePos": 1.7999999999999998,
       "maxWaypointRelativePos": 2.15,
       "constraints": {
         "maxVelocity": 3.25,
@@ -191,7 +191,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.8,
+    "maxVelocity": 5.0,
     "maxAcceleration": 4.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 360.0
