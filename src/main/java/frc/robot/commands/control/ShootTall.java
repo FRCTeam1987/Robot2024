@@ -25,7 +25,7 @@ public class ShootTall extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               elevator.setLengthInches(28);
-              wrist.setDegrees(23);
+              wrist.setDegrees(21);
               shooter.setRPMShoot(Constants.Shooter.SHOOTER_RPM);
             },
             elevator,

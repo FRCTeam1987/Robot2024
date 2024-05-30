@@ -3,157 +3,167 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3966528828907423,
-        "y": 3.3
+        "x": 1.367536726441503,
+        "y": 5.52
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3966528828907414,
-        "y": 3.3
+        "x": 2.100299850460456,
+        "y": 5.083390425116072
       },
-      "isLocked": false,
-      "linkedName": null
+      "isLocked": true,
+      "linkedName": "Middle Split A Start"
     },
     {
       "anchor": {
-        "x": 3.6869626339311825,
-        "y": 3.2903536828120585
+        "x": 2.66,
+        "y": 4.85724057271631
       },
       "prevControl": {
-        "x": 2.6869626339311887,
-        "y": 3.2903536828120585
+        "x": 2.16,
+        "y": 4.85724057271631
       },
       "nextControl": {
-        "x": 4.543967076658733,
-        "y": 3.2903536828120585
+        "x": 3.16,
+        "y": 4.85724057271631
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.764753644797117,
-        "y": 4.04
+        "x": 3.9,
+        "y": 4.86
       },
       "prevControl": {
-        "x": 4.956238267788856,
-        "y": 3.7822759207030145
+        "x": 3.4,
+        "y": 4.86
       },
       "nextControl": {
-        "x": 6.573269021805378,
-        "y": 4.2977240792969855
+        "x": 4.4,
+        "y": 4.86
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.1,
-        "y": 3.95
+        "x": 5.7571737944515915,
+        "y": 4.45
       },
       "prevControl": {
-        "x": 8.1,
-        "y": 4.325000000000001
+        "x": 5.124327238109168,
+        "y": 4.559951014772466
       },
       "nextControl": {
-        "x": 8.1,
-        "y": 3.575
+        "x": 6.369006258443314,
+        "y": 4.343699982069227
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.3,
-        "y": 3.1
+        "x": 8.2,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 7.3,
-        "y": 3.6
+        "x": 8.2,
+        "y": 4.25
       },
       "nextControl": {
-        "x": 7.3,
-        "y": 2.2325143713187727
+        "x": 8.2,
+        "y": 3.75
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.3,
-        "y": 1.2
+        "x": 5.7571737944515915,
+        "y": 4.106057724789198
       },
       "prevControl": {
-        "x": 7.3,
-        "y": 1.6681604100559801
+        "x": 6.631745669908794,
+        "y": 3.672870388193883
       },
       "nextControl": {
-        "x": 7.3,
-        "y": 0.44999999999999996
+        "x": 5.14847332367427,
+        "y": 4.407555341074306
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.7,
-        "y": 3.1
+        "x": 4.05,
+        "y": 5.52
       },
       "prevControl": {
-        "x": 3.0257402108653095,
-        "y": 2.361505763897888
+        "x": 4.05,
+        "y": 4.808411409097608
+      },
+      "nextControl": {
+        "x": 4.05,
+        "y": 6.290909696720522
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.859987605018093,
+        "y": 6.291168699962351
+      },
+      "prevControl": {
+        "x": 3.4508240398929786,
+        "y": 6.28282113081219
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Middle Split A End"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 3.0,
-      "rotationDegrees": 0,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 4,
-      "rotationDegrees": -22.0,
-      "rotateFast": false
-    },
-    {
       "waypointRelativePos": 1,
-      "rotationDegrees": 12.825184337094994,
+      "rotationDegrees": 0,
       "rotateFast": false
     },
     {
       "waypointRelativePos": 2,
-      "rotationDegrees": 25.255901555655427,
+      "rotationDegrees": 0.0,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 5,
-      "rotationDegrees": -22.0,
+      "waypointRelativePos": 3,
+      "rotationDegrees": -16.466591995883878,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 6,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 7,
+      "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
-      "name": "Slow Poop",
-      "minWaypointRelativePos": 2.8,
-      "maxWaypointRelativePos": 3.4499999999999997,
+      "name": "Shoot Zone",
+      "minWaypointRelativePos": 5.800000000000001,
+      "maxWaypointRelativePos": 6.050000000000001,
       "constraints": {
-        "maxVelocity": 3.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 360.0
-      }
-    },
-    {
-      "name": "Conditional Collect",
-      "minWaypointRelativePos": 3.8500000000000005,
-      "maxWaypointRelativePos": 5.1499999999999995,
-      "constraints": {
-        "maxVelocity": 5.0,
-        "maxAcceleration": 4.0,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 360.0
       }
@@ -161,42 +171,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "Disable LL",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "DisableLLPoseUpdate"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Enable LL",
-      "waypointRelativePos": 2.4000000000000004,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "EnableLLPoseUpdate"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "Poop Prep",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "parallel",
         "data": {
@@ -213,7 +189,7 @@
     },
     {
       "name": "Poop Start",
-      "waypointRelativePos": 1.35,
+      "waypointRelativePos": 1.2,
       "command": {
         "type": "parallel",
         "data": {
@@ -230,7 +206,7 @@
     },
     {
       "name": "Poop Stop",
-      "waypointRelativePos": 3.5,
+      "waypointRelativePos": 2.65,
       "command": {
         "type": "parallel",
         "data": {
@@ -246,8 +222,8 @@
       }
     },
     {
-      "name": "Start Poop Monitor",
-      "waypointRelativePos": 2.6,
+      "name": "Collect Note",
+      "waypointRelativePos": 3.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -255,7 +231,7 @@
             {
               "type": "named",
               "data": {
-                "name": "StartPoopMonitor"
+                "name": "IntakeNoteAuto"
               }
             }
           ]
@@ -263,8 +239,8 @@
       }
     },
     {
-      "name": "Stop Poop Monitor",
-      "waypointRelativePos": 3.8,
+      "name": "Shoot Note",
+      "waypointRelativePos": 5.8500000000000005,
       "command": {
         "type": "parallel",
         "data": {
@@ -272,7 +248,7 @@
             {
               "type": "named",
               "data": {
-                "name": "StopPoopMonitor"
+                "name": "InstantShoot"
               }
             }
           ]
@@ -280,8 +256,8 @@
       }
     },
     {
-      "name": "Start Watching For Note",
-      "waypointRelativePos": 3.7,
+      "name": "Shoot Prep",
+      "waypointRelativePos": 4.949999999999999,
       "command": {
         "type": "parallel",
         "data": {
@@ -289,7 +265,7 @@
             {
               "type": "named",
               "data": {
-                "name": "EnableWatchForNote"
+                "name": "ShootPrep"
               }
             }
           ]
@@ -297,8 +273,8 @@
       }
     },
     {
-      "name": "Stop Watching For Note",
-      "waypointRelativePos": 5.25,
+      "name": "Enable LL Update",
+      "waypointRelativePos": 1.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -306,7 +282,7 @@
             {
               "type": "named",
               "data": {
-                "name": "DisableWatchForNote"
+                "name": "EnableLLPoseUpdate"
               }
             }
           ]
@@ -316,17 +292,17 @@
   ],
   "globalConstraints": {
     "maxVelocity": 5.0,
-    "maxAcceleration": 4.25,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 36.38469900375056,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Madtown",
+  "folder": "Middle Split 3",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -69,6 +69,7 @@ import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtSpeaker;
 import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
+import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.AmpSensors;
@@ -258,7 +259,7 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                     new WaitUntilCommand(
                         () ->
-                            DRIVER_CONTROLLER.getHID().getLeftTriggerAxis() > 0.95
+                            DRIVER_CONTROLLER.getHID().getLeftTriggerAxis() > 0.90
                                 && Util.isPointedAtLob(DRIVETRAIN)),
                     new LobNote(SHOOTER, WRIST, ELEVATOR, lobRPM)),
                 new PointAtSpeaker(
@@ -554,7 +555,8 @@ public class RobotContainer {
     // addAuto("AGKC-Amp-1-2Red");
     // addAuto("GKC-Amp-Skip-1-2");
     addAuto("Middle Race Cleanup");
-    addAuto("Middle Split"); // TODO make this fast enough, maybe high rpm collect
+    addAuto("Middle Split 2");
+    addAuto("Middle Split 3");
     // addAuto("Source Race 5-4");
     // addAuto("lame");
     // AUTO_CHOOSER.addOption(
@@ -584,7 +586,7 @@ public class RobotContainer {
     WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
     // FIXME default candle execute loop overruns
-    // CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
+    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
   }
 
   public void configureNamedCommands() {

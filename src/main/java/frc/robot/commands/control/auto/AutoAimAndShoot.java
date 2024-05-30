@@ -27,7 +27,7 @@ public class AutoAimAndShoot extends SequentialCommandGroup {
                       final boolean isPointed = Util.isPointedAtSpeaker(drivetrain);
                       final boolean isRPM = shooter.isShooterAtSetpoint();
                       System.out.println("angle: " + isPointed + ", speed: " + isRPM);
-                      return isPointed && isRPM;
+                      return isPointed;
                     })
                 .withTimeout(0.5),
             new PointAtSpeaker(drivetrain, () -> 0.0, () -> 0.0, () -> 0.0)),

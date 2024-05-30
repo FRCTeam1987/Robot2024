@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.859987605018093,
-        "y": 6.291168699962351
+        "x": 2.5629101850610545,
+        "y": 5.53
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.128617400010086,
-        "y": 6.233018579164377
+        "x": 1.8203562578629509,
+        "y": 5.4245786302371615
       },
       "isLocked": false,
-      "linkedName": "Middle Split A End"
+      "linkedName": "Middle Split C End"
     },
     {
       "anchor": {
-        "x": 2.5629101850610545,
-        "y": 6.878943773229128
+        "x": 2.8150704124012744,
+        "y": 4.89
       },
       "prevControl": {
-        "x": 1.6598529318842452,
-        "y": 6.434959828250936
+        "x": 1.9697268013382423,
+        "y": 4.9788491937775055
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Middle Split B End"
+      "linkedName": "Middle Split D End"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Collect Note",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -57,14 +57,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 25.0,
+    "rotation": -10.492914756798106,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Middle Split",
+  "folder": "Middle Split 3",
   "previewStartingState": {
-    "rotation": 0,
-    "velocity": 2.0
+    "rotation": 0.0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }

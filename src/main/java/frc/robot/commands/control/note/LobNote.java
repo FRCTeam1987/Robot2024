@@ -21,7 +21,7 @@ import frc.robot.util.Util;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class LobNote extends SequentialCommandGroup {
-  private final Debouncer lineBreakDebouncer;
+  private Debouncer lineBreakDebouncer;
 
   private final double DEBOUNCE_TIME = 0.08;
 
@@ -30,15 +30,14 @@ public class LobNote extends SequentialCommandGroup {
 
   /** Creates a new LobNote. */
   public LobNote(Shooter SHOOTER, Wrist WRIST, Elevator ELEVATOR, GenericEntry LOB_RPM) {
-
-    lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
     addRequirements(SHOOTER, WRIST, ELEVATOR);
     addCommands(
         new InstantCommand(
             () -> {
+              lineBreakDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
               double dist = Util.getDistanceToAllianceLob(RobotContainer.get().getPose());
               WRIST.setDegrees(35.0);
-              if (dist > 7.5) {
+              if (dist > 5.5) {
                 SHOOTER.setRPMShoot(Util.getShooterSpeedFromDistanceForLob(dist));
               } else {
                 SHOOTER.setRPMShoot(1800.0);

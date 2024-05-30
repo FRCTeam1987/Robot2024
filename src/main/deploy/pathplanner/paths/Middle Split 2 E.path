@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5629101850610545,
-        "y": 6.878943773229128
+        "x": 2.7,
+        "y": 6.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4138435203825879,
-        "y": 5.914762358699319
+        "x": 1.9500000000000002,
+        "y": 6.1
       },
       "isLocked": false,
-      "linkedName": "Middle Split B End"
+      "linkedName": "Middle Split 2 D End"
     },
     {
       "anchor": {
-        "x": 2.5629101850610545,
-        "y": 5.53
+        "x": 2.583178836076225,
+        "y": 6.859106235587274
       },
       "prevControl": {
-        "x": 1.3129101850610545,
-        "y": 5.53
+        "x": 1.9272356673353055,
+        "y": 6.4954600347517335
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Middle Split C End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -57,14 +57,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 29.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Middle Split",
+  "folder": "Middle Split 2",
   "previewStartingState": {
-    "rotation": 24.0,
-    "velocity": 0.0
+    "rotation": 14.0,
+    "velocity": 0
   },
   "useDefaultConstraints": true
 }

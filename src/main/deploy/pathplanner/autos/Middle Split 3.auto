@@ -22,55 +22,55 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Middle Split A"
+                        "pathName": "Middle Split 3 A"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Middle Split B"
+                        "pathName": "Middle Split 3 B"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AutoAimAndShoot"
+                        "name": "InstantShoot"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Middle Split C"
+                        "pathName": "Middle Split 3 C"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AutoAimAndShoot"
+                        "name": "InstantShoot"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Middle Split D"
+                        "pathName": "Middle Split 3 D"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AutoAimAndShoot"
+                        "name": "InstantShoot"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Middle Split E"
+                        "pathName": "Middle Split 3 E"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AutoAimAndShoot"
+                        "name": "InstantShoot"
                       }
                     }
                   ]

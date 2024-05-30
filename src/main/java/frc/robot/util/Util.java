@@ -293,6 +293,6 @@ public class Util {
     return Util.isWithinTolerance(
         current.getRotation().getDegrees(),
         Util.getRotationToAllianceLob(current).getDegrees(),
-        1.5);
+        3.0);
   }
 }

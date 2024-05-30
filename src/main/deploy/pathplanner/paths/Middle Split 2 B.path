@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8150704124012744,
-        "y": 4.87
+        "x": 2.859987605018093,
+        "y": 4.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.771212558900374,
-        "y": 4.721802110630542
+        "x": 1.8685168815150186,
+        "y": 4.85
       },
-      "isLocked": false,
-      "linkedName": "Middle Split D End"
+      "isLocked": true,
+      "linkedName": "Middle Split 2 A End"
     },
     {
       "anchor": {
-        "x": 2.549151306467538,
-        "y": 4.2289072542397355
+        "x": 2.574434465922116,
+        "y": 4.251375729406378
       },
       "prevControl": {
-        "x": 1.6114035133442615,
-        "y": 4.576224222573308
+        "x": 1.6834279417337483,
+        "y": 4.705366229145925
       },
       "nextControl": null,
-      "isLocked": false,
-      "linkedName": "Middle Split E End"
+      "isLocked": true,
+      "linkedName": "Middle Split 2 B End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Collect Note",
-      "waypointRelativePos": 0.25,
+      "waypointRelativePos": 0.3,
       "command": {
         "type": "parallel",
         "data": {
@@ -56,15 +62,15 @@
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -18.364257003668264,
+    "velocity": 0.0,
+    "rotation": -27.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Middle Split",
+  "folder": "Middle Split 2",
   "previewStartingState": {
-    "rotation": -5.550000000000011,
-    "velocity": 0.0
+    "rotation": 0,
+    "velocity": 2.0
   },
   "useDefaultConstraints": true
 }
