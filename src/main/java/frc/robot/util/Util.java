@@ -121,12 +121,13 @@ public class Util {
   //     BLUE_AUTO_SOURCE_SHOOTING_POSE.getRotation().plus(Rotation2d.fromDegrees(180.0)));
   //     // new Pose2d(13.04, 3.22, Rotation2d.fromDegrees(-150));
 
-
-  public static final Pose2d BLUE_AUTO_SOURCE_CLOSE_SHOT = new Pose2d(3.7, 3.15, Rotation2d.fromDegrees(-30));
-  public static final Pose2d RED_AUTO_SOURCE_CLOSE_SHOT = new Pose2d(
-      16.56 - BLUE_AUTO_SOURCE_CLOSE_SHOT.getX(),
-      BLUE_AUTO_SOURCE_CLOSE_SHOT.getY(),
-      Rotation2d.fromDegrees(-150));
+  public static final Pose2d BLUE_AUTO_SOURCE_CLOSE_SHOT =
+      new Pose2d(3.7, 3.15, Rotation2d.fromDegrees(-30));
+  public static final Pose2d RED_AUTO_SOURCE_CLOSE_SHOT =
+      new Pose2d(
+          16.56 - BLUE_AUTO_SOURCE_CLOSE_SHOT.getX(),
+          BLUE_AUTO_SOURCE_CLOSE_SHOT.getY(),
+          Rotation2d.fromDegrees(-150));
 
   public static Command PathFindToAutoSourceCloseShot() {
     return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))

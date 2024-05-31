@@ -5,9 +5,6 @@
 package frc.robot.commands.control.auto;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -33,7 +30,7 @@ public class RotateUntilNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final double velocityScale = RobotContainer.INTAKE_PHOTON.hasTargets() ? 0.5 : 1.0;
+    final double velocityScale = RobotContainer.INTAKE_PHOTON.hasTargets() ? 0.5 : 1.5;
     RobotContainer.DRIVETRAIN.setControl(
         swerveRequest.withSpeeds(
             new ChassisSpeeds(0.0, 0.0, (Math.PI * velocityScale) * shouldTurnClockwise)));
@@ -48,6 +45,7 @@ public class RotateUntilNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.INTAKE_PHOTON.hasTargets() && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 7.5;
+    return RobotContainer.INTAKE_PHOTON.hasTargets()
+        && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 7.5;
   }
 }

@@ -31,13 +31,18 @@ public class Madtown extends ParallelCommandGroup {
             new ParallelRaceGroup(
                 AutoBuilder.buildAuto("Madtown Initial"),
                 new WaitUntilCommand(
-                    () -> { 
-                      final boolean shouldInterrupt = SHOULD_WATCH_FOR_NOTE && RobotContainer.INTAKE_PHOTON.hasTargets() && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 10.0;
+                    () -> {
+                      final boolean shouldInterrupt =
+                          SHOULD_WATCH_FOR_NOTE
+                              && RobotContainer.INTAKE_PHOTON.hasTargets()
+                              && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 20.0;
                       INITIAL_WAS_INTERRUPTED = shouldInterrupt;
                       return shouldInterrupt;
                     })),
             new ConditionalCommand(
-                new AutoCollectNote(2.75)  // TODO if this fails near note 4, then try for note 5, probably won't have time in 15 seconds
+                new AutoCollectNote(
+                        2.75) // TODO if this fails near note 4, then try for note 5, probably won't
+                    // have time in 15 seconds
                     .withTimeout(1.0)
                     .andThen(Util.PathFindToAutoSourceCloseShot())
                     .andThen(
@@ -48,10 +53,13 @@ public class Madtown extends ParallelCommandGroup {
             new AutoCollectNote(2.5),
             Util.PathFindToAutoMadtownShot(),
             new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER),
+            // new InstantShoot(RobotContainer.SHOOTER),
             new RotateUntilNote(false),
             new AutoCollectNote(2.75),
             Util.PathFindToAutoMadtownShot(),
-            new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER)),
+            new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER)
+            // new InstantShoot(RobotContainer.SHOOTER)
+            ),
         new AutoAimLockWrist(RobotContainer.WRIST, RobotContainer::getAutoState),
         new AutoIdleShooter(RobotContainer.SHOOTER, RobotContainer::getAutoState));
   }
