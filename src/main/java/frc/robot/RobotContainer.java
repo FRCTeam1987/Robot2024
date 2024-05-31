@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -360,6 +361,20 @@ public class RobotContainer {
             new ParallelDeadlineGroup(
                 new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
                 new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
+
+    CO_DRIVER_CONTROLLER
+        .leftStick()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (CommandSwerveDrivetrain.getAlliance() == Alliance.Blue) {
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(1.37, 5.52, Rotation2d.fromDegrees(0.0)));
+                  } else {
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(15.2, 5.5, Rotation2d.fromDegrees(-180)));
+                  }
+                }));
   }
 
   private void configureDrivetrain() {
