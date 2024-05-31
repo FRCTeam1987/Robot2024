@@ -306,13 +306,10 @@ public class RobotContainer {
   }
 
   private void configureCoDriverController() {
-    CO_DRIVER_CONTROLLER
-        .back()
-        .onTrue(
-            Util.pathfindToPose(Util.getAllianceAmp())
-                .andThen(
-                    new PrepRevAmp(ELEVATOR, WRIST)
-                        .andThen(new InstantCommand(() -> isAmpPrepped = true))));
+
+    // CO_DRIVER_CONTROLLER
+    //     .leftBumper()
+    //     .onTrue(Util.pathfindToPose(Util.findNearestPoseToTrapClimbs(getPose())));
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
     CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
 
