@@ -17,47 +17,47 @@
     {
       "anchor": {
         "x": 2.9,
-        "y": 6.23
+        "y": 6.25
       },
       "prevControl": {
         "x": 2.05,
-        "y": 6.23
+        "y": 6.25
       },
       "nextControl": {
-        "x": 5.9,
-        "y": 6.23
+        "x": 3.9,
+        "y": 6.25
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.05,
-        "y": 7.33
+        "x": 5.836521079212586,
+        "y": 6.25
       },
       "prevControl": {
-        "x": 8.050493794188853,
-        "y": 8.179999856568987
+        "x": 4.868260539606293,
+        "y": 6.340625
       },
       "nextControl": {
-        "x": 8.049709532830086,
-        "y": 6.830000084371184
+        "x": 6.804781618818879,
+        "y": 6.159375
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 5.95
+        "x": 8.023042158425174,
+        "y": 5.6
       },
       "prevControl": {
-        "x": 8.0,
-        "y": 6.45
+        "x": 8.023042158425174,
+        "y": 5.85
       },
       "nextControl": {
-        "x": 8.0,
-        "y": 5.05
+        "x": 8.023042158425174,
+        "y": 5.35
       },
       "isLocked": false,
       "linkedName": null
@@ -115,14 +115,9 @@
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 2.0,
-      "rotationDegrees": -8.841524793534786,
-      "rotateFast": false
-    },
-    {
       "waypointRelativePos": 3.0,
-      "rotationDegrees": -60.0,
-      "rotateFast": true
+      "rotationDegrees": 0.0,
+      "rotateFast": false
     },
     {
       "waypointRelativePos": 5.0,
@@ -132,6 +127,11 @@
     {
       "waypointRelativePos": 4.0,
       "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
@@ -149,8 +149,8 @@
     },
     {
       "name": "Slow Poop",
-      "minWaypointRelativePos": 1.9,
-      "maxWaypointRelativePos": 2.8499999999999996,
+      "minWaypointRelativePos": 2.8,
+      "maxWaypointRelativePos": 3.45,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 4.25,
@@ -196,7 +196,7 @@
     },
     {
       "name": "Poop Stop",
-      "waypointRelativePos": 2.55,
+      "waypointRelativePos": 1.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -213,7 +213,7 @@
     },
     {
       "name": "Collect",
-      "waypointRelativePos": 2.65,
+      "waypointRelativePos": 2.45,
       "command": {
         "type": "parallel",
         "data": {
@@ -247,7 +247,7 @@
     },
     {
       "name": "Shoot Prep",
-      "waypointRelativePos": 3.5,
+      "waypointRelativePos": 3.75,
       "command": {
         "type": "parallel",
         "data": {
@@ -264,7 +264,7 @@
     },
     {
       "name": "Enable LL Update",
-      "waypointRelativePos": 1.65,
+      "waypointRelativePos": 1.85,
       "command": {
         "type": "parallel",
         "data": {
