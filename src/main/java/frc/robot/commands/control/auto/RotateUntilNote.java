@@ -33,7 +33,7 @@ public class RotateUntilNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final double velocityScale = RobotContainer.INTAKE_PHOTON.hasTargets() ? 0.5 : 1.0;
+    final double velocityScale = RobotContainer.INTAKE_PHOTON.hasTargets() ? 0.5 : 1.5;
     RobotContainer.DRIVETRAIN.setControl(
         swerveRequest.withSpeeds(
             new ChassisSpeeds(0.0, 0.0, (Math.PI * velocityScale) * shouldTurnClockwise)));

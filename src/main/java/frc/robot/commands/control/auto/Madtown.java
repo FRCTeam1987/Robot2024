@@ -32,7 +32,7 @@ public class Madtown extends ParallelCommandGroup {
                 AutoBuilder.buildAuto("Madtown Initial"),
                 new WaitUntilCommand(
                     () -> { 
-                      final boolean shouldInterrupt = SHOULD_WATCH_FOR_NOTE && RobotContainer.INTAKE_PHOTON.hasTargets() && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 10.0;
+                      final boolean shouldInterrupt = SHOULD_WATCH_FOR_NOTE && RobotContainer.INTAKE_PHOTON.hasTargets() && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 20.0;
                       INITIAL_WAS_INTERRUPTED = shouldInterrupt;
                       return shouldInterrupt;
                     })),
@@ -48,10 +48,13 @@ public class Madtown extends ParallelCommandGroup {
             new AutoCollectNote(2.5),
             Util.PathFindToAutoMadtownShot(),
             new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER),
+            // new InstantShoot(RobotContainer.SHOOTER),
             new RotateUntilNote(false),
             new AutoCollectNote(2.75),
             Util.PathFindToAutoMadtownShot(),
-            new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER)),
+            new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER)
+            // new InstantShoot(RobotContainer.SHOOTER)
+            ),
         new AutoAimLockWrist(RobotContainer.WRIST, RobotContainer::getAutoState),
         new AutoIdleShooter(RobotContainer.SHOOTER, RobotContainer::getAutoState));
   }
