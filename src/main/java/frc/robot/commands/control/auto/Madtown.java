@@ -31,13 +31,18 @@ public class Madtown extends ParallelCommandGroup {
             new ParallelRaceGroup(
                 AutoBuilder.buildAuto("Madtown Initial"),
                 new WaitUntilCommand(
-                    () -> { 
-                      final boolean shouldInterrupt = SHOULD_WATCH_FOR_NOTE && RobotContainer.INTAKE_PHOTON.hasTargets() && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 20.0;
+                    () -> {
+                      final boolean shouldInterrupt =
+                          SHOULD_WATCH_FOR_NOTE
+                              && RobotContainer.INTAKE_PHOTON.hasTargets()
+                              && Math.abs(RobotContainer.INTAKE_PHOTON.getYawVal()) < 20.0;
                       INITIAL_WAS_INTERRUPTED = shouldInterrupt;
                       return shouldInterrupt;
                     })),
             new ConditionalCommand(
-                new AutoCollectNote(2.75)  // TODO if this fails near note 4, then try for note 5, probably won't have time in 15 seconds
+                new AutoCollectNote(
+                        2.75) // TODO if this fails near note 4, then try for note 5, probably won't
+                    // have time in 15 seconds
                     .withTimeout(1.0)
                     .andThen(Util.PathFindToAutoSourceCloseShot())
                     .andThen(
