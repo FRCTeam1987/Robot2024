@@ -500,6 +500,13 @@ public class RobotContainer {
                     DRIVETRAIN.seedFieldRelative(
                         new Pose2d(15.2, 5.5, Rotation2d.fromDegrees(-180))))
             .ignoringDisable(true));
+    COMMANDS_TAB.add(
+        "SetPoseBlueSubStart",
+        new InstantCommand(
+                () ->
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(1.37, 5.52, Rotation2d.fromDegrees(0.0))))
+            .ignoringDisable(true));
 
     AUTO_CHOOSER.addOption(
         "SYSID-QUAS-F", DRIVETRAIN.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
