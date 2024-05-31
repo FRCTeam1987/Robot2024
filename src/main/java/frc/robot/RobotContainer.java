@@ -60,6 +60,7 @@ import frc.robot.commands.control.note.IntakeNoteSequence;
 import frc.robot.commands.control.note.IntakeNoteSequenceAuto;
 import frc.robot.commands.control.note.LobNote;
 import frc.robot.commands.control.note.PoopNote;
+import frc.robot.commands.control.note.PoopTest;
 import frc.robot.commands.control.note.ShootNote;
 import frc.robot.commands.control.note.ShootNoteAimbotFixed;
 import frc.robot.commands.control.note.ShootNoteSequence;
@@ -165,6 +166,7 @@ public class RobotContainer {
     configureDriverController();
     configureCoDriverController();
     configureDefaultCommands();
+     //   COMMANDS_TAB.add("PoopTest", new PoopTest(SHOOTER, INTAKE, WRIST));
   }
 
   private void configureDriverController() {
@@ -378,7 +380,6 @@ public class RobotContainer {
   }
 
   private void configureDrivetrain() {
-
     DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
         new SwerveCommand(
             DRIVETRAIN,
@@ -487,6 +488,7 @@ public class RobotContainer {
                 })
             .ignoringDisable(true));
     COMMANDS_TAB.add("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    COMMANDS_TAB.add("PoopTest", new PoopTest(SHOOTER, INTAKE, WRIST));
     COMMANDS_TAB.add(
         "Brake Swerve",
         new InstantCommand(

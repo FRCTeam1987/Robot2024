@@ -64,8 +64,8 @@ public class Util {
             });
     MANUAL_RED_AMP = new Pose2d(14.7, 7.42, new Rotation2d(Math.toRadians(90.0)));
     MANUAL_BLUE_AMP = new Pose2d(1.84, 7.42, new Rotation2d(Math.toRadians(90.0)));
-    MANUAL_RED_LOB = new Pose2d(14.7, 6.5, new Rotation2d(Math.toRadians(90.0)));
-    MANUAL_BLUE_LOB = new Pose2d(1.84, 6.5, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_RED_LOB = new Pose2d(14.7, 6.15, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_BLUE_LOB = new Pose2d(1.84, 6.15, new Rotation2d(Math.toRadians(90.0)));
     TRAP_TAGS = List.of();
     DriverStation.getAlliance().ifPresent(ouralliance -> alliance = ouralliance);
   }

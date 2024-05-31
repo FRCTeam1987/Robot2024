@@ -63,13 +63,13 @@ public class Source_5_4 extends ParallelCommandGroup {
                 () -> RobotContainer.POOP_MONITOR.hasPooped() && RobotContainer.SHOOTER.hasNote()),
             new ParallelDeadlineGroup(
                     new WaitUntilCommand(() -> RobotContainer.SHOOTER.hasNote()),
-                    AutoBuilder.buildAuto("Source 5-4 Preload Deadline"),
-                    new IntakeNoteSequenceAuto(
-                        RobotContainer.SHOOTER,
-                        RobotContainer.get().INTAKE,
-                        RobotContainer.get().ELEVATOR))
-                .andThen(Util.PathFindToAutoSourceShot())
-                .andThen(new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER))),
+                    AutoBuilder.buildAuto("Source 5-4 Preload"))),
+                    // new IntakeNoteSequenceAuto(
+                    //     RobotContainer.SHOOTER,
+                    //     RobotContainer.get().INTAKE,
+                    //     RobotContainer.get().ELEVATOR))),
+                // .andThen(Util.PathFindToAutoSourceShot())
+                // .andThen(new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER))),
         new AutoAimLockWrist(RobotContainer.WRIST, RobotContainer::getAutoState),
         new AutoIdleShooter(RobotContainer.SHOOTER, RobotContainer::getAutoState));
   }

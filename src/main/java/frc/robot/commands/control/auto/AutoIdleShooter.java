@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class AutoIdleShooter extends Command {
 
   private static final double VALID_SHOT_DEBOUNCE_TIME = 0.2;
-  private static final double POOP_RPM = 550;
+  private static final double POOP_RPM = 750;
 
   /** Creates a new IdleShooter. */
   private final Shooter shooter;

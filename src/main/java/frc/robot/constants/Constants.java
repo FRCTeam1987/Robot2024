@@ -64,7 +64,7 @@ public class Constants {
     public static final double TRAP_WRIST_DEGREES = 119.0;
     public static final double TRAP_WRIST_DEGREES_MIDWAY = 85.0;
     public static final double TRAP_RPM_SPEED =
-        225; // 375; // suggesting but not doing 350 at GKC // 425, 475 worked but touched the top
+        375; //225
   }
 
   public static class Wrist {
@@ -99,7 +99,7 @@ public class Constants {
   }
 
   public static class Shooter {
-    public static final double FEEDER_FEEDFWD_VOLTS = 4; // 6 // 4
+    public static final double FEEDER_FEEDFWD_VOLTS = 4.25; //4
     public static final double FEEDER_FEEDFWD_VOLTS_AGRESSIVE = 6; // 6 // 4
     public static final double FEEDER_SHOOT_VOLTS = 8; // 4
     public static final double FEEDER_RETRACT_VOLTS = -2;

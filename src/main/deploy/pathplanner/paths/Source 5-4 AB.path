@@ -33,15 +33,15 @@
     {
       "anchor": {
         "x": 8.05,
-        "y": 0.9
+        "y": 0.8
       },
       "prevControl": {
         "x": 8.042929903394992,
-        "y": 0.4000499887648808
+        "y": 0.3000499887648808
       },
       "nextControl": {
         "x": 8.058188401784435,
-        "y": 1.479029084443452
+        "y": 1.3790290844434518
       },
       "isLocked": false,
       "linkedName": null
@@ -60,7 +60,18 @@
       "linkedName": "Source 5-4 B End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 8.0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1.35,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "Poop Zone",
