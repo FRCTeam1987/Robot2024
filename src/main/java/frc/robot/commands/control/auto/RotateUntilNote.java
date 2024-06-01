@@ -4,6 +4,8 @@
 
 package frc.robot.commands.control.auto;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,18 +16,22 @@ public class RotateUntilNote extends Command {
   private static final SwerveRequest.ApplyChassisSpeeds swerveRequest =
       new SwerveRequest.ApplyChassisSpeeds();
 
-  private final double shouldTurnClockwise;
+  private double shouldTurnClockwise;
+  private BooleanSupplier isClockwise;
 
   /** Creates a new RotateInPlace. */
-  public RotateUntilNote(final boolean isClockwise) {
+  public RotateUntilNote(final BooleanSupplier isClockwise) {
+    this.isClockwise = isClockwise;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.DRIVETRAIN);
-    shouldTurnClockwise = isClockwise ? -1.0 : 1.0;
+
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+        shouldTurnClockwise = isClockwise.getAsBoolean() ? -1.0 : 1.0;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

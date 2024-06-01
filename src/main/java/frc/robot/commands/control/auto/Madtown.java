@@ -4,7 +4,11 @@
 
 package frc.robot.commands.control.auto;
 
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -12,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -26,6 +31,7 @@ public class Madtown extends ParallelCommandGroup {
   public Madtown() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    BooleanSupplier isBlue = () -> CommandSwerveDrivetrain.getAlliance() == Alliance.Blue;
     addCommands(
         new SequentialCommandGroup(
             new ParallelRaceGroup(
@@ -49,12 +55,12 @@ public class Madtown extends ParallelCommandGroup {
                         new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER)),
                 new InstantCommand(),
                 () -> INITIAL_WAS_INTERRUPTED),
-            new RotateUntilNote(true),
+            new RotateUntilNote(isBlue),
             new AutoCollectNote(2.5),
             Util.PathFindToAutoMadtownShot(),
             new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER),
             // new InstantShoot(RobotContainer.SHOOTER),
-            new RotateUntilNote(false),
+            new RotateUntilNote(isBlue),
             new AutoCollectNote(2.75),
             Util.PathFindToAutoMadtownShot(),
             new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER)

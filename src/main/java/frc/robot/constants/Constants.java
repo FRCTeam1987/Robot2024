@@ -63,8 +63,7 @@ public class Constants {
     public static final double TRAP_ELEVATOR_HEIGHT_MIDWAY = 24.0;
     public static final double TRAP_WRIST_DEGREES = 119.0;
     public static final double TRAP_WRIST_DEGREES_MIDWAY = 85.0;
-    public static final double TRAP_RPM_SPEED =
-        375; //225
+    public static final double TRAP_RPM_SPEED = 375; // 225
   }
 
   public static class Wrist {
@@ -99,7 +98,7 @@ public class Constants {
   }
 
   public static class Shooter {
-    public static final double FEEDER_FEEDFWD_VOLTS = 4.25; //4
+    public static final double FEEDER_FEEDFWD_VOLTS = 4.25; // 4
     public static final double FEEDER_FEEDFWD_VOLTS_AGRESSIVE = 6; // 6 // 4
     public static final double FEEDER_SHOOT_VOLTS = 8; // 4
     public static final double FEEDER_RETRACT_VOLTS = -2;
@@ -219,12 +218,12 @@ public class Constants {
     DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.put(
         new InterpolatingDouble(6.15), new InterpolatingDouble(21.45));
 
-    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(10.28), new InterpolatingDouble(3000.0));
-    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(9.5), new InterpolatingDouble(2750.0));
-    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.6), new InterpolatingDouble(2700.0));
-    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.3), new InterpolatingDouble(2620.0));
-    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.0), new InterpolatingDouble(2580.0));
-    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(7.88), new InterpolatingDouble(2440.0));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(10.28), new InterpolatingDouble(3000.0 * 1.15));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(9.5), new InterpolatingDouble(2750.0 * 1.15));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.6), new InterpolatingDouble(2700.0 * 1.15));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.3), new InterpolatingDouble(2620.0 * 1.15));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(8.0), new InterpolatingDouble(2580.0 * 1.15));
+    DISTANCE_TO_LOB_RPM.put(new InterpolatingDouble(7.88), new InterpolatingDouble(2440.0 * 1.15));
   }
 
   public static class Vision {

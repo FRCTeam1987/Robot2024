@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.control.note.IntakeNoteSequenceAuto;
-import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -62,14 +60,14 @@ public class Source_5_4 extends ParallelCommandGroup {
                             && !RobotContainer.SHOOTER.hasNote()),
                 () -> RobotContainer.POOP_MONITOR.hasPooped() && RobotContainer.SHOOTER.hasNote()),
             new ParallelDeadlineGroup(
-                    new WaitUntilCommand(() -> RobotContainer.SHOOTER.hasNote()),
-                    AutoBuilder.buildAuto("Source 5-4 Preload"))),
-                    // new IntakeNoteSequenceAuto(
-                    //     RobotContainer.SHOOTER,
-                    //     RobotContainer.get().INTAKE,
-                    //     RobotContainer.get().ELEVATOR))),
-                // .andThen(Util.PathFindToAutoSourceShot())
-                // .andThen(new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER))),
+                new WaitUntilCommand(() -> RobotContainer.SHOOTER.hasNote()),
+                AutoBuilder.buildAuto("Source 5-4 Preload"))),
+        // new IntakeNoteSequenceAuto(
+        //     RobotContainer.SHOOTER,
+        //     RobotContainer.get().INTAKE,
+        //     RobotContainer.get().ELEVATOR))),
+        // .andThen(Util.PathFindToAutoSourceShot())
+        // .andThen(new AutoAimAndShoot(RobotContainer.DRIVETRAIN, RobotContainer.SHOOTER))),
         new AutoAimLockWrist(RobotContainer.WRIST, RobotContainer::getAutoState),
         new AutoIdleShooter(RobotContainer.SHOOTER, RobotContainer::getAutoState));
   }

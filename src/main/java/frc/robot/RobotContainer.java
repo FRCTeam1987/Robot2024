@@ -166,11 +166,12 @@ public class RobotContainer {
     configureDriverController();
     configureCoDriverController();
     configureDefaultCommands();
-     //   COMMANDS_TAB.add("PoopTest", new PoopTest(SHOOTER, INTAKE, WRIST));
+    //   COMMANDS_TAB.add("PoopTest", new PoopTest(SHOOTER, INTAKE, WRIST));
   }
 
   private void configureDriverController() {
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
+    DRIVER_CONTROLLER.a().onTrue(                    new LobNote(SHOOTER, WRIST, ELEVATOR, lobRPM));
 
     // DRIVER_CONTROLLER
     //     .y()

@@ -7,7 +7,6 @@ package frc.robot.commands.control.note;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.control.auto.AutoState;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -21,22 +20,21 @@ public class PoopTest extends SequentialCommandGroup {
   public PoopTest(Shooter shooter, Intake intake, Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    double POOP_RPM = 700; //550s (CHANGE IN AUTOIDLESHOOTERTOO!!)
+    double POOP_RPM = 700; // 550s (CHANGE IN AUTOIDLESHOOTERTOO!!)
     addRequirements(shooter, intake, wrist);
     addCommands(
         new InstantCommand(
-            () -> { 
+            () -> {
               intake.setVolts(-8.0);
               shooter.stopFeeder();
               shooter.setRPMShootNoSpin(POOP_RPM);
-            })
-            ,
-            new WaitCommand(1),
-            new InstantCommand(() -> {
-                      shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
-        shooter.setRPMShootNoSpin(POOP_RPM);
-        wrist.setDegrees(22);
-            }
-    ));
+            }),
+        new WaitCommand(1),
+        new InstantCommand(
+            () -> {
+              shooter.setFeederVoltage(Constants.Shooter.FEEDER_FEEDFWD_VOLTS);
+              shooter.setRPMShootNoSpin(POOP_RPM);
+              wrist.setDegrees(22);
+            }));
   }
 }

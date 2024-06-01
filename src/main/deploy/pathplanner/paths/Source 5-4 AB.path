@@ -60,18 +60,7 @@
       "linkedName": "Source 5-4 B End"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 2.0,
-      "rotationDegrees": 8.0,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 1.35,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Poop Zone",
