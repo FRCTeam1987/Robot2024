@@ -171,7 +171,7 @@ public class RobotContainer {
 
   private void configureDriverController() {
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
-    DRIVER_CONTROLLER.a().onTrue(                    new LobNote(SHOOTER, WRIST, ELEVATOR, lobRPM));
+    DRIVER_CONTROLLER.a().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR, lobRPM));
 
     // DRIVER_CONTROLLER
     //     .y()
@@ -611,7 +611,7 @@ public class RobotContainer {
     WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
     // FIXME default candle execute loop overruns
-    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
+    // CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
   }
 
   public void configureNamedCommands() {
