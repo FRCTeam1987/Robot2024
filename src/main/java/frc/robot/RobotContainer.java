@@ -71,7 +71,6 @@ import frc.robot.commands.movement.DriveToNoteAuto;
 import frc.robot.commands.movement.PointAtSpeaker;
 import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
-import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.AmpSensors;
