@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.39,
+      "y": 1.57
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source_5-4_a"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source_5-4_b"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoCollectNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathFindToSourceShot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source_5-4_c"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoCollectNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathFindToSourceShot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAimAndShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "IRI",
+  "choreoAuto": false
+}

@@ -17,7 +17,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -29,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.control.AimLockWrist;
@@ -45,13 +48,19 @@ import frc.robot.commands.control.ShootTall;
 import frc.robot.commands.control.StopAll;
 import frc.robot.commands.control.amp.FireRevAmp;
 import frc.robot.commands.control.amp.PrepRevAmp;
+import frc.robot.commands.control.auto.AutoAimAndShoot;
 import frc.robot.commands.control.auto.AutoAimLockWrist;
+import frc.robot.commands.control.auto.AutoCollectNote;
 import frc.robot.commands.control.auto.AutoIdleShooter;
+import frc.robot.commands.control.auto.AutoState;
 import frc.robot.commands.control.auto.InstantShoot;
+import frc.robot.commands.control.auto.Madtown;
+import frc.robot.commands.control.auto.Source_5_4;
 import frc.robot.commands.control.note.IntakeNoteSequence;
 import frc.robot.commands.control.note.IntakeNoteSequenceAuto;
 import frc.robot.commands.control.note.LobNote;
 import frc.robot.commands.control.note.PoopNote;
+import frc.robot.commands.control.note.PoopTest;
 import frc.robot.commands.control.note.ShootNote;
 import frc.robot.commands.control.note.ShootNoteAimbotFixed;
 import frc.robot.commands.control.note.ShootNoteSequence;
@@ -59,10 +68,9 @@ import frc.robot.commands.control.note.SpitNote;
 import frc.robot.commands.movement.CollectNoteAuto;
 import frc.robot.commands.movement.DriveToNote;
 import frc.robot.commands.movement.DriveToNoteAuto;
-import frc.robot.commands.movement.PointAtAprilTag;
+import frc.robot.commands.movement.PointAtSpeaker;
 import frc.robot.commands.movement.SwerveCommand;
 import frc.robot.commands.qol.AsyncRumble;
-import frc.robot.commands.qol.DefaultCANdle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.AmpSensors;
@@ -70,30 +78,34 @@ import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PoopMonitor;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
-import frc.robot.util.Limelight;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
 
 public class RobotContainer {
   private final SendableChooser<Command> AUTO_CHOOSER = new SendableChooser<>();
+  public GenericEntry lobRPM = Shuffleboard.getTab("MAIN").add("LobRPM", 3000.0).getEntry();
   public final ShuffleboardTab COMMANDS_TAB = Shuffleboard.getTab("COMMANDS");
   public final ShuffleboardTab MATCH_TAB = Shuffleboard.getTab("MATCH");
   public final ShuffleboardTab PHOTON_TAB = Shuffleboard.getTab("PHOTON");
   public final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("SHOOTER");
   public final ShuffleboardTab PROTO_TAB = Shuffleboard.getTab("PROTO");
-  public final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
-  public final CommandSwerveDrivetrain DRIVETRAIN = DriveConstants.DriveTrain; // My drivetrain
+  public static final Vision INTAKE_PHOTON = new Vision("Arducam_OV9782_USB_Camera", 0.651830, 60);
+  public static final CommandSwerveDrivetrain DRIVETRAIN =
+      DriveConstants.DriveTrain; // My drivetrain
   public final Candles CANDLES = new Candles(Constants.LEFT_CANDLE, Constants.RIGHT_CANDLE);
   public final Intake INTAKE = new Intake(Constants.INTAKE_TOP_ID, Constants.INTAKE_BOTTOM_ID);
-  public final Shooter SHOOTER =
+  public static final Shooter SHOOTER =
       new Shooter(
           Constants.SHOOTER_LEADER_ID, Constants.SHOOTER_FOLLOWER_ID, Constants.SHOOTER_FEEDER_ID);
-  public final Wrist WRIST = new Wrist(Constants.WRIST_ID);
+  public static final Wrist WRIST = new Wrist(Constants.WRIST_ID);
   public final Elevator ELEVATOR =
       new Elevator(Constants.ELEVATOR_LEADER_ID, Constants.ELEVATOR_FOLLOWER_ID);
   public final AmpSensors AMP_SENSORS = new AmpSensors();
+  public static final PoopMonitor POOP_MONITOR = new PoopMonitor();
   private final CommandXboxController DRIVER_CONTROLLER = new CommandXboxController(0);
   private final CommandXboxController CO_DRIVER_CONTROLLER = new CommandXboxController(1);
   private final SlewRateLimiter TranslationXSlewRate =
@@ -102,10 +114,11 @@ public class RobotContainer {
       new SlewRateLimiter(Constants.translationSlewRate);
   // private final SlewRateLimiter RotationalSlewRate =
   //     new SlewRateLimiter(Constants.rotationSlewRate);
-  public static boolean isForwardAmpPrimed = false;
-  public static boolean isReverseAmpPrimed = false;
+  public static boolean isAmpPrepped = false;
+  public static boolean isAmpShot = false;
   public static boolean isClimbPrimed = false;
   public static boolean aimAtTargetAuto = false;
+  public static boolean teleopShouldPointToNote = false;
   private double MaxSpeed = DriveConstants.kSpeedAt12VoltsMps;
   private double MaxAngularRate = 1.5 * Math.PI;
   private boolean VisionUpdate = false;
@@ -120,6 +133,27 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
   private static RobotContainer instance;
+  private static AutoState autoState = AutoState.DEFAULT;
+
+  public static AutoState getAutoState() {
+    return autoState;
+  }
+
+  public static void setAutoState(final AutoState newState) {
+    autoState = newState;
+  }
+
+  public static void enableTeleopPointToNote() {
+    teleopShouldPointToNote = true;
+  }
+
+  public static void disableTeleopPointToNote() {
+    teleopShouldPointToNote = false;
+  }
+
+  public static boolean shouldTelopPointToNote() {
+    return teleopShouldPointToNote;
+  }
 
   public RobotContainer() {
     instance = this;
@@ -131,33 +165,64 @@ public class RobotContainer {
     configureDriverController();
     configureCoDriverController();
     configureDefaultCommands();
+    //   COMMANDS_TAB.add("PoopTest", new PoopTest(SHOOTER, INTAKE, WRIST));
   }
 
   private void configureDriverController() {
     DRIVER_CONTROLLER.b().onTrue(new ShootSubwooferFlat(ELEVATOR, WRIST, SHOOTER));
+    DRIVER_CONTROLLER.a().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR, lobRPM));
+
+    // DRIVER_CONTROLLER
+    //     .y()
+    //     .onTrue(
+    //         new ConditionalCommand(
+    //             new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
+    //                 .andThen(() -> isReverseAmpPrimed = false),
+    //             new PrepRevAmp(ELEVATOR, WRIST)
+    //                 .andThen(new WaitCommand(0.8))
+    //                 .andThen(new FireRevAmp(SHOOTER))
+    //                 .andThen(new WaitCommand(0.1))
+    //                 .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
+    //                 .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
+    //             () -> isReverseAmpPrimed));
 
     DRIVER_CONTROLLER
         .y()
         .onTrue(
             new ConditionalCommand(
-                new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
-                    .andThen(() -> isReverseAmpPrimed = false),
+                // Compare prepped to not prepped (If prepped, try shoot. Else, prep)
+                new ConditionalCommand(
+                    // Compare shot to not shot (If shot, go home. If not, try shot)
+                    new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE)
+                        .andThen(
+                            () -> {
+                              isAmpPrepped = false;
+                              isAmpShot = false;
+                            }),
+                    new ConditionalCommand(
+                        // Compare working shot (If working, shoot. Else rumble.)
+                        new FireRevAmp(SHOOTER)
+                            .andThen(new WaitCommand(0.1))
+                            .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
+                            .andThen(new InstantCommand(() -> isAmpShot = true)),
+                        new AsyncRumble(
+                            DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 400L),
+                        () -> AMP_SENSORS.getBothSensors()),
+                    () -> isAmpShot),
                 new PrepRevAmp(ELEVATOR, WRIST)
-                    .andThen(new WaitCommand(0.8))
-                    .andThen(new FireRevAmp(SHOOTER))
-                    .andThen(new WaitCommand(0.1))
-                    .andThen(new InstantCommand(() -> ELEVATOR.setLengthInches(4.2)))
-                    .andThen(new InstantCommand(() -> isReverseAmpPrimed = true)),
-                () -> isReverseAmpPrimed));
-    // DRIVER_CONTROLLER
-    //     .back()
-    //     .onTrue(
-    //         DRIVETRAIN.runOnce(
-    //             () -> {
-    //               DRIVETRAIN.seedFieldRelative();
-    //               DRIVETRAIN.getPigeon2().reset();
-    //             }));
-    DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> updatePoseVision(0.01, false)));
+                    .andThen(new InstantCommand(() -> isAmpPrepped = true)),
+                () -> isAmpPrepped));
+    DRIVER_CONTROLLER
+        .back()
+        .onTrue(
+            DRIVETRAIN
+                .runOnce(
+                    () -> {
+                      DRIVETRAIN.seedFieldRelative();
+                      DRIVETRAIN.getPigeon2().reset();
+                    })
+                .andThen(new InstantCommand(() -> updatePoseVision(0.01, false))));
+    // DRIVER_CONTROLLER.back().onTrue(new InstantCommand(() -> updatePoseVision(0.01, false)));
     DRIVER_CONTROLLER
         .start()
         .onTrue(
@@ -169,22 +234,48 @@ public class RobotContainer {
         .onTrue(
             new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR)
                 .andThen(
-                    new AsyncRumble(
-                        DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L)));
+                    new AsyncRumble(DRIVER_CONTROLLER.getHID(), RumbleType.kBothRumble, 1.0, 700L))
+            // No instantcommand wrapper?
+            )
+        .whileTrue(new InstantCommand(() -> enableTeleopPointToNote()))
+        .onFalse(new InstantCommand(() -> disableTeleopPointToNote()));
 
     DRIVER_CONTROLLER
-        .rightTrigger()
+        .rightTrigger(0.2)
         .whileTrue(
-            new PointAtAprilTag(
+            new PointAtSpeaker(
                 DRIVETRAIN,
                 () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
                 () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
-                () -> DRIVER_CONTROLLER.getRightX()));
-
+                () -> DRIVER_CONTROLLER.getRightX(),
+                () -> false,
+                () -> false));
     DRIVER_CONTROLLER
         .rightBumper()
         .onTrue(new ShootNote(SHOOTER, ELEVATOR, Constants.Shooter.SHOOTER_RPM));
-    DRIVER_CONTROLLER.leftTrigger().onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
+    // DRIVER_CONTROLLER.leftTrigger(0.1).onTrue(new LobNote(SHOOTER, WRIST, ELEVATOR));
+
+    DRIVER_CONTROLLER
+        .leftTrigger(0.2)
+        .whileTrue(
+            new ParallelDeadlineGroup(
+                new SequentialCommandGroup(
+                    new WaitUntilCommand(
+                        () ->
+                            DRIVER_CONTROLLER.getHID().getLeftTriggerAxis() > 0.90
+                                && Util.isPointedAtLob(DRIVETRAIN)),
+                    new LobNote(SHOOTER, WRIST, ELEVATOR, lobRPM)),
+                new PointAtSpeaker(
+                    DRIVETRAIN,
+                    () -> -TranslationXSlewRate.calculate(DRIVER_CONTROLLER.getLeftY()),
+                    () -> -TranslationYSlewRate.calculate(DRIVER_CONTROLLER.getLeftX()),
+                    () -> DRIVER_CONTROLLER.getRightX(),
+                    () -> true,
+                    () -> false
+
+                    // Other logic for aiming etc
+                    )));
+
     // WIP
     // DRIVER_CONTROLLER
     //     .leftTrigger()
@@ -218,9 +309,10 @@ public class RobotContainer {
   }
 
   private void configureCoDriverController() {
-    CO_DRIVER_CONTROLLER
-        .leftBumper()
-        .onTrue(Util.pathfindToPose(Util.findNearestPoseToTrapClimbs(getPose())));
+
+    // CO_DRIVER_CONTROLLER
+    //     .leftBumper()
+    //     .onTrue(Util.pathfindToPose(Util.findNearestPoseToTrapClimbs(getPose())));
     CO_DRIVER_CONTROLLER.start().onTrue(new StopAll(WRIST, SHOOTER, INTAKE, ELEVATOR));
     CO_DRIVER_CONTROLLER.rightBumper().onTrue(new PoopNote(SHOOTER, 2500));
 
@@ -268,10 +360,23 @@ public class RobotContainer {
             new ParallelDeadlineGroup(
                 new IntakeNoteSequence(SHOOTER, INTAKE, WRIST, ELEVATOR),
                 new DriveToNoteAuto(DRIVETRAIN, INTAKE_PHOTON, SHOOTER, INTAKE, WRIST, ELEVATOR)));
+
+    CO_DRIVER_CONTROLLER
+        .leftStick()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (CommandSwerveDrivetrain.getAlliance() == Alliance.Blue) {
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(1.37, 5.52, Rotation2d.fromDegrees(0.0)));
+                  } else {
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(15.2, 5.5, Rotation2d.fromDegrees(-180)));
+                  }
+                }));
   }
 
   private void configureDrivetrain() {
-
     DRIVETRAIN.setDefaultCommand( // Drivetrain will execute this command periodically
         new SwerveCommand(
             DRIVETRAIN,
@@ -380,6 +485,7 @@ public class RobotContainer {
                 })
             .ignoringDisable(true));
     COMMANDS_TAB.add("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
+    COMMANDS_TAB.add("PoopTest", new PoopTest(SHOOTER, INTAKE, WRIST));
     COMMANDS_TAB.add(
         "Brake Swerve",
         new InstantCommand(
@@ -390,7 +496,7 @@ public class RobotContainer {
                   }
                 })
             .ignoringDisable(true));
-    COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
+    // COMMANDS_TAB.add("Lob Note", new LobNote(SHOOTER, WRIST, ELEVATOR));
     // COMMANDS_TAB.add("Fast Point", new FastPoint(DRIVETRAIN, SPEAKER_LIMELIGHT));
     COMMANDS_TAB.add("NewShootAMpAuto", new NewShootAmpAuto(SHOOTER, ELEVATOR, WRIST));
     COMMANDS_TAB.add(
@@ -400,6 +506,20 @@ public class RobotContainer {
                   ELEVATOR.setZero();
                   WRIST.setZero();
                 })
+            .ignoringDisable(true));
+    COMMANDS_TAB.add(
+        "SetPoseRedSubStart",
+        new InstantCommand(
+                () ->
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(15.2, 5.5, Rotation2d.fromDegrees(-180))))
+            .ignoringDisable(true));
+    COMMANDS_TAB.add(
+        "SetPoseBlueSubStart",
+        new InstantCommand(
+                () ->
+                    DRIVETRAIN.seedFieldRelative(
+                        new Pose2d(1.37, 5.52, Rotation2d.fromDegrees(0.0))))
             .ignoringDisable(true));
 
     AUTO_CHOOSER.addOption(
@@ -438,27 +558,45 @@ public class RobotContainer {
     // addAuto("driven_source_score");
     // addAuto("heart_source_shoot");
     // addAuto("heart_source_og");
-    addAuto("Taxi-Amp");
-    addAuto("Taxi-Source");
+    // addAuto("Taxi-Amp");
+    // addAuto("Taxi-Source");
     // addAuto("temp_center");
     // addAuto("GKC-SOURCE-A");
     // addAuto("GKC-SOURCE-B");
     // addAuto("GKC-AMP-A");
     // addAuto("GKC-AMP-B");
     // addAuto("GKC-Source-J");
-    addAuto("GKC Source 5-4-3");
-    addAuto("GKC Source 4-3-2");
+    // addAuto("GKC Source 5-4-3");
+    // addAuto("GKC Source 4-3-2");
     // addAuto("GKC-Amp-J");
-    addAuto("GKC-Amp-2-1Blue");
-    addAuto("GKC-Amp-2-1Red");
-    addAuto("GKC-Amp-1-2Blue");
-    addAuto("GKC-Amp-1-2Red");
-    addAuto("AGKC-Amp-1-2Red");
-    addAuto("GKC-Amp-Skip-1-2");
-    addAuto("lame");
+    // addAuto("GKC-Amp-2-1Blue");
+    // addAuto("GKC-Amp-2-1Red");
+    // addAuto("GKC-Amp-1-2Blue");
+    // addAuto("GKC-Amp-1-2Red");
+    // addAuto("AGKC-Amp-1-2Red");
+    // addAuto("GKC-Amp-Skip-1-2");
+    addAuto("Middle Race Cleanup");
+    addAuto("Middle Split 2");
+    addAuto("Middle Split 3");
+    // addAuto("Source Race 5-4");
+    // addAuto("lame");
+    // AUTO_CHOOSER.addOption(
+    //     "Middle Race Cleanup",
+    //     new MiddleRaceCleanup(DRIVETRAIN, INTAKE, ELEVATOR, WRIST, SHOOTER, INTAKE_PHOTON));
     // addAuto("GKC-Amp-J2");
-    AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
+    // AUTO_CHOOSER.addOption("Do Nothing", new InstantCommand());
+    AUTO_CHOOSER.addOption("Source 5-4", new Source_5_4());
+    AUTO_CHOOSER.addOption("Madtown", new Madtown());
     MATCH_TAB.add("Auto", AUTO_CHOOSER);
+    MATCH_TAB.add(
+        "Full confidence",
+        new InstantCommand(
+            () ->
+                DRIVETRAIN.addVisionMeasurement(
+                    LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo").pose,
+                    LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo")
+                        .timestampSeconds,
+                    VecBuilder.fill(0.1, 0.1, 0.1))));
     // MATCH_TAB.addBoolean("Vision Updated", () -> VisionUpdate);
 
     // MATCH_TAB.addBoolean("is Alliance red", () -> CommandSwerveDrivetrain.getAlliance() ==
@@ -468,7 +606,8 @@ public class RobotContainer {
   public void configureDefaultCommands() {
     WRIST.setDefaultCommand(new AimLockWrist(WRIST, SHOOTER, ELEVATOR));
     SHOOTER.setDefaultCommand(new IdleShooter(SHOOTER));
-    CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
+    // FIXME default candle execute loop overruns
+    // CANDLES.setDefaultCommand(new DefaultCANdle(CANDLES, SHOOTER));
   }
 
   public void configureNamedCommands() {
@@ -524,25 +663,22 @@ public class RobotContainer {
         "PoopPrep",
         new InstantCommand(
             () -> {
-              SHOOTER.setRPMShootNoSpin(750);
+              setAutoState(AutoState.POOP_PREP);
               INTAKE.setVolts(-8.0);
-              WRIST.setDegrees(15);
-            },
-            SHOOTER,
-            WRIST,
-            INTAKE));
+              // WRIST.setDegrees(15);
+            }));
     NamedCommands.registerCommand(
         "PoopPrep2500",
         new InstantCommand(
             () -> {
               SHOOTER.setRPMShootNoSpin(4000);
-              WRIST.setDegrees(25);
+              // WRIST.setDegrees(25);
             },
             SHOOTER,
             WRIST,
             INTAKE));
     NamedCommands.registerCommand(
-        "PoopStart", new InstantCommand(() -> SHOOTER.setFeederVoltage(8.0)));
+        "PoopStart", new InstantCommand(() -> RobotContainer.setAutoState(AutoState.POOPING)));
     NamedCommands.registerCommand(
         "StartIntakeAndShoot",
         new InstantCommand(
@@ -562,12 +698,9 @@ public class RobotContainer {
         "PoopStop",
         new InstantCommand(
             () -> {
-              SHOOTER.stopShooter();
-              SHOOTER.stopFeeder();
+              setAutoState(AutoState.DEFAULT);
               INTAKE.stopCollecting();
-            },
-            SHOOTER,
-            INTAKE));
+            }));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootSubwoofer(ELEVATOR, WRIST, SHOOTER));
     NamedCommands.registerCommand("ShootAmp", new ShootAmp(SHOOTER, ELEVATOR, WRIST));
     NamedCommands.registerCommand("GoHome", new GoHome(ELEVATOR, WRIST, SHOOTER, INTAKE));
@@ -581,11 +714,17 @@ public class RobotContainer {
         "OverrideRotationSpeakerEnable", new InstantCommand(() -> aimAtTargetAuto = true));
     NamedCommands.registerCommand(
         "OverrideRotationSpeakerDisable", new InstantCommand(() -> aimAtTargetAuto = false));
-    NamedCommands.registerCommand("DefaultWrist", new AutoAimLockWrist(WRIST));
-    NamedCommands.registerCommand("DefaultShooter", new AutoIdleShooter(SHOOTER));
+    NamedCommands.registerCommand(
+        "DefaultWrist", new AutoAimLockWrist(WRIST, () -> getAutoState()));
+    NamedCommands.registerCommand(
+        "DefaultShooter", new AutoIdleShooter(SHOOTER, () -> getAutoState()));
     NamedCommands.registerCommand("InstantShoot", new InstantShoot(SHOOTER));
     NamedCommands.registerCommand(
-        "IntakeNoteAuto", new IntakeNoteSequenceAuto(SHOOTER, INTAKE, ELEVATOR));
+        "ShootPrep", new InstantCommand(() -> setAutoState(AutoState.SHOOT_PREP)));
+    NamedCommands.registerCommand(
+        "IntakeNoteAuto",
+        new IntakeNoteSequenceAuto(
+            SHOOTER, INTAKE, ELEVATOR)); // .finallyDo(() -> setAutoState(AutoState.SHOOT_PREP)));
     NamedCommands.registerCommand(
         "TempLog",
         new InstantCommand(
@@ -594,8 +733,28 @@ public class RobotContainer {
                     "InstantShoot: distance: "
                         + Util.getDistanceToSpeaker()
                         + ", angle: "
-                        + Util.getInterpolatedWristAngle(),
+                        + Util.getInterpolatedWristAngleSpeaker(),
                     false)));
+    NamedCommands.registerCommand("AutoCollectNote", new AutoCollectNote(3.0)); // 2.5 worked
+    NamedCommands.registerCommand("AutoAimAndShoot", new AutoAimAndShoot(DRIVETRAIN, SHOOTER));
+    NamedCommands.registerCommand(
+        "EnableWristLockDown", new InstantCommand(() -> WRIST.enableWristLockdown()));
+    NamedCommands.registerCommand(
+        "DisableWristLockDown", new InstantCommand(() -> WRIST.disableWristLockdown()));
+    NamedCommands.registerCommand("PathFindToSourceShot", Util.PathFindToAutoSourceShot());
+    NamedCommands.registerCommand(
+        "ShootSubwooferFirstHalf", new ShootSubwooferFirstHalf(ELEVATOR, WRIST, SHOOTER));
+    NamedCommands.registerCommand("StartPoopMonitor", POOP_MONITOR.StartPoopMonitorCommand());
+    NamedCommands.registerCommand("StopPoopMonitor", POOP_MONITOR.StopPoopMonitorCommand());
+    NamedCommands.registerCommand("ResetPoopMonitor", POOP_MONITOR.ResetPoopMonitorCommand());
+    NamedCommands.registerCommand(
+        "EnableLLPoseUpdate", new InstantCommand(() -> DRIVETRAIN.setShouldMegatag2Update(true)));
+    NamedCommands.registerCommand(
+        "DisableLLPoseUpdate", new InstantCommand(() -> DRIVETRAIN.setShouldMegatag2Update(false)));
+    NamedCommands.registerCommand(
+        "EnableWatchForNote", new InstantCommand(() -> Madtown.SHOULD_WATCH_FOR_NOTE = true));
+    NamedCommands.registerCommand(
+        "DisableWatchForNote", new InstantCommand(() -> Madtown.SHOULD_WATCH_FOR_NOTE = false));
   }
 
   public void addAuto(String autoName) {
@@ -625,7 +784,7 @@ public class RobotContainer {
     return DRIVETRAIN.getPose();
   }
 
-  public boolean shouldRejectLL3G(final Limelight.PoseEstimate botPose) {
+  public boolean shouldRejectLL3G(final LimelightHelpers.PoseEstimate botPose) {
     if (botPose.tagCount < 2) {
       return true;
     }
@@ -662,11 +821,12 @@ public class RobotContainer {
     boolean isDisabled = DriverStation.isDisabled();
     boolean hasUpdatedPose = false;
 
-    Limelight.PoseEstimate bestPose = null;
+    LimelightHelpers.PoseEstimate bestPose = null;
     double bestConfidence = 0.0;
 
     for (String limelight3G : Constants.Vision.LL3GS) {
-      Limelight.PoseEstimate botPoseLL3G = Limelight.getBotPoseEstimate_wpiBlue(limelight3G);
+      LimelightHelpers.PoseEstimate botPoseLL3G =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight3G);
       if (!shouldRejectLL3G(botPoseLL3G)) {
         double currentConfidence = calculateConfidence(botPoseLL3G);
         if (currentConfidence > bestConfidence) {
@@ -686,7 +846,8 @@ public class RobotContainer {
     if (canTrustLL3) {
       if (!hasUpdatedPose) {
         for (String limelight3 : Constants.Vision.LL3S) {
-          Limelight.PoseEstimate botPoseLL3 = Limelight.getBotPoseEstimate_wpiBlue(limelight3);
+          LimelightHelpers.PoseEstimate botPoseLL3 =
+              LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight3);
           if (!shouldRejectLL3G(botPoseLL3)) {
             hasUpdatedPose = true;
             updatePose(botPoseLL3, isDisabled, rotationConfidence);
@@ -704,7 +865,7 @@ public class RobotContainer {
   }
 
   public void updatePose(
-      Limelight.PoseEstimate botPose, boolean isDisabled, double rotationConfidence) {
+      LimelightHelpers.PoseEstimate botPose, boolean isDisabled, double rotationConfidence) {
     double currentConfidence = calculateConfidence(botPose);
     if (DriverStation.isAutonomous()) {
       currentConfidence = currentConfidence * 6;
@@ -802,7 +963,7 @@ public class RobotContainer {
   //   // }
   // }
 
-  private double calculateConfidence(Limelight.PoseEstimate botPose) {
+  private double calculateConfidence(LimelightHelpers.PoseEstimate botPose) {
     // final double botPoseToPoseDistance =
     //       botPose.pose.getTranslation().getDistance(DRIVETRAIN.getPose().getTranslation());
     final double speakerReference = Util.speakerTagCount(botPose.rawFiducials);

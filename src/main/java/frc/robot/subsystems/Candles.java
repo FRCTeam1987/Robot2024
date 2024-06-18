@@ -6,9 +6,27 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Candles extends SubsystemBase {
+
+  public enum CandleSide {
+    BOTH(0),
+    LEFT(1),
+    RIGHT(2);
+
+    private int candle;
+
+    CandleSide(int i) {
+      this.candle = i;
+    }
+
+    public int side() {
+      return candle;
+    }
+  }
+
   private final CANdle LEFT_CANDLE;
   private final CANdle RIGHT_CANDLE;
 
@@ -18,40 +36,23 @@ public class Candles extends SubsystemBase {
     RIGHT_CANDLE = new CANdle(RIGHT_CANDLE_ID, "canfd");
   }
 
-  public void setAnimationBoth(Animation animation) {
-    LEFT_CANDLE.clearAnimation(0);
-    RIGHT_CANDLE.clearAnimation(0);
-    LEFT_CANDLE.animate(animation);
-    RIGHT_CANDLE.animate(animation);
-  }
-
-  public void setAnimationRight(Animation animation) {
-    RIGHT_CANDLE.animate(animation);
-  }
-
-  public void setAnimationLeft(Animation animation) {
-    LEFT_CANDLE.animate(animation);
-  }
-
-  public void setColorBoth(int r, int g, int b) {
-    LEFT_CANDLE.setLEDs(r, g, b);
-    RIGHT_CANDLE.setLEDs(r, g, b);
-  }
-
-  public void setColorBothRed() {
-    setColorBoth(255, 0, 0);
-  }
-
-  public void setColorBothGreen() {
-    setColorBoth(0, 255, 0);
-  }
-
-  public void setColorBothBlue() {
-    setColorBoth(255, 0, 255);
-  }
-
-  public void setColorBothBrown() {
-    setColorBoth(128, 64, 0);
+  public void setAnimation(CandleSide side, Animation animation) {
+    switch (side) {
+      case LEFT:
+        LEFT_CANDLE.clearAnimation(0);
+        LEFT_CANDLE.animate(animation);
+        break;
+      case RIGHT:
+        RIGHT_CANDLE.clearAnimation(0);
+        RIGHT_CANDLE.animate(animation);
+        break;
+      case BOTH:
+        LEFT_CANDLE.clearAnimation(0);
+        RIGHT_CANDLE.clearAnimation(0);
+        LEFT_CANDLE.animate(animation);
+        RIGHT_CANDLE.animate(animation);
+        break;
+    }
   }
 
   public void stop() {
@@ -61,52 +62,19 @@ public class Candles extends SubsystemBase {
     RIGHT_CANDLE.clearAnimation(1);
   }
 
-  public void setColorLeft(int r, int g, int b) {
-    LEFT_CANDLE.setLEDs(r, g, b);
-  }
-
-  public void setColorLeftRed() {
-    setColorLeft(255, 0, 0);
-  }
-
-  public void setColorLeftGreen() {
-    setColorLeft(0, 255, 0);
-  }
-
-  public void setColorLeftBlue() {
-    setColorLeft(255, 0, 255);
-  }
-
-  public void setColorLeftBrown() {
-    setColorLeft(128, 64, 0);
-  }
-
-  public void setColorLeftOff() {
-    setColorLeft(0, 0, 0);
-  }
-
-  public void setColorRight(int r, int g, int b) {
-    RIGHT_CANDLE.setLEDs(r, g, b);
-  }
-
-  public void setColorRightRed() {
-    setColorRight(255, 0, 0);
-  }
-
-  public void setColorRightGreen() {
-    setColorRight(0, 255, 0);
-  }
-
-  public void setColorRightBlue() {
-    setColorRight(255, 0, 255);
-  }
-
-  public void setColorRightBrown() {
-    setColorRight(128, 64, 0);
-  }
-
-  public void setColorRightOff() {
-    setColorRight(0, 0, 0);
+  public void setColor(CandleSide side, Color8Bit color) {
+    switch (side) {
+      case LEFT:
+        LEFT_CANDLE.setLEDs(color.red, color.green, color.blue);
+        break;
+      case RIGHT:
+        RIGHT_CANDLE.setLEDs(color.red, color.green, color.blue);
+        break;
+      case BOTH:
+        LEFT_CANDLE.setLEDs(color.red, color.green, color.blue);
+        RIGHT_CANDLE.setLEDs(color.red, color.green, color.blue);
+        break;
+    }
   }
 
   public void off() {

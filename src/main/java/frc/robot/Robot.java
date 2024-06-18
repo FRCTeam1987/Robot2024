@@ -11,6 +11,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Candles.CandleSide;
 
 public class Robot extends TimedRobot {
   private Command autoCommand;
@@ -20,24 +21,34 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
-    robotContainer.CANDLES.setAnimationBoth(
-        new LarsonAnimation(255, 255, 0, 0, 1.0, 8, BounceMode.Front, 1));
+    robotContainer.CANDLES.setAnimation(
+        CandleSide.BOTH, new LarsonAnimation(255, 255, 0, 0, 1.0, 8, BounceMode.Front, 1));
     PathfindingCommand.warmupCommand().schedule();
   }
 
   @Override
   public void robotPeriodic() {
-    robotContainer.updatePoseVision();
+    RobotContainer.DRIVETRAIN.updateOdometry();
+    // robotContainer.updatePoseVision();
+    RobotContainer.DRIVETRAIN.megatag2Update();
     CommandScheduler.getInstance().run();
+    // System.out.println("LobRpm: " + RobotContainer.get().lobRPM.getDouble(100.0));
+    // System.out.println("Distance to Lob: " +
+    // Util.getDistanceToAllianceLob(RobotContainer.get().getPose()));
   }
 
   @Override
   public void disabledInit() {
-    robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 0, 0, 0, 0.7, 8));
+    robotContainer.CANDLES.setAnimation(
+        CandleSide.BOTH, new SingleFadeAnimation(255, 0, 0, 0, 0.7, 8));
+    robotContainer.DRIVETRAIN.setShouldMegatag2Update(false);
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // System.out.println(Util.getRotationToAllianceSpeaker(new Pose2d(new Translation2d(7.21,
+    // 2.24), new Rotation2d(90.0))));
+  }
 
   @Override
   public void disabledExit() {}
@@ -45,8 +56,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.CANDLES.setAnimationBoth(new SingleFadeAnimation(255, 255, 255, 0, 1.5, 8));
-    robotContainer.CANDLES.setAnimationRight(
-        new LarsonAnimation(255, 255, 255, 0, 0.1, 8, BounceMode.Front, 1));
+    robotContainer.CANDLES.setAnimation(
+        CandleSide.RIGHT, new LarsonAnimation(255, 255, 255, 0, 0.1, 8, BounceMode.Front, 1));
     autoCommand = robotContainer.getAutonomousCommand();
     if (autoCommand != null) {
       autoCommand.schedule();
@@ -66,6 +77,7 @@ public class Robot extends TimedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
+    robotContainer.DRIVETRAIN.setShouldMegatag2Update(true);
   }
 
   @Override

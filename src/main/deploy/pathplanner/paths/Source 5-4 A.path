@@ -1,0 +1,132 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.39,
+        "y": 1.57
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3899999999999997,
+        "y": 1.57
+      },
+      "isLocked": false,
+      "linkedName": "source_race_start"
+    },
+    {
+      "anchor": {
+        "x": 4.0,
+        "y": 1.57
+      },
+      "prevControl": {
+        "x": 2.75,
+        "y": 1.57
+      },
+      "nextControl": {
+        "x": 5.25,
+        "y": 1.57
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.0,
+        "y": 0.7792380150020553
+      },
+      "prevControl": {
+        "x": 7.0,
+        "y": 0.7792380150020553
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Source 5-4 A End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Poop Prep",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopPrep"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableLLPoseUpdate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Start",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStart"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableLLPoseUpdate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "StartPoopMonitor",
+      "waypointRelativePos": 1.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartPoopMonitor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source 5-4",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

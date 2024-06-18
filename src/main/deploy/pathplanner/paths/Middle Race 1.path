@@ -1,0 +1,202 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3731168748868172,
+        "y": 5.547507658600387
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.123116874886817,
+        "y": 5.547507658600387
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.9,
+        "y": 5.547507658600387
+      },
+      "prevControl": {
+        "x": 2.15,
+        "y": 5.547507658600387
+      },
+      "nextControl": {
+        "x": 4.150000000000004,
+        "y": 5.547507658600387
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.25,
+        "y": 4.4
+      },
+      "prevControl": {
+        "x": 4.311387895511962,
+        "y": 4.744974371959044
+      },
+      "nextControl": {
+        "x": 6.188612104488037,
+        "y": 4.055025628040957
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.15,
+        "y": 4.25
+      },
+      "prevControl": {
+        "x": 8.15,
+        "y": 4.0
+      },
+      "nextControl": {
+        "x": 8.15,
+        "y": 4.5
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 4.25
+      },
+      "prevControl": {
+        "x": 6.465925826289069,
+        "y": 3.991180954897479
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "middle_race_1_end"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "First Shoot Zone",
+      "minWaypointRelativePos": 0.95,
+      "maxWaypointRelativePos": 1.15,
+      "constraints": {
+        "maxVelocity": 1.125,
+        "maxAcceleration": 1.125,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "First Intake",
+      "waypointRelativePos": 0.55,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNoteAuto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "First Shot",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "InstantShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stow Everything",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SubwooferSecondHalf"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Second Intake",
+      "waypointRelativePos": 2.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNoteAuto"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 2.5,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Middle Race",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

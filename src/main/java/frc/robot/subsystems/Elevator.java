@@ -92,7 +92,7 @@ public class Elevator extends SubsystemBase {
 
   public void incrementElevator(double IncrementAmount) {
     IncrementValue = IncrementValue + IncrementAmount;
-    System.out.println("Elevator Increment Value now: " + IncrementValue);
+    // System.out.println("Elevator Increment Value now: " + IncrementValue);
   }
 
   public double getIncrementValue() {
@@ -153,10 +153,13 @@ public class Elevator extends SubsystemBase {
     ELEVATOR_TAB.add("ZERO SUBSYSTEM", new ZeroElevator(this));
     ELEVATOR_TAB.add(
         "GoTo DesiredLen", new InstantCommand(() -> setLengthInches(length.getDouble(0))));
-    ELEVATOR_TAB.addDouble("ActualLen In.", this::getLengthInches);
-    ELEVATOR_TAB.add("Coast", new InstantCommand(this::coastElevator).ignoringDisable(true));
-    ELEVATOR_TAB.add("Brake", new InstantCommand(this::brakeElevator).ignoringDisable(true));
-    ELEVATOR_TAB.addDouble("ERROR", () -> ELEVATOR_LEADER.getClosedLoopError().getValueAsDouble());
+    if (Constants.shouldShuffleboard) {
+      ELEVATOR_TAB.addDouble("ActualLen In.", this::getLengthInches);
+      ELEVATOR_TAB.add("Coast", new InstantCommand(this::coastElevator).ignoringDisable(true));
+      ELEVATOR_TAB.add("Brake", new InstantCommand(this::brakeElevator).ignoringDisable(true));
+      ELEVATOR_TAB.addDouble(
+          "ERROR", () -> ELEVATOR_LEADER.getClosedLoopError().getValueAsDouble());
+    }
     // ELEVATOR_TAB.addnumber("Elevator voltage", );
   }
 }

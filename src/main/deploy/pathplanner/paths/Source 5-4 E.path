@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.0,
+        "y": 3.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.819152044288991,
+        "y": 2.426423563648954
+      },
+      "isLocked": false,
+      "linkedName": "SourceShootPose"
+    },
+    {
+      "anchor": {
+        "x": 4.900290324658922,
+        "y": 2.0774124530184195
+      },
+      "prevControl": {
+        "x": 4.4907143025144265,
+        "y": 2.3642006711939425
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 2.5,
+    "rotation": -35.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source 5-4",
+  "previewStartingState": {
+    "rotation": -35.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

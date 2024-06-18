@@ -7,6 +7,7 @@ package frc.robot.commands.qol;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Candles;
+import frc.robot.subsystems.Candles.CandleSide;
 
 public class AsyncCANdle extends Command {
   private final Candles candles;
@@ -33,7 +34,7 @@ public class AsyncCANdle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    candles.setColorLeft(color.red, color.green, color.blue);
+    candles.setColor(CandleSide.LEFT, color);
   }
 
   // Called once the command ends or is interrupted.

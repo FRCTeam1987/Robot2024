@@ -1,0 +1,65 @@
+{
+  "HALProvider": {
+    "RoboRIO": {
+      "window": {
+        "visible": true
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Pose": "Field2d",
+      "/Shuffleboard/COMMANDS/Brake Swerve": "Command",
+      "/Shuffleboard/COMMANDS/Coast Swerve": "Command",
+      "/Shuffleboard/COMMANDS/Force Zero All": "Command",
+      "/Shuffleboard/COMMANDS/Lob Note": "Command",
+      "/Shuffleboard/COMMANDS/NewShootAMpAuto": "Command",
+      "/Shuffleboard/COMMANDS/SetPoseRedSubStart": "Command",
+      "/Shuffleboard/COMMANDS/ShootAmp": "Command",
+      "/Shuffleboard/COMMANDS/Stop Logger": "Command",
+      "/Shuffleboard/COMMANDS/Unjam Shooter": "Command",
+      "/Shuffleboard/ELEVATOR/Brake": "Command",
+      "/Shuffleboard/ELEVATOR/Coast": "Command",
+      "/Shuffleboard/ELEVATOR/GoTo DesiredLen": "Command",
+      "/Shuffleboard/ELEVATOR/ZERO SUBSYSTEM": "Command",
+      "/Shuffleboard/INTAKE/Start": "Command",
+      "/Shuffleboard/INTAKE/Stop": "Command",
+      "/Shuffleboard/MATCH/Auto": "String Chooser",
+      "/Shuffleboard/MATCH/Full confidence": "Command",
+      "/Shuffleboard/PHOTON/Collect Note Auto": "Command",
+      "/Shuffleboard/PHOTON/Drive To Note": "Command",
+      "/Shuffleboard/PHOTON/Drive To Note Auto": "Command",
+      "/Shuffleboard/SHOOTER/Reverse Feeder": "Command",
+      "/Shuffleboard/SHOOTER/Spit Note": "Command",
+      "/Shuffleboard/SHOOTER/Stop Feed": "Command",
+      "/Shuffleboard/SHOOTER/Stop Shoot": "Command",
+      "/Shuffleboard/WRIST/GoTo Desired DEG": "Command",
+      "/Shuffleboard/WRIST/Re-Home": "Command",
+      "/Shuffleboard/WRIST/Set Brake": "Command",
+      "/Shuffleboard/WRIST/Set Coast": "Command",
+      "/SmartDashboard/Module 0": "Mechanism2d",
+      "/SmartDashboard/Module 1": "Mechanism2d",
+      "/SmartDashboard/Module 2": "Mechanism2d",
+      "/SmartDashboard/Module 3": "Mechanism2d"
+    }
+  },
+  "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "visible": true
+  }
+}

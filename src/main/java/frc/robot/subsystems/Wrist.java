@@ -16,6 +16,8 @@ public class Wrist extends SubsystemBase {
   private final TalonFX WRIST_MOTOR;
   private final ShuffleboardTab WRIST_TAB = Shuffleboard.getTab("WRIST");
 
+  private boolean shouldLockWristDown = false;
+
   // Constructor
   public Wrist(final int wristMotorID) {
     WRIST_MOTOR = new TalonFX(wristMotorID, "rio");
@@ -41,6 +43,7 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR.getConfigurator().apply(WRIST_CONFIG);
     setZero();
     WRIST_MOTOR.setNeutralMode(NeutralModeValue.Brake);
+    disableWristLockdown();
   }
 
   public void goHome() {
@@ -120,14 +123,28 @@ public class Wrist extends SubsystemBase {
     WRIST_MOTOR.setPosition(Constants.Wrist.INITIAL_ANGLE_DEGREES / 360.0);
   }
 
+  public void enableWristLockdown() {
+    shouldLockWristDown = true;
+  }
+
+  public void disableWristLockdown() {
+    shouldLockWristDown = false;
+  }
+
+  public boolean shouldLockDownWrist() {
+    return shouldLockWristDown;
+  }
+
   public void setupShuffleboard() {
     WRIST_TAB.add("Set Coast", new InstantCommand(this::setCoast, this).ignoringDisable(true));
     WRIST_TAB.add("Set Brake", new InstantCommand(this::setBrake, this).ignoringDisable(true));
     WRIST_TAB.add("Re-Home", new ZeroWrist(this));
-    WRIST_TAB.addDouble("Degrees", this::getDegrees);
-    WRIST_TAB.addDouble("Error", this::getError);
-    GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 26.23).getEntry();
-    WRIST_TAB.add(
-        "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
+    if (Constants.shouldShuffleboard) {
+      WRIST_TAB.addDouble("Degrees", this::getDegrees);
+      WRIST_TAB.addDouble("Error", this::getError);
+      GenericEntry entry2 = WRIST_TAB.add("Desired DEG", 26.23).getEntry();
+      WRIST_TAB.add(
+          "GoTo Desired DEG", new InstantCommand(() -> setDegrees(entry2.get().getDouble())));
+    }
   }
 }

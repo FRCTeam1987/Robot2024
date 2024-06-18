@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 4.25
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.534074173710932,
+        "y": 4.508819045102521
+      },
+      "isLocked": false,
+      "linkedName": "middle_race_1_end"
+    },
+    {
+      "anchor": {
+        "x": 1.7067267121368734,
+        "y": 4.6
+      },
+      "prevControl": {
+        "x": 1.61397633018067,
+        "y": 6.794007558609735
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "middle_race_2_end"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 1.5,
+    "rotation": -25.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Middle Race",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 2.5
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,210 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.39,
+        "y": 1.57
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3899999999999997,
+        "y": 1.57
+      },
+      "isLocked": false,
+      "linkedName": "source_race_start"
+    },
+    {
+      "anchor": {
+        "x": 4.0,
+        "y": 1.57
+      },
+      "prevControl": {
+        "x": 2.75,
+        "y": 1.57
+      },
+      "nextControl": {
+        "x": 5.25,
+        "y": 1.57
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.05,
+        "y": 0.9
+      },
+      "prevControl": {
+        "x": 8.042929903394992,
+        "y": 0.4000499887648808
+      },
+      "nextControl": {
+        "x": 8.058188401784435,
+        "y": 1.479029084443452
+      },
+      "isLocked": false,
+      "linkedName": null
+      "linkedName": "Source 5-4 B End"
+    }
+  ],
+  "rotationTargets": [],
+
+
+
+
+
+
+
+
+
+
+
+  "constraintZones": [
+    {
+      "name": "Poop Zone",
+      "minWaypointRelativePos": 1.7999999999999998,
+      "maxWaypointRelativePos": 2.15,
+      "constraints": {
+        "maxVelocity": 3.25,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Poop Prep",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopPrep"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "DisableLLPoseUpdate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Start",
+      "waypointRelativePos": 0.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStart"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableLLPoseUpdate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "StartPoopMonitor",
+      "waypointRelativePos": 1.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartPoopMonitor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Stop",
+      "waypointRelativePos": 2.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStop"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Collect Note",
+      "waypointRelativePos": 2.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNoteAuto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop Poop Monitor",
+      "waypointRelativePos": 2.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopPoopMonitor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source 5-4",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

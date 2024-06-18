@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.859987605018093,
+        "y": 4.85
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8685168815150186,
+        "y": 4.85
+      },
+      "isLocked": true,
+      "linkedName": "Middle Split 2 A End"
+    },
+    {
+      "anchor": {
+        "x": 2.574434465922116,
+        "y": 4.251375729406378
+      },
+      "prevControl": {
+        "x": 1.6834279417337483,
+        "y": 4.705366229145925
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "Middle Split 2 B End"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Collect Note",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNoteAuto"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -27.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Middle Split 2",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 2.0
+  },
+  "useDefaultConstraints": true
+}

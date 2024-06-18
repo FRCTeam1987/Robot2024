@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.981061263963517,
+        "y": 0.8990330014867446
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.532172524529916,
+        "y": 1.287261569140526
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.7,
+        "y": 3.1
+      },
+      "prevControl": {
+        "x": 4.263944461846189,
+        "y": 2.206212216360257
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Madtown B End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -30.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Madtown",
+  "previewStartingState": {
+    "rotation": -22.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

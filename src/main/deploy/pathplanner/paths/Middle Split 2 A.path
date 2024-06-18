@@ -1,0 +1,301 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.367536726441503,
+        "y": 5.52
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.046376909981702,
+        "y": 6.03154276967924
+      },
+      "isLocked": false,
+      "linkedName": "Middle Split A Start"
+    },
+    {
+      "anchor": {
+        "x": 2.9,
+        "y": 6.25
+      },
+      "prevControl": {
+        "x": 2.05,
+        "y": 6.25
+      },
+      "nextControl": {
+        "x": 3.9,
+        "y": 6.25
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.836521079212586,
+        "y": 6.25
+      },
+      "prevControl": {
+        "x": 4.868260539606293,
+        "y": 6.340625
+      },
+      "nextControl": {
+        "x": 6.804781618818879,
+        "y": 6.159375
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.023042158425174,
+        "y": 5.6
+      },
+      "prevControl": {
+        "x": 8.023042158425174,
+        "y": 5.85
+      },
+      "nextControl": {
+        "x": 8.023042158425174,
+        "y": 5.35
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.6,
+        "y": 6.298228527210456
+      },
+      "prevControl": {
+        "x": 6.432506242723144,
+        "y": 6.298228527210456
+      },
+      "nextControl": {
+        "x": 4.8500000000000005,
+        "y": 6.298228527210456
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.85,
+        "y": 5.52
+      },
+      "prevControl": {
+        "x": 3.85,
+        "y": 6.02
+      },
+      "nextControl": {
+        "x": 3.85,
+        "y": 4.77
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.859987605018093,
+        "y": 4.85
+      },
+      "prevControl": {
+        "x": 3.359987605018093,
+        "y": 4.85
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "Middle Split 2 A End"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 5.0,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.0,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Slow Shoot",
+      "minWaypointRelativePos": 4.85,
+      "maxWaypointRelativePos": 5.25,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    },
+    {
+      "name": "Slow Poop",
+      "minWaypointRelativePos": 2.8,
+      "maxWaypointRelativePos": 3.45,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 4.25,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Poop Prep",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Start",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStart"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Poop Stop",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PoopStop"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Collect",
+      "waypointRelativePos": 2.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeNoteAuto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 4.949999999999999,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "InstantShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot Prep",
+      "waypointRelativePos": 3.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootPrep"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable LL Update",
+      "waypointRelativePos": 1.85,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "EnableLLPoseUpdate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": 0.5177878023859686,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Middle Split 2",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

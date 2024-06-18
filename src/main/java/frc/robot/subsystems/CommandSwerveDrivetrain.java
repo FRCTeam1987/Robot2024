@@ -14,9 +14,13 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -25,7 +29,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -57,6 +63,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       new SwerveRequest.SysIdSwerveRotation();
   private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization =
       new SwerveRequest.SysIdSwerveSteerGains();
+
+  private boolean shouldMt2Update = true;
 
   /* Use one of these sysidroutines for your particular test */
   private SysIdRoutine SysIdRoutineTranslation =
@@ -130,11 +138,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this.setControl(
                 AutoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
         new HolonomicPathFollowerConfig(
-            new PIDConstants(12.5, 0, 0),
-            new PIDConstants(11.0, 0, 0),
+            new PIDConstants(13.5, 0, 0),
+            new PIDConstants(11.3, 0, 0),
             DriveConstants.kSpeedAt12VoltsMps,
             driveBaseRadius,
-            new ReplanningConfig()),
+            new ReplanningConfig(true, true)),
         () ->
             DriverStation.getAlliance().orElse(Alliance.Blue)
                 == Alliance
@@ -149,7 +157,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // Some condition that should decide if we want to override rotation
     if (RobotContainer.aimAtTargetAuto) {
       Pose2d pose = getPose();
-      double currentDegrees = pose.getRotation().getDegrees() + 90.0;
+      double currentDegrees = pose.getRotation().getDegrees();
       double desiredRotation =
           currentDegrees - Util.getRotationToAllianceSpeaker(pose).getDegrees();
 
@@ -213,6 +221,105 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return alliance;
   }
 
+  /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
+  below are robot specific, and should be tuned. */
+  private final SwerveDrivePoseEstimator m_poseEstimator =
+      new SwerveDrivePoseEstimator(
+          m_kinematics,
+          getPigeon2().getRotation2d(),
+          m_modulePositions,
+          new Pose2d(),
+          VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+          VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+
+  /** Updates the field relative position of the robot. */
+  public void updateOdometry() {
+    m_poseEstimator.update(m_pigeon2.getRotation2d(), m_modulePositions);
+
+    boolean useMegaTag2 = true; // set to false to use MegaTag1
+    boolean doRejectUpdate = false;
+    if (useMegaTag2 == false) {
+      LimelightHelpers.PoseEstimate mt1 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-leftlo");
+
+      if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
+        if (mt1.rawFiducials[0].ambiguity > .7) {
+          doRejectUpdate = true;
+        }
+        if (mt1.rawFiducials[0].distToCamera > 3) {
+          doRejectUpdate = true;
+        }
+      }
+      if (mt1.tagCount == 0) {
+        doRejectUpdate = true;
+      }
+
+      if (!doRejectUpdate) {
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        m_poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
+      }
+    } else if (useMegaTag2 == true) {
+      LimelightHelpers.SetRobotOrientation(
+          "limelight-leftlo", this.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.PoseEstimate mt2 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-leftlo");
+      if (Math.abs(
+              Units.radiansToDegrees(this.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond))
+          > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision
+      // updates
+      {
+        doRejectUpdate = true;
+      }
+      if (mt2.tagCount == 0) {
+        doRejectUpdate = true;
+      }
+      if (!doRejectUpdate) {
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+        m_poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+      }
+    }
+  }
+
+  public boolean shouldMegatag2Update() {
+    return shouldMt2Update;
+  }
+
+  public void setShouldMegatag2Update(final boolean shouldUpdate) {
+    shouldMt2Update = shouldUpdate;
+  }
+
+  public void megatag2Update() {
+    final double yaw = getPose().getRotation().getDegrees();
+    for (String limelightName : Constants.Vision.LL3GS) {
+      LimelightHelpers.SetRobotOrientation(limelightName, yaw, 0, 0, 0, 0, 0);
+    }
+    if (!shouldMegatag2Update()) {
+      return;
+    }
+    final ChassisSpeeds chassisSpeeds = getCurrentRobotChassisSpeeds();
+    if (Math.abs(getPigeon2().getRate()) > 540
+        || (Math.abs(chassisSpeeds.vxMetersPerSecond) > 2.0
+            || Math.abs(chassisSpeeds.vyMetersPerSecond) > 2.0)) {
+      return;
+    }
+    for (String limelightName : Constants.Vision.LL3GS) {
+      LimelightHelpers.PoseEstimate mt2 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+      if (mt2.tagCount == 0) {
+        break;
+      }
+      addVisionMeasurement(
+          mt2.pose,
+          mt2.timestampSeconds,
+          VecBuilder.fill(
+              Math.pow(0.8, mt2.tagCount) * (mt2.avgTagDist / 2.0),
+              Math.pow(0.8, mt2.tagCount) * (mt2.avgTagDist / 2.0),
+              9999999));
+    }
+  }
+
+  // FIXME make it make sens
+
   @Override
   public void periodic() {
     /* Periodically try to apply the operator perspective */
@@ -232,5 +339,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 alliance = allianceColor == Alliance.Red ? Alliance.Red : Alliance.Blue;
               });
     }
+  }
+
+  public Translation2d[] getModuleLocations() {
+    return m_moduleLocations;
   }
 }

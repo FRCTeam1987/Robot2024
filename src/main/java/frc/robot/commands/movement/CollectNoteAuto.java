@@ -11,7 +11,6 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.control.note.IntakeNoteSequence;
 import frc.robot.subsystems.*;
@@ -71,7 +70,7 @@ public class CollectNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("DriveToNote - init");
+    // System.out.println("DriveToNote - init");
     // Apply the output to the swerve
     this.initialPose = drivetrain.getPose();
     rotationController.reset();
@@ -90,8 +89,8 @@ public class CollectNoteAuto extends Command {
   @Override
   public void execute() {
     if (!canSeePieceDebouncer.calculate(photonVision.hasTargets())) {
-      DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
-      System.out.println("DriveToNote Can't see gamePice");
+      // DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
+      // System.out.println("DriveToNote Can't see gamePice");
       drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
       return;
     }
@@ -129,12 +128,12 @@ public class CollectNoteAuto extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DriverStation.reportWarning("DriveToNote Command Finished", false);
-    System.out.println("DriveToNote Command Finished");
+    // DriverStation.reportWarning("DriveToNote Command Finished", false);
+    // System.out.println("DriveToNote Command Finished");
     drivetrain.setControl(swerveRequest.withSpeeds(new ChassisSpeeds(0, 0, 0)));
     if (isDistanceTraveledTooFar()) {
-      DriverStation.reportWarning("DriveToNote Drove Too Far", false);
-      System.out.println("DriveToNote Drove Too Far");
+      // DriverStation.reportWarning("DriveToNote Drove Too Far", false);
+      // System.out.println("DriveToNote Drove Too Far");
     }
 
     // Backups such that the command drives too far the motors will still stop

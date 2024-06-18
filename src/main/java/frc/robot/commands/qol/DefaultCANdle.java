@@ -4,15 +4,22 @@
 
 package frc.robot.commands.qol;
 
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Candles;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.Util;
 
 public class DefaultCANdle extends Command {
+
+  private static final Color8Bit AQUA = new Color8Bit(Color.kAqua);
+  private static final Color8Bit BROWN = new Color8Bit(Color.kBrown);
+  private static final Color8Bit GREEN = new Color8Bit(Color.kGreen);
+  private static final Color8Bit RED = new Color8Bit(Color.kRed);
+
   private final Shooter SHOOTER;
   private final Candles CANDLES;
-  private final double BLINK_CONSTANT = 0.002; // in seconds?
 
   /** Creates a new DefaultCANdle. */
   public DefaultCANdle(Candles CANDLES, Shooter SHOOTER) {
@@ -28,29 +35,21 @@ public class DefaultCANdle extends Command {
   @Override
   public void execute() {
     if (!SHOOTER.isRearBroken()) {
-      CANDLES.setColorLeftRed();
+      CANDLES.setColor(Candles.CandleSide.LEFT, RED);
       return;
     }
 
     if (!SHOOTER.isCenterBroken()) {
-      CANDLES.setColorLeftBrown();
-
+      CANDLES.setColor(Candles.CandleSide.LEFT, BROWN);
       return;
     }
 
-    CANDLES.setColorLeft(0, 128, 128);
+    CANDLES.setColor(Candles.CandleSide.LEFT, AQUA);
     if (!Util.isValidShot()) {
-      CANDLES.setColorRightRed();
-      return;
+      CANDLES.setColor(Candles.CandleSide.RIGHT, RED);
+    } else {
+      CANDLES.setColor(Candles.CandleSide.RIGHT, GREEN);
     }
-
-    // if (Util.isWithinTolerance(Limelight.getTY(SPEAKER_LIMELIGHT), 0.0, 1)
-    //     && ((Timer.getFPGATimestamp()) / BLINK_CONSTANT) == 0) {
-    //   CANDLES.setColorRightOff();
-    //   return;
-    // }
-
-    CANDLES.setColorRightGreen();
   }
 
   @Override

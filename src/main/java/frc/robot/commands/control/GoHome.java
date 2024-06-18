@@ -6,6 +6,7 @@ package frc.robot.commands.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -23,6 +24,8 @@ public class GoHome extends ParallelCommandGroup {
         new InstantCommand(wrist::goHome),
         new InstantCommand(shooter::stopShooter),
         new InstantCommand(shooter::stopFeeder),
-        new InstantCommand(intake::stopCollecting));
+        new InstantCommand(intake::stopCollecting),
+        new InstantCommand(() -> RobotContainer.isAmpPrepped = false),
+        new InstantCommand(() -> RobotContainer.isAmpShot = false));
   }
 }

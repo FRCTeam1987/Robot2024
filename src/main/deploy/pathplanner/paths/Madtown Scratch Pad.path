@@ -1,0 +1,90 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.35,
+        "y": 5.15
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.380906600715505,
+        "y": 6.041604495249359
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 12.27186588750642,
+        "y": 5.0
+      },
+      "prevControl": {
+        "x": 11.27186588750642,
+        "y": 5.0
+      },
+      "nextControl": {
+        "x": 13.27186588750642,
+        "y": 5.0
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.7,
+        "y": 3.15
+      },
+      "prevControl": {
+        "x": 8.056183643882349,
+        "y": 4.317235889459942
+      },
+      "nextControl": {
+        "x": -0.6561836438823487,
+        "y": 1.9827641105400575
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 12.998530989914899,
+        "y": 3.15
+      },
+      "prevControl": {
+        "x": 6.266774150223737,
+        "y": 2.483710236392898
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": -30.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -150.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Madtown",
+  "previewStartingState": {
+    "rotation": -3.3428019514140104,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

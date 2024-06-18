@@ -1,0 +1,99 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3731168748868172,
+      "y": 5.547507658600387
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwooferFirstHalf"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultWrist"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DefaultShooter"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Middle Race 1"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Middle Race 2 Success"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoCollectNote"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "DisableWristLockDown"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Middle Race 3"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoCollectNote"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "DisableWristLockDown"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAimAndShoot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "IRI",
+  "choreoAuto": false
+}

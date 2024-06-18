@@ -122,6 +122,10 @@ public class Shooter extends SubsystemBase {
     return SHOOTER_FOLLOWER.getReverseLimit().asSupplier().get().value == 0;
   }
 
+  public boolean hasNote() {
+    return isCenterBroken() || isRearBroken();
+  }
+
   public void setFeederVoltage(double voltage) {
     FEEDER.setVoltage(voltage);
     // FEEDER_TEMP.setVoltage(voltage);
@@ -164,10 +168,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setupShuffleboard() {
-    SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
-    SHOOTER_TAB.addDouble("ERROR", this::getError);
-    SHOOTER_TAB.addBoolean("Center Beam Break", this::isCenterBroken);
-    SHOOTER_TAB.addBoolean("Rear Beam Break", this::isRearBroken);
+    if (Constants.shouldShuffleboard) {
+      SHOOTER_TAB.addDouble("Lead RPM", this::getRPMLeader);
+      SHOOTER_TAB.addDouble("ERROR", this::getError);
+      SHOOTER_TAB.addBoolean("Center Beam Break", this::isCenterBroken);
+      SHOOTER_TAB.addBoolean("Rear Beam Break", this::isRearBroken);
+    }
     SHOOTER_TAB.add("Stop Shoot", new InstantCommand(this::stopShooter));
     SHOOTER_TAB.add("Stop Feed", new InstantCommand(this::stopFeeder));
     SHOOTER_TAB.add(

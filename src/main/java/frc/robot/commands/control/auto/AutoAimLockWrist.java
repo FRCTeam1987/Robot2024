@@ -5,40 +5,57 @@
 package frc.robot.commands.control.auto;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Util;
+import java.util.function.Supplier;
 
 public class AutoAimLockWrist extends Command {
   private final Wrist wrist;
+  private final Supplier<AutoState> autoStateSupplier;
 
   /** Creates a new AimLockWrist. */
   public AutoAimLockWrist(Wrist wrist) {
-    this.wrist = wrist;
+    this(wrist, () -> null);
+  }
+
+  public AutoAimLockWrist(final Wrist wrist, final Supplier<AutoState> autoStateSupplier) {
     addRequirements(wrist);
-    // Use addRequirements() here to declare subsystem dependencies.
+    this.wrist = wrist;
+    this.autoStateSupplier = autoStateSupplier;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    DriverStation.reportWarning("DefaultWrist: initialize", false);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // double degrees = Util.getInterpolatedWristAngle();
-    // // TODO find actual values, prevent wrist collision when the elevator is all the way down.
-    // DriverStation.reportWarning("Wrist Degrees Angle " + degrees, false);
-    wrist.setDegrees(MathUtil.clamp(Util.getInterpolatedWristAngle(), 10.0, 35.0));
+    switch (autoStateSupplier.get()) {
+      case COLLECTING:
+        double poseX = RobotContainer.DRIVETRAIN.getPose().getX();
+        if (poseX < 6.0 || poseX > 16.56 - 6.0) {
+          wrist.setDegrees(MathUtil.clamp(Util.getInterpolatedWristAngleSpeaker(), 10.0, 35.0));
+        } else {
+          wrist.setDegrees(26);
+        }
+
+        break;
+      case POOPING:
+        wrist.setDegrees(22);
+        break;
+      case SHOOT_PREP:
+      case SHOOTING:
+      case DEFAULT:
+      default:
+        wrist.setDegrees(MathUtil.clamp(Util.getInterpolatedWristAngleSpeaker(), 10.0, 35.0));
+    }
   }
 
   @Override
-  public void end(boolean interrupted) {
-    DriverStation.reportWarning("DefaultWrist: end, " + interrupted, false);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

@@ -59,7 +59,9 @@ public class ShootTrap extends SequentialCommandGroup {
         new WaitUntilCommand(
             () ->
                 lineBreakDebouncer.calculate(!shooter.isCenterBroken())), // probably debounce this
-        new InstantCommand(shooter::stopFeeder, shooter));
+        // new InstantCommand(shooter::stopFeeder, shooter),
+        new WaitCommand(0.7),
+        new JiggleTrap(wrist));
     // new WaitUntilCommand(() -> lineBreakDebouncer.calculate(shooter.isCenterBroken())),
     // new InstantCommand(() -> wrist.setDegrees(35.0), shooter),
     // new WaitCommand(0.4),

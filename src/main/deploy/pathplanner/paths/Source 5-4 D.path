@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.1,
+        "y": 2.4324831175046824
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.649448998994113,
+        "y": 2.9626616811888984
+      },
+      "isLocked": false,
+      "linkedName": "Source 5-4 B End"
+    },
+    {
+      "anchor": {
+        "x": 6.506672272169776,
+        "y": 2.6
+      },
+      "prevControl": {
+        "x": 6.506672272169776,
+        "y": 3.1
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": -90.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source 5-4",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

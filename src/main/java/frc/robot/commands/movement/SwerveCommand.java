@@ -2,8 +2,8 @@ package frc.robot.commands.movement;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.Util;
@@ -50,8 +50,9 @@ public class SwerveCommand extends Command {
     this.ROTATION_SUPPLIER = rotationSupplier;
 
     addRequirements(drivetrain);
-    THETA_CONTROLLER = new PIDController(0.11, 0.0, 0.0);
+    THETA_CONTROLLER = new PIDController(0.2, 0.0, 0.0);
     THETA_CONTROLLER.enableContinuousInput(-180, 180);
+    THETA_CONTROLLER.setTolerance(0.25, 0.1);
   }
 
   @Override
@@ -71,7 +72,7 @@ public class SwerveCommand extends Command {
     if (isCardinalLocking && !Util.isWithinTolerance(ROTATION_SUPPLIER.getAsDouble(), 0.0, 0.25)) {
       isCardinalLocking = false;
       setPoint = 0.0;
-      DriverStation.reportWarning("Stop using DPad.", false);
+      // DriverStation.reportWarning("Stop using DPad.", false);
     } else if (POV_DEGREE.getAsInt() >= 0) {
       isCardinalLocking = true;
       switch (POV_DEGREE.getAsInt()) {
@@ -92,31 +93,40 @@ public class SwerveCommand extends Command {
       }
     }
     if (isCardinalLocking) {
-      THETA_CONTROLLER.setSetpoint(setPoint);
       rotationPercentage =
-          THETA_CONTROLLER.calculate(
-              DRIVETRAIN.getPose().getRotation().getDegrees(), THETA_CONTROLLER.getSetpoint());
+          THETA_CONTROLLER.calculate(DRIVETRAIN.getPose().getRotation().getDegrees(), setPoint);
+    }
+
+    if (RobotContainer.shouldTelopPointToNote()
+        && RobotContainer.INTAKE_PHOTON.hasTargets()
+        && !RobotContainer.get().SHOOTER.isCenterBroken()) {
+      double heading = DRIVETRAIN.getPose().getRotation().getDegrees();
+      double visionAdjust = RobotContainer.INTAKE_PHOTON.getYawVal();
+      rotationPercentage = THETA_CONTROLLER.calculate(heading, heading - visionAdjust);
     }
 
     // WIP - trying to auto point to amp feed and then speaker depending on pose by default
-    // if (!isCardinalLocking && Util.isWithinTolerance(ROTATION_SUPPLIER.getAsDouble(), 0.0, 0.25)
-    // && RobotContainer.get().SHOOTER.isCenterBroken()) {
-    //
-    // THETA_CONTROLLER.setSetpoint(Util.getRotationToAllianceSpeaker(DRIVETRAIN.getPose()).getDegrees());
-    //   System.out.println(Util.getRotationToAllianceSpeaker(DRIVETRAIN.getPose()).getDegrees());
-    //   rotationPercentage =
-    //       THETA_CONTROLLER.calculate(
-    //           DRIVETRAIN.getPose().getRotation().getDegrees(), THETA_CONTROLLER.getSetpoint());
+    // if (!isCardinalLocking
+    //   && Util.isWithinTolerance(ROTATION_SUPPLIER.getAsDouble(), 0.0, 0.25)
+    //   && RobotContainer.get().SHOOTER.isCenterBroken()
+    // ) {
+    //   final Pose2d currentPose = DRIVETRAIN.getPose();
+    //   final Rotation2d targetRotation = Math.abs(Util.getDistanceToSpeaker()) > 6.0 ?
+    // Util.getRotationToAllianceLob(currentPose) : Util.getRotationToAllianceSpeaker(currentPose);
+    //   // rotationPercentage =
+    //   //     THETA_CONTROLLER.calculate(
+    //   //         currentPose.getRotation().getDegrees(),
+    // Util.getRotationToAllianceSpeaker(currentPose).getDegrees());
+    //   System.out.println("currentRotation" + currentPose.getRotation().getDegrees() + ",
+    // desiredRotation: " + targetRotation.getDegrees());
     // }
-
-    double rotationalVelocity = rotationPercentage;
 
     DRIVETRAIN.setControl(
         DRIVE_REQUEST
             .withVelocityX(xPercentage) // Drive forward with
             // negative Y (forward)
             .withVelocityY(yPercentage) // Drive left with negative X (left)
-            .withRotationalRate(rotationalVelocity));
+            .withRotationalRate(rotationPercentage));
   }
 
   @Override

@@ -14,33 +14,36 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
+import frc.robot.commands.control.auto.AutoState;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.util.Limelight.RawFiducial;
+import frc.robot.util.LimelightHelpers.RawFiducial;
 import java.util.List;
 
 public class Util {
   public static final AprilTagFieldLayout field =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  public static Pose3d TAG_4_POSE; // RED ALLIANCE SPEAKER CENTER
-  public static Pose3d TAG_7_POSE; // BLUE ALLIANCE SPEAKER CENTER
-  public static Pose2d TAG_11_POSE_2D; // LEFT SIDE RED ALLIANCE TRAP
-  public static Pose2d TAG_12_POSE_2D; // RIGHT SIDE RED ALLIANCE TRAP
-  public static Pose2d TAG_13_POSE_2D; // FAR SIDE RED ALLIANCE TRAP
-  public static Pose2d TAG_14_POSE_2D; // FAR SIDE BLUE ALLIANCE TRAP
-  public static Pose2d TAG_15_POSE_2D; // LEFT SIDE BLUE ALLIANCE TRAP
-  public static Pose2d TAG_16_POSE_2D; // RIGHT SIDE BLUE ALLIANCE TRAP
+  public static Pose2d TAG_4_POSE; // RED ALLIANCE SPEAKER CENTER
+  public static Pose2d TAG_7_POSE; // BLUE ALLIANCE SPEAKER CENTER
+  public static Pose3d TAG_5_POSE; // RED AMP
+  public static Pose3d TAG_6_POSE; // BLUE AMP
+  public static Pose2d MANUAL_RED_AMP; // RED AMP
+  public static Pose2d MANUAL_BLUE_AMP; // BLUE AMP
+  public static Pose2d MANUAL_RED_LOB; // RED AMP
+  public static Pose2d MANUAL_BLUE_LOB; // BLUE AMP
   public static Pose2d TAG_LOB_BLUE;
   public static Pose2d TAG_LOB_RED;
   public static List<Pose2d> TRAP_TAGS;
+  public static List<Pose2d> AMP_TAGS;
   public static DriverStation.Alliance alliance;
   public static final double DEADBAND = 0.05;
 
@@ -50,101 +53,123 @@ public class Util {
         .ifPresent(
             pose -> {
               Util.TAG_4_POSE =
-                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
+                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
             });
     field
         .getTagPose(7)
         .ifPresent(
             pose -> {
               Util.TAG_7_POSE =
-                  pose; // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(12)
-        .ifPresent(
-            pose -> {
-              Util.TAG_12_POSE_2D =
                   pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
             });
-    field
-        .getTagPose(11)
-        .ifPresent(
-            pose -> {
-              Util.TAG_11_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(13)
-        .ifPresent(
-            pose -> {
-              Util.TAG_13_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(14)
-        .ifPresent(
-            pose -> {
-              Util.TAG_14_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(15)
-        .ifPresent(
-            pose -> {
-              Util.TAG_15_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(16)
-        .ifPresent(
-            pose -> {
-              Util.TAG_16_POSE_2D =
-                  pose.toPose2d(); // .transformBy(new Transform3d(0, 0.565, 0, new Rotation3d()));
-            });
-    field
-        .getTagPose(5)
-        .ifPresent(
-            pose -> {
-              Util.TAG_LOB_RED =
-                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d(0.0)));
-              ;
-            });
-    field
-        .getTagPose(6)
-        .ifPresent(
-            pose -> {
-              Util.TAG_LOB_BLUE =
-                  pose.toPose2d().transformBy(new Transform2d(0.0, -1.0, new Rotation2d()));
-            });
-    TRAP_TAGS =
-        List.of(
-            TAG_11_POSE_2D,
-            TAG_12_POSE_2D,
-            TAG_13_POSE_2D,
-            TAG_14_POSE_2D,
-            TAG_15_POSE_2D,
-            TAG_16_POSE_2D);
+    MANUAL_RED_AMP = new Pose2d(14.7, 7.42, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_BLUE_AMP = new Pose2d(1.84, 7.42, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_RED_LOB = new Pose2d(14.7, 5.95, new Rotation2d(Math.toRadians(90.0)));
+    MANUAL_BLUE_LOB = new Pose2d(1.84, 5.95, new Rotation2d(Math.toRadians(90.0)));
+    TRAP_TAGS = List.of();
     DriverStation.getAlliance().ifPresent(ouralliance -> alliance = ouralliance);
   }
 
-  public static Pose3d getAllianceSpeakerCenter() {
+  public static Pose2d getAllianceSpeaker() {
     // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
     return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
         ? TAG_7_POSE
         : TAG_4_POSE;
   }
 
+  public static Pose2d getAllianceAmp() {
+    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
+    return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
+        ? MANUAL_BLUE_AMP
+        : MANUAL_RED_AMP;
+  }
+
   public static Pose2d getAllianceLob() {
     // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
     return CommandSwerveDrivetrain.getAlliance() == DriverStation.Alliance.Blue
-        ? TAG_LOB_BLUE
-        : TAG_LOB_RED;
+        ? MANUAL_BLUE_LOB
+        : MANUAL_RED_LOB;
   }
 
   public static Rotation2d getRotationToAllianceLob(Pose2d opose) {
-    // return alliance == DriverStation.Alliance.Blue ? TAG_7_POSE : TAG_4_POSE;
-    Transform2d pose = Util.getAllianceLob().minus(opose);
-    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
+    Transform2d delta =
+        new Transform2d(
+            Util.getAllianceLob().getTranslation().minus(opose.getTranslation()), new Rotation2d());
+    return new Rotation2d(Math.atan2(delta.getY(), delta.getX()))
+        .plus(Rotation2d.fromDegrees(180.0));
+  }
+
+  public static double getShooterSpeedFromDistanceForLob(double distance) {
+    return Constants.DISTANCE_TO_LOB_RPM.getInterpolated(new InterpolatingDouble(distance)).value;
+  }
+
+  public static double getDistanceToAllianceLob(Pose2d opose) {
+    return RobotContainer.get()
+        .getPose()
+        .getTranslation()
+        .getDistance(getAllianceLob().getTranslation());
+  }
+
+  // private static final Pose2d SOURCE_SHOOT_POSE =
+  // PathPlannerAuto.getStaringPoseFromAutoFile("Source 5-4 Shoot Pose");
+  // public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE = SOURCE_SHOOT_POSE;
+  //     // new Pose2d(SOURCE_SHOOT_POSE.getX(), SOURCE_SHOOT_POSE.getY(),
+  // Rotation2d.fromDegrees(-30.0));
+  // public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
+  //     new Pose2d(16.56 - BLUE_AUTO_SOURCE_SHOOTING_POSE.getX(),
+  //     BLUE_AUTO_SOURCE_SHOOTING_POSE.getY(),
+  //     BLUE_AUTO_SOURCE_SHOOTING_POSE.getRotation().plus(Rotation2d.fromDegrees(180.0)));
+  //     // new Pose2d(13.04, 3.22, Rotation2d.fromDegrees(-150));
+
+  public static final Pose2d BLUE_AUTO_SOURCE_CLOSE_SHOT =
+      new Pose2d(3.7, 3.15, Rotation2d.fromDegrees(-30));
+  public static final Pose2d RED_AUTO_SOURCE_CLOSE_SHOT =
+      new Pose2d(
+          16.56 - BLUE_AUTO_SOURCE_CLOSE_SHOT.getX(),
+          BLUE_AUTO_SOURCE_CLOSE_SHOT.getY(),
+          Rotation2d.fromDegrees(-150));
+
+  public static Command PathFindToAutoSourceCloseShot() {
+    return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))
+        .andThen(
+            new ConditionalCommand(
+                Util.pathfindToPose(BLUE_AUTO_SOURCE_CLOSE_SHOT),
+                Util.pathfindToPose(RED_AUTO_SOURCE_CLOSE_SHOT),
+                () -> CommandSwerveDrivetrain.getAlliance().equals(Alliance.Blue)));
+  }
+
+  public static final Pose2d BLUE_AUTO_SOURCE_SHOOTING_POSE =
+      new Pose2d(4, 3, Rotation2d.fromDegrees(-30.0));
+  public static final Pose2d RED_AUTO_SOURCE_SHOOTING_POSE =
+      new Pose2d(
+          16.56 - BLUE_AUTO_SOURCE_SHOOTING_POSE.getX(),
+          BLUE_AUTO_SOURCE_SHOOTING_POSE.getY(),
+          Rotation2d.fromDegrees(-144.5));
+
+  public static Command PathFindToAutoSourceShot() {
+    return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))
+        .andThen(
+            new ConditionalCommand(
+                Util.pathfindToPose(BLUE_AUTO_SOURCE_SHOOTING_POSE),
+                Util.pathfindToPose(RED_AUTO_SOURCE_SHOOTING_POSE),
+                () -> CommandSwerveDrivetrain.getAlliance().equals(Alliance.Blue)));
+  }
+
+  public static final Pose2d BLUE_AUTO_MADTOWN_SHOOTING_POSE =
+      new Pose2d(4.35, 5.15, Rotation2d.fromDegrees(-88));
+  public static final Pose2d RED_AUTO_MADTOWN_SHOOTING_POSE =
+      new Pose2d(
+          16.56 - BLUE_AUTO_MADTOWN_SHOOTING_POSE.getX(),
+          BLUE_AUTO_MADTOWN_SHOOTING_POSE.getY(),
+          Rotation2d.fromDegrees(-178.0));
+
+  public static Command PathFindToAutoMadtownShot() {
+    return new InstantCommand(() -> RobotContainer.setAutoState(AutoState.SHOOT_PREP))
+        .andThen(
+            new ConditionalCommand(
+                Util.pathfindToPose(BLUE_AUTO_MADTOWN_SHOOTING_POSE),
+                Util.pathfindToPose(RED_AUTO_MADTOWN_SHOOTING_POSE),
+                () -> CommandSwerveDrivetrain.getAlliance().equals(Alliance.Blue)));
   }
 
   public static boolean isWithinTolerance(
@@ -153,69 +178,68 @@ public class Util {
   }
 
   public static boolean canSeeTarget(String limelight) {
-    return Limelight.getBotPoseEstimate_wpiBlue(limelight).tagCount > 0;
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(limelight).tagCount > 0;
   }
 
   public static void setupUtil() {}
 
-  public static double getDistance(String limelight) {
-    var result = Limelight.getBotPoseEstimate_wpiBlue(limelight);
-    if (result.tagCount > 0) {
-      return new Pose3d(result.pose)
-          .getTranslation()
-          .getDistance(
-              getAllianceSpeakerCenter()
-                  .transformBy(
-                      new Transform3d(
-                          new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
-                          new Rotation3d()))
-                  .getTranslation());
-    }
-    return 0.0;
-  }
-
   // TODO flex on alliance tag pose
   public static double getDistanceToSpeaker() {
-    return new Pose3d(RobotContainer.get().getPose())
+    return RobotContainer.get()
+        .getPose()
         .getTranslation()
-        .getDistance(
-            getAllianceSpeakerCenter()
-                .transformBy(
-                    new Transform3d(
-                        new Translation3d(0, 0, -getAllianceSpeakerCenter().getZ()),
-                        new Rotation3d()))
-                .getTranslation());
+        .getDistance(getAllianceSpeaker().getTranslation());
   }
 
+  public static double getDistanceToAmp() {
+    return RobotContainer.get()
+        .getPose()
+        .getTranslation()
+        .getDistance(getAllianceAmp().getTranslation());
+  }
+
+  public static double getDistanceToLob() {
+    return RobotContainer.get()
+        .getPose()
+        .getTranslation()
+        .getDistance(getAllianceLob().getTranslation());
+  }
+
+  // System.out.println("SPEAKER: " + Util.getAllianceSpeaker());
+  // System.out.println("SUBTRACT: " + delta);
+  // System.out.println(delta.getAngle());
+
+  // TODO rotate to bias angle depending on robot pose for increased accuracy
+  // This should be equivalent to aiming a bit in front of the speaker
   public static Rotation2d getRotationToAllianceSpeaker(Pose2d opose) {
-    // return
-    // opose.getTranslation().minus(Util.getAllianceSpeakerCenter().getTranslation().toTranslation2d()).getAngle();
-    Transform2d pose = Util.getAllianceSpeakerCenter().toPose2d().minus(opose);
-    return new Rotation2d(Math.atan2(pose.getX(), pose.getY()));
+    // Pose2d newpose = new Pose2d(opose.getTranslation(), new Rotation2d(90.0));
+    Translation2d speakerTranslation = Util.getAllianceSpeaker().getTranslation();
+    Translation2d robotTranslation = opose.getTranslation();
+    Transform2d delta =
+        new Transform2d(speakerTranslation.minus(robotTranslation), new Rotation2d());
+    return new Rotation2d(Math.atan2(delta.getY(), delta.getX()))
+        .plus(Rotation2d.fromDegrees(180.0));
   }
 
-  public static double getInterpolatedWristAngle(String limelight) {
-    return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
-            new InterpolatingDouble(Util.getDistance(limelight)))
-        .value;
-  }
-
-  public static double getInterpolatedWristAngle() {
+  public static double getInterpolatedWristAngleSpeaker() {
     return Constants.DISTANCE_TO_WRISTANGLE_RELATIVE_SPEAKER.getInterpolated(
             new InterpolatingDouble(Util.getDistanceToSpeaker()))
         .value;
   }
 
-  public static boolean isValidShot(String limelight) {
-    double dist = Util.getDistance(limelight);
-    if (dist > 2.0 && dist < 8.3) {
-      return true;
-    } else return false;
-  }
-
   public static boolean isValidShot() {
     double dist = Util.getDistanceToSpeaker();
-    return dist > 2.25 && dist < 5.25;
+    return (dist > 2.25 && dist < 5.25);
+  }
+
+  public static boolean isValidShotAmpInclusive() {
+    double dist = Util.getDistanceToSpeaker();
+    double ampDist = Util.getDistanceToAmp();
+    return (dist > 2.25 && dist < 5.25) || ampDist < 4.00;
+  }
+
+  public static boolean isLobShot() {
+    return Util.getDistanceToLob() > 5.5;
   }
 
   public static double squareValue(double value) {
@@ -255,5 +279,21 @@ public class Util {
       }
     }
     return tagCount;
+  }
+
+  public static boolean isPointedAtSpeaker(CommandSwerveDrivetrain drivetrain) {
+    Pose2d current = drivetrain.getPose();
+    return Util.isWithinTolerance(
+        current.getRotation().getDegrees(),
+        Util.getRotationToAllianceSpeaker(current).getDegrees(),
+        1.5);
+  }
+
+  public static boolean isPointedAtLob(CommandSwerveDrivetrain drivetrain) {
+    Pose2d current = drivetrain.getPose();
+    return Util.isWithinTolerance(
+        current.getRotation().getDegrees(),
+        Util.getRotationToAllianceLob(current).getDegrees(),
+        3.0);
   }
 }

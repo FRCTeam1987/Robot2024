@@ -1,6 +1,8 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -72,8 +74,17 @@ public class DriveConstants {
   private static final SwerveDrivetrainConstants DrivetrainConstants =
       new SwerveDrivetrainConstants().withPigeon2Id(kPigeonId).withCANbusName(kCANbusName);
 
+  private static final CurrentLimitsConfigs driveCurrentLimits =
+      new CurrentLimitsConfigs()
+          .withStatorCurrentLimit(110)
+          .withStatorCurrentLimitEnable(true)
+          .withSupplyCurrentLimit(70)
+          .withSupplyCurrentLimitEnable(true)
+          .withSupplyTimeThreshold(0.5);
   private static final SwerveModuleConstantsFactory ConstantCreator =
       new SwerveModuleConstantsFactory()
+          .withDriveMotorInitialConfigs(
+              new TalonFXConfiguration().withCurrentLimits(driveCurrentLimits))
           .withDriveMotorGearRatio(kDriveGearRatio)
           .withSteerMotorGearRatio(kSteerGearRatio)
           .withWheelRadius(kWheelRadiusInches)

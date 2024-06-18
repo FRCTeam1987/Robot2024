@@ -39,19 +39,24 @@ public class IdleShooter extends Command {
       shooter.stopShooter();
       return;
     }
-    if (RobotContainer.isForwardAmpPrimed) {
+    if (RobotContainer.isAmpPrepped) {
       shooter.setRPMShoot(Constants.Shooter.SHOOTER_AMP_RPM);
       return;
     }
-    if (shooter.isCenterBroken()) {
-      if (validShotDebouncer.calculate(Util.isValidShot())) {
-        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM_CLOSE);
-      } else {
-        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_RPM);
-      }
-
+    if (Util.isLobShot()) {
+      shooter.setRPMShoot(
+          Util.getShooterSpeedFromDistanceForLob(
+              Util.getDistanceToAllianceLob(RobotContainer.get().getPose())));
+      return;
+    }
+    if (shooter.isCenterBroken() || shooter.isRearBroken()) {
+      shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_SHOOTING_RPM);
     } else {
-      shooter.stopShooter();
+      if (validShotDebouncer.calculate(Util.isValidShotAmpInclusive())) {
+        shooter.setRPMShoot(Constants.Shooter.SHOOTER_IDLE_SHOOTING_RPM);
+      } else {
+        shooter.stopShooter();
+      }
     }
   }
 
